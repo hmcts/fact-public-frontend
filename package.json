@@ -49,6 +49,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.26.10",
+    "@codeceptjs/allure-legacy": "^1.0.2",
     "@codeceptjs/configure": "^0.10.0",
     "@types/chai": "^5.2.1",
     "@types/express": "4.17.25",
@@ -60,7 +61,7 @@
     "@typescript-eslint/parser": "^6.0.0",
     "chai": "4.5.0",
     "chokidar": "^4.0.3",
-    "codeceptjs": "^3.3.6",
+    "codeceptjs": "^3.7.5",
     "copy-webpack-plugin": "9.1.0",
     "css-loader": "6.11.0",
     "eslint": "8.57.1",
