@@ -1,133 +1,143 @@
-const {
-    defineConfig,
-    globalIgnores,
-} = require("eslint/config");
+const { defineConfig, globalIgnores } = require('eslint/config');
 
-const globals = require("globals");
-const tsParser = require("@typescript-eslint/parser");
-const typescriptEslint = require("@typescript-eslint/eslint-plugin");
-const _import = require("eslint-plugin-import");
-const jest = require("eslint-plugin-jest");
+const globals = require('globals');
+const tsParser = require('@typescript-eslint/parser');
+const typescriptEslint = require('@typescript-eslint/eslint-plugin');
+const _import = require('eslint-plugin-import');
+const jest = require('eslint-plugin-jest');
 
-const {
-    fixupPluginRules,
-    fixupConfigRules,
-} = require("@eslint/compat");
+const { fixupPluginRules, fixupConfigRules } = require('@eslint/compat');
 
-const js = require("@eslint/js");
+const js = require('@eslint/js');
 
-const {
-    FlatCompat,
-} = require("@eslint/eslintrc");
+const { FlatCompat } = require('@eslint/eslintrc');
 
 const compat = new FlatCompat({
-    baseDirectory: __dirname,
-    recommendedConfig: js.configs.recommended,
-    allConfig: js.configs.all
+  baseDirectory: __dirname,
+  recommendedConfig: js.configs.recommended,
+  allConfig: js.configs.all,
 });
 
 module.exports = defineConfig([
-    ...fixupConfigRules(compat.extends(
-        "eslint:recommended",
-        "plugin:import/errors",
-        "plugin:import/warnings",
-        "plugin:import/typescript",
-        "plugin:jest/recommended",
-        "plugin:@typescript-eslint/eslint-recommended",
-        "plugin:@typescript-eslint/recommended",
-        "prettier",
-    )),
-    {
-        languageOptions: {
-            globals: {
-                ...globals.browser,
-                ...globals.node,
-                Atomics: "readonly",
-                SharedArrayBuffer: "readonly",
-            },
+  ...fixupConfigRules(
+    compat.extends(
+      'eslint:recommended',
+      'plugin:import/errors',
+      'plugin:import/warnings',
+      'plugin:import/typescript',
+      'plugin:jest/recommended',
+      'plugin:@typescript-eslint/eslint-recommended',
+      'plugin:@typescript-eslint/recommended',
+      'prettier'
+    )
+  ),
+  {
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+        Atomics: 'readonly',
+        SharedArrayBuffer: 'readonly',
+      },
 
-            parser: tsParser,
-            ecmaVersion: 2018,
-            sourceType: "module",
+      parser: tsParser,
+      ecmaVersion: 2018,
+      sourceType: 'module',
 
-            parserOptions: {
-                project: "./tsconfig.eslint.json",
-            },
-        },
-
-        plugins: {
-            import: fixupPluginRules(_import),
-        },
-
-        rules: {
-            "@typescript-eslint/array-type": "error",
-            "@typescript-eslint/explicit-module-boundary-types": "error",
-            "@typescript-eslint/no-explicit-any": "error",
-            "@typescript-eslint/no-shadow": "error",
-
-            "@typescript-eslint/no-unused-vars": ["error", {
-                ignoreRestSiblings: true,
-                argsIgnorePattern: "^_",
-            }],
-
-            "@typescript-eslint/no-require-imports": "off",
-            "@typescript-eslint/no-var-requires": "off",
-            curly: "error",
-            eqeqeq: "error",
-            "import/no-duplicates": "error",
-            "import/no-named-as-default": "error",
-
-            "import/order": ["error", {
-                alphabetize: {
-                    caseInsensitive: false,
-                    order: "asc",
-                },
-
-                "newlines-between": "always",
-            }],
-
-            "jest/prefer-to-have-length": "error",
-            "jest/valid-expect": "off",
-            "linebreak-style": ["error", "unix"],
-            "no-console": "warn",
-            "no-prototype-builtins": "off",
-            "no-return-await": "error",
-
-            "no-unneeded-ternary": ["error", {
-                defaultAssignment: false,
-            }],
-
-            "object-curly-spacing": ["error", "always"],
-            "object-shorthand": ["error", "properties"],
-
-            quotes: ["error", "single", {
-                allowTemplateLiterals: false,
-                avoidEscape: true,
-            }],
-
-            semi: ["error", "always"],
-
-            "sort-imports": ["error", {
-                allowSeparatedGroups: false,
-                ignoreCase: false,
-                ignoreDeclarationSort: true,
-                ignoreMemberSort: false,
-            }],
-        },
+      parserOptions: {
+        project: './tsconfig.eslint.json',
+      },
     },
-    globalIgnores(["src/main/views/govuk/**/*"]),
-    globalIgnores([
-        "dist/*",
-        "coverage/*",
-        "**/*.d.ts",
-        "src/main/public/",
-        "src/main/types/",
-        "**/jest.*config.js",
-        "**/.eslintrc.js",
-        "src/test/*/codecept.conf.js",
-        "src/test/config.ts",
-        "**/*.js",
-        "**/.pnp.*",
-        ".yarn/*",
-    ])
+
+    plugins: {
+      import: fixupPluginRules(_import),
+    },
+
+    rules: {
+      '@typescript-eslint/array-type': 'error',
+      '@typescript-eslint/explicit-module-boundary-types': 'error',
+      '@typescript-eslint/no-explicit-any': 'error',
+      '@typescript-eslint/no-shadow': 'error',
+
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          ignoreRestSiblings: true,
+          argsIgnorePattern: '^_',
+        },
+      ],
+
+      '@typescript-eslint/no-require-imports': 'off',
+      '@typescript-eslint/no-var-requires': 'off',
+      curly: 'error',
+      eqeqeq: 'error',
+      'import/no-duplicates': 'error',
+      'import/no-named-as-default': 'error',
+
+      'import/order': [
+        'error',
+        {
+          alphabetize: {
+            caseInsensitive: false,
+            order: 'asc',
+          },
+
+          'newlines-between': 'always',
+        },
+      ],
+
+      'jest/prefer-to-have-length': 'error',
+      'jest/valid-expect': 'off',
+      'linebreak-style': ['error', 'unix'],
+      'no-console': 'warn',
+      'no-prototype-builtins': 'off',
+      'no-return-await': 'error',
+
+      'no-unneeded-ternary': [
+        'error',
+        {
+          defaultAssignment: false,
+        },
+      ],
+
+      'object-curly-spacing': ['error', 'always'],
+      'object-shorthand': ['error', 'properties'],
+
+      quotes: [
+        'error',
+        'single',
+        {
+          allowTemplateLiterals: false,
+          avoidEscape: true,
+        },
+      ],
+
+      semi: ['error', 'always'],
+
+      'sort-imports': [
+        'error',
+        {
+          allowSeparatedGroups: false,
+          ignoreCase: false,
+          ignoreDeclarationSort: true,
+          ignoreMemberSort: false,
+        },
+      ],
+    },
+  },
+  globalIgnores(['src/main/views/govuk/**/*']),
+  globalIgnores([
+    'dist/*',
+    'coverage/*',
+    '**/*.d.ts',
+    'src/main/public/',
+    'src/main/types/',
+    '**/jest.*config.js',
+    '**/.eslintrc.js',
+    'src/test/*/codecept.conf.js',
+    'src/test/config.ts',
+    '**/*.js',
+    '**/.pnp.*',
+    '.yarn/*',
+  ]),
 ]);
