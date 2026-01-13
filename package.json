@@ -39,7 +39,7 @@
     "express": "5.2.1",
     "express-rate-limit": "^7.5.1",
     "glob": "10.5.0",
-    "govuk-frontend": "^5.9.0",
+    "govuk-frontend": "5.13.0",
     "helmet": "8.1.0",
     "lodash": "4.17.21",
     "nunjucks": "3.2.4",
