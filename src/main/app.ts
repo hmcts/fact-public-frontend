@@ -37,7 +37,7 @@ new Nunjucks(developmentMode).enableFor(app);
 new Helmet(config.get('security')).enableFor(app);
 
 app.get('/favicon.ico', limiter, (req, res) => {
-  res.sendFile(path.join(__dirname, '/public/assets/images/favicon.ico'));
+  res.sendFile(path.join(__dirname, '/public/assets/rebrand/images/favicon.ico'));
 });
 
 app.use(bodyParser.json());
