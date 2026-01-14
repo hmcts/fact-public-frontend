@@ -12,7 +12,9 @@ const setupApp = () => {
   const use = jest.fn();
 
   return {
-    app: { set, use } as unknown as express.Express,
+    app: { set, use, locals: {
+      ENV: 'development'
+      } } as unknown as express.Express,
     set,
     use,
   };
@@ -42,6 +44,7 @@ describe('Nunjucks module', () => {
       })
     );
     expect(addGlobal).toHaveBeenCalledWith('govukRebrand', true);
+    expect(addGlobal).toHaveBeenCalledWith('environment', 'development');
   });
 
   test('registers middleware that exposes the current request path to templates', () => {
