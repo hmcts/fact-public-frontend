@@ -42,6 +42,7 @@ function gracefulShutdownHandler(signal: string) {
     // Close server if it's running
     httpsServer?.close(() => {
       logger.info('HTTPS server closed');
+      process.exit(0);
     });
   }, 4000);
 }
