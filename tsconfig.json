@@ -6,19 +6,14 @@
     "allowSyntheticDefaultImports": true,
     "target": "ES2020",
     "strict": true,
-    "noImplicitAny": true,
-    "noImplicitThis": false,
+    "noImplicitAny": false,
+    "resolveJsonModule": true,
     "moduleResolution": "node",
     "noUnusedLocals": true,
     "experimentalDecorators": true,
-    "useUnknownInCatchVariables": false,
     "skipLibCheck": true,
     "lib": ["es2020", "dom", "dom.iterable"],
-    "baseUrl": "src/main",
-    "paths": {
-      "router/*": ["router/*"],
-      "routes/*": ["routes/*"]
-    }
+    "baseUrl": "src/main"
   },
   "exclude": ["**/*.test.ts", "**/codecept.conf.ts", "**/__mocks__/*"]
 }

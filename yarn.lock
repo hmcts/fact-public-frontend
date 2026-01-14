@@ -3976,6 +3976,35 @@ __metadata:
   languageName: node
   linkType: hard
 
+"awilix-express@npm:9.0.2":
+  version: 9.0.2
+  resolution: "awilix-express@npm:9.0.2"
+  dependencies:
+    awilix-router-core: "npm:^2.1.0"
+    tslib: "npm:^2.8.1"
+  checksum: 10/872333b55e1f35f40c076db4c25d18540a6fb15d11aa964e0c97b67ab61a66c916eaa7cab423ebcd507b8dea6a00b97d2094d3e9449bbc338c44902525807f40
+  languageName: node
+  linkType: hard
+
+"awilix-router-core@npm:^2.1.0":
+  version: 2.1.2
+  resolution: "awilix-router-core@npm:2.1.2"
+  dependencies:
+    fast-glob: "npm:^3.3.3"
+  checksum: 10/a7049550a01bd4490f14a7b5a9704f82d78988bf572f7699006faeb2c96e3754339be314296b4d64558e532bbeb7ad778af077a47830655eebc95ccb8f6c9e6c
+  languageName: node
+  linkType: hard
+
+"awilix@npm:12.0.5":
+  version: 12.0.5
+  resolution: "awilix@npm:12.0.5"
+  dependencies:
+    camel-case: "npm:^4.1.2"
+    fast-glob: "npm:^3.3.3"
+  checksum: 10/ba85c7fffb1e3a0ba100d8428a17013d35b3273842d34829e02b93b6613de6cfb421de6643ffeaeb36cd77eaebec84061edb6f6213869c50d8116607bf602bea
+  languageName: node
+  linkType: hard
+
 "axe-core@npm:~4.8.4":
   version: 4.8.4
   resolution: "axe-core@npm:4.8.4"
@@ -6789,6 +6818,8 @@ __metadata:
     "@typescript-eslint/eslint-plugin": "npm:^6.0.0"
     "@typescript-eslint/parser": "npm:^6.0.0"
     applicationinsights: "npm:3.12.1"
+    awilix: "npm:12.0.5"
+    awilix-express: "npm:9.0.2"
     axios: "npm:1.13.2"
     chai: "npm:4.5.0"
     chokidar: "npm:^4.0.3"
