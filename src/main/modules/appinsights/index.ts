@@ -15,7 +15,7 @@ export class AppInsights {
     if (appInsightsConnectionString) {
       setup(appInsightsConnectionString).setSendLiveMetrics(true).start();
 
-      defaultClient.context.tags[defaultClient.context.keys.cloudRole] = 'pip-frontend';
+      defaultClient.context.tags[defaultClient.context.keys.cloudRole] = 'fact-public-frontend';
       defaultClient.trackTrace({
         message: 'App insights activated',
       });
