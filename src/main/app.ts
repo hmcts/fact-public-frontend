@@ -1,21 +1,20 @@
 import * as path from 'path';
 
+import { Logger } from '@hmcts/nodejs-logging';
+import { loadControllers, scopePerRequest } from 'awilix-express';
 import * as bodyParser from 'body-parser';
 import config = require('config');
 import cookieParser from 'cookie-parser';
 import express from 'express';
 import RateLimit from 'express-rate-limit';
-import { glob } from 'glob';
 
 import { HTTPError } from './HttpError';
+import { setupDev } from './development';
 import { AppInsights } from './modules/appinsights';
+import { Container } from './modules/awilix';
 import { Helmet } from './modules/helmet';
 import { Nunjucks } from './modules/nunjucks';
 import { PropertiesVolume } from './modules/properties-volume';
-
-const { Logger } = require('@hmcts/nodejs-logging');
-
-const { setupDev } = require('./development');
 
 const env = process.env.NODE_ENV || 'development';
 const developmentMode = env === 'development';
@@ -35,6 +34,10 @@ new AppInsights().enable();
 new Nunjucks(developmentMode).enableFor(app);
 // secure the application by adding various HTTP headers to its responses
 new Helmet(config.get('security')).enableFor(app);
+new Container().enableFor(app);
+
+app.use(scopePerRequest(app.locals.container));
+app.use(loadControllers('controllers/**/*.+(ts|js)', { cwd: __dirname }));
 
 app.get('/favicon.ico', limiter, (req, res) => {
   res.sendFile(path.join(__dirname, '/public/assets/rebrand/images/favicon.ico'));
@@ -48,11 +51,6 @@ app.use((req, res, next) => {
   res.setHeader('Cache-Control', 'no-cache, max-age=0, must-revalidate, no-store');
   next();
 });
-
-glob
-  .sync(__dirname + '/routes/**/*.+(ts|js)')
-  .map(filename => require(filename))
-  .forEach(route => route.default(app));
 
 setupDev(app, developmentMode);
 // returning "not found" page for requests with paths not resolved by the router
