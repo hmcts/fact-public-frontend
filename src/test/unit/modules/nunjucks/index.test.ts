@@ -12,9 +12,13 @@ const setupApp = () => {
   const use = jest.fn();
 
   return {
-    app: { set, use, locals: {
-      ENV: 'development'
-      } } as unknown as express.Express,
+    app: {
+      set,
+      use,
+      locals: {
+        ENV: 'development',
+      },
+    } as unknown as express.Express,
     set,
     use,
   };
