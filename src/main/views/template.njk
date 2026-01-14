@@ -1,6 +1,5 @@
 {% extends "govuk/template.njk" %}
-{% from "govuk/components/header/macro.njk" import govukHeader %}
-
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
 
 {% block head %}
   {# TODO: GA and DT etc #}
@@ -11,6 +10,54 @@
   {{ govukHeader({
     containerClasses: "govuk-width-container",
     serviceName: "Find a Court or Tribunal"
+  }) }}
+{% endblock %}
+
+
+{% block beforeContent %}
+  {{ govukPhaseBanner({
+    tag: {
+      text: "beta"
+    },
+    html: 'This is a new service – your <a class="govuk-link" href="https://www.smartsurvey.co.uk/s/feedbackFaCT">feedback</a> will help us to improve it. <a href=\"?lng=cy\" class=\"govuk-link language-link\">Cymraeg</a>'
+  }) }}
+{% endblock %}
+
+
+{% block footer %}
+  {{ govukFooter({
+    meta: {
+      items: [
+        {
+          href: "https://www.gov.uk/help",
+          text: "Help"
+        },
+        {
+          href: "https://www.gov.uk/contact",
+          text: "Contact"
+        },
+        {
+          href: "https://www.gov.uk/government/organisations/hm-courts-and-tribunals-service/about/personal-information-charter#hmcts-privacy-policy",
+          text: "Privacy"
+        },
+        {
+          href: "/cookies",
+          text: "Cookies"
+        },
+        {
+          href: "/accessibility-statement",
+          text: "Accessibility statement"
+        },
+        {
+          href: "https://www.gov.uk/help/terms-conditions",
+          text: "Terms and conditions"
+        },
+        {
+          href: "https://www.gov.uk/cymraeg",
+          text: "Rhestr o Wasanaethau Cymraeg"
+        }
+      ]
+    }
   }) }}
 {% endblock %}
 
