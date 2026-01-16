@@ -80,7 +80,7 @@ export class Helmet {
     app.use(
       helmet.contentSecurityPolicy({
         directives: {
-          connectSrc: [self],
+          connectSrc: [self, dynatraceDomain, googleAnalyticsDomain],
           defaultSrc: ["'none'"],
           manifestSrc: [self],
           fontSrc: [self, 'data:'],
