@@ -2,6 +2,7 @@ import * as express from 'express';
 import helmet from 'helmet';
 
 const googleAnalyticsDomain = '*.google-analytics.com';
+const dynatraceDomain = '*.dynatrace.com';
 const self = "'self'";
 
 /**
@@ -15,7 +16,8 @@ export class Helmet {
 
   public enableFor(app: express.Express): void {
     // include default helmet functions
-    const scriptSrc = [self, googleAnalyticsDomain, "'sha256-+6WnXIl4mbFTCARd8N3COQmT3bJJmo32N8q8ZSQAIcU='"];
+    // TODO: remove after testing: include unsafe-inline while testing dynatrace
+    const scriptSrc = [self, googleAnalyticsDomain, dynatraceDomain, "'unsafe-inline'"];
 
     if (this.developmentMode) {
       // Uncaught EvalError: Refused to evaluate a string as JavaScript because 'unsafe-eval'
@@ -29,7 +31,7 @@ export class Helmet {
       helmet({
         contentSecurityPolicy: {
           directives: {
-            connectSrc: [self],
+            connectSrc: [self, googleAnalyticsDomain, dynatraceDomain],
             defaultSrc: ["'none'"],
             fontSrc: [self, 'data:'],
             imgSrc: [self, googleAnalyticsDomain],

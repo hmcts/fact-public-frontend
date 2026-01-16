@@ -3,11 +3,6 @@
 
 
 {% block head %}
-  {%- if environment === 'production' %}
-    {% set jstag = 'c92a70861c3f98c' %}
-  {% else %}
-    {% set jstag = 'c92a70861c3f98c' %}
-  {% endif -%}
   <!-- Google Tag Manager -->
   <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push(
       {'gtm.start': new Date().getTime(),event:'gtm.js'}
@@ -17,11 +12,17 @@
     })(window,document,'script','dataLayer','GTM-N7NMJDR');
   </script>
   <!-- Dynatrace -->
-  <script
-    type="text/javascript"
-    src="https://js-cdn.dynatrace.com/jstag/17177a07246/bf00910jpo/{{ jstag }}_complete.js"
-    crossorigin="anonymous">
+  <script type="text/javascript" src="{{ jstag }}" crossorigin="anonymous">
   </script>
+
+  {# TODO: Remove once tested as this will be picked up by the cookie policy update #}
+  <script>
+    //  testing dynatrace
+    const dtrum = window.dtrum;
+    dtrum.enable();
+    dtrum.enableSessionReplay();
+  </script>
+
   {% include "webpack/css.njk" %}
 {% endblock %}
 
