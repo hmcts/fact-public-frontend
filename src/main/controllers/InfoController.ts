@@ -8,7 +8,7 @@ import { NextFunction, Request, Response } from 'express';
 export default class InfoController {
   @GET()
   public get(req: Request, res: Response, next: NextFunction): void {
-    return infoRequestHandler({
+    infoRequestHandler({
       extraBuildInfo: {
         host: os.hostname(),
         name: 'FaCT Public Frontend',
