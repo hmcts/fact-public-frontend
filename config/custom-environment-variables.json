@@ -1,5 +1,5 @@
 {
   "dynatrace": {
-    "env": "DYNATRACE_ENV"
+    "jstagKey": "DYNATRACE_JSTAG_KEY"
   }
 }

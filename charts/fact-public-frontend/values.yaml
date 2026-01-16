@@ -9,4 +9,4 @@ nodejs:
         - name: app-insights-connection-string
           alias: APP_INSIGHTS_CONNECTION_STRING
   environment:
-    DYNATRACE_ENV: '{{ .Values.global.environment }}'
+    DYNATRACE_JSTAG_KEY: '{{ .Values.global.environment }}'
