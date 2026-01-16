@@ -1,0 +1,5 @@
+{
+  "dynatrace": {
+    "jstagKey": "DYNATRACE_JSTAG_KEY"
+  }
+}

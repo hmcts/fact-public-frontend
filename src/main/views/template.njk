@@ -1,8 +1,28 @@
 {% extends "govuk/template.njk" %}
 {% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
 
+
 {% block head %}
-  {# TODO: GA and DT etc #}
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push(
+      {'gtm.start': new Date().getTime(),event:'gtm.js'}
+    );var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-N7NMJDR');
+  </script>
+  <!-- Dynatrace -->
+  <script type="text/javascript" src="{{ jstag }}" crossorigin="anonymous">
+  </script>
+
+  {# TODO: Remove once tested as this will be picked up by the cookie policy update #}
+  <script>
+    //  testing dynatrace
+    const dtrum = window.dtrum;
+    dtrum.enable();
+    dtrum.enableSessionReplay();
+  </script>
+
   {% include "webpack/css.njk" %}
 {% endblock %}
 
