@@ -19,8 +19,9 @@
   <script>
     //  testing dynatrace
     const dtrum = window.dtrum;
+    dtrum.disable();
     dtrum.enable();
-    dtrum.enableSessionReplay();
+    dtrum.enableSessionReplay(true);
   </script>
 
   {% include "webpack/css.njk" %}
