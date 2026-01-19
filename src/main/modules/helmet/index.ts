@@ -17,7 +17,7 @@ export class Helmet {
   public enableFor(app: express.Express): void {
     // include default helmet functions
     // TODO: remove after testing: include unsafe-inline while testing dynatrace
-    const scriptSrc = [self, googleAnalyticsDomain, dynatraceDomain, "'unsafe-inline'"];
+    const scriptSrc = [self, googleAnalyticsDomain, dynatraceDomain, "'unsafe-inline'", 'blob:'];
 
     if (this.developmentMode) {
       // Uncaught EvalError: Refused to evaluate a string as JavaScript because 'unsafe-eval'
