@@ -25,7 +25,10 @@ const blockedFeatures = ['camera', 'geolocation', 'microphone', 'interest-cohort
  * not handled by helmet.
  */
 export class Helmet {
-  constructor(private readonly config: HelmetConfig, private readonly developmentMode: boolean) {}
+  constructor(
+    private readonly config: HelmetConfig,
+    private readonly developmentMode: boolean
+  ) {}
 
   public enableFor(app: express.Express): void {
     // include default helmet functions
