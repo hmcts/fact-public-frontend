@@ -6,3 +6,11 @@ src/main/public/main*.js
 src/main/views/govuk
 .yarn/
 catalog-info.yaml
+
+# Playwright reports (generated)
+playwright-report/
+playwright-odhin/
+test-results/
+
+# Agent documentation
+AGENTS.md

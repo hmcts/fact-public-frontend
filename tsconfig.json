@@ -15,5 +15,5 @@
     "lib": ["es2020", "dom", "dom.iterable"],
     "baseUrl": "src/main"
   },
-  "exclude": ["**/*.test.ts", "**/codecept.conf.ts", "**/__mocks__/*"]
+  "exclude": ["**/*.test.ts", "**/__mocks__/*", "src/test/functional/**/*"]
 }

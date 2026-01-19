@@ -33,3 +33,15 @@ version
 
 .yarn/*
 !.yarn/releases
+
+# Playwright
+src/test/functional/.sessions/
+test-results/
+playwright-report/
+playwright-odhin/
+playwright/.cache/
+
+.env
+
+# Agent Documentation
+AGENTS.md
