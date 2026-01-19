@@ -2,9 +2,7 @@ const { defineConfig, globalIgnores } = require('eslint/config');
 
 const globals = require('globals');
 const tsParser = require('@typescript-eslint/parser');
-const typescriptEslint = require('@typescript-eslint/eslint-plugin');
 const _import = require('eslint-plugin-import');
-const jest = require('eslint-plugin-jest');
 
 const { fixupPluginRules, fixupConfigRules } = require('@eslint/compat');
 
