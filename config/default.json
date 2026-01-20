@@ -12,5 +12,16 @@
     "fact-kv": {
       "APP_INSIGHTS_CONNECTION_STRING": ""
     }
+  },
+  "dynatrace": {
+    "jstagKey": "default",
+    "jstags": {
+      "default": "https://js-cdn.dynatrace.com/jstag/17177a07246/bf24054dsx/2248666ab22d024_complete.js",
+      "aat": "https://js-cdn.dynatrace.com/jstag/17177a07246/bf24054dsx/2248666ab22d024_complete.js",
+      "demo": "https://js-cdn.dynatrace.com/jstag/17177a07246/bf24054dsx/2248666ab22d024_complete.js",
+      "ithc": "https://js-cdn.dynatrace.com/jstag/17177a07246/bf24054dsx/2248666ab22d024_complete.js",
+      "perftest": "https://js-cdn.dynatrace.com/jstag/17177a07246/bf24054dsx/2248666ab22d024_complete.js",
+      "prod": "https://js-cdn.dynatrace.com/jstag/17177a07246/bf24054dsx/2248666ab22d024_complete.js"
+    }
   }
 }

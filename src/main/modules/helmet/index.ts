@@ -91,6 +91,7 @@ export class Helmet {
           objectSrc: ["'none'"],
           scriptSrc,
           styleSrc: [self],
+          workerSrc: [self, 'blob:'],
         },
       })
     );
