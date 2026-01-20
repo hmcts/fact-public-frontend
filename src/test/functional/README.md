@@ -7,6 +7,7 @@ Complete guide to running Playwright functional tests for the FACT Public Fronte
 ---
 
 ## Table of Contents
+
 1. [Quick Start](#quick-start)
 2. [Prerequisites](#prerequisites)
 3. [Installation](#installation)
@@ -52,6 +53,7 @@ Before you start, make sure you have:
 - **Terminal/Command Line**: Access to run commands
 
 **Operating Systems:**
+
 - macOS
 - Linux
 - Windows (with WSL recommended)
@@ -74,6 +76,7 @@ yarn install
 ```
 
 This installs:
+
 - Application dependencies
 - Playwright testing framework
 - All required packages
@@ -85,6 +88,7 @@ yarn playwright:install
 ```
 
 This downloads:
+
 - Chrome/Chromium
 - Firefox
 - WebKit (Safari)
@@ -101,6 +105,7 @@ The tests need the application running to test against. You have three options:
 ### Option 1: Development Mode (Recommended for Testing)
 
 **Terminal 1:**
+
 ```bash
 yarn start:dev
 ```
@@ -112,6 +117,7 @@ yarn start:dev
 ### Option 2: Production Mode
 
 **Terminal 1:**
+
 ```bash
 yarn build
 yarn start
@@ -140,11 +146,13 @@ docker-compose up
 ### Basic Commands
 
 #### Run All Tests (Headless - No Browser Visible)
+
 ```bash
 yarn test:functional
 ```
 
 **What happens:**
+
 - Runs in Chrome, Firefox, and WebKit
 - No browser window (runs in background)
 - Fastest way to run tests
@@ -155,21 +163,25 @@ yarn test:functional
 ### Browser-Specific Tests
 
 #### Chrome Only
+
 ```bash
 yarn test:functional:chrome
 ```
 
 #### Firefox Only
+
 ```bash
 yarn test:functional:firefox
 ```
 
 #### WebKit (Safari) Only
+
 ```bash
 yarn test:functional:webkit
 ```
 
 **When to use:**
+
 - Testing browser-specific behavior
 - Debugging issues in one browser
 - Faster than running all browsers
@@ -179,11 +191,13 @@ yarn test:functional:webkit
 ### Interactive Testing Modes
 
 #### UI Mode (Interactive Test Runner) - BEST FOR DEVELOPMENT
+
 ```bash
 yarn test:functional:ui
 ```
 
 **Features:**
+
 - Click to run individual tests
 - Visual test picker
 - Watch mode (auto-reruns on file changes)
@@ -195,27 +209,32 @@ yarn test:functional:ui
 This is the BEST way to develop and debug tests. Better than IDE run buttons!
 
 #### Headed Mode (See The Browser)
+
 ```bash
 yarn test:functional:headed
 ```
 
 **What you see:**
+
 - Browser window opens
 - Watch tests execute live
 - See exactly what's happening
 - Slower than headless
 
 **When to use:**
+
 - Debugging visual issues
 - Understanding test flow
 - Showing tests to others
 
 #### Debug Mode (Step Through Tests)
+
 ```bash
 yarn test:functional:debug
 ```
 
 **What happens:**
+
 - Playwright Inspector opens
 - Pause/resume execution
 - Step through each action
@@ -223,6 +242,7 @@ yarn test:functional:debug
 - View console logs
 
 **When to use:**
+
 - Test is failing mysteriously
 - Need to inspect element locators
 - Understanding complex interactions
@@ -232,6 +252,7 @@ yarn test:functional:debug
 ### Test Type Selectors
 
 #### Smoke Tests Only
+
 ```bash
 yarn test:functional:smoke
 ```
@@ -240,6 +261,7 @@ yarn test:functional:smoke
 **Use case:** Quick health check before deployment
 
 #### Accessibility Tests Only
+
 ```bash
 yarn test:functional:a11y
 ```
@@ -252,16 +274,19 @@ yarn test:functional:a11y
 ### Running Specific Tests
 
 #### Single Test File
+
 ```bash
 yarn test:functional tests/home.spec.ts
 ```
 
 #### Single Test By Name
+
 ```bash
 yarn test:functional -g "should display the home page"
 ```
 
 **Examples:**
+
 ```bash
 # Run all home page tests
 yarn test:functional tests/home.spec.ts
@@ -278,11 +303,13 @@ yarn test:functional -g "login"
 ### CI/CD Commands
 
 #### Full CI Check
+
 ```bash
 yarn cichecks
 ```
 
 **Runs everything:**
+
 1. Install dependencies
 2. Build application
 3. Lint code
@@ -292,6 +319,7 @@ yarn cichecks
 7. **Functional tests** ← Your tests here
 
 **When to use:**
+
 - Before pushing to git
 - Verify everything works
 - Same as pipeline runs
@@ -305,6 +333,7 @@ After tests run, you get multiple report types:
 ### 1. Console Output (Immediate)
 
 **See in terminal:**
+
 - Pass/fail status
 - Test duration
 - Error messages
@@ -318,6 +347,7 @@ yarn playwright:report
 **Opens:** `playwright-report/index.html` in browser
 
 **Contains:**
+
 - Test results per browser
 - Screenshots on failure
 - Test duration
@@ -328,6 +358,7 @@ yarn playwright:report
 **Location:** `playwright-odhin/index.html`
 
 **Open manually:**
+
 ```bash
 open playwright-odhin/index.html          # macOS
 xdg-open playwright-odhin/index.html      # Linux
@@ -335,6 +366,7 @@ start playwright-odhin/index.html         # Windows
 ```
 
 **Features:**
+
 - Pie charts (pass/fail rates)
 - Bar graphs (test duration)
 - Filter by browser, status, tag
@@ -346,6 +378,7 @@ start playwright-odhin/index.html         # Windows
 **Location:** `test-results/junit.xml`
 
 **Used by:**
+
 - Jenkins
 - Azure DevOps
 - GitHub Actions
@@ -358,30 +391,37 @@ start playwright-odhin/index.html         # Windows
 ### Where To Find Debug Information
 
 #### 1. Screenshots (On Failure)
+
 **Location:** `test-results/`
 
 **Contains:**
+
 - Screenshot at moment of failure
 - Shows what the page looked like
 - Helps identify visual issues
 
 #### 2. Videos (On Failure)
+
 **Location:** `test-results/`
 
 **Contains:**
+
 - Video recording of test execution
 - Shows full test flow leading to failure
 - Helps understand sequence of events
 
 #### 3. Traces (On Failure)
+
 **Location:** `test-results/`
 
 **Open with:**
+
 ```bash
 npx playwright show-trace test-results/trace.zip
 ```
 
 **Features:**
+
 - Step-by-step execution
 - DOM snapshots at each step
 - Network requests
@@ -393,6 +433,7 @@ npx playwright show-trace test-results/trace.zip
 ### Debugging Techniques
 
 #### Strategy 1: Use UI Mode (Easiest)
+
 ```bash
 yarn test:functional:ui
 ```
@@ -403,22 +444,25 @@ yarn test:functional:ui
 4. See exactly where it fails
 
 #### Strategy 2: Add Breakpoints
+
 ```typescript
 test('my test', async ({ page }) => {
   await page.goto('/');
 
-  await page.pause();  // ← Adds breakpoint
+  await page.pause(); // ← Adds breakpoint
 
   await page.click('button');
 });
 ```
 
 Run with:
+
 ```bash
 yarn test:functional:debug
 ```
 
 #### Strategy 3: Add Console Logs
+
 ```typescript
 test('my test', async ({ page, homePage }) => {
   console.log('Starting test...');
@@ -432,12 +476,14 @@ test('my test', async ({ page, homePage }) => {
 ```
 
 #### Strategy 4: Check Screenshots
+
 ```bash
 # After test fails, check test-results/ folder
 ls test-results/
 ```
 
 Look for:
+
 - `screenshot-on-failure.png`
 - `video.webm`
 - `trace.zip`
@@ -447,38 +493,47 @@ Look for:
 ### Common Failure Scenarios
 
 #### Test Timeout
+
 **Error:** "Test timeout of 180000ms exceeded"
 
 **Causes:**
+
 - Application not running
 - Element never appears
 - Network too slow
 
 **Solutions:**
+
 1. Check app is running at http://localhost:3344
 2. Increase timeout in playwright.config.ts
 3. Check element selector is correct
 
 #### Element Not Found
+
 **Error:** "Locator('h1').toBeVisible: Target closed"
 
 **Causes:**
+
 - Wrong selector
 - Element doesn't exist
 - Page didn't load
 
 **Solutions:**
+
 1. Inspect page with UI mode
 2. Verify selector in browser DevTools
 3. Add wait: `await page.waitForLoadState('networkidle')`
 
 #### Connection Refused
+
 **Error:** "net::ERR_CONNECTION_REFUSED at http://localhost:3344"
 
 **Cause:**
+
 - Application not running
 
 **Solution:**
+
 ```bash
 # Start the app first!
 yarn start:dev
@@ -495,6 +550,7 @@ yarn start:dev
 **Cause:** Playwright browsers not installed
 
 **Solution:**
+
 ```bash
 yarn playwright:install
 ```
@@ -506,6 +562,7 @@ yarn playwright:install
 **Cause:** Duplicate Playwright installations
 
 **Solution:** The cleanup script should handle this, but if it persists:
+
 ```bash
 # Remove node_modules and reinstall
 rm -rf node_modules
@@ -519,6 +576,7 @@ yarn install
 **Cause:** Application not running
 
 **Solution:**
+
 ```bash
 # Terminal 1: Start the app
 yarn start:dev
@@ -532,11 +590,13 @@ yarn test:functional
 #### Issue: Tests pass locally but fail in CI
 
 **Causes:**
+
 - Timing issues (CI is slower)
 - Browser versions differ
 - Screen resolution differences
 
 **Solutions:**
+
 1. Increase timeouts
 2. Add explicit waits: `await page.waitForSelector('h1')`
 3. Use `waitForLoadState('networkidle')`
@@ -550,12 +610,13 @@ yarn test:functional
 
 **Solution:**
 Check your test file imports from the correct location:
+
 ```typescript
 // If test is in tests/
-import { test, expect } from '../fixtures';  // Correct
+import { test, expect } from '../fixtures'; // Correct
 
 // If test is in tests/subfolder/
-import { test, expect } from '../../fixtures';  // Correct
+import { test, expect } from '../../fixtures'; // Correct
 ```
 
 ---
@@ -568,6 +629,7 @@ import { test, expect } from '../../fixtures';  // Correct
 ESLint config already exists at `src/test/functional/.eslintrc.js`
 
 If you see errors:
+
 ```bash
 yarn lint:fix
 ```
@@ -587,21 +649,25 @@ yarn lint:fix
 ## Useful Resources
 
 ### Documentation
+
 - **Playwright Official Docs:** https://playwright.dev
 - **Best Practices:** https://playwright.dev/docs/best-practices
 - **API Reference:** https://playwright.dev/docs/api/class-playwright
 - **HMCTS Playwright Common:** Check `node_modules/@hmcts/playwright-common`
 
 ### Tools
+
 - **Playwright Inspector:** Built-in debugger (`yarn test:functional:debug`)
 - **Playwright UI Mode:** Interactive test runner (`yarn test:functional:ui`)
 - **Trace Viewer:** Timeline view of test execution
 
 ### Templates
+
 - **HMCTS Template:** `/Users/dan-marius.bradea/Projects/tcoe-playwright-example`
 - **This Project:** Examples in `tests/home.spec.ts`
 
 ### Reporting
+
 - **Odhin Reporter:** Rich HTML reports with charts
 - **HTML Reporter:** Standard Playwright HTML output
 - **JUnit:** XML format for CI/CD
@@ -652,4 +718,3 @@ Fixtures:               src/test/functional/fixtures.ts
 ```
 
 ---
-
