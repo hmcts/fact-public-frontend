@@ -15,7 +15,10 @@ const logger = Logger.getLogger('nunjucks');
 
 export class Nunjucks {
   private readonly jstag: string;
-  constructor(dynatrace: DynatraceOptions, public readonly developmentMode: boolean) {
+  constructor(
+    dynatrace: DynatraceOptions,
+    public readonly developmentMode: boolean
+  ) {
     this.jstag = dynatrace?.jstags[dynatrace.jstagKey] ?? null;
     if (this.jstag === null) {
       throw new Error('Dynatrace jstag not found');
