@@ -17,6 +17,7 @@
     "test:coverage": "jest --coverage",
     "test:routes": "jest -c jest.routes.config.js",
     "test:smoke": "NODE_TLS_REJECT_UNAUTHORIZED=0 jest -c jest.smoke.config.js",
+    "test:a11y": "node ./scripts/cleanup-playwright.mjs && playwright test --grep @a11y",
     "test:functional": "node ./scripts/cleanup-playwright.mjs && playwright test src/test/functional/tests",
     "test:functional:chrome": "node ./scripts/cleanup-playwright.mjs && playwright test --project=chrome --grep-invert='(@a11y)|(@performance)|(@visual)'",
     "test:functional:firefox": "node ./scripts/cleanup-playwright.mjs && playwright test --project=firefox --grep-invert='(@a11y)|(@performance)|(@visual)'",
