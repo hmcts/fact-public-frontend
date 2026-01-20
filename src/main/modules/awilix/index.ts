@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
-
 import { Logger } from '@hmcts/nodejs-logging';
 import { InjectionMode, asValue, createContainer } from 'awilix';
 import { Application } from 'express';
