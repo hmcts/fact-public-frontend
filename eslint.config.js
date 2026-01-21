@@ -138,6 +138,5 @@ module.exports = defineConfig([
     '**/*.mjs',
     '**/.pnp.*',
     '.yarn/*',
-    'scripts/*',
   ]),
 ]);
