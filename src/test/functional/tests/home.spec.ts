@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 
 import { getAccessibilityViolations } from '../utils/accessibility';
 
-test.describe('Homepage @smoke', () => {
+test.describe('Homepage', () => {
   test('should load and display correct content', async ({ page }) => {
     await page.goto('/');
 
