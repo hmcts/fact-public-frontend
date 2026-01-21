@@ -1,5 +1,13 @@
 import { defineConfig, devices } from '@playwright/test';
 
+// Validate TEST_URL in CI environments
+if (process.env.CI && !process.env.TEST_URL) {
+  throw new Error(
+    'TEST_URL environment variable is required in CI. ' +
+      'Tests should only run after deployment when TEST_URL is set to the deployed environment URL.'
+  );
+}
+
 export default defineConfig({
   testDir: './src/test/functional',
   fullyParallel: true,
