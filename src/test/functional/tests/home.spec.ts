@@ -1,7 +1,8 @@
-import { AxeBuilder } from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 
-test.describe('Homepage', () => {
+import { getAccessibilityViolations } from '../utils/accessibility';
+
+test.describe('Homepage @smoke', () => {
   test('should load and display correct content', async ({ page }) => {
     await page.goto('/');
 
@@ -13,12 +14,8 @@ test.describe('Homepage', () => {
   test('should be accessible @a11y', async ({ page }) => {
     await page.goto('/');
 
-    const accessibilityScanResults = await new AxeBuilder({ page })
-      .exclude('.govuk-footer__licence-logo')
-      .exclude('.govuk-footer__crown')
-      .exclude('.govuk-phase-banner')
-      .analyze();
+    const violations = await getAccessibilityViolations(page);
 
-    expect(accessibilityScanResults.violations).toEqual([]);
+    expect(violations).toEqual([]);
   });
 });
