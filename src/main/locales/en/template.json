@@ -1,0 +1,55 @@
+{
+  "serviceName": "Find a Court or Tribunal",
+  "feedback": "This is a new service – your <a class=\"govuk-link\" href=\"https://www.smartsurvey.co.uk/s/feedbackFaCT\">feedback</a> will help us to improve it. ",
+  "languageToggle": "<a href=\"?lng=cy\" class=\"govuk-link fact-language\">Cymraeg</a>",
+  "backLink": "Back",
+  "help":"Help",
+  "contact": "Contact",
+  "privacy": "Privacy",
+  "cookies": "Cookies",
+  "accessibility": "Accessibility statement",
+  "termsAndConditions": "Terms and conditions",
+  "usingServicesInWelsh": "Rhestr o Wasanaethau Cymraeg",
+  "cookieBannerH1": "Cookies on Find a Court or Tribunal",
+  "cookieBannerP1": "We use some essential cookies to make this service work.",
+  "cookieBannerP2": "We’d like to set additional cookies so we can remember your settings, understand how people use the service and to improve government services.",
+  "cookieBannerAcceptButton": "Accept additional cookies",
+  "cookieBannerRejectButton": "Reject additional cookies",
+  "cookieBannerHideButton": "Hide this message",
+  "cookieBannerViewCookies": "View cookies",
+  "cookieBannerAnchor": "Set cookie preferences",
+  "footerLinks": [
+    {
+      "text": "Help",
+      "href": "https://www.gov.uk/help"
+    },
+    {
+      "text": "Privacy",
+      "href": "https://www.gov.uk/help/privacy-notice"
+    },
+    {
+      "text": "Cookies",
+      "href": "/cookie-policy"
+    },
+    {
+      "text": "Accessibility statement",
+      "href": "/accessibility-statement"
+    },
+    {
+      "text": "Contact",
+      "href": "https://www.gov.uk/contact"
+    },
+    {
+      "text": "Terms and conditions",
+      "href": "https://www.gov.uk/help/terms-conditions"
+    },
+    {
+      "text": "Welsh",
+      "href": "https://www.gov.uk/cymraeg"
+    },
+    {
+      "text": "Government Digital Service",
+      "href": "https://www.gov.uk/government/organisations/government-digital-service"
+    }
+  ]
+}

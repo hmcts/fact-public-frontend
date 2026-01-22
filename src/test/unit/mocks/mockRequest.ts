@@ -1,9 +1,8 @@
-import { Request } from 'express';
+import { FactRequest } from '../../../main/interfaces/FactRequest';
 import { stub } from 'sinon';
-import type { SinonStub } from 'sinon';
 
-export const mockRequest = (data: unknown): Request => {
-  const req: Partial<Request> & { i18n?: { getDataByLanguage: SinonStub }; lng?: string } = {
+export const mockRequest = (data: unknown): FactRequest => {
+  const req: any = {
     body: '',
     i18n: {
       getDataByLanguage: stub().returns(data),
@@ -12,5 +11,5 @@ export const mockRequest = (data: unknown): Request => {
     params: {},
   };
 
-  return req as Request;
+  return req as FactRequest;
 };

@@ -1,3 +1,4 @@
+/* eslint-disable  @typescript-eslint/no-explicit-any */
 import * as path from 'path';
 
 import { Logger } from '@hmcts/nodejs-logging';
@@ -13,6 +14,7 @@ import { setupDev } from './development';
 import { AppInsights } from './modules/appinsights';
 import { Container } from './modules/awilix';
 import { Helmet } from './modules/helmet';
+import { I18next } from './modules/i18next';
 import { Nunjucks } from './modules/nunjucks';
 import { PropertiesVolume } from './modules/properties-volume';
 
@@ -31,6 +33,7 @@ const logger = Logger.getLogger('app');
 
 new PropertiesVolume().enableFor(app);
 new AppInsights().enable();
+new I18next().enableFor(app);
 new Nunjucks(developmentMode).enableFor(app);
 // secure the application by adding various HTTP headers to its responses
 new Helmet(config.get('security'), developmentMode).enableFor(app);
@@ -46,6 +49,7 @@ app.get('/favicon.ico', limiter, (req, res) => {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+
 app.use(express.static(path.join(__dirname, 'public')));
 app.use((req, res, next) => {
   res.setHeader('Cache-Control', 'no-cache, max-age=0, must-revalidate, no-store');
@@ -53,19 +57,21 @@ app.use((req, res, next) => {
 });
 
 setupDev(app, developmentMode);
-// returning "not found" page for requests with paths not resolved by the router
-app.use((req, res) => {
+// returning "not found" for requests with paths not resolved by the router
+app.use((req: any, res: any) => {
   res.status(404);
-  res.render('not-found');
+  const data = req.i18n?.getDataByLanguage(req.lng ?? 'en')?.notFound;
+  res.render('not-found', data ?? {});
 });
 
 // error handler
-app.use((err: HTTPError, req: express.Request, res: express.Response, _next: express.NextFunction) => {
+app.use((err: HTTPError, req: any, res: express.Response, _next: express.NextFunction) => {
   logger.error(`${err.stack || err}`);
 
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = env === 'development' ? err : {};
   res.status(err.status || 500);
-  res.render('error');
+  const data = req.i18n.getDataByLanguage(req.lng ?? 'en')?.error;
+  res.render('error', data);
 });
