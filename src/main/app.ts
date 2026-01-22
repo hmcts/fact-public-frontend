@@ -34,7 +34,7 @@ const logger = Logger.getLogger('app');
 new PropertiesVolume().enableFor(app);
 new AppInsights().enable();
 new I18next().enableFor(app);
-new Nunjucks(developmentMode).enableFor(app);
+new Nunjucks(config.get('dynatrace'), developmentMode).enableFor(app);
 // secure the application by adding various HTTP headers to its responses
 new Helmet(config.get('security'), developmentMode).enableFor(app);
 new Container().enableFor(app);
