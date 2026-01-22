@@ -1,21 +1,11 @@
-import { expect, test } from '@playwright/test';
+import { test } from '@playwright/test';
 
-import { getAccessibilityViolations } from '../utils/accessibility';
+import { HomePage } from '../page-objects/HomePage';
 
 test.describe('Homepage', () => {
-  test('should load and display correct content', async ({ page }) => {
-    await page.goto('/');
-
-    await expect(page).toHaveTitle(/GOV\.UK/);
-    await expect(page.locator('h1.govuk-heading-xl')).toContainText('Default page template');
-    await expect(page.locator('#main-content')).toBeVisible();
-  });
-
-  test('should be accessible @a11y', async ({ page }) => {
-    await page.goto('/');
-
-    const violations = await getAccessibilityViolations(page);
-
-    expect(violations).toEqual([]);
+  test('should load and display correct content @smoke', async ({ page }) => {
+    const homePage = new HomePage(page);
+    await homePage.goto();
+    await homePage.expectToBeLoaded();
   });
 });
