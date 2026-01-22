@@ -61,8 +61,7 @@ setupDev(app, developmentMode);
 app.use((req: express.Request, res: express.Response) => {
   const factReq = req as FactRequest;
   res.status(404);
-  const data = factReq.i18n?.getDataByLanguage(factReq.lng)?.notFound;
-  res.render('not-found', data ?? {});
+  res.render('not-found', factReq.i18n?.getDataByLanguage(factReq.lng)?.notFound ?? {});
 });
 
 // error handler
@@ -74,6 +73,5 @@ app.use((err: HTTPError, req: express.Request, res: express.Response, _next: exp
   res.locals.message = err.message;
   res.locals.error = env === 'development' ? err : {};
   res.status(err.status || 500);
-  const data = factReq.i18n.getDataByLanguage(factReq.lng)?.error;
-  res.render('error', data);
+  res.render('error', factReq.i18n.getDataByLanguage(factReq.lng)?.error);
 });
