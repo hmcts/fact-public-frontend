@@ -23,7 +23,7 @@
     "test:functional:chrome": "playwright test src/test/functional --project=chromium",
     "test:functional:firefox": "playwright test src/test/functional --project=firefox",
     "test:functional:webkit": "playwright test src/test/functional --project=webkit",
-    "playwright:a11y": "playwright test src/test/a11y",
+    "test:a11y": "if [ -n \"$TEST_URL\" ]; then playwright test src/test/a11y; else echo 'Skipping a11y tests - TEST_URL not set (will run after deployment)' && exit 0; fi",
     "test:functional:headed": "playwright test --headed",
     "test:functional:ui": "playwright test --ui",
     "test:functional:debug": "playwright test --debug"
