@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 
-import { HomePage } from '../page-objects/HomePage';
-import { getAccessibilityViolations } from '../utils/accessibility';
+import { HomePage } from '../functional/page-objects/HomePage';
+import { getAccessibilityViolations } from '../functional/utils/accessibility';
 
 test.describe('Homepage Accessibility', () => {
   test('should be accessible @a11y', async ({ page }) => {
