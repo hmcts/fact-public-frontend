@@ -4,14 +4,14 @@ export default defineConfig({
   testDir: './src/test',
   testIgnore: ['**/unit/**', '**/routes/**', '**/smoke/**'], // Ignore Jest tests
   fullyParallel: true,
-  forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 3 : undefined,
+  forbidOnly: true,
+  retries: 2,
+  workers: 3,
 
   reporter: [['list'], ['html', { outputFolder: 'playwright-report', open: 'never' }]],
 
   use: {
-    baseURL: process.env.TEST_URL || 'http://localhost:3344',
+    baseURL: process.env.TEST_URL || 'https://localhost:3344',
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
     ignoreHTTPSErrors: true,

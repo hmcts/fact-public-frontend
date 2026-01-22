@@ -9,8 +9,6 @@ def component = "public-frontend"
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 
 withPipeline(type, product, component) {
-  env.CI = 'true'
-
   afterSuccess('build') {
     yarnBuilder.yarn('playwright install')
     yarnBuilder.yarn('build')
