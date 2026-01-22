@@ -23,7 +23,7 @@
     "test:functional:chrome": "playwright test src/test/functional --project=chromium",
     "test:functional:firefox": "playwright test src/test/functional --project=firefox",
     "test:functional:webkit": "playwright test src/test/functional --project=webkit",
-    "test:a11y": "playwright test src/test/a11y",
+    "playwright:a11y": "playwright test src/test/a11y",
     "test:functional:headed": "playwright test --headed",
     "test:functional:ui": "playwright test --ui",
     "test:functional:debug": "playwright test --debug"

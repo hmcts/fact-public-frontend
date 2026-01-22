@@ -26,13 +26,13 @@ withPipeline(type, product, component) {
 
   afterSuccess('functionalTest:preview') {
     stage('Accessibility Tests - Preview') {
-      yarnBuilder.yarn('test:a11y')
+      yarnBuilder.yarn('playwright:a11y')
     }
   }
 
   afterSuccess('functionalTest:aat') {
     stage('Accessibility Tests - AAT') {
-      yarnBuilder.yarn('test:a11y')
+      yarnBuilder.yarn('playwright:a11y')
     }
   }
 }
