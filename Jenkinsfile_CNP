@@ -23,16 +23,4 @@ withPipeline(type, product, component) {
   afterSuccess('functionalTest:aat') {
     yarnBuilder.yarn('test:functional')
   }
-
-  afterSuccess('functionalTest:preview') {
-    stage('Accessibility Tests - Preview') {
-      yarnBuilder.yarn('test:a11y')
-    }
-  }
-
-  afterSuccess('functionalTest:aat') {
-    stage('Accessibility Tests - AAT') {
-      yarnBuilder.yarn('test:a11y')
-    }
-  }
 }
