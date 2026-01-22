@@ -1,4 +1,3 @@
-/* eslint-disable  @typescript-eslint/no-explicit-any */
 import * as path from 'path';
 
 import { Logger } from '@hmcts/nodejs-logging';
@@ -11,6 +10,7 @@ import RateLimit from 'express-rate-limit';
 
 import { HTTPError } from './HttpError';
 import { setupDev } from './development';
+import { FactRequest } from './interfaces/FactRequest';
 import { AppInsights } from './modules/appinsights';
 import { Container } from './modules/awilix';
 import { Helmet } from './modules/helmet';
@@ -58,20 +58,22 @@ app.use((req, res, next) => {
 
 setupDev(app, developmentMode);
 // returning "not found" for requests with paths not resolved by the router
-app.use((req: any, res: any) => {
+app.use((req: express.Request, res: express.Response) => {
+  const factReq = req as FactRequest;
   res.status(404);
-  const data = req.i18n?.getDataByLanguage(req.lng ?? 'en')?.notFound;
+  const data = factReq.i18n?.getDataByLanguage(factReq.lng)?.notFound;
   res.render('not-found', data ?? {});
 });
 
 // error handler
-app.use((err: HTTPError, req: any, res: express.Response, _next: express.NextFunction) => {
+app.use((err: HTTPError, req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  const factReq = req as FactRequest;
   logger.error(`${err.stack || err}`);
 
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = env === 'development' ? err : {};
   res.status(err.status || 500);
-  const data = req.i18n.getDataByLanguage(req.lng ?? 'en')?.error;
+  const data = factReq.i18n.getDataByLanguage(factReq.lng)?.error;
   res.render('error', data);
 });

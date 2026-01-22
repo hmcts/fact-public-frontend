@@ -1,15 +1,18 @@
-import { FactRequest } from '../../../main/interfaces/FactRequest';
 import { stub } from 'sinon';
 
+import { FactRequest } from '../../../main/interfaces/FactRequest';
+
 export const mockRequest = (data: unknown): FactRequest => {
-  const req: any = {
-    body: '',
+  const req: Partial<FactRequest> = {
+    body: {},
     i18n: {
       getDataByLanguage: stub().returns(data),
-    },
+    } as unknown as FactRequest['i18n'],
     lng: 'en',
     params: {},
+    query: {},
+    cookies: {},
   };
 
-  return req as FactRequest;
+  return req as unknown as FactRequest;
 };

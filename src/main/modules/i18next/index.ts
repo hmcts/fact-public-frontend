@@ -3,6 +3,8 @@ import i18next, { Resource, use } from 'i18next';
 import { LanguageDetector, handle } from 'i18next-http-middleware';
 import requireDir from 'require-directory';
 
+import { FactRequest } from '../../interfaces/FactRequest';
+
 const resources = requireDir(module, '../../', {
   include: /locales/,
 }).locales as Resource;
@@ -20,16 +22,14 @@ export class I18next {
       },
     };
 
-    use(LanguageDetector)
-      .init(options);
+    use(LanguageDetector).init(options);
   }
 
   public enableFor(app: express.Express): void {
     app.use(handle(i18next));
-    /* eslint-disable  @typescript-eslint/no-explicit-any */
-    app.use((req: any, res: Response, next: NextFunction) => {
+    app.use(((req: FactRequest, res: Response, next: NextFunction) => {
       Object.assign(res.locals, req.i18n.getDataByLanguage(req.lng)?.template);
       next();
-    });
+    }) as express.RequestHandler);
   }
 }
