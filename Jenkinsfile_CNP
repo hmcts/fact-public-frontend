@@ -13,4 +13,12 @@ withPipeline(type, product, component) {
     yarnBuilder.yarn('playwright install')
     yarnBuilder.yarn('build')
   }
+
+  afterSuccess('functionalTest:preview') {
+    yarnBuilder.yarn('test:functional')
+  }
+
+  afterSuccess('functionalTest:aat') {
+    yarnBuilder.yarn('test:functional')
+  }
 }
