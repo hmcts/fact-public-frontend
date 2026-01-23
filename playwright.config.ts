@@ -1,7 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
-  testDir: './src/test',
+  testDir: './src/test/functional',
   testIgnore: ['**/unit/**', '**/routes/**', '**/smoke/**'], // Ignore Jest tests
   fullyParallel: true,
   forbidOnly: true,
