@@ -17,8 +17,8 @@ export class I18next {
       fallbackLng: 'en',
       supportedLngs: ['en', 'cy'],
       detection: {
-        order: ['querystring', 'cookie'],
-        caches: ['cookie'],
+        order: ['querystring', 'session', 'cookie'],
+        caches: ['session', 'cookie'],
       },
     };
 
@@ -29,6 +29,7 @@ export class I18next {
     app.use(handle(i18next));
     app.use(((req: FactRequest, res: Response, next: NextFunction) => {
       Object.assign(res.locals, req.i18n.getDataByLanguage(req.lng)?.template);
+      res.locals.htmlLang = req.lng;
       next();
     }) as express.RequestHandler);
   }
