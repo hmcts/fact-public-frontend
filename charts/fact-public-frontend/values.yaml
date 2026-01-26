@@ -16,3 +16,4 @@ nodejs:
           alias: SESSION_SECRET
   environment:
     DYNATRACE_JSTAG_KEY: '{{ .Values.global.environment }}'
+    SESSION_COOKIE_SAME_SITE: 'lax'
