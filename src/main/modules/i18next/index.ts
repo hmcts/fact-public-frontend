@@ -28,7 +28,7 @@ export class I18next {
   public enableFor(app: express.Express): void {
     app.use(handle(i18next));
     app.use(((req: FactRequest, res: Response, next: NextFunction) => {
-      Object.assign(res.locals, req.i18n.getDataByLanguage(req.lng)?.template);
+      Object.assign(res.locals, req.i18n?.getDataByLanguage(req.lng)?.template);
       res.locals.htmlLang = req.lng;
       next();
     }) as express.RequestHandler);

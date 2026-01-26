@@ -7,7 +7,7 @@ import { FactRequest } from '../interfaces/FactRequest';
 export default class HomeController {
   @GET()
   public get(req: FactRequest, res: Response): void {
-    const data = req.i18n.getDataByLanguage(req.lng)?.home;
+    const data = req.i18n?.getDataByLanguage(req.lng)?.home;
     res.render('home', data);
   }
 }

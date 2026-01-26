@@ -10,7 +10,8 @@
   },
   "secrets": {
     "fact-kv": {
-      "APP_INSIGHTS_CONNECTION_STRING": ""
+      "APP_INSIGHTS_CONNECTION_STRING": "",
+      "SESSION_SECRET": "local-session-secret"
     }
   },
   "dynatrace": {

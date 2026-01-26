@@ -7,6 +7,7 @@ import config = require('config');
 import cookieParser from 'cookie-parser';
 import express from 'express';
 import RateLimit from 'express-rate-limit';
+import session from 'express-session';
 
 import { HTTPError } from './HttpError';
 import { setupDev } from './development';
@@ -33,14 +34,10 @@ const logger = Logger.getLogger('app');
 
 new PropertiesVolume().enableFor(app);
 new AppInsights().enable();
-new I18next().enableFor(app);
 new Nunjucks(config.get('dynatrace'), developmentMode).enableFor(app);
 // secure the application by adding various HTTP headers to its responses
 new Helmet(config.get('security'), developmentMode).enableFor(app);
 new Container().enableFor(app);
-
-app.use(scopePerRequest(app.locals.container));
-app.use(loadControllers('controllers/**/*.+(ts|js)', { cwd: __dirname }));
 
 app.get('/favicon.ico', limiter, (req, res) => {
   res.sendFile(path.join(__dirname, '/public/assets/rebrand/images/favicon.ico'));
@@ -48,7 +45,23 @@ app.get('/favicon.ico', limiter, (req, res) => {
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
+
+const sessionSecret = process.env.SESSION_SECRET || config.get('secrets.fact-kv.SESSION_SECRET');
+app.set('trust proxy', 1);
+app.use(
+  session({
+    secret: sessionSecret as string,
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: true, sameSite: (process.env.SESSION_COOKIE_SAME_SITE as 'strict' | 'lax' | 'none') || 'lax' },
+  })
+);
+
+app.use(cookieParser(sessionSecret as string));
+new I18next().enableFor(app);
+
+app.use(scopePerRequest(app.locals.container));
+app.use(loadControllers('controllers/**/*.+(ts|js)', { cwd: __dirname }));
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use((req, res, next) => {
@@ -74,6 +87,6 @@ app.use((err: HTTPError, req: express.Request, res: express.Response, _next: exp
   res.locals.message = err.message;
   res.locals.error = env === 'development' ? err : {};
   res.status(err.status || 500);
-  const data = factReq.i18n.getDataByLanguage(factReq.lng)?.error;
+  const data = factReq.i18n?.getDataByLanguage(factReq.lng)?.error;
   res.render('error', data);
 });
