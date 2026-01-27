@@ -3,6 +3,8 @@ import { fail } from 'assert';
 import axios, { AxiosResponse } from 'axios';
 import { expect } from 'chai';
 
+import home from '../../main/locales/en/home.json';
+
 const testUrl = process.env.TEST_URL || 'https://localhost:3344';
 
 describe('Smoke Test', () => {
@@ -14,7 +16,8 @@ describe('Smoke Test', () => {
             'Accept-Encoding': 'gzip',
           },
         });
-        expect(response.data).includes('<h1 class="govuk-heading-xl">Default page template</h1>');
+        expect(response.data).includes('<h1 class="govuk-heading-xl">');
+        expect(response.data).includes(home.pageTitle);
       } catch {
         fail('Heading not present and/or correct');
       }
