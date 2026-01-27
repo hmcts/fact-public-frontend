@@ -11,10 +11,11 @@ describe('HomeController', () => {
     const response = {
       render: () => '',
     } as unknown as Response;
-    const request = mockRequest({});
+    const data = { pageTitle: 'Default page template' };
+    const request = mockRequest({ home: data });
     const responseMock = mock(response);
 
-    responseMock.expects('render').once().withArgs('home');
+    responseMock.expects('render').once().withArgs('home', data);
     controller.get(request, response);
     responseMock.verify();
   });
