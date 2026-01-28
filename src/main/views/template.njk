@@ -15,15 +15,6 @@
   <script {%- if cspNonce %} nonce="{{ cspNonce }}"{% endif %} type="text/javascript" src="{{ jstag }}" crossorigin="anonymous">
   </script>
 
-  {# TODO: Remove once tested as this will be picked up by the cookie policy update #}
-  <script {%- if cspNonce %} nonce="{{ cspNonce }}"{% endif %}>
-    //  testing dynatrace
-    const dtrum = window.dtrum;
-    dtrum.disable();
-    dtrum.enable();
-    dtrum.enableSessionReplay(true);
-  </script>
-
   {% include "webpack/css.njk" %}
 {% endblock %}
 
