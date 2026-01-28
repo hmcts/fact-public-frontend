@@ -135,6 +135,7 @@ module.exports = defineConfig([
     'src/test/*/codecept.conf.js',
     'src/test/config.ts',
     '**/*.js',
+    '**/*.mjs',
     '**/.pnp.*',
     '.yarn/*',
   ]),
