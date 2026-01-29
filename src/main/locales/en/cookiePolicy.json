@@ -7,11 +7,10 @@
   "subHeading1": "To measure website usage",
   "subHeading2": "To turn our introductory message off",
   "subHeading3": "To store the answers you’ve given during your visit (known as a ‘session’)",
-  "subHeading4": "To identify you when you come back to the service",
-  "subHeading5": "To make the service more secure",
-  "subHeading6": "To measure application performance",
-  "subHeading7": "Allow cookies that measure website use?",
-  "subHeading8": "Allow cookies that measure website application performance monitoring?",
+  "subHeading4": "To store your cookie preferences",
+  "subHeading5": "To measure application performance",
+  "subHeading6": "Allow cookies that measure website use?",
+  "subHeading7": "Allow cookies that measure website application performance monitoring?",
   "cookiesExplanation1": "A cookie is a small piece of data that’s stored on your computer, tablet, or phone when you visit a website. Most websites need cookies to work properly.",
   "cookiesExplanation2": "This service uses them to:",
   "bulletList1": [
@@ -44,7 +43,7 @@
     "text": " opt out of Google Analytics "
   },
   "cookiesExplanation8": "if you do not want Google to have access to your information.",
-  "cookiesExplanation9": "List of google analytics cookies used.",
+  "cookiesExplanation9": "List of google analytics cookies used:",
   "tableData1": [
     {
       "name": "_ga",
@@ -78,31 +77,18 @@
       "expires": "When you close your browser"
     }
   ],
-  "cookiesExplanation12": "We use authentication cookies to identify you when you return to the service.",
+  "cookiesExplanation12": "",
   "tableData4": [
     {
-      "name": "__auth-token",
-      "purpose": "Identifies you to the service",
-      "expires": "When you close your browser"
+      "name": "fact-cookie-preferences",
+      "purpose": "Your cookie preferences",
+      "expires": "1 year"
     }
   ],
-  "cookiesExplanation13": "We set cookies which prevent attackers from modifying the contents of the other cookies we set. This makes the service more secure and protects your personal information.",
-  "tableData5": [
-    {
-      "name": "TSxxxxxxxx",
-      "purpose": "Protects your session from tampering",
-      "expires": "When you close your browser"
-    },
-    {
-      "name": "__state",
-      "purpose": "Identifies you to the service and secures your authentication",
-      "expires": "When you close your browser"
-    }
-  ],
-  "cookiesExplanation14": "We use Dynatrace Software Intelligence Platform to provide an Application Performance Monitoring Service to collect information about how you use HMCTS services. We do this to monitor HMCTS services in order to resolve issues within our services as well as collect data on how our services can be improved. HMCTS store information about:",
+  "cookiesExplanation13": "We use Dynatrace Software Intelligence Platform to provide an Application Performance Monitoring Service to collect information about how you use HMCTS services. We do this to monitor HMCTS services in order to resolve issues within our services as well as collect data on how our services can be improved. HMCTS store information about:",
   "bulletList3": ["Site performance", "Website usage", "User behaviour"],
-  "cookiesExplanation15": "Information is presented within the Application Performance Monitoring service for the purposes detailed above. We do not use or share the information for any other purpose. We do not allow Dynatrace to use or share the information for any other purposes.",
-  "tableData6": [
+  "cookiesExplanation14": "Information is presented within the Application Performance Monitoring service for the purposes detailed above. We do not use or share the information for any other purpose. We do not allow Dynatrace to use or share the information for any other purposes.",
+  "tableData5": [
     {
       "name": "dtCookie",
       "purpose": "Tracks a visit across multiple request",
@@ -144,7 +130,5 @@
       "text": "Do not cookies that measure website application performance monitoring"
     }
   ],
-  "saveText": "Save",
-  "summaryText": "Contact us for help",
-  "html": "<strong>Telephone</strong> <br> 0300 303 0656 <br> Monday to Friday 8am to 5pm"
+  "saveText": "Save"
 }

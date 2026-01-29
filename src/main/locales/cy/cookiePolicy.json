@@ -7,11 +7,10 @@
   "subHeading1": "I fesur faint o bobl sy’n defnyddio ein gwefan",
   "subHeading2": "Troi ein neges gyflwyno i ffwrdd",
   "subHeading3": "Storio’r atebion a roesoch yn ystod eich ymweliad (gelwir hyn yn ‘sesiwn’)",
-  "subHeading4": "Eich adnabod pan fyddwch yn dod yn ôl at y gwasanaeth",
-  "subHeading5": "Gwneud y gwasanaeth yn fwy diogel",
-  "subHeading6": "Mesur perfformiad y gwasanaeth",
-  "subHeading7": "Caniatáu cwcis sy’n mesur defnydd o'r wefan?",
-  "subHeading8": "Caniatáu cwcis sy'n mesur y broses o fonitro perfformiad gwefannau?",
+  "subHeading4": "Storio eich dewisiadau cwcis",
+  "subHeading5": "Mesur perfformiad y gwasanaeth",
+  "subHeading6": "Caniatáu cwcis sy’n mesur defnydd o'r wefan?",
+  "subHeading7": "Caniatáu cwcis sy'n mesur y broses o fonitro perfformiad gwefannau?",
   "cookiesExplanation1": "Darn bach o ddata sy'n cael ei storio ar eich cyfrifiadur, eich tabled neu eich ffôn symudol pan fyddwch yn ymweld â gwefan yw cwci. Mae angen cwcis ar y rhan fwyaf o wefannau i weithio'n iawn.",
   "cookiesExplanation2": "Mae’r gwasanaeth hwn yn eu defnyddio i:",
   "bulletList1": [
@@ -44,7 +43,7 @@
     "text": " optio allan o Google Analytics "
   },
   "cookiesExplanation8": "os nad ydych eisiau i Google gael mynediad at eich gwybodaeth.",
-  "cookiesExplanation9": "Rhestr o’r cwcis Google Analytics a ddefnyddir.",
+  "cookiesExplanation9": "Rhestr o’r cwcis Google Analytics a ddefnyddir:",
   "tableData1": [
     {
       "name": "_ga",
@@ -78,31 +77,18 @@
       "expires": "Pan fyddwch yn cau eich porwr"
     }
   ],
-  "cookiesExplanation12": "Rydym yn defnyddio cwcis dilysu i’ch adnabod pan fyddwch yn dod yn ôl i’r gwasanaeth.",
+  "cookiesExplanation12": "",
   "tableData4": [
     {
-      "name": "__auth-token",
-      "purpose": "Gadael i'r gwasanaeth wybod pwy ydych chi",
-      "expires": "Pan fyddwch yn cau eich porwr"
+      "name": "fact-cookie-preferences",
+      "purpose": "Eich dewisiadau cwcis",
+      "expires": "1 flwyddyn"
     }
   ],
-  "cookiesExplanation13": "Rydym yn gosod cwcis ar eich dyfais i rwystro hacwyr rhag addasu cynnwys y cwcis eraill rydym yn eu gosod. Mae hyn yn gwneud y gwasanaeth yn fwy diogel ac yn diogelu eich gwybodaeth bersonol.",
-  "tableData5": [
-    {
-      "name": "TSxxxxxxxx",
-      "purpose": "Amddiffyn eich sesiwn rhag ymyrraeth",
-      "expires": "Pan fyddwch yn cau eich porwr"
-    },
-    {
-      "name": "__state",
-      "purpose": "Gadael i'r gwasanaeth wybod pwy ydych chi a diogelu eich manylion",
-      "expires": "Pan fyddwch yn cau eich porwr"
-    }
-  ],
-  "cookiesExplanation14": "Rydym yn defnyddio Platfform Deallusrwydd Meddalwedd Dynatrace i ddarparu Gwasanaeth Monitro Perfformiad i gasglu gwybodaeth am sut yr ydych yn defnyddio gwasanaethau GLlTEF. Rydym yn gwneud hyn i fonitro gwasanaethau GLlTEF er mwyn datrys problemau yn ein gwasanaethau a chasglu data ar sut y gallwn eu gwella. Mae GLlTEF yn storio gwybodaeth am:",
+  "cookiesExplanation13": "Rydym yn defnyddio Platfform Deallusrwydd Meddalwedd Dynatrace i ddarparu Gwasanaeth Monitro Perfformiad i gasglu gwybodaeth am sut yr ydych yn defnyddio gwasanaethau GLlTEF. Rydym yn gwneud hyn i fonitro gwasanaethau GLlTEF er mwyn datrys problemau yn ein gwasanaethau a chasglu data ar sut y gallwn eu gwella. Mae GLlTEF yn storio gwybodaeth am:",
   "bulletList3": ["Perfformiad y wefan", "Y defnydd a wneir o'r wefan", "Ymddygiad defnyddwyr"],
-  "cookiesExplanation15": "Cyflwynir yr wybodaeth angenrheidiol yn y Gwasanaeth Monitro Perfformiad at y dibenion a nodwyd uchod. Nid ydym yn defnyddio neu’n rhannu'r wybodaeth ar gyfer unrhyw bwrpas arall. Nid ydym yn caniatáu i Dynatrace ddefnyddio neu rannu'r wybodaeth ar gyfer unrhyw bwrpas arall.",
-  "tableData6": [
+  "cookiesExplanation14": "Cyflwynir yr wybodaeth angenrheidiol yn y Gwasanaeth Monitro Perfformiad at y dibenion a nodwyd uchod. Nid ydym yn defnyddio neu’n rhannu'r wybodaeth ar gyfer unrhyw bwrpas arall. Nid ydym yn caniatáu i Dynatrace ddefnyddio neu rannu'r wybodaeth ar gyfer unrhyw bwrpas arall.",
+  "tableData5": [
     {
       "name": "dtCookie",
       "purpose": "Olrhain ymweliad ar draws ceisiadau amryfal",
@@ -154,7 +140,5 @@
       "text": "Peidio â defnyddio cwcis sy’n mesur y broses o fonitro perfformiad gwefannau"
     }
   ],
-  "saveText": "Cadw",
-  "summaryText": "Cysylltwch â ni am help",
-  "html": "<strong>Ffon</strong> <br> 0300 303 0656 <br> Dydd Llun i ddydd Gwener 8am i 5pm"
+  "saveText": "Cadw"
 }

@@ -171,48 +171,15 @@
 
     <h3 class="govuk-heading-s">{{ subHeading5 }}</h3>
     <p class="govuk-body">{{ cookiesExplanation13 }}</p>
-
-    {% set tableRows = [] %}
-    {% for row in tableData5 %}
-      {% set _ = tableRows.push([
-        {
-          text: row.name
-        },
-        {
-          text: row.purpose
-        },
-        {
-          text: row.expires
-        }
-      ]) %}
-    {% endfor %}
-
-    {{ govukTable({
-      head: [
-        {
-          text: tableHeaders[0]
-        },
-        {
-          text: tableHeaders[1]
-        },
-        {
-          text: tableHeaders[2]
-        }
-      ],
-      rows: tableRows
-    }) }}
-
-    <h3 class="govuk-heading-s">{{ subHeading6 }}</h3>
-    <p class="govuk-body">{{ cookiesExplanation14 }}</p>
     <ul class="govuk-list govuk-list--bullet">
       {% for item in bulletList3 %}
         <li>{{ item }}</li>
       {% endfor %}
     </ul>
-    <p class="govuk-body">{{ cookiesExplanation15 }}</p>
+    <p class="govuk-body">{{ cookiesExplanation14 }}</p>
 
     {% set tableRows = [] %}
-    {% for row in tableData6 %}
+    {% for row in tableData5 %}
       {% set _ = tableRows.push([
         {
           text: row.name
@@ -249,7 +216,7 @@
       name: "analytics",
       fieldset: {
         legend: {
-          text: subHeading7,
+          text: subHeading6,
           classes: "govuk-fieldset__legend--s"
         }
       },
@@ -262,7 +229,7 @@
       name: "apm",
       fieldset: {
         legend: {
-          text: subHeading8,
+          text: subHeading7,
           classes: "govuk-fieldset__legend--s"
         }
       },
