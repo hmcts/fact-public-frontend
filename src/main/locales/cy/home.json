@@ -2,7 +2,13 @@
   "pageTitle": "Find a Court or Tribunal - GOV.UK",
   "main": {
     "intro": "Defnyddiwch y gwasanaeth hwn i ddod o hyd i lys neu dribiwnlys yng Nghymru neu Loegr",
-    "bullets": ["cyfeiriad", "manylion cyswllt", "amseroedd agor", "gwybodaeth am yr adeilad e.e. mynediad i’r anabl neu parcio", "fy helpu i gael diweddariad"],
+    "bullets": [
+      "cyfeiriad",
+      "manylion cyswllt",
+      "amseroedd agor",
+      "gwybodaeth am yr adeilad e.e. mynediad i’r anabl neu parcio",
+      "fy helpu i gael diweddariad"
+    ],
     "start_button_text": "Dechrau rŵan"
   },
   "h2": "Cyn chwilio",

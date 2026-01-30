@@ -2,7 +2,13 @@
   "pageTitle": "Find a Court or Tribunal - GOV.UK",
   "main": {
     "intro": "Use this service to find a court or tribunal in England and Wales",
-    "bullets": ["address", "contact details", "opening times", "building information e.g. disabled access or parking", "to help me get an update"],
+    "bullets": [
+      "address",
+      "contact details",
+      "opening times",
+      "building information e.g. disabled access or parking",
+      "to help me get an update"
+    ],
     "start_button_text": "Start now"
   },
   "h2": "Before you search",
