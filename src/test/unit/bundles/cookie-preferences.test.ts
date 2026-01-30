@@ -90,7 +90,7 @@ describe('cookie-preferences bundle', () => {
   test('UserPreferencesLoaded pushes preferences into the data layer', () => {
     const manager = setupModule();
     const handler = getHandler(manager, 'UserPreferencesLoaded');
-    const dataLayer: Array<{ event: string; cookiePreferences: Record<string, string> }> = [];
+    const dataLayer: { event: string; cookiePreferences: Record<string, string> }[] = [];
 
     (global as { window: unknown }).window = { dataLayer };
 
@@ -107,7 +107,7 @@ describe('cookie-preferences bundle', () => {
   test('UserPreferencesSaved enables Dynatrace when apm is on', () => {
     const manager = setupModule();
     const handler = getHandler(manager, 'UserPreferencesSaved');
-    const dataLayer: Array<{ event: string; cookiePreferences: Record<string, string> }> = [];
+    const dataLayer: { event: string; cookiePreferences: Record<string, string> }[] = [];
     const dtrum = {
       enable: jest.fn(),
       enableSessionReplay: jest.fn(),
@@ -134,7 +134,7 @@ describe('cookie-preferences bundle', () => {
   test('UserPreferencesSaved disables Dynatrace when apm is off', () => {
     const manager = setupModule();
     const handler = getHandler(manager, 'UserPreferencesSaved');
-    const dataLayer: Array<{ event: string; cookiePreferences: Record<string, string> }> = [];
+    const dataLayer: { event: string; cookiePreferences: Record<string, string> }[] = [];
     const dtrum = {
       enable: jest.fn(),
       enableSessionReplay: jest.fn(),
