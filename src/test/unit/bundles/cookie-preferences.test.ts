@@ -82,9 +82,9 @@ describe('cookie-preferences bundle', () => {
     expect(message.style.display).toBe('block');
     expect(message.focus).toHaveBeenCalled();
     expect((global as { document: { body: { scrollTop: number } } }).document.body.scrollTop).toBe(0);
-    expect((global as { document: { documentElement: { scrollTop: number } } }).document.documentElement.scrollTop).toBe(
-      0
-    );
+    expect(
+      (global as { document: { documentElement: { scrollTop: number } } }).document.documentElement.scrollTop
+    ).toBe(0);
   });
 
   test('UserPreferencesLoaded pushes preferences into the data layer', () => {
