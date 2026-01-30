@@ -1,6 +1,8 @@
 {% extends "govuk/template.njk" %}
+
 {% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
 
+{% block pageTitle %}{{ pageTitle }}{% endblock %}
 
 {% block head %}
   <!-- Google Tag Manager -->
@@ -33,7 +35,6 @@
     serviceName: serviceName
   }) }}
 {% endblock %}
-
 
 {% block beforeContent %}
   {{ govukPhaseBanner({
