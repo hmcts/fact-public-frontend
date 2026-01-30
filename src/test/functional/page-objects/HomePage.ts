@@ -24,7 +24,7 @@ export class HomePage extends Base {
 
   async expectToBeLoaded(): Promise<void> {
     await this.expectPageTitle(/GOV\.UK/);
-    await this.expectHeadingToContain('Default page template');
+    await this.expectHeadingToContain('Find a Court or Tribunal');
     await this.expectMainContentVisible();
   }
 }
