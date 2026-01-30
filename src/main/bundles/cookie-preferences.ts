@@ -1,5 +1,15 @@
 import cookieManager from '@hmcts/cookie-manager';
 
+cookieManager.on('PreferenceFormSubmitted', () => {
+  const message = document.querySelector('.cookie-preference-success') as HTMLElement;
+  if (message) {
+    message.style.display = 'block';
+    message.focus?.();
+  }
+  document.body.scrollTop = 0;
+  document.documentElement.scrollTop = 0;
+});
+
 cookieManager.on('UserPreferencesLoaded', preferences => {
   const dataLayer = window.dataLayer || [];
   dataLayer.push({

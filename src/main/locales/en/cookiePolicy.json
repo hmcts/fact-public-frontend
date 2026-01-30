@@ -1,4 +1,7 @@
 {
+  "cookiesSaved": "Your cookie settings were saved",
+  "additionalCookies": "Government services may set additional cookies and, if so, will have their own cookie policy and banner.",
+  "homePageLink": "Go to homepage",
   "title": "Cookie Policy - Find a Court or Tribunal - GOV.UK",
   "header": "Cookie Policy",
   "tableHeaders": ["Name", "Purpose", "Expires"],
