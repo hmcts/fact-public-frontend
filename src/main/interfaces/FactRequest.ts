@@ -6,7 +6,6 @@ export interface FactRequest extends Request {
     getDataByLanguage: (lng: string | undefined) => {
       template: object;
       home: object;
-      cookiePolicy: object;
       notFound: object;
       error: object;
     };
