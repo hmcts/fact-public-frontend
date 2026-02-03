@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     # Skip Renovate
-    if: github.actor != 'renovate[bot]'
+    if: ${{ github.actor == 'renovate[bot]' }}
 
     steps:
       - uses: actions/labeler@v5
