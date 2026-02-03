@@ -1,5 +1,6 @@
 {% extends "govuk/template.njk" %}
 {% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+{% from "govuk/components/cookie-banner/macro.njk" import govukCookieBanner %}
 
 
 {% block head %}
@@ -15,23 +16,82 @@
   <script {%- if cspNonce %} nonce="{{ cspNonce }}"{% endif %} type="text/javascript" src="{{ jstag }}" crossorigin="anonymous">
   </script>
 
-  {# TODO: Remove once tested as this will be picked up by the cookie policy update #}
-  <script {%- if cspNonce %} nonce="{{ cspNonce }}"{% endif %}>
-    //  testing dynatrace
-    const dtrum = window.dtrum;
-    dtrum.disable();
-    dtrum.enable();
-    dtrum.enableSessionReplay(true);
-  </script>
-
   {% include "webpack/css.njk" %}
 {% endblock %}
 
 {% block header %}
+
+  {% set html %}
+    <p class="govuk-body">{{ cookieBannerP1 | safe }}</p>
+    <p class="govuk-body">{{ cookieBannerP2 }}</p>
+  {% endset %}
+
+  {% set acceptHtml %}
+    <p class="govuk-body">You’ve accepted additional cookies. You can <a class="govuk-link" href="/cookies">change your cookie settings</a> at any time.</p>
+  {% endset %}
+
+  {% set rejectHtml %}
+    <p class="govuk-body">You’ve rejected additional cookies. You can <a class="govuk-link" href="/cookies">change your cookie settings</a> at any time.</p>
+  {% endset %}
+
+  {{ govukCookieBanner({
+    classes: 'cookie-banner',
+    ariaLabel: cookieBannerH1,
+    hidden: true,
+    messages: [
+      {
+        classes: 'cookie-banner-message',
+        headingText: cookieBannerH1,
+        html: html,
+        actions: [
+        {
+          classes: 'cookie-banner-accept-button',
+          text: cookieBannerAcceptButton,
+          type: "button"
+        },
+        {
+          classes: 'cookie-banner-reject-button',
+          text: cookieBannerRejectButton,
+          type: "button"
+        },
+        {
+          text: cookieBannerViewCookies,
+          href: "/cookie-policy"
+        }
+      ]
+      },
+      {
+        classes: 'cookie-banner-accept-message',
+        html: acceptHtml,
+        role: "alert",
+        hidden: true,
+        actions: [
+        {
+          classes: 'cookie-banner-hide-button',
+          text: cookieBannerHideButton
+        }
+      ]
+      },
+      {
+        classes: 'cookie-banner-reject-message',
+        html: rejectHtml,
+        role: "alert",
+        hidden: true,
+        actions: [
+        {
+          classes: 'cookie-banner-hide-button',
+          text: cookieBannerHideButton
+        }
+      ]
+      }
+    ]
+  }) }}
+
   {{ govukHeader({
     containerClasses: "govuk-width-container",
     serviceName: serviceName
   }) }}
+
 {% endblock %}
 
 
