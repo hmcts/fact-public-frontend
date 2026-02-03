@@ -3,7 +3,7 @@ import request from 'supertest';
 
 import { app } from '../../main/app';
 
-// TODO: replace this sample test with proper route tests for your application test
+// TODO: replace this sample test with proper route tests for your application
 
 describe('Home page', () => {
   describe('on GET', () => {
