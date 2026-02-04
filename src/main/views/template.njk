@@ -1,6 +1,7 @@
 {% extends "govuk/template.njk" %}
 
 {% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+{% from "govuk/components/service-navigation/macro.njk" import govukServiceNavigation %}
 {% from "govuk/components/cookie-banner/macro.njk" import govukCookieBanner %}
 
 {% block pageTitle %}{{ pageTitle }}{% endblock %}
@@ -90,8 +91,12 @@
   }) }}
 
   {{ govukHeader({
-    containerClasses: "govuk-width-container",
-    serviceName: serviceName
+    containerClasses: "govuk-width-container"
+  }) }}
+
+  {{ govukServiceNavigation({
+    serviceName: serviceName | safe,
+    serviceUrl: (globals.basePath if globals.basePath) + "/"
   }) }}
 
 {% endblock %}
