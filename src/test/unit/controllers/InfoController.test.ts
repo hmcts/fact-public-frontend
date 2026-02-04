@@ -7,11 +7,22 @@ import InfoController from '../../../main/controllers/InfoController';
 
 jest.mock('@hmcts/info-provider', () => {
   const sinonLib = require('sinon');
-  return { infoRequestHandler: sinonLib.stub() };
+  return {
+    infoRequestHandler: sinonLib.stub(),
+    InfoContributor: jest.fn().mockImplementation(() => ({})),
+  };
+});
+
+jest.mock('../../../main/requests/DataApiRequests', () => {
+  return {
+    DataApiRequests: jest.fn().mockImplementation(() => ({
+      checkHealth: jest.fn().mockResolvedValue(true),
+    })),
+  };
 });
 
 describe('InfoController', () => {
-  test('delegates to infoRequestHandler', () => {
+  test('delegates to infoRequestHandler', async () => {
     const infoProvider = require('@hmcts/info-provider');
     const infoRequestHandlerStub = infoProvider.infoRequestHandler as SinonStub;
     const handler = stub();
@@ -26,12 +37,12 @@ describe('InfoController', () => {
     const next = stub();
 
     responseMock.expects('end').never();
-    controller.get(request, response, next);
+    await controller.get(request, response, next);
 
     assert.calledOnce(infoRequestHandlerStub);
     assert.calledWithMatch(infoRequestHandlerStub, {
-      extraBuildInfo: match({ name: 'FaCT Public Frontend' }),
-      info: {},
+      extraBuildInfo: match({ name: 'FaCT Public Frontend', dataApiUp: true }),
+      info: match.has('DataApi'),
     });
     assert.calledWith(handler, request, response, next);
     responseMock.verify();
