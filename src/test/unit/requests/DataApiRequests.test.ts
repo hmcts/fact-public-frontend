@@ -1,7 +1,8 @@
-import sinon from 'sinon';
+import sinon, { restore, stub } from 'sinon';
 
 import { DataApiRequests } from '../../../main/requests/DataApiRequests';
 import { dataApi } from '../../../main/requests/utils/axiosConfig';
+
 
 const dataApiRequests = new DataApiRequests();
 
@@ -19,8 +20,8 @@ describe('DataApiRequests', () => {
   let getStub: sinon.SinonStub;
 
   beforeEach(() => {
-    sinon.restore();
-    getStub = sinon.stub(dataApi, 'get');
+    restore();
+    getStub = stub(dataApi, 'get');
   });
 
   it('returns true when health status is UP', async () => {
@@ -47,3 +48,5 @@ describe('DataApiRequests', () => {
     expect(response).toBe(false);
   });
 });
+
+
