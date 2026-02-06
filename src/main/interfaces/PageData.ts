@@ -1,4 +1,4 @@
 export interface PageData {
   path: string;
-  [property: string]: string | {};
+  [property: string]: string | object;
 }

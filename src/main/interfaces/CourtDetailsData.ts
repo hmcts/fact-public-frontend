@@ -2,7 +2,7 @@ import { ApplicationUpdate } from './ApplicationUpdate';
 import { PageData } from './PageData';
 
 export interface CourtDetailsData extends PageData {
-  results: CourtDetailsResult | {};
+  results: CourtDetailsResult | object;
   notInPersonP1: string;
   title: string;
   catchmentArea: {
@@ -34,7 +34,7 @@ export interface CourtDetailsResult {
   application_updates: ApplicationUpdate[];
   opening_times: [];
   facilities: [];
-  addresses: any[];
+  addresses: [];
   gbs: string;
   dx_number: [];
   service_area: string[];
