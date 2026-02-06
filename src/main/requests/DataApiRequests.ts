@@ -1,5 +1,7 @@
 import { Logger } from '@hmcts/nodejs-logging';
 
+import { CourtDetailsData } from '../interfaces/CourtDetailsData';
+
 import { dataApi } from './utils/axiosConfig';
 
 const logger = Logger.getLogger('app');
@@ -17,5 +19,19 @@ export class DataApiRequests {
       logger.error('Error checking data API health:', error);
     }
     return false;
+  }
+
+  /**
+   * Request court details by slug from the API
+   * @param slug The court slug
+   */
+  public async getCourtDetails(slug: string): Promise<CourtDetailsData> {
+    try {
+      const response = await dataApi.get(`courts/slug/${slug}.json`);
+      return response.data;
+    } catch (error) {
+      logger.error(`Error fetching court details for slug [${slug}]:`, error);
+      throw error;
+    }
   }
 }
