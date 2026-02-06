@@ -34,4 +34,17 @@ export class DataApiRequests {
       throw error;
     }
   }
+
+  /**
+   * Request all court details from the API
+   */
+  public async getAllCourtDetails(): Promise<CourtDetailsData[]> {
+    try {
+      const response = await dataApi.get('courts/all.json');
+      return response.data;
+    } catch (error) {
+      logger.error('Error fetching court details:', error);
+      throw error;
+    }
+  }
 }
