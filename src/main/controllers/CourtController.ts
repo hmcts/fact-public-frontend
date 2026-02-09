@@ -3,9 +3,9 @@ import { HttpStatusCode } from 'axios';
 import { Response } from 'express';
 import { cloneDeep } from 'lodash';
 
-import { Court } from '../interfaces/Court';
 import { FactRequest } from '../interfaces/FactRequest';
 import { DataApiRequests } from '../requests/DataApiRequests';
+import { Court } from '../schemas/courtSchema';
 
 const dataApiRequests = new DataApiRequests();
 

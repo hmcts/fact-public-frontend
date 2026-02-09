@@ -1,7 +1,7 @@
 import { Logger } from '@hmcts/nodejs-logging';
 import { HttpStatusCode, isAxiosError } from 'axios';
 
-import { Court } from '../interfaces/Court';
+import { Court, courtSchema } from '../schemas/courtSchema';
 
 import { dataApi } from './utils/axiosConfig';
 
@@ -29,8 +29,8 @@ export class DataApiRequests {
    */
   public async getCourtDetails(slug: string): Promise<Court | HttpStatusCode> {
     try {
-      const response = await dataApi.get<Court>(`/courts/slug/${slug}/v1`);
-      return response.data;
+      const response = await dataApi.get(`/courts/slug/${slug}/v1`);
+      return courtSchema.parse(response.data);
     } catch (error: unknown) {
       logger.error(`Error fetching court details for slug ${slug}:`, error);
 
