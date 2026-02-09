@@ -71,4 +71,23 @@ describe('DataApiRequests', () => {
       await expect(dataApiRequests.getCourtDetails(courtSlug)).rejects.toEqual(error404);
     });
   });
+
+  describe('getAllCourtDetails', () => {
+    it('should return court details when API call is successful', async () => {
+      const mockData = [
+        { name: 'Reading County Court', slug: 'reading-county-court' },
+        { name: 'London Court', slug: 'london-court' },
+      ];
+      getStub.withArgs('courts/all.json').resolves({ data: mockData });
+
+      const result = await dataApiRequests.getAllCourtDetails();
+      expect(result).toEqual(mockData);
+    });
+
+    it('should throw an error when API call fails', async () => {
+      getStub.withArgs('courts/all.json').rejects(new Error('API Error'));
+
+      await expect(dataApiRequests.getAllCourtDetails()).rejects.toThrow('API Error');
+    });
+  });
 });
