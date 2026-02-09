@@ -54,8 +54,8 @@ describe('DataApiRequests', () => {
       const mockData = { name: 'Reading County Court', slug: courtSlug };
       getStub.withArgs(`courts/slug/${courtSlug}.json`).resolves({ data: mockData });
 
-      const result = await dataApiRequests.getCourtDetails(courtSlug);
-      expect(result).toEqual(mockData);
+      const response = await dataApiRequests.getCourtDetails(courtSlug);
+      expect(response).toEqual(mockData);
     });
 
     it('should throw an error when API call fails with non-404', async () => {
@@ -80,8 +80,8 @@ describe('DataApiRequests', () => {
       ];
       getStub.withArgs('courts/all.json').resolves({ data: mockData });
 
-      const result = await dataApiRequests.getAllCourtDetails();
-      expect(result).toEqual(mockData);
+      const response = await dataApiRequests.getAllCourtDetails();
+      expect(response).toEqual(mockData);
     });
 
     it('should throw an error when API call fails', async () => {
