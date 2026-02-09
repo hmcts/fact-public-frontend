@@ -3,7 +3,6 @@ import sinon, { restore, stub } from 'sinon';
 import { DataApiRequests } from '../../../main/requests/DataApiRequests';
 import { dataApi } from '../../../main/requests/utils/axiosConfig';
 
-
 const dataApiRequests = new DataApiRequests();
 
 const errorResponse = {
@@ -47,6 +46,29 @@ describe('DataApiRequests', () => {
     const response = await dataApiRequests.checkHealth();
     expect(response).toBe(false);
   });
+
+  describe('getCourtDetails', () => {
+    const courtSlug = 'reading-county-court';
+
+    it('should return court details when API call is successful', async () => {
+      const mockData = { name: 'Reading County Court', slug: courtSlug };
+      getStub.withArgs(`courts/slug/${courtSlug}.json`).resolves({ data: mockData });
+
+      const result = await dataApiRequests.getCourtDetails(courtSlug);
+      expect(result).toEqual(mockData);
+    });
+
+    it('should throw an error when API call fails with non-404', async () => {
+      getStub.withArgs(`courts/slug/${courtSlug}.json`).rejects(new Error('API Error'));
+
+      await expect(dataApiRequests.getCourtDetails(courtSlug)).rejects.toThrow('API Error');
+    });
+
+    it('should throw an error when API call returns 404', async () => {
+      const error404 = { response: { status: 404 } };
+      getStub.withArgs(`courts/slug/${courtSlug}.json`).rejects(error404);
+
+      await expect(dataApiRequests.getCourtDetails(courtSlug)).rejects.toEqual(error404);
+    });
+  });
 });
-
-

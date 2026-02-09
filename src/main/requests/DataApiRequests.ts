@@ -30,7 +30,7 @@ export class DataApiRequests {
       const response = await dataApi.get(`courts/slug/${slug}.json`);
       return response.data;
     } catch (error) {
-      logger.error(`Error fetching court details for slug [${slug}]:`, error);
+      logger.error('Error fetching court details:', error);
       throw error;
     }
   }
