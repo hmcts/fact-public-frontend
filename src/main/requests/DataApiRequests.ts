@@ -1,4 +1,7 @@
 import { Logger } from '@hmcts/nodejs-logging';
+import { HttpStatusCode, isAxiosError } from 'axios';
+
+import { Court } from '../interfaces/Court';
 
 import { dataApi } from './utils/axiosConfig';
 
@@ -17,5 +20,23 @@ export class DataApiRequests {
       logger.error('Error checking data API health:', error);
     }
     return false;
+  }
+
+  /**
+   * Request to data API to get court details by slug
+   *
+   * @param slug The slug identifier for the court
+   */
+  public async getCourtDetails(slug: string): Promise<Court | HttpStatusCode> {
+    try {
+      const response = await dataApi.get<Court>(`/courts/slug/${slug}/v1`);
+      return response.data;
+    } catch (error: unknown) {
+      logger.error(`Error fetching court details for slug ${slug}:`, error);
+
+      return isAxiosError(error) && error.response?.status
+        ? (error.response.status as HttpStatusCode)
+        : HttpStatusCode.InternalServerError;
+    }
   }
 }
