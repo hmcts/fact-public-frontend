@@ -1,6 +1,7 @@
 import { Logger } from '@hmcts/nodejs-logging';
+import { HttpStatusCode, isAxiosError } from 'axios';
 
-import { CourtDetailsData } from '../interfaces/CourtDetailsData';
+import { Court, courtSchema } from '../interfaces/CourtSchema';
 
 import { dataApi } from './utils/axiosConfig';
 
@@ -23,28 +24,32 @@ export class DataApiRequests {
 
   /**
    * Request court details by slug from the API
-   * @param slug The court slug
+   * @param slug The court slug identifier
    */
-  public async getCourtDetails(slug: string): Promise<CourtDetailsData> {
+  public async getCourt(slug: string): Promise<Court | HttpStatusCode> {
     try {
       const response = await dataApi.get(`courts/slug/${slug}.json`);
-      return response.data;
-    } catch (error) {
-      logger.error('Error fetching court details:', error);
-      throw error;
+      return courtSchema.parse(response.data);
+    } catch (error: unknown) {
+      logger.error(`Error fetching court for slug ${slug}:`, error);
+      return isAxiosError(error) && error.response?.status
+        ? (error.response.status as HttpStatusCode)
+        : HttpStatusCode.InternalServerError;
     }
   }
 
   /**
    * Request all court details from the API
    */
-  public async getAllCourtDetails(): Promise<CourtDetailsData[]> {
+  public async getAllCourts(): Promise<Court[] | HttpStatusCode> {
     try {
       const response = await dataApi.get('courts/all.json');
-      return response.data;
-    } catch (error) {
+      return courtSchema.array().parse(response.data);
+    } catch (error: unknown) {
       logger.error('Error fetching court details:', error);
-      throw error;
+      return isAxiosError(error) && error.response?.status
+        ? (error.response.status as HttpStatusCode)
+        : HttpStatusCode.InternalServerError;
     }
   }
 }

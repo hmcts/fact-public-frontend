@@ -47,47 +47,105 @@ describe('DataApiRequests', () => {
     expect(response).toBe(false);
   });
 
-  describe('getCourtDetails', () => {
+  describe('getCourt', () => {
     const courtSlug = 'reading-county-court';
 
+    const mockCourt = {
+      id: '1',
+      name: 'Reading County Court',
+      slug: courtSlug,
+      open: true,
+      warningNotice: null,
+      lastUpdatedAt: '2023-01-01',
+      openOnCath: null,
+      mrdId: null,
+      region: { name: 'South East', country: 'England' },
+      courtDxCodes: [],
+      courtCodes: [],
+      courtFaxNumbers: [],
+      courtAddresses: [],
+      courtOpeningHours: [],
+      courtCounterServiceOpeningHours: [],
+      courtContactDetails: [],
+      courtTranslations: [],
+      courtAccessibilityOptions: [],
+      courtFacilities: [],
+      courtProfessionalInformation: [],
+      courtAreasOfLaw: [],
+    };
+
     it('should return court details when API call is successful', async () => {
-      const mockData = { name: 'Reading County Court', slug: courtSlug };
-      getStub.withArgs(`courts/slug/${courtSlug}.json`).resolves({ data: mockData });
+      getStub.withArgs(`courts/slug/${courtSlug}.json`).resolves({ data: mockCourt });
 
-      const response = await dataApiRequests.getCourtDetails(courtSlug);
-      expect(response).toEqual(mockData);
+      const response = await dataApiRequests.getCourt(courtSlug);
+      expect(response).toEqual(mockCourt);
     });
 
-    it('should throw an error when API call fails with non-404', async () => {
-      getStub.withArgs(`courts/slug/${courtSlug}.json`).rejects(new Error('API Error'));
+    it('should return HttpStatusCode when API call fails with non-404', async () => {
+      const error = {
+        isAxiosError: true,
+        response: { status: 500 },
+      };
+      getStub.withArgs(`courts/slug/${courtSlug}.json`).rejects(error);
 
-      await expect(dataApiRequests.getCourtDetails(courtSlug)).rejects.toThrow('API Error');
+      const response = await dataApiRequests.getCourt(courtSlug);
+      expect(response).toEqual(500);
     });
 
-    it('should throw an error when API call returns 404', async () => {
-      const error404 = { response: { status: 404 } };
+    it('should return 404 HttpStatusCode when API call returns 404', async () => {
+      const error404 = {
+        isAxiosError: true,
+        response: { status: 404 },
+      };
       getStub.withArgs(`courts/slug/${courtSlug}.json`).rejects(error404);
 
-      await expect(dataApiRequests.getCourtDetails(courtSlug)).rejects.toEqual(error404);
+      const response = await dataApiRequests.getCourt(courtSlug);
+      expect(response).toEqual(404);
     });
   });
 
-  describe('getAllCourtDetails', () => {
+  describe('getAllCourts', () => {
+    const mockCourt = {
+      id: '1',
+      name: 'Reading County Court',
+      slug: 'reading-county-court',
+      open: true,
+      warningNotice: null,
+      lastUpdatedAt: '2023-01-01',
+      openOnCath: null,
+      mrdId: null,
+      region: { name: 'South East', country: 'England' },
+      courtDxCodes: [],
+      courtCodes: [],
+      courtFaxNumbers: [],
+      courtAddresses: [],
+      courtOpeningHours: [],
+      courtCounterServiceOpeningHours: [],
+      courtContactDetails: [],
+      courtTranslations: [],
+      courtAccessibilityOptions: [],
+      courtFacilities: [],
+      courtProfessionalInformation: [],
+      courtAreasOfLaw: [],
+    };
+
     it('should return court details when API call is successful', async () => {
-      const mockData = [
-        { name: 'Reading County Court', slug: 'reading-county-court' },
-        { name: 'London Court', slug: 'london-court' },
-      ];
+      const mockData = [mockCourt];
       getStub.withArgs('courts/all.json').resolves({ data: mockData });
 
-      const response = await dataApiRequests.getAllCourtDetails();
+      const response = await dataApiRequests.getAllCourts();
       expect(response).toEqual(mockData);
     });
 
-    it('should throw an error when API call fails', async () => {
-      getStub.withArgs('courts/all.json').rejects(new Error('API Error'));
+    it('should return HttpStatusCode when API call fails', async () => {
+      const error = {
+        isAxiosError: true,
+        response: { status: 500 },
+      };
+      getStub.withArgs('courts/all.json').rejects(error);
 
-      await expect(dataApiRequests.getAllCourtDetails()).rejects.toThrow('API Error');
+      const response = await dataApiRequests.getAllCourts();
+      expect(response).toEqual(500);
     });
   });
 });
