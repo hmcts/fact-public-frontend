@@ -44,7 +44,6 @@ const areaOfLawObjectSchema = z.object({
 
 const areaOfLawSchema = z.preprocess(value => {
   if (typeof value === 'string') {
-    // Coerce `"Family"` into a valid AreaOfLaw object.
     return {
       name: value,
       nameCy: value,
