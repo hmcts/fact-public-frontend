@@ -15,7 +15,7 @@ export default class CourtController {
     const result = await this.dataApiRequests.getCourt(req.params.slug as string);
 
     if (result === HttpStatusCode.NotFound) {
-      return res.status(404).render('not-found', req.i18n.getDataByLanguage(req.lng)['not-found']);
+      return res.status(404).render('not-found', req.i18n.getDataByLanguage(req.lng).notFound);
     }
     res.json(result);
   }

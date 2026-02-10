@@ -34,7 +34,7 @@ describe('CourtController', () => {
   test('should return 404 status when API call returns HttpStatusCode.NotFound (not found)', async () => {
     mockApiRequests.getCourt.mockResolvedValue(HttpStatusCode.NotFound);
 
-    const req = mockRequest({ 'not-found': 'Not Found Content' });
+    const req = mockRequest({ notFound: 'Not Found Content' });
     req.params = { slug: courtSlug };
 
     const res = {
@@ -51,7 +51,7 @@ describe('CourtController', () => {
   test('should return 500 status when API call returns HttpStatusCode.InternalServerError', async () => {
     mockApiRequests.getCourt.mockResolvedValue(HttpStatusCode.InternalServerError);
 
-    const req = mockRequest({ 'not-found': 'Not Found Content' });
+    const req = mockRequest({ error: 'Error Content' });
     req.params = { slug: courtSlug };
 
     const res = {
