@@ -1,3 +1,28 @@
 {
-  "h1": "Mae rhywbeth wedi mynd o chwith"
+  "h1": "Mae rhywbeth wedi mynd o chwith",
+  "pageLastReviewed": "Page last reviewed: ",
+  "addresses": {
+    "heading": "Address",
+    "addressTypes": {
+      "VISIT_US": "Visit",
+      "WRITE_TO_US": "Send documents to",
+      "VISIT_OR_CONTACT_US": "Visit and send documents to"
+    },
+    "getDirectionsLink": "Get directions (opens in a new tab)"
+  },
+  "usefulInformation": {
+    "mainHeading": "Useful information",
+    "comingToCourt": "Coming to court",
+    "comingToCourtUrl": "https://www.gov.uk/guidance/what-to-expect-coming-to-a-court-or-tribunal",
+    "comingToCourtUrlText": "Find information about what to expect coming to a court or tribunal",
+    "comingToCourtBody": "including what you should bring, when to arrive, what to wear, what to expect on the day and what support is available.",
+    "hearingsAtThisCourt": "Hearings at this court",
+    "hearingsAtThisCourtUrl": "https://www.court-tribunal-hearings.service.gov.uk/",
+    "hearingsAtThisCourtUrlText": "Find information about hearings and single justice procedure cases at this location",
+    "hearingsAtThisCourtBody": "including the time, location, case and hearing type, offence title and prosecutor name.",
+    "scammers": "Scammers",
+    "scammersBodyPrefix": "Some scammers are pretending to be from HMCTS or enforcement.",
+    "scammersUrl": "https://www.gov.uk/government/news/scammers-using-hmcts-telephone-numbers",
+    "scammersUrlText": "Find out what to do if you are asked for money and are unsure whether it's genuine"
+  }
 }

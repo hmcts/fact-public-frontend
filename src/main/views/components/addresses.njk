@@ -1,5 +1,41 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
-{% macro addresses(list = []) %}
-  <h2 class="govuk-heading-m">Address</h2>
+{% macro addresses(addresses, text) %}
+  <h2 class="govuk-heading-m">{{ text.heading }}</h2>
+
+  {% set rows = [] %}
+
+  {% for address in addresses %}
+    {% set addressHtml %}
+
+      {% if address.formattedAddressTags and address.formattedAddressTags.length %}
+        <p class="govuk-body govuk-!-margin-bottom-4"><strong>{{ address.formattedAddressTags | join(', ') }}</strong></p>
+      {% endif %}
+
+      <p class="govuk-body">{{ address.formattedAddressLines | join('<br>') | safe }}</p>
+
+      {% if address.directionsUrl %}
+        <p class="govuk-body govuk-!-margin-top-2">
+          <a class="govuk-link" href="{{ address.directionsUrl }}" target="_blank" rel="noopener noreferrer">
+            {{ text.getDirectionsLink }}
+          </a>
+        </p>
+      {% endif %}
+    {% endset %}
+
+    {% set rows = rows.concat([
+      {
+        key: {
+          text: text.addressTypes[address.addressType] or address.addressType
+        },
+        value: {
+          html: addressHtml
+        }
+      }
+    ]) %}
+  {% endfor %}
+
+  {{ govukSummaryList({
+    rows: rows
+  }) }}
 {% endmacro %}

@@ -6028,6 +6028,7 @@ __metadata:
     jest-html-reporter: "npm:4.3.0"
     lint-staged: "npm:16.2.7"
     lodash: "npm:4.17.23"
+    luxon: "npm:^3.7.2"
     mini-css-extract-plugin: "npm:2.10.0"
     nodemon: "npm:3.1.11"
     nunjucks: "npm:3.2.4"
@@ -8427,6 +8428,13 @@ __metadata:
   dependencies:
     yallist: "npm:^3.0.2"
   checksum: 10/951d2673dcc64a7fb888bf3d13bc2fdf923faca97d89cdb405ba3dfff77e2b26e5798d405e78fcd7094c9e7b8b4dab2ddc5a4f8a11928af24a207b7c738ca3f8
+  languageName: node
+  linkType: hard
+
+"luxon@npm:^3.7.2":
+  version: 3.7.2
+  resolution: "luxon@npm:3.7.2"
+  checksum: 10/b24cd205ed306ce7415991687897dcc4027921ae413c9116590bc33a95f93b86ce52cf74ba72b4f5c5ab1c10090517f54ac8edfb127c049e0bf55b90dc2260be
   languageName: node
   linkType: hard
 

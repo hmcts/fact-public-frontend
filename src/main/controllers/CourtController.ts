@@ -6,8 +6,10 @@ import { cloneDeep } from 'lodash';
 import { FactRequest } from '../interfaces/FactRequest';
 import { DataApiRequests } from '../requests/DataApiRequests';
 import { Court } from '../schemas/courtSchema';
+import { CourtService } from '../services/CourtService';
 
 const dataApiRequests = new DataApiRequests();
+const courtService = new CourtService();
 
 @route('/courts')
 export default class CourtController {
@@ -23,6 +25,9 @@ export default class CourtController {
     }
 
     const court = result as Court;
+    const viewModel = courtService.formatData(court, req.lng as string);
+
+    console.log('View model:' + JSON.stringify(viewModel));
 
     //TODO
     if (!court.open) {
@@ -32,7 +37,7 @@ export default class CourtController {
     //BUILDING!
     return res.render('court', {
       ...cloneDeep(req.i18n.getDataByLanguage(req.lng)['court']),
-      court,
+      court: viewModel,
     });
   }
 }

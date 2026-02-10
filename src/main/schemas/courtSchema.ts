@@ -102,7 +102,7 @@ const courtOpeningHourSchema = z.object({
   openingHourType: openingHourTypeSchema,
 });
 
-const courtAddressTypeSchema = z.enum(['VISIT_US', 'WRITE_TO_US', 'VISIT_OR_CONTACT_US']);
+export const courtAddressTypeSchema = z.enum(['VISIT_US', 'WRITE_TO_US', 'VISIT_OR_CONTACT_US']);
 
 const courtTypeSchema = z.object({
   name: z.string(),
@@ -142,6 +142,11 @@ const courtAccessibilityOptionSchema = z.object({
   quietRoom: z.boolean(),
 });
 
+const courtPhotoSchema = z.object({
+  fileLink: z.string(),
+  lastUpdatedAt: z.string(),
+});
+
 export const courtSchema = z.object({
   id: z.string(),
   name: z.string(),
@@ -164,6 +169,7 @@ export const courtSchema = z.object({
   courtFacilities: z.array(courtFacilitiesSchema),
   courtProfessionalInformation: z.array(courtProfessionalInformationSchema),
   courtAreasOfLaw: z.array(courtAreasOfLawSchema),
+  courtPhotos: z.array(courtPhotoSchema),
 });
 
 export type Court = z.infer<typeof courtSchema>;

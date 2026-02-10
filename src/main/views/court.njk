@@ -1,8 +1,48 @@
 {% extends "template.njk" %}
-{% from "components/addresses.njk" import addresses %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+
+{% from "components/addresses.njk" import addresses as renderAddresses %}
+{% from "components/useful-information.njk" import usefulInformation as renderUsefulInformation %}
 
 {% block content %}
-  <h1 class="govuk-heading-l govuk-!-margin-bottom-2">{{ court.name }}</h1>
-  <p class="govuk-body-s">{{ pageLastReviewed }} {{ court.lastUpdatedAt }}</p>
-  {{ addresses(court.courtAddresses) }}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l govuk-!-margin-bottom-2">{{ court.name }}</h1>
+      <p class="govuk-body-s">{{ pageLastReviewed }} {{ court.lastUpdatedAt }}</p>
+
+      {% if court.warningNotice %}
+        {{ govukWarningText({
+          text: court.warningNotice,
+          iconFallbackText: "Warning"
+        }) }}
+      {% endif %}
+      <hr class="govuk-section-break govuk-section-break--m">
+
+      {{ renderAddresses(court.courtAddresses, addresses) }}
+      <hr class="govuk-section-break govuk-section-break--m">
+      {#      Opening hours #}
+
+      {% if court.courtPhotos and court.courtPhotos.length %}
+        <img class="govuk-!-margin-top-4" src="{{ court.courtPhotos[0].fileLink }}" alt="{{ court.name }}">
+        <p class="govuk-body-s">{{ court.name }}</p>
+      {% endif %}
+      <hr class="govuk-section-break govuk-section-break--m">
+      {{ renderUsefulInformation(usefulInformation) }}
+      <hr class="govuk-section-break govuk-section-break--m">
+
+
+
+
+
+{#      Contact details#}
+{#      Cases heard#}
+{#      Translation and interpretation#}
+{#      Accessibility#}
+{#      Building facilities#}
+{#      Information for professionals#}
+{#      Make a complaint#}
+
+
+    </div>
+  </div>
 {% endblock %}
