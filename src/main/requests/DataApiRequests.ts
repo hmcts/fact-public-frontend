@@ -1,7 +1,7 @@
 import { Logger } from '@hmcts/nodejs-logging';
 import { HttpStatusCode, isAxiosError } from 'axios';
 
-import { Court, courtSchema } from '../interfaces/CourtSchema';
+import { Court, courtSchema } from '../schemas/CourtSchema';
 
 import { dataApi } from './utils/axiosConfig';
 
