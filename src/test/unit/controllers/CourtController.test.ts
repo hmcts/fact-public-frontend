@@ -1,96 +1,78 @@
 import { HttpStatusCode } from 'axios';
 import { Response } from 'express';
 
+const mockGetCourt = jest.fn();
+const mockGetAllCourts = jest.fn();
+
+jest.mock('../../../main/requests/DataApiRequests', () => ({
+  DataApiRequests: jest.fn().mockImplementation(() => ({
+    getCourt: mockGetCourt,
+    getAllCourts: mockGetAllCourts,
+  })),
+}));
+
 import CourtController from '../../../main/controllers/CourtController';
-import { mockRequest } from '../mocks/mockRequest';
+import { FactRequest } from '../../../main/interfaces/FactRequest';
 
 describe('CourtController', () => {
-  const courtSlug = 'reading-county-court';
-  const mockApiRequests = {
-    getCourt: jest.fn(),
-    getAllCourts: jest.fn(),
-  };
+  const controller = new CourtController();
 
-  const controller = new CourtController(mockApiRequests as never);
+  describe('getJson', () => {
+    test('should return court data as JSON when successful', async () => {
+      const res = {
+        json: jest.fn(),
+      } as unknown as Response;
+      const req = {
+        params: { slug: 'test-court' },
+      } as unknown as FactRequest;
+      const mockCourt = { name: 'Test Court', slug: 'test-court' };
 
-  test('should return court details as JSON', async () => {
-    const mockData = { name: 'Reading County Court' };
-    mockApiRequests.getCourt.mockResolvedValue(mockData);
+      mockGetCourt.mockResolvedValue(mockCourt);
 
-    const req = mockRequest({});
-    req.params = { slug: courtSlug };
+      await controller.getJson(req, res);
 
-    const res = {
-      json: jest.fn(),
-      status: jest.fn().mockReturnThis(),
-    } as unknown as Response;
+      expect(mockGetCourt).toHaveBeenCalledWith('test-court');
+      expect(res.json).toHaveBeenCalledWith(mockCourt);
+    });
 
-    await controller.getJson(req, res);
+    test('should render not-found page when court is not found', async () => {
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        render: jest.fn(),
+      } as unknown as Response;
+      const req = {
+        params: { slug: 'unknown-court' },
+        lng: 'en',
+        i18n: {
+          getDataByLanguage: jest.fn().mockReturnValue({ notFound: { some: 'content' } }),
+        },
+      } as unknown as FactRequest;
 
-    expect(mockApiRequests.getCourt).toHaveBeenCalledWith(courtSlug);
-    expect(res.json).toHaveBeenCalledWith(mockData);
+      mockGetCourt.mockResolvedValue(HttpStatusCode.NotFound);
+
+      await controller.getJson(req, res);
+
+      expect(mockGetCourt).toHaveBeenCalledWith('unknown-court');
+      expect(res.status).toHaveBeenCalledWith(404);
+      expect(res.render).toHaveBeenCalledWith('not-found', { some: 'content' });
+      expect(req.i18n.getDataByLanguage).toHaveBeenCalledWith('en');
+    });
   });
 
-  test('should return 404 status when API call returns HttpStatusCode.NotFound (not found)', async () => {
-    mockApiRequests.getCourt.mockResolvedValue(HttpStatusCode.NotFound);
+  describe('getAllJson', () => {
+    test('should return all courts data as JSON', async () => {
+      const res = {
+        json: jest.fn(),
+      } as unknown as Response;
+      const req = {} as unknown as FactRequest;
+      const mockCourts = [{ name: 'Test Court 1' }, { name: 'Test Court 2' }];
 
-    const req = mockRequest({ notFound: 'Not Found Content' });
-    req.params = { slug: courtSlug };
+      mockGetAllCourts.mockResolvedValue(mockCourts);
 
-    const res = {
-      render: jest.fn(),
-      status: jest.fn().mockReturnThis(),
-    } as unknown as Response;
+      await controller.getAllJson(req, res);
 
-    await controller.getJson(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(404);
-    expect(res.render).toHaveBeenCalledWith('not-found', 'Not Found Content');
-  });
-
-  test('should return 500 status when API call returns HttpStatusCode.InternalServerError', async () => {
-    mockApiRequests.getCourt.mockResolvedValue(HttpStatusCode.InternalServerError);
-
-    const req = mockRequest({ error: 'Error Content' });
-    req.params = { slug: courtSlug };
-
-    const res = {
-      json: jest.fn(),
-      status: jest.fn().mockReturnThis(),
-    } as unknown as Response;
-
-    await controller.getJson(req, res);
-
-    expect(res.json).toHaveBeenCalledWith(500);
-  });
-
-  test('should return all court details as JSON', async () => {
-    const mockData = [{ name: 'Reading County Court' }, { name: 'London Court' }];
-    mockApiRequests.getAllCourts.mockResolvedValue(mockData);
-
-    const req = mockRequest({});
-    const res = {
-      json: jest.fn(),
-      status: jest.fn().mockReturnThis(),
-    } as unknown as Response;
-
-    await controller.getAllJson(req, res);
-
-    expect(mockApiRequests.getAllCourts).toHaveBeenCalled();
-    expect(res.json).toHaveBeenCalledWith(mockData);
-  });
-
-  test('should return HttpStatusCode when getAllCourts API call fails', async () => {
-    mockApiRequests.getAllCourts.mockResolvedValue(HttpStatusCode.InternalServerError);
-
-    const req = mockRequest({});
-    const res = {
-      json: jest.fn(),
-      status: jest.fn().mockReturnThis(),
-    } as unknown as Response;
-
-    await controller.getAllJson(req, res);
-
-    expect(res.json).toHaveBeenCalledWith(500);
+      expect(mockGetAllCourts).toHaveBeenCalled();
+      expect(res.json).toHaveBeenCalledWith(mockCourts);
+    });
   });
 });

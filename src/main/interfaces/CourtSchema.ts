@@ -33,7 +33,7 @@ const courtProfessionalInformationSchema = z.object({
   accessScheme: z.boolean(),
 });
 
-const areaOfLawObjectSchema = z.object({
+const areaOfLawSchema = z.object({
   name: z.string(),
   nameCy: z.string(),
   externalLink: z.string().nullable(),
@@ -41,20 +41,6 @@ const areaOfLawObjectSchema = z.object({
   displayName: z.string().nullable(),
   displayNameCy: z.string().nullable(),
 });
-
-const areaOfLawSchema = z.preprocess(value => {
-  if (typeof value === 'string') {
-    return {
-      name: value,
-      nameCy: value,
-      externalLink: null,
-      externalLinkCy: null,
-      displayName: null,
-      displayNameCy: null,
-    };
-  }
-  return value;
-}, areaOfLawObjectSchema);
 
 const courtAreasOfLawSchema = z.object({
   areasOfLaw: z.array(areaOfLawSchema),
@@ -116,7 +102,7 @@ const courtOpeningHourSchema = z.object({
   openingHourType: openingHourTypeSchema,
 });
 
-const courtAddressTypeSchema = z.enum(['VISIT_US', 'WRITE_TO_US', 'VISIT_OR_CONTACT_US']);
+export const courtAddressTypeSchema = z.enum(['VISIT_US', 'WRITE_TO_US', 'VISIT_OR_CONTACT_US']);
 
 const courtTypeSchema = z.object({
   name: z.string(),
@@ -156,6 +142,11 @@ const courtAccessibilityOptionSchema = z.object({
   quietRoom: z.boolean(),
 });
 
+const courtPhotoSchema = z.object({
+  fileLink: z.string(),
+  lastUpdatedAt: z.string(),
+});
+
 export const courtSchema = z.object({
   id: z.string(),
   name: z.string(),
@@ -178,6 +169,7 @@ export const courtSchema = z.object({
   courtFacilities: z.array(courtFacilitiesSchema),
   courtProfessionalInformation: z.array(courtProfessionalInformationSchema),
   courtAreasOfLaw: z.array(courtAreasOfLawSchema),
+  courtPhotos: z.array(courtPhotoSchema),
 });
 
 export type Court = z.infer<typeof courtSchema>;

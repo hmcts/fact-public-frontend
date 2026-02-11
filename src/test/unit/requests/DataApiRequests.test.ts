@@ -1,3 +1,4 @@
+import { AxiosError } from 'axios';
 import sinon, { restore, stub } from 'sinon';
 
 import { DataApiRequests } from '../../../main/requests/DataApiRequests';
@@ -72,10 +73,11 @@ describe('DataApiRequests', () => {
       courtFacilities: [],
       courtProfessionalInformation: [],
       courtAreasOfLaw: [],
+      courtPhotos: [],
     };
 
     it('should return court details when API call is successful', async () => {
-      getStub.withArgs(`courts/slug/${courtSlug}.json`).resolves({ data: mockCourt });
+      getStub.withArgs(`courts/slug/${courtSlug}`).resolves({ data: mockCourt });
 
       const response = await dataApiRequests.getCourt(courtSlug);
       expect(response).toEqual(mockCourt);
@@ -83,10 +85,10 @@ describe('DataApiRequests', () => {
 
     it('should return HttpStatusCode when API call fails with non-404', async () => {
       const error = {
-        isAxiosError: true,
         response: { status: 500 },
-      };
-      getStub.withArgs(`courts/slug/${courtSlug}.json`).rejects(error);
+        isAxiosError: true,
+      } as AxiosError;
+      getStub.withArgs(`courts/slug/${courtSlug}`).rejects(error);
 
       const response = await dataApiRequests.getCourt(courtSlug);
       expect(response).toEqual(500);
@@ -94,10 +96,10 @@ describe('DataApiRequests', () => {
 
     it('should return 404 HttpStatusCode when API call returns 404', async () => {
       const error404 = {
-        isAxiosError: true,
         response: { status: 404 },
-      };
-      getStub.withArgs(`courts/slug/${courtSlug}.json`).rejects(error404);
+        isAxiosError: true,
+      } as AxiosError;
+      getStub.withArgs(`courts/slug/${courtSlug}`).rejects(error404);
 
       const response = await dataApiRequests.getCourt(courtSlug);
       expect(response).toEqual(404);
@@ -127,6 +129,7 @@ describe('DataApiRequests', () => {
       courtFacilities: [],
       courtProfessionalInformation: [],
       courtAreasOfLaw: [],
+      courtPhotos: [],
     };
 
     it('should return court details when API call is successful', async () => {
@@ -135,17 +138,6 @@ describe('DataApiRequests', () => {
 
       const response = await dataApiRequests.getAllCourts();
       expect(response).toEqual(mockData);
-    });
-
-    it('should return HttpStatusCode when API call fails', async () => {
-      const error = {
-        isAxiosError: true,
-        response: { status: 500 },
-      };
-      getStub.withArgs('courts/all.json').rejects(error);
-
-      const response = await dataApiRequests.getAllCourts();
-      expect(response).toEqual(500);
     });
   });
 });

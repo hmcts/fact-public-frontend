@@ -28,7 +28,7 @@ export class DataApiRequests {
    */
   public async getCourt(slug: string): Promise<Court | HttpStatusCode> {
     try {
-      const response = await dataApi.get(`courts/slug/${slug}.json`);
+      const response = await dataApi.get(`courts/slug/${slug}`);
       return courtSchema.parse(response.data);
     } catch (error: unknown) {
       logger.error(`Error fetching court for slug ${slug}:`, error);
