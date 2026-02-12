@@ -6,6 +6,7 @@
 {% from "components/opening-hours.njk" import openingHours as renderOpeningHours %}
 {% from "components/useful-information.njk" import usefulInformation as renderUsefulInformation %}
 {% from "components/translation-interpretation.njk" import translationInterpretation as renderTranslationInterpretation %}
+{% from "components/information-for-professionals.njk" import informationForProfessionals as renderInformationForProfessionals %}
 
 {% set makeAComplaintHtml %}
   <p class="govuk-body">
@@ -20,6 +21,10 @@
 
 {% set translationHtml %}
   {{ renderTranslationInterpretation(court, translationAndInterpretation) }}
+{% endset %}
+
+{% set informationForProfessionalsHtml %}
+  {{ renderInformationForProfessionals(court, informationForProfessionals) }}
 {% endset %}
 
 {% block pageTitle %}
@@ -83,7 +88,7 @@
           {
             heading: { text: accordion.informationForProfessionalsHeading },
             expanded: false,
-            content: { html: '<p class="govuk-body">hello 6</p>' }
+            content: { html: informationForProfessionalsHtml }
           },
           {
             heading: { text: accordion.makeAComplaintHeading },

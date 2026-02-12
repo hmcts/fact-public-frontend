@@ -1,0 +1,79 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% macro informationForProfessionals(court, text) %}
+  {% set code = court.courtCodes[0] if court.courtCodes and court.courtCodes.length else null %}
+  {% set info = court.courtProfessionalInformation[0] if court.courtProfessionalInformation and court.courtProfessionalInformation.length else null %}
+  {% set rows = [] %}
+
+  {% if code and code.crownCourtCode is not none %}
+    {% set rows = rows.concat([{ key: { text: text.courtCodes.crownCourtCode }, value: { text: code.crownCourtCode } }]) %}
+  {% endif %}
+  {% if code and code.magistrateCourtCode is not none %}
+    {% set rows = rows.concat([{ key: { text: text.courtCodes.magistratesCourtCode }, value: { text: code.magistrateCourtCode } }]) %}
+  {% endif %}
+  {% if code and code.countyCourtCode is not none %}
+    {% set rows = rows.concat([{ key: { text: text.courtCodes.countyCourtCode }, value: { text: code.countyCourtCode } }]) %}
+  {% endif %}
+  {% if code and code.familyCourtCode is not none %}
+    {% set rows = rows.concat([{ key: { text: text.courtCodes.familyCourtCode }, value: { text: code.familyCourtCode } }]) %}
+  {% endif %}
+  {% if code and code.tribunalCode is not none %}
+    {% set rows = rows.concat([{ key: { text: text.courtCodes.tribunalCode }, value: { text: code.tribunalCode } }]) %}
+  {% endif %}
+  {% if code and code.gbs and code.gbs | trim %}
+    {% set rows = rows.concat([{ key: { text: text.courtCodes.gbsCode }, value: { text: code.gbs } }]) %}
+  {% endif %}
+
+  {% for dx in court.courtDxCodes %}
+    {% set dxHtml %}
+      <p class="govuk-body">{{ dx.dxCode }}</p>
+      {% if dx.explanation and dx.explanation | trim %}
+        <p class="govuk-hint">{{ dx.explanation }}</p>
+      {% endif %}
+    {% endset %}
+
+    {% set rows = rows.concat([{ key: { text: text.dxCode }, value: { html: dxHtml } }]) %}
+  {% endfor %}
+
+  {% for fax in court.courtFaxNumbers %}
+    {% set faxHtml %}
+      <p class="govuk-body">{{ fax.faxNumber }}</p>
+      {% if fax.description and fax.description | trim %}
+        <p class="govuk-hint">{{ fax.description }}</p>
+      {% endif %}
+    {% endset %}
+
+    {% set rows = rows.concat([{ key: { text: text.faxNumber }, value: { html: faxHtml } }]) %}
+  {% endfor %}
+
+  {% if info and info.interviewRooms %}
+    {% set interviewRoomsHtml %}
+      <p class="govuk-body">
+        {{ text.interviewRoomsAvailablePrefix }} {{ info.interviewRoomCount }} {{ text.interviewRoomsAvailableSuffix }}
+        {% if info.interviewPhoneNumber and info.interviewPhoneNumber | trim %}
+          {{ text.interviewRoomsBooking }}
+          <span class="phone-text">{{ info.interviewPhoneNumber }}.</span>
+          <a href="tel: {{ info.interviewPhoneNumber }}" class="govuk-link govuk-link--no-visited-state phone-link">{{ info.interviewPhoneNumber }}.</a>
+        {% else %}
+          {{ text.interviewRoomsNoBooking }}
+        {% endif %}
+      </p>
+    {% endset %}
+    {% set rows = rows.concat([{ key: { text: text.interviewRooms }, value: { html: interviewRoomsHtml } }]) %}
+  {% endif %}
+
+  {% if info and info.videoHearings %}
+    {% set rows = rows.concat([{ key: { text: text.videoHearing }, value: { text: text.videoHearingBody } }]) %}
+  {% endif %}
+
+  {% if info %}
+    {% set commonPlatformText %}{% if info.commonPlatform %}{{ text.schemeAvailable }}{% else %}{{ text.schemeNotAvailable }}{% endif %}{% endset %}
+    {% set accessSchemeText %}{% if info.accessScheme %}{{ text.schemeAvailable }}{% else %}{{ text.schemeNotAvailable }}{% endif %}{% endset %}
+    {% set rows = rows.concat([{ key: { text: text.commonPlatform }, value: { text: commonPlatformText } }]) %}
+    {% set rows = rows.concat([{ key: { text: text.accessScheme }, value: { text: accessSchemeText } }]) %}
+  {% endif %}
+
+  {{ govukSummaryList({
+    rows: rows
+  }) }}
+{% endmacro %}

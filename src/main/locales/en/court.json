@@ -54,5 +54,28 @@
     "scammersBodyPrefix": "Some scammers are pretending to be from HMCTS or enforcement.",
     "scammersUrl": "https://www.gov.uk/government/news/scammers-using-hmcts-telephone-numbers",
     "scammersUrlText": "Find out what to do if you are asked for money and are unsure whether it's genuine"
+  },
+  "informationForProfessionals": {
+    "courtCodes": {
+      "crownCourtCode": "Crown court code",
+      "magistratesCourtCode": "Magistrates' court code",
+      "countyCourtCode": "County court code",
+      "familyCourtCode": "Family court code",
+      "tribunalCode": "Tribunal code",
+      "gbsCode": "GBS code"
+    },
+    "dxCode": "DX code",
+    "faxNumber": "Fax number",
+    "interviewRooms": "Interview room",
+    "interviewRoomsAvailablePrefix": "There are",
+    "interviewRoomsAvailableSuffix": "interview rooms available.",
+    "interviewRoomsNoBooking": "They do not need to be booked.",
+    "interviewRoomsBooking": "They must be booked in advance by contacting",
+    "videoHearing": "Video hearing",
+    "videoHearingBody": "Video hearing facilities are available at the court. Contact the judge presiding over the case to discuss.",
+    "commonPlatform": "HMCTS common platform",
+    "accessScheme": "Court and tribunal access scheme",
+    "schemeAvailable": "This location participates in this scheme.",
+    "schemeNotAvailable": "This location does not participate in this scheme."
   }
 }
