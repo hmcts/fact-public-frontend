@@ -1,0 +1,32 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% macro openingHours(openingHoursByType, text) %}
+  <h2 class="govuk-heading-m">{{ text.heading }}</h2>
+
+  {% set rows = [] %}
+
+  {% for group in openingHoursByType %}
+    {% set hoursHtml %}
+      {% for entry in group.hours %}
+        <p class="govuk-body">
+          {{ text.days[entry.dayOfWeek] or entry.dayOfWeek }} {{ entry.openingHour }} to {{ entry.closingHour }}
+        </p>
+      {% endfor %}
+    {% endset %}
+
+    {% set rows = rows.concat([
+      {
+        key: {
+          text: group.typeName
+        },
+        value: {
+          html: hoursHtml
+        }
+      }
+    ]) %}
+  {% endfor %}
+
+  {{ govukSummaryList({
+    rows: rows
+  }) }}
+{% endmacro %}

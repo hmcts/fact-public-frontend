@@ -9,6 +9,36 @@
     },
     "getDirectionsLink": "Get directions (opens in a new tab)"
   },
+  "openingHours": {
+    "heading": "Opening hours",
+    "days": {
+      "EVERYDAY": "Monday to Friday",
+      "MONDAY": "Monday",
+      "TUESDAY": "Tuesday",
+      "WEDNESDAY": "Wednesday",
+      "THURSDAY": "Thursday",
+      "FRIDAY": "Friday",
+      "SATURDAY": "Saturday",
+      "SUNDAY": "Sunday"
+    }
+  },
+  "accordion": {
+    "contactDetailsHeading": "Contact details",
+    "casesHeardHeading": "Cases heard",
+    "translationAndInterpretationHeading": "Translation and interpretation",
+    "accessibilityHeading": "Accessibility",
+    "buildingFacilitiesHeading": "Building facilities",
+    "informationForProfessionalsHeading": "Information for professionals",
+    "makeAComplaintHeading": "Make a complaint",
+    "makeAComplaintUrl": "https://www.gov.uk/government/organisations/hm-courts-and-tribunals-service/about/complaints-procedure",
+    "makeAComplaintUrlText": "Contact us to make a complaint"
+  },
+  "translationAndInterpretation": {
+    "contactIntro": "If you need a language interpreter, including sign language, contact the court on",
+    "contactOr": "or",
+    "infoUrl": "https://www.gov.uk/get-interpreter-at-court-or-tribunal",
+    "infoUrlText": "Find out more information about getting an interpreter at a court or tribunal"
+  },
   "usefulInformation": {
     "mainHeading": "Useful information",
     "comingToCourt": "Coming to court",

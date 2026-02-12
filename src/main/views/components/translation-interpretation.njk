@@ -1,0 +1,24 @@
+{% macro translationInterpretation(court, text) %}
+  {% set translationContact = court.courtTranslations[0] if court.courtTranslations and court.courtTranslations.length else null %}
+  {% set translationPhone = translationContact.phoneNumber if translationContact and translationContact.phoneNumber | trim else null %}
+  {% set translationEmail = translationContact.email if translationContact and translationContact.email | trim else null %}
+
+  {% if translationPhone or translationEmail %}
+    <p class="govuk-body">{{ text.contactIntro }}
+      {% if translationPhone %}
+        <a href="tel: {{ translationPhone }}" class="govuk-link govuk-link--no-visited-state">{{ translationPhone }}</a>
+      {% endif %}
+      {% if translationPhone and translationEmail %}{{ text.contactOr }}{% endif %}
+      {% if translationEmail %}
+        <a href="mailto:{{ translationEmail }}" class="govuk-link govuk-link--no-visited-state">{{ translationEmail }}</a>.
+      {% endif %}
+    </p>
+  {% endif %}
+  <p class="govuk-body">
+    <a href="{{ text.infoUrl }}"
+       class="govuk-link govuk-link--no-visited-state"
+       rel="noreferrer noopener"
+       target="_blank">{{ text.infoUrlText }}
+    </a>.
+  </p>
+{% endmacro %}

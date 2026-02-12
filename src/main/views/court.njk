@@ -1,8 +1,26 @@
 {% extends "template.njk" %}
 {% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+{% from "govuk/components/accordion/macro.njk" import govukAccordion %}
 
 {% from "components/addresses.njk" import addresses as renderAddresses %}
+{% from "components/opening-hours.njk" import openingHours as renderOpeningHours %}
 {% from "components/useful-information.njk" import usefulInformation as renderUsefulInformation %}
+{% from "components/translation-interpretation.njk" import translationInterpretation as renderTranslationInterpretation %}
+
+{% set makeAComplaintHtml %}
+  <p class="govuk-body">
+    <a href="{{ accordion.makeAComplaintUrl }}"
+       class="govuk-link govuk-link--no-visited-state"
+       rel="noreferrer noopener"
+       target="_blank">
+      {{ accordion.makeAComplaintUrlText }}
+    </a>
+  </p>
+{% endset %}
+
+{% set translationHtml %}
+  {{ renderTranslationInterpretation(court, translationAndInterpretation) }}
+{% endset %}
 
 {% block content %}
   <div class="govuk-grid-row">
@@ -20,9 +38,10 @@
 
       {{ renderAddresses(court.courtAddresses, addresses) }}
       <hr class="govuk-section-break govuk-section-break--m">
-      {#      Opening hours #}
+      {{ renderOpeningHours(court.openingHoursByType, openingHours) }}
 
       {% if court.courtPhotos and court.courtPhotos.length %}
+        <hr class="govuk-section-break govuk-section-break--m">
         <img class="govuk-!-margin-top-4" src="{{ court.courtPhotos[0].fileLink }}" alt="{{ court.name }}">
         <p class="govuk-body-s">{{ court.name }}</p>
       {% endif %}
@@ -30,19 +49,46 @@
       {{ renderUsefulInformation(usefulInformation) }}
       <hr class="govuk-section-break govuk-section-break--m">
 
-
-
-
-
-{#      Contact details#}
-{#      Cases heard#}
-{#      Translation and interpretation#}
-{#      Accessibility#}
-{#      Building facilities#}
-{#      Information for professionals#}
-{#      Make a complaint#}
-
-
+      {{ govukAccordion({
+        id: "court-details-accordion",
+        items: [
+          {
+            heading: { text: accordion.contactDetailsHeading },
+            expanded: false,
+            content: { html: '<p class="govuk-body">hello 1</p>' }
+          },
+          {
+            heading: { text: accordion.casesHeardHeading },
+            expanded: false,
+            content: { html: '<p class="govuk-body">hello 2</p>' }
+          },
+          {
+            heading: { text: accordion.translationAndInterpretationHeading },
+            expanded: false,
+            content: { html: translationHtml }
+          },
+          {
+            heading: { text: accordion.accessibilityHeading },
+            expanded: false,
+            content: { html: '<p class="govuk-body">hello 4</p>' }
+          },
+          {
+            heading: { text: accordion.buildingFacilitiesHeading },
+            expanded: false,
+            content: { html: '<p class="govuk-body">hello 5</p>' }
+          },
+          {
+            heading: { text: accordion.informationForProfessionalsHeading },
+            expanded: false,
+            content: { html: '<p class="govuk-body">hello 6</p>' }
+          },
+          {
+            heading: { text: accordion.makeAComplaintHeading },
+            expanded: false,
+            content: { html: makeAComplaintHtml }
+          }
+        ]
+      }) }}
     </div>
   </div>
 {% endblock %}

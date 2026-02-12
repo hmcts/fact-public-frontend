@@ -3,11 +3,30 @@ import { DateTime } from 'luxon';
 import { Court, courtAddressTypeSchema } from '../schemas/courtSchema';
 import { hasText } from '../utils/stringUtils';
 
+type OpeningHourEntry = {
+  dayOfWeek: string;
+  openingHour: string;
+  closingHour: string;
+};
+
+type OpeningHourGroup = {
+  typeName: string;
+  hours: OpeningHourEntry[];
+};
+
+const DAY_ORDER = ['EVERYDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'] as const;
+
+const DAY_RANK: Map<string, number> = new Map(DAY_ORDER.map((day, index) => [day, index]));
+
+export type CourtViewModel = Court & {
+  openingHoursByType: OpeningHourGroup[];
+};
+
 export class CourtService {
   /**
    * Formats and normalizes Court data for display.
    */
-  public formatData(court: Court, language: string): Court {
+  public formatData(court: Court, language: string): CourtViewModel {
     return {
       ...court,
       lastUpdatedAt: this.formatLastUpdateDate(court.lastUpdatedAt, language),
@@ -17,7 +36,9 @@ export class CourtService {
         formattedAddressTags: this.buildAddressTags(address),
         directionsUrl: this.buildDirectionsUrl(address),
       })),
-    };
+      courtOpeningHours: this.orderOpeningHours(court.courtOpeningHours),
+      openingHoursByType: this.buildOpeningHoursByType(court.courtOpeningHours),
+    } as CourtViewModel;
   }
 
   /**
@@ -53,23 +74,84 @@ export class CourtService {
    * Builds a comma-separated list of areas of law and court type names.
    */
   private buildAddressTags(address: Court['courtAddresses'][number]): string[] {
-    const areaNames = address.areasOfLaw.map(area => area.name);
-    const courtTypeNames = address.courtTypes.map(courtType => courtType.name);
-    return [...areaNames, ...courtTypeNames].filter(hasText);
+    return [...address.areasOfLaw, ...address.courtTypes].map(item => item.name).filter(hasText);
   }
 
   /**
    * Builds the Google Maps directions link for visit addresses when coordinates are present.
    */
   private buildDirectionsUrl(address: Court['courtAddresses'][number]): string | null {
-    if (address.addressType !== courtAddressTypeSchema.enum.VISIT_US) {
-      return null;
-    }
-
-    if (address.lat === null || address.lon === null) {
+    if (address.addressType !== courtAddressTypeSchema.enum.VISIT_US || address.lat === null || address.lon === null) {
       return null;
     }
 
     return `https://www.google.com/maps?q=${address.lat},${address.lon}`;
+  }
+
+  /**
+   * Orders opening hours alphabetically by opening hour type name.
+   */
+  private orderOpeningHours(openingHours: Court['courtOpeningHours']): Court['courtOpeningHours'] {
+    return [...openingHours].sort((a, b) =>
+      a.openingHourType.name.localeCompare(b.openingHourType.name, undefined, { sensitivity: 'base' })
+    );
+  }
+
+  /**
+   * Groups opening hours by type, with hours ordered by day of week.
+   */
+  private buildOpeningHoursByType(openingHours: Court['courtOpeningHours']): OpeningHourGroup[] {
+    const byType = this.groupOpeningHoursByType(openingHours);
+    return this.sortOpeningHourGroups(byType);
+  }
+
+  /**
+   * Groups opening hour entries by their type name.
+   */
+  private groupOpeningHoursByType(openingHours: Court['courtOpeningHours']): Map<string, OpeningHourEntry[]> {
+    const byType = new Map<string, OpeningHourEntry[]>();
+
+    for (const entry of openingHours) {
+      const typeName = entry.openingHourType.name;
+      const hours = byType.get(typeName) ?? [];
+      hours.push({
+        dayOfWeek: entry.dayOfWeek,
+        openingHour: this.formatTime(entry.openingHour),
+        closingHour: this.formatTime(entry.closingHour),
+      });
+      byType.set(typeName, hours);
+    }
+
+    return byType;
+  }
+
+  /**
+   * Sorts opening hour groups alphabetically by type name.
+   */
+  private sortOpeningHourGroups(byType: Map<string, OpeningHourEntry[]>): OpeningHourGroup[] {
+    return Array.from(byType.entries())
+      .sort(([firstType], [secondType]) => firstType.localeCompare(secondType, undefined, { sensitivity: 'base' }))
+      .map(([typeName, hours]) => ({
+        typeName,
+        hours: this.sortHoursByDay(hours),
+      }));
+  }
+
+  /**
+   * Sorts a list of hours by day of week order.
+   */
+  private sortHoursByDay(hours: OpeningHourEntry[]): OpeningHourEntry[] {
+    return [...hours].sort((first, second) => {
+      const firstRank = DAY_RANK.get(first.dayOfWeek) ?? DAY_ORDER.length;
+      const secondRank = DAY_RANK.get(second.dayOfWeek) ?? DAY_ORDER.length;
+      return firstRank - secondRank;
+    });
+  }
+
+  /**
+   * Formats a time string like HH:mm:ss into a human-friendly lowercase time.
+   */
+  private formatTime(value: string): string {
+    return DateTime.fromFormat(value, 'HH:mm:ss', { zone: 'Europe/London' }).toFormat('h:mma').toLowerCase();
   }
 }

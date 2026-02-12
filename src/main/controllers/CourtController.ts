@@ -6,7 +6,7 @@ import { cloneDeep } from 'lodash';
 import { FactRequest } from '../interfaces/FactRequest';
 import { DataApiRequests } from '../requests/DataApiRequests';
 import { Court } from '../schemas/courtSchema';
-import { CourtService } from '../services/CourtService';
+import { CourtService, CourtViewModel } from '../services/CourtService';
 
 const dataApiRequests = new DataApiRequests();
 const courtService = new CourtService();
@@ -25,7 +25,7 @@ export default class CourtController {
     }
 
     const court = result as Court;
-    const viewModel = courtService.formatData(court, req.lng as string);
+    const viewModel: CourtViewModel = courtService.formatData(court, req.lng as string);
 
     console.log('View model:' + JSON.stringify(viewModel));
 
