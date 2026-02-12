@@ -6,7 +6,8 @@
   {% if translationPhone or translationEmail %}
     <p class="govuk-body">{{ text.contactIntro }}
       {% if translationPhone %}
-        <a href="tel: {{ translationPhone }}" class="govuk-link govuk-link--no-visited-state">{{ translationPhone }}</a>
+        <span class="phone-text">{{ translationPhone }}</span>
+        <a href="tel: {{ translationPhone }}" class="govuk-link govuk-link--no-visited-state phone-link">{{ translationPhone }}</a>
       {% endif %}
       {% if translationPhone and translationEmail %}{{ text.contactOr }}{% endif %}
       {% if translationEmail %}
@@ -18,7 +19,6 @@
     <a href="{{ text.infoUrl }}"
        class="govuk-link govuk-link--no-visited-state"
        rel="noreferrer noopener"
-       target="_blank">{{ text.infoUrlText }}
-    </a>.
+       target="_blank">{{ text.infoUrlText }}</a>.
   </p>
 {% endmacro %}
