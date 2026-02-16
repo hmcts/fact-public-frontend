@@ -21,7 +21,7 @@
           <li>
             {% if link %}
               <a class="govuk-link" href="{{ link }}" rel="noreferrer noopener" target="_blank">
-                {{ displayText }}
+                {{ displayText }} {{ text.opensInNewTab }}
               </a>
             {% else %}
               {{ displayText }}
