@@ -17,24 +17,22 @@ export default class CourtController {
   @GET()
   public async get(req: FactRequest, res: Response): Promise<void> {
     const result = await dataApiRequests.getCourtDetails(req.params.slug as string);
-    console.log('The result:' + JSON.stringify(result));
 
-    //TODO
     if (result === HttpStatusCode.NotFound) {
-      return res.status(404).render('court-not-found', req.i18n.getDataByLanguage(req.lng)['court-not-found']);
+      return res.status(404).render('not-found', req.i18n.getDataByLanguage(req.lng)['not-found']);
     }
 
     const court = result as Court;
     const viewModel: CourtViewModel = courtService.formatData(court, req.lng as string);
 
-    console.log('View model:' + JSON.stringify(viewModel));
-
-    //TODO
     if (!court.open) {
-      return res.render('court-closed', req.i18n.getDataByLanguage(req.lng)['court-closed']);
+      return res.render('court-closed', {
+        ...cloneDeep(req.i18n.getDataByLanguage(req.lng)['court-closed']),
+        title: court.name?.replace('{name}', court.name),
+        name: court.name,
+      });
     }
 
-    //BUILDING!
     return res.render('court', {
       ...cloneDeep(req.i18n.getDataByLanguage(req.lng)['court']),
       court: viewModel,
