@@ -8,6 +8,7 @@
 {% from "components/translation-interpretation.njk" import translationInterpretation as renderTranslationInterpretation %}
 {% from "components/information-for-professionals.njk" import informationForProfessionals as renderInformationForProfessionals %}
 {% from "components/cases-heard.njk" import casesHeard as renderCasesHeard %}
+{% from "components/contact-details.njk" import contactDetails as renderContactDetails %}
 
 {% set makeAComplaintHtml %}
   <p class="govuk-body">
@@ -36,6 +37,10 @@
 
 {% set casesHeardHtml %}
   {{ renderCasesHeard(court.courtAreasOfLaw, casesHeard, htmlLang) }}
+{% endset %}
+
+{% set contactDetailsHtml %}
+  {{ renderContactDetails(court.courtContactDetails, contactDetails, htmlLang) }}
 {% endset %}
 
 {% block pageTitle %}
@@ -74,7 +79,7 @@
           {
             heading: { text: accordion.contactDetailsHeading },
             expanded: false,
-            content: { html: '<p class="govuk-body">hello 1</p>' }
+            content: { html: contactDetailsHtml }
           },
           {
             heading: { text: accordion.casesHeardHeading },

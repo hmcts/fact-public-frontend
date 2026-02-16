@@ -34,6 +34,10 @@
     "makeAComplaintUrl": "https://www.gov.uk/government/organisations/hm-courts-and-tribunals-service/about/complaints-procedure",
     "makeAComplaintUrlText": "Contact us to make a complaint"
   },
+  "contactDetails": {
+    "telephone": "Telephone",
+    "email": "Email"
+  },
   "casesHeard": {
     "intro": "The types of cases that are heard at this location."
   },

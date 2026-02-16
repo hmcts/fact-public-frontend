@@ -71,10 +71,10 @@ const courtContactDescriptionSchema = z.object({
 
 const courtContactDetailSchema = z.object({
   courtContactDescriptionId: z.string(),
-  explanation: z.string(),
-  explanationCy: z.string(),
-  email: z.string(),
-  phoneNumber: z.string(),
+  explanation: z.string().nullable(),
+  explanationCy: z.string().nullable(),
+  email: z.string().nullable(),
+  phoneNumber: z.string().nullable(),
   courtContactDescription: courtContactDescriptionSchema,
 });
 
