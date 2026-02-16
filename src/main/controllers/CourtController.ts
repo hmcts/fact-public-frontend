@@ -26,9 +26,10 @@ export default class CourtController {
     const viewModel: CourtViewModel = courtService.formatData(court, req.lng as string);
 
     if (!court.open) {
+      const closed = cloneDeep(req.i18n.getDataByLanguage(req.lng)['court-closed']);
       return res.render('court-closed', {
-        ...cloneDeep(req.i18n.getDataByLanguage(req.lng)['court-closed']),
-        title: court.name?.replace('{name}', court.name),
+        ...closed,
+        title: closed.title?.replace('{name}', court.name),
         name: court.name,
       });
     }
