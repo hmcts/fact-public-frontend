@@ -20,6 +20,7 @@ const DAY_RANK: Map<string, number> = new Map(DAY_ORDER.map((day, index) => [day
 
 export type CourtViewModel = Court & {
   openingHoursByType: OpeningHourGroup[];
+  enquiriesPhoneNumber: string | null;
 };
 
 export class CourtService {
@@ -38,6 +39,7 @@ export class CourtService {
       })),
       courtOpeningHours: this.orderOpeningHours(court.courtOpeningHours),
       openingHoursByType: this.buildOpeningHoursByType(court.courtOpeningHours),
+      enquiriesPhoneNumber: this.findEnquiriesPhoneNumber(court.courtContactDetails),
     } as CourtViewModel;
   }
 
@@ -86,6 +88,23 @@ export class CourtService {
     }
 
     return `https://www.google.com/maps?q=${address.lat},${address.lon}`;
+  }
+
+  /**
+   * Returns the enquiries phone number when available.
+   */
+  private findEnquiriesPhoneNumber(contactDetails: Court['courtContactDetails']): string | null {
+    for (const contact of contactDetails) {
+      if (contact.courtContactDescription.name.toLowerCase() !== 'enquiries') {
+        continue;
+      }
+
+      if (hasText(contact.phoneNumber)) {
+        return contact.phoneNumber;
+      }
+    }
+
+    return null;
   }
 
   /**

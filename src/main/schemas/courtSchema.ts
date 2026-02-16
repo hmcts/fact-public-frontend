@@ -130,7 +130,7 @@ const hearingEnhancementEquipmentSchema = z.enum([
 
 const courtAccessibilityOptionSchema = z.object({
   accessibleParking: z.boolean(),
-  accessibleParkingPhoneNumber: z.string(),
+  accessibleParkingPhoneNumber: z.string().nullable(),
   accessibleToiletDescription: z.string().nullable(),
   accessibleToiletDescriptionCy: z.string().nullable(),
   accessibleEntrance: z.boolean(),

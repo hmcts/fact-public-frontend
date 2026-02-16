@@ -9,6 +9,7 @@
 {% from "components/information-for-professionals.njk" import informationForProfessionals as renderInformationForProfessionals %}
 {% from "components/cases-heard.njk" import casesHeard as renderCasesHeard %}
 {% from "components/contact-details.njk" import contactDetails as renderContactDetails %}
+{% from "components/accessibility.njk" import accessibility as renderAccessibility %}
 
 {% set makeAComplaintHtml %}
   <p class="govuk-body">
@@ -41,6 +42,10 @@
 
 {% set contactDetailsHtml %}
   {{ renderContactDetails(court.courtContactDetails, contactDetails, htmlLang) }}
+{% endset %}
+
+{% set accessibilityHtml %}
+  {{ renderAccessibility(court.enquiriesPhoneNumber, court.courtAccessibilityOptions, accessibility, htmlLang) }}
 {% endset %}
 
 {% block pageTitle %}
@@ -94,7 +99,7 @@
           {
             heading: { text: accordion.accessibilityHeading },
             expanded: false,
-            content: { html: '<p class="govuk-body">hello 4</p>' }
+            content: { html: accessibilityHtml }
           },
           {
             heading: { text: accordion.buildingFacilitiesHeading },
