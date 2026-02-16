@@ -54,7 +54,7 @@
           {% if info.interviewPhoneNumber and info.interviewPhoneNumber | trim %}
             {{ text.interviewRoomsBooking }}
             <span class="phone-text">{{ info.interviewPhoneNumber }}.</span>
-            <a href="tel: {{ info.interviewPhoneNumber }}" class="govuk-link govuk-link--no-visited-state phone-link">{{ info.interviewPhoneNumber }}.</a>
+          <a href="tel:{{ info.interviewPhoneNumber }}" class="govuk-link govuk-link--no-visited-state phone-link">{{ info.interviewPhoneNumber }}.</a>
           {% else %}
             {{ text.interviewRoomsNoBooking }}
           {% endif %}
