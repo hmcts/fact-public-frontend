@@ -1,41 +1,43 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
 {% macro addresses(addresses, text) %}
-  <h2 class="govuk-heading-m">{{ text.heading }}</h2>
+  <section id="addresses">
+    <h2 class="govuk-heading-m">{{ text.heading }}</h2>
 
-  {% set rows = [] %}
+    {% set rows = [] %}
 
-  {% for address in addresses %}
-    {% set addressHtml %}
+    {% for address in addresses %}
+      {% set addressHtml %}
 
-      {% if address.formattedAddressTags and address.formattedAddressTags.length %}
-        <p class="govuk-body govuk-!-margin-bottom-4"><strong>{{ address.formattedAddressTags | join(', ') }}</strong></p>
-      {% endif %}
+        {% if address.formattedAddressTags and address.formattedAddressTags.length %}
+          <p class="govuk-body govuk-!-margin-bottom-4"><strong>{{ address.formattedAddressTags | join(', ') }}</strong></p>
+        {% endif %}
 
-      <p class="govuk-body">{{ address.formattedAddressLines | join('<br>') | safe }}</p>
+        <p class="govuk-body">{{ address.formattedAddressLines | join('<br>') | safe }}</p>
 
-      {% if address.directionsUrl %}
-        <p class="govuk-body govuk-!-margin-top-2">
-          <a class="govuk-link" href="{{ address.directionsUrl }}" target="_blank" rel="noopener noreferrer">
-            {{ text.getDirectionsLink }}
-          </a>
-        </p>
-      {% endif %}
-    {% endset %}
+        {% if address.directionsUrl %}
+          <p class="govuk-body govuk-!-margin-top-2">
+            <a class="govuk-link" href="{{ address.directionsUrl }}" target="_blank" rel="noopener noreferrer">
+              {{ text.getDirectionsLink }}
+            </a>
+          </p>
+        {% endif %}
+      {% endset %}
 
-    {% set rows = rows.concat([
-      {
-        key: {
-          text: text.addressTypes[address.addressType] or address.addressType
-        },
-        value: {
-          html: addressHtml
+      {% set rows = rows.concat([
+        {
+          key: {
+            text: text.addressTypes[address.addressType] or address.addressType
+          },
+          value: {
+            html: addressHtml
+          }
         }
-      }
-    ]) %}
-  {% endfor %}
+      ]) %}
+    {% endfor %}
 
-  {{ govukSummaryList({
-    rows: rows
-  }) }}
+    {{ govukSummaryList({
+      rows: rows
+    }) }}
+  </section>
 {% endmacro %}
