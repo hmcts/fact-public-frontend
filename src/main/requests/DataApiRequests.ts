@@ -41,7 +41,7 @@ export class DataApiRequests {
   /**
    * Request all court details from the API
    */
-  public async getAllCourts(): Promise<Court[] | HttpStatusCode> {
+  public async getAll(): Promise<Court[] | HttpStatusCode> {
     try {
       const response = await dataApi.get('courts/all.json');
       return courtSchema.array().parse(response.data);

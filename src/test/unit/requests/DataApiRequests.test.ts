@@ -106,7 +106,7 @@ describe('DataApiRequests', () => {
     });
   });
 
-  describe('getAllCourts', () => {
+  describe('getAll', () => {
     const mockCourt = {
       id: '1',
       name: 'Reading County Court',
@@ -136,7 +136,7 @@ describe('DataApiRequests', () => {
       const mockData = [mockCourt];
       getStub.withArgs('courts/all.json').resolves({ data: mockData });
 
-      const response = await dataApiRequests.getAllCourts();
+      const response = await dataApiRequests.getAll();
       expect(response).toEqual(mockData);
     });
   });

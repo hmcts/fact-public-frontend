@@ -2,12 +2,10 @@ import { HttpStatusCode } from 'axios';
 import { Response } from 'express';
 
 const mockGetCourt = jest.fn();
-const mockGetAllCourts = jest.fn();
 
 jest.mock('../../../main/requests/DataApiRequests', () => ({
   DataApiRequests: jest.fn().mockImplementation(() => ({
     getCourt: mockGetCourt,
-    getAllCourts: mockGetAllCourts,
   })),
 }));
 
@@ -56,23 +54,6 @@ describe('CourtController', () => {
       expect(res.status).toHaveBeenCalledWith(404);
       expect(res.render).toHaveBeenCalledWith('not-found', { some: 'content' });
       expect(req.i18n.getDataByLanguage).toHaveBeenCalledWith('en');
-    });
-  });
-
-  describe('getAllJson', () => {
-    test('should return all courts data as JSON', async () => {
-      const res = {
-        json: jest.fn(),
-      } as unknown as Response;
-      const req = {} as unknown as FactRequest;
-      const mockCourts = [{ name: 'Test Court 1' }, { name: 'Test Court 2' }];
-
-      mockGetAllCourts.mockResolvedValue(mockCourts);
-
-      await controller.getAllJson(req, res);
-
-      expect(mockGetAllCourts).toHaveBeenCalled();
-      expect(res.json).toHaveBeenCalledWith(mockCourts);
     });
   });
 });
