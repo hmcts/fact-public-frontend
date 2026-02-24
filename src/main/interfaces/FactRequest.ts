@@ -9,6 +9,7 @@ export interface FactRequest extends Request {
       cookiePolicy: object;
       notFound: object;
       error: object;
+      accessibilityStatement: object;
     };
   };
   lng?: string;
