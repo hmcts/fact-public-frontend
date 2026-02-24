@@ -25,17 +25,13 @@ test.describe('Not Found Page Content Checks', () => {
     const notFoundPage = new NotFoundPage(page);
     await notFoundPage.goto('en');
     await notFoundPage.expectMainContentToBePopulated();
-    await notFoundPage.expectHeadingToContainText(
-      'Find a Court or Tribunal'
-    );
+    await notFoundPage.expectHeadingToContainText('Find a Court or Tribunal');
   });
 
   test('should have content and show the correct page heading (welsh)', async ({ page }) => {
     const notFoundPage = new NotFoundPage(page);
     await notFoundPage.goto('cy');
     await notFoundPage.expectMainContentToBePopulated();
-    await notFoundPage.expectHeadingToContainText(
-      'Dod o hyd i lys neu dribiwnlys'
-    );
+    await notFoundPage.expectHeadingToContainText('Dod o hyd i lys neu dribiwnlys');
   });
 });
