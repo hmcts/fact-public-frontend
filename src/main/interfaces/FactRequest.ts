@@ -8,6 +8,7 @@ export interface FactRequest extends Request {
       home: object;
       notFound: object;
       error: object;
+      accessibilityStatement: object;
     };
   };
   lng?: string;

@@ -6,8 +6,12 @@ export class HomePage extends Base {
   private readonly heading = this.page.locator('h1.govuk-heading-xl');
   private readonly mainContent = this.page.locator('#main-content');
 
-  async goto(): Promise<void> {
-    await this.page.goto('/');
+  async goto(lng?: string): Promise<void> {
+    if (lng) {
+      await this.page.goto(`/?lng=${lng}`);
+    } else {
+      await this.page.goto('/');
+    }
   }
 
   async expectPageTitle(pattern: RegExp): Promise<void> {

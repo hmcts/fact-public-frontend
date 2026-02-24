@@ -31,7 +31,10 @@
     },
     {
       "text": "Accessibility statement",
-      "href": "/accessibility-statement"
+      "href": "/accessibility-statement",
+      "attributes": {
+        "id": "accessibility-statement"
+      }
     },
     {
       "text": "Terms and conditions",
