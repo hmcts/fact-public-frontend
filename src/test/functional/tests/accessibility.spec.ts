@@ -16,7 +16,7 @@ test.describe('Accessibility Page Visual & Language Checks', () => {
     const accessibilityPage = new AccessibilityPage(page);
     await accessibilityPage.goto('cy');
     await accessibilityPage.expectVisibleElements();
-    // ensure the language selection has the Welsh/Cymraeg toggle
+    // ensure the language selection has the English toggle
     await accessibilityPage.expectLanguageLinkToContainText('English');
   });
 
