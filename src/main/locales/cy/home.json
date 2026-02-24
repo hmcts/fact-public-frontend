@@ -1,3 +1,36 @@
 {
-  "pageTitle": "Default page template in Welsh"
+  "pageTitle": "Find a Court or Tribunal - GOV.UK",
+  "main": {
+    "intro": "Defnyddiwch y gwasanaeth hwn i ddod o hyd i lys neu dribiwnlys yng Nghymru neu Loegr",
+    "bullets": [
+      "cyfeiriad",
+      "manylion cyswllt",
+      "amseroedd agor",
+      "gwybodaeth am yr adeilad e.e. mynediad i’r anabl neu parcio",
+      "fy helpu i gael diweddariad"
+    ],
+    "start_button_text": "Dechrau rŵan"
+  },
+  "h2": "Cyn chwilio",
+  "cy_info": {
+    "prefix": "Mae’r gwasanaeth ar-lein ar gael hefyd yn ",
+    "href": "/?lng=en",
+    "link_text": "Saesneg (English)",
+    "suffix": "."
+  },
+  "nir_info": {
+    "prefix": "Ni ellir defnyddio’r gwasanaeth hwn yng Ngogledd Iwerddon. Cysyllter â ",
+    "href": "https://www.justice-ni.gov.uk/topics/courts-and-tribunals",
+    "link_text": "llysoedd a thribiwnlysoedd Gogledd Iwerddon (yn agor mewn tab newydd)",
+    "suffix": " am gymorth."
+  },
+  "fee_advice": "Ni allwch ddefnyddio’r gwasanaeth hwn i dalu ffioedd llys.",
+  "sct_info": {
+    "intro": "Cyfyngir y gwasanaeth hwn yn Yr Alban i:",
+    "bullets": ["Apeliadau mewnfudo", "Apeliadau budd-daliadau", "Apeliadau hawliadau cyflogaeth"],
+    "prefix": "Cysyllter â ",
+    "href": "https://www.scotcourts.gov.uk/courts-and-tribunals/",
+    "link_text": "llysoedd a thribiwnlysoedd Yr Alban (yn agor mewn tab newydd)",
+    "suffix": " ynglŷn â gwasanaethau eraill."
+  }
 }

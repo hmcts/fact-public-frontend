@@ -1,15 +1,9 @@
 {
+  "pageTitle": "Find a Court or Tribunal - GOV.UK",
   "serviceName": "Dod o hyd i lys neu dribiwnlys ",
   "feedback": "Mae hwn yn wasanaeth newydd - bydd eich <a class=\"govuk-link\" href=\"https://www.smartsurvey.co.uk/s/feedbackFaCT\">adborth</a> yn ein helpu ni i’w wella. ",
   "languageToggle": "<a href=\"?lng=en\" class=\"govuk-link fact-language\">English</a>",
   "backLink": "Yn ôl",
-  "help": "Cymorth",
-  "contact": "Cysylltu",
-  "privacy": "Preifatrwydd",
-  "cookies": "Cwcis",
-  "accessibility": "Datganiad hygyrchedd",
-  "termsAndConditions": "Telerau ac amodau",
-  "usingServicesInWelsh": "Rhestr o Wasanaethau Cymraeg",
   "cookieBannerH1": "Cwcis ar Find a Court or Tribunal",
   "cookieBannerP1": "Rydym yn defnyddio cwcis hanfodol i wneud i'r gwasanaeth hwn weithio.",
   "cookieBannerP2": "Hoffem osod cwcis ychwanegol fel y gallwn gofio eich gosodiadau, deall sut mae pobl yn defnyddio'r gwasanaeth a gwella gwasanaethau'r llywodraeth.",
@@ -24,20 +18,20 @@
       "href": "https://www.gov.uk/help"
     },
     {
+      "text": "Cysylltwch",
+      "href": "https://www.gov.uk/contact"
+    },
+    {
       "text": "Preifatrwydd",
-      "href": "https://www.gov.uk/help/privacy-notice"
+      "href": "https://www.gov.uk/government/organisations/hm-courts-and-tribunals-service/about/personal-information-charter.cy#polisi-preifatrwydd-glltef"
     },
     {
       "text": "Cwcis",
-      "href": "/cookie-policy"
+      "href": "/cookies"
     },
     {
       "text": "Datganiad hygyrchedd",
       "href": "/accessibility-statement"
-    },
-    {
-      "text": "Cysylltwch",
-      "href": "https://www.gov.uk/contact"
     },
     {
       "text": "Telerau ac amodau",

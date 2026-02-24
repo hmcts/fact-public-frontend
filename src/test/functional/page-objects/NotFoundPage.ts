@@ -2,7 +2,7 @@ import { expect } from '@playwright/test';
 
 import { Base } from './base';
 
-export class HomePage extends Base {
+export class NotFoundPage extends Base {
   private readonly header = this.page.locator('header');
   private readonly title = this.page.locator('section.govuk-service-navigation');
   private readonly phaseBanner = this.page.locator('div.govuk-phase-banner');

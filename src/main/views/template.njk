@@ -1,8 +1,10 @@
 {% extends "govuk/template.njk" %}
+
 {% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
 {% from "govuk/components/service-navigation/macro.njk" import govukServiceNavigation %}
 {% from "govuk/components/cookie-banner/macro.njk" import govukCookieBanner %}
 
+{% block pageTitle %}{{ pageTitle }}{% endblock %}
 
 {% block head %}
   <!-- Google Tag Manager -->
@@ -98,7 +100,6 @@
   }) }}
 
 {% endblock %}
-
 
 {% block beforeContent %}
   {{ govukPhaseBanner({
