@@ -125,7 +125,7 @@
     "@isaacs/brace-expansion": "5.0.1",
     "diff": "8.0.3",
     "undici": "7.22.0",
-    "tar": "7.5.8",
+    "tar": "7.5.9",
     "@jsonjoy.com/util": "1.9.0",
     "lodash": "4.17.23",
     "axios": "1.13.5"
