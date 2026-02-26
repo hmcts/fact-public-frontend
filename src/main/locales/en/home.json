@@ -1,3 +1,36 @@
 {
-  "pageTitle": "Default page template"
+  "pageTitle": "Find a Court or Tribunal - GOV.UK",
+  "main": {
+    "intro": "Use this service to find a court or tribunal in England and Wales",
+    "bullets": [
+      "address",
+      "contact details",
+      "opening times",
+      "building information e.g. disabled access or parking",
+      "to help me get an update"
+    ],
+    "start_button_text": "Start now"
+  },
+  "h2": "Before you search",
+  "cy_info": {
+    "prefix": "The online service is also available in ",
+    "href": "/?lng=cy",
+    "link_text": "Welsh (Cymraeg)",
+    "suffix": "."
+  },
+  "nir_info": {
+    "prefix": "You cannot use this service if you live in Northern Ireland. Contact the ",
+    "href": "https://www.justice-ni.gov.uk/topics/courts-and-tribunals",
+    "link_text": "Northern Ireland Courts and Tribunals (opens in new tab)",
+    "suffix": " for help."
+  },
+  "fee_advice": "You cannot use this service to pay court fees.",
+  "sct_info": {
+    "intro": "This service is limited in Scotland to:",
+    "bullets": ["Immigration appeals", "Benefit appeals", "Employment claims appeals"],
+    "prefix": "Contact the ",
+    "href": "https://www.scotcourts.gov.uk/courts-and-tribunals/",
+    "link_text": "Scottish Courts and Tribunals (opens in new tab)",
+    "suffix": " for other services."
+  }
 }

@@ -39,4 +39,16 @@ export default class CourtController {
       court: viewModel,
     });
   }
+
+  @route('/:slug' + '.json')
+  @GET()
+  public async getJson(req: FactRequest, res: Response): Promise<void> {
+    const result = await dataApiRequests.getCourt(req.params.slug as string);
+
+    if (result === HttpStatusCode.NotFound) {
+      return res.status(404).render('not-found', req.i18n.getDataByLanguage(req.lng).notFound);
+    }
+
+    res.json(result);
+  }
 }

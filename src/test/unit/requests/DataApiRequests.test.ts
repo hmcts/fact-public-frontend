@@ -1,80 +1,172 @@
+import { Logger } from '@hmcts/nodejs-logging';
 import { HttpStatusCode } from 'axios';
-import sinon from 'sinon';
+import { type SinonSandbox, createSandbox } from 'sinon';
 
 import { DataApiRequests } from '../../../main/requests/DataApiRequests';
 import { dataApi } from '../../../main/requests/utils/axiosConfig';
 import { courtSchema } from '../../../main/schemas/courtSchema';
 
-const dataApiRequests = new DataApiRequests();
-
-const errorResponse = {
-  response: {
-    data: 'test error',
-  },
-};
-
-const errorMessage = {
-  message: 'test',
-};
-
 describe('DataApiRequests', () => {
-  let getStub: sinon.SinonStub;
-  let parseStub: sinon.SinonStub;
+  let sandbox: SinonSandbox;
+  let requests: DataApiRequests;
 
   beforeEach(() => {
-    sinon.restore();
-    getStub = sinon.stub(dataApi, 'get');
-    parseStub = sinon.stub(courtSchema, 'parse');
+    sandbox = createSandbox();
+    requests = new DataApiRequests();
+    const appLogger = Logger.getLogger('app');
+    sandbox.stub(appLogger, 'info');
+    sandbox.stub(appLogger, 'error');
   });
 
-  it('returns true when health status is UP', async () => {
-    getStub.withArgs('/health').resolves({ data: { status: 'UP' } });
-    const response = await dataApiRequests.checkHealth();
-    expect(response).toBe(true);
+  afterEach(() => {
+    sandbox.restore();
   });
 
-  it('returns false when health status is not UP', async () => {
-    getStub.withArgs('/health').resolves({ data: { status: 'DOWN' } });
-    const response = await dataApiRequests.checkHealth();
-    expect(response).toBe(false);
-  });
+  describe('checkHealth', () => {
+    it('returns true when Data API status is UP', async () => {
+      sandbox
+        .stub(dataApi, 'get')
+        .withArgs('/health')
+        .resolves({ data: { status: 'UP' } });
 
-  it('returns false on error response', async () => {
-    getStub.withArgs('/health').rejects(errorResponse);
-    const response = await dataApiRequests.checkHealth();
-    expect(response).toBe(false);
-  });
-
-  it('returns false on error message', async () => {
-    getStub.withArgs('/health').rejects(errorMessage);
-    const response = await dataApiRequests.checkHealth();
-    expect(response).toBe(false);
-  });
-
-  it('returns parsed court details on success', async () => {
-    const payload = { some: 'data' };
-    const parsed = { id: '1' };
-    getStub.withArgs('/courts/slug/test-slug/v1').resolves({ data: payload });
-    parseStub.withArgs(payload).returns(parsed);
-
-    const response = await dataApiRequests.getCourtDetails('test-slug');
-    expect(response).toBe(parsed);
-  });
-
-  it('returns error status when API responds with an error status', async () => {
-    getStub.withArgs('/courts/slug/test-slug/v1').rejects({
-      isAxiosError: true,
-      response: { status: HttpStatusCode.BadGateway },
+      await expect(requests.checkHealth()).resolves.toBe(true);
     });
 
-    const response = await dataApiRequests.getCourtDetails('test-slug');
-    expect(response).toBe(HttpStatusCode.BadGateway);
+    it('returns false when Data API status is not UP', async () => {
+      sandbox
+        .stub(dataApi, 'get')
+        .withArgs('/health')
+        .resolves({ data: { status: 'DOWN' } });
+
+      await expect(requests.checkHealth()).resolves.toBe(false);
+    });
+
+    it('returns false when health request throws', async () => {
+      sandbox.stub(dataApi, 'get').withArgs('/health').rejects(new Error('network issue'));
+
+      await expect(requests.checkHealth()).resolves.toBe(false);
+    });
   });
 
-  it('returns internal server error when API error has no status', async () => {
-    getStub.withArgs('/courts/slug/test-slug/v1').rejects({ isAxiosError: true });
+  describe('getCourtDetails', () => {
+    it('returns parsed court details on success', async () => {
+      const payload = { raw: 'court' };
+      const parsedCourt = { id: '1' };
+      sandbox.stub(dataApi, 'get').withArgs('/courts/slug/test-slug/v1').resolves({ data: payload });
+      sandbox
+        .stub(courtSchema, 'parse')
+        .withArgs(payload)
+        .returns(parsedCourt as never);
 
-    const response = await dataApiRequests.getCourtDetails('test-slug');
-    expect(response).toBe(HttpStatusCode.InternalServerError);
+      await expect(requests.getCourtDetails('test-slug')).resolves.toBe(parsedCourt);
+    });
+
+    it('returns API status code for axios errors with a response status', async () => {
+      sandbox
+        .stub(dataApi, 'get')
+        .withArgs('/courts/slug/test-slug/v1')
+        .rejects({
+          isAxiosError: true,
+          response: { status: HttpStatusCode.BadGateway },
+        });
+
+      await expect(requests.getCourtDetails('test-slug')).resolves.toBe(HttpStatusCode.BadGateway);
+    });
+
+    it('returns internal server error for non-axios errors', async () => {
+      sandbox.stub(dataApi, 'get').withArgs('/courts/slug/test-slug/v1').rejects(new Error('boom'));
+
+      await expect(requests.getCourtDetails('test-slug')).resolves.toBe(HttpStatusCode.InternalServerError);
+    });
+
+    it('returns internal server error for axios errors with no status', async () => {
+      sandbox.stub(dataApi, 'get').withArgs('/courts/slug/test-slug/v1').rejects({
+        isAxiosError: true,
+        response: {},
+      });
+
+      await expect(requests.getCourtDetails('test-slug')).resolves.toBe(HttpStatusCode.InternalServerError);
+    });
+  });
+
+  describe('getCourt', () => {
+    it('returns parsed court data on success', async () => {
+      const payload = { raw: 'court' };
+      const parsedCourt = { id: 'court-1' };
+
+      sandbox.stub(dataApi, 'get').withArgs('courts/slug/reading-county-court').resolves({ data: payload });
+      sandbox
+        .stub(courtSchema, 'parse')
+        .withArgs(payload)
+        .returns(parsedCourt as never);
+
+      await expect(requests.getCourt('reading-county-court')).resolves.toBe(parsedCourt);
+    });
+
+    it('returns API status code for axios errors with response status', async () => {
+      sandbox
+        .stub(dataApi, 'get')
+        .withArgs('courts/slug/reading-county-court')
+        .rejects({
+          isAxiosError: true,
+          response: { status: HttpStatusCode.NotFound },
+        });
+
+      await expect(requests.getCourt('reading-county-court')).resolves.toBe(HttpStatusCode.NotFound);
+    });
+
+    it('returns internal server error for non-axios errors', async () => {
+      sandbox.stub(dataApi, 'get').withArgs('courts/slug/reading-county-court').rejects(new Error('boom'));
+
+      await expect(requests.getCourt('reading-county-court')).resolves.toBe(HttpStatusCode.InternalServerError);
+    });
+
+    it('returns internal server error for axios errors without status', async () => {
+      sandbox.stub(dataApi, 'get').withArgs('courts/slug/reading-county-court').rejects({
+        isAxiosError: true,
+        response: {},
+      });
+
+      await expect(requests.getCourt('reading-county-court')).resolves.toBe(HttpStatusCode.InternalServerError);
+    });
+  });
+
+  describe('getAll', () => {
+    it('returns parsed courts array on success', async () => {
+      const payload = [{ raw: 'court-a' }];
+      const parsedCourts = [{ id: 'a' }];
+      const arrayParseStub = sandbox.stub().withArgs(payload).returns(parsedCourts);
+
+      sandbox.stub(dataApi, 'get').withArgs('courts/all.json').resolves({ data: payload });
+      sandbox.stub(courtSchema, 'array').returns({ parse: arrayParseStub } as never);
+
+      await expect(requests.getAll()).resolves.toBe(parsedCourts);
+    });
+
+    it('returns API status code for axios errors with response status', async () => {
+      sandbox
+        .stub(dataApi, 'get')
+        .withArgs('courts/all.json')
+        .rejects({
+          isAxiosError: true,
+          response: { status: HttpStatusCode.BadRequest },
+        });
+
+      await expect(requests.getAll()).resolves.toBe(HttpStatusCode.BadRequest);
+    });
+
+    it('returns internal server error for non-axios errors', async () => {
+      sandbox.stub(dataApi, 'get').withArgs('courts/all.json').rejects(new Error('boom'));
+
+      await expect(requests.getAll()).resolves.toBe(HttpStatusCode.InternalServerError);
+    });
+
+    it('returns internal server error for axios errors with no status', async () => {
+      sandbox.stub(dataApi, 'get').withArgs('courts/all.json').rejects({
+        isAxiosError: true,
+      });
+
+      await expect(requests.getAll()).resolves.toBe(HttpStatusCode.InternalServerError);
+    });
   });
 });

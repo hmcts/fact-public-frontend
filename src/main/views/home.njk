@@ -1,7 +1,64 @@
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
 {% extends "template.njk" %}
 
 {% block content %}
-  <h1 class="govuk-heading-xl">
-    {{ pageTitle }}
-  </h1>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-xl">{% if serviceName %} {{ serviceName }} {% endif %}</h1>
+
+      <p class="govuk-body-m">{{ main.intro }}</p>
+      <ul class="govuk-list govuk-list--bullet">
+        {% for bullet in main.bullets %}
+          <li>{{ bullet }}</li>
+        {% endfor %}
+      </ul>
+
+      {{ govukButton({
+        text: main.start_button_text,
+        href: "/search-option",
+        classes: "govuk-!-margin-top-2 govuk-!-margin-bottom-8",
+        isStartButton: true
+      }) }}
+
+      <h2 class="govuk-heading-m">{{ h2 }}</h2>
+
+      <p class="govuk-inset-text">
+        {{ cy_info.prefix }}
+        <a class="govuk-link" href="{{ cy_info.href }}">
+            {{ cy_info.link_text }}
+        </a>
+        {{ cy_info.suffix }}
+      </p>
+
+      <p class="govuk-body-m">
+        {{ nir_info.prefix }}
+        <a rel="noreferrer noopener" target="_blank" href="{{ nir_info.href }}" class="govuk-link">
+          {{ nir_info.link_text }}
+        </a>
+        {{ nir_info.suffix }}
+      </p>
+
+      <p class="govuk-body-m">{{ fee_advice }}</p>
+
+      <div class="govuk-body-m">
+        {{ sct_info.intro }}
+        <ul>
+          {% for bullet in sct_info.bullets %}
+            <li class="govuk-body-m">{{ bullet }}</li>
+          {% endfor -%}
+        </ul>
+        {{ sct_info.prefix }}
+        <a rel="noreferrer noopener" target="_blank" href="{{ sct_info.href }}" class="govuk-link">
+          {{ sct_info.link_text }}
+        </a>
+        {{ sct_info.suffix }}
+      </div>
+
+    </div>
+  </div>
+
 {% endblock %}
+

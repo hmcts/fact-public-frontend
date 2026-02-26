@@ -39,4 +39,35 @@ export class DataApiRequests {
         : HttpStatusCode.InternalServerError;
     }
   }
+
+  /**
+   * Request court details by slug from the API
+   * @param slug The court slug identifier
+   */
+  public async getCourt(slug: string): Promise<Court | HttpStatusCode> {
+    try {
+      const response = await dataApi.get(`courts/slug/${slug}`);
+      return courtSchema.parse(response.data);
+    } catch (error: unknown) {
+      logger.error(`Error fetching court for slug ${slug}:`, error);
+      return isAxiosError(error) && error.response?.status
+        ? (error.response.status as HttpStatusCode)
+        : HttpStatusCode.InternalServerError;
+    }
+  }
+
+  /**
+   * Request all court details from the API
+   */
+  public async getAll(): Promise<Court[] | HttpStatusCode> {
+    try {
+      const response = await dataApi.get('courts/all.json');
+      return courtSchema.array().parse(response.data);
+    } catch (error: unknown) {
+      logger.error('Error fetching court details:', error);
+      return isAxiosError(error) && error.response?.status
+        ? (error.response.status as HttpStatusCode)
+        : HttpStatusCode.InternalServerError;
+    }
+  }
 }

@@ -2,7 +2,7 @@ import { expect } from '@playwright/test';
 
 import { Base } from './base';
 
-export class HomePage extends Base {
+export class AccessibilityPage extends Base {
   private readonly header = this.page.locator('header');
   private readonly title = this.page.locator('section.govuk-service-navigation');
   private readonly phaseBanner = this.page.locator('div.govuk-phase-banner');
@@ -13,9 +13,9 @@ export class HomePage extends Base {
 
   async goto(lng?: string): Promise<void> {
     if (lng) {
-      await this.page.goto(`/?lng=${lng}`);
+      await this.page.goto(`/accessibility-statement?lng=${lng}`);
     } else {
-      await this.page.goto('/');
+      await this.page.goto('/accessibility-statement');
     }
   }
 
