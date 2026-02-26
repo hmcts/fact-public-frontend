@@ -71,10 +71,10 @@ const courtContactDescriptionSchema = z.object({
 
 const courtContactDetailSchema = z.object({
   courtContactDescriptionId: z.string(),
-  explanation: z.string().nullable(),
-  explanationCy: z.string().nullable(),
-  email: z.string().nullable(),
-  phoneNumber: z.string().nullable(),
+  explanation: z.string(),
+  explanationCy: z.string(),
+  email: z.string(),
+  phoneNumber: z.string(),
   courtContactDescription: courtContactDescriptionSchema,
 });
 
@@ -130,7 +130,7 @@ const hearingEnhancementEquipmentSchema = z.enum([
 
 const courtAccessibilityOptionSchema = z.object({
   accessibleParking: z.boolean(),
-  accessibleParkingPhoneNumber: z.string().nullable(),
+  accessibleParkingPhoneNumber: z.string(),
   accessibleToiletDescription: z.string().nullable(),
   accessibleToiletDescriptionCy: z.string().nullable(),
   accessibleEntrance: z.boolean(),
