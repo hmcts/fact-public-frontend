@@ -10,7 +10,6 @@ import { mockRequest } from '../mocks/mockRequest';
 jest.mock('../../../main/requests/DataApiRequests', () => {
   const dataApiMock = {
     getCourtDetails: jest.fn(),
-    getCourt: jest.fn(),
   };
   return {
     __dataApiMock: dataApiMock,
@@ -30,7 +29,7 @@ jest.mock('../../../main/services/CourtService', () => {
 
 const getMocks = () => {
   const dataApiModule = require('../../../main/requests/DataApiRequests') as {
-    __dataApiMock: { getCourtDetails: jest.Mock; getCourt: jest.Mock };
+    __dataApiMock: { getCourtDetails: jest.Mock };
   };
   const courtServiceModule = require('../../../main/services/CourtService') as {
     __courtServiceMock: { formatData: jest.Mock };
@@ -71,7 +70,6 @@ describe('CourtController', () => {
   beforeEach(() => {
     const { dataApiMock, courtServiceMock } = getMocks();
     dataApiMock.getCourtDetails.mockReset();
-    dataApiMock.getCourt.mockReset();
     courtServiceMock.formatData.mockReset();
   });
 
@@ -156,11 +154,11 @@ describe('CourtController', () => {
       const court = buildCourt({ slug: 'test-court' });
 
       const { dataApiMock } = getMocks();
-      dataApiMock.getCourt.mockResolvedValue(court);
+      dataApiMock.getCourtDetails.mockResolvedValue(court);
 
       await controller.getJson(req, res);
 
-      expect(dataApiMock.getCourt).toHaveBeenCalledWith('test-court');
+      expect(dataApiMock.getCourtDetails).toHaveBeenCalledWith('test-court');
       expect(res.json).toHaveBeenCalledWith(court);
     });
 
@@ -179,11 +177,11 @@ describe('CourtController', () => {
       } as unknown as Response;
 
       const { dataApiMock } = getMocks();
-      dataApiMock.getCourt.mockResolvedValue(HttpStatusCode.NotFound);
+      dataApiMock.getCourtDetails.mockResolvedValue(HttpStatusCode.NotFound);
 
       await controller.getJson(req, res);
 
-      expect(dataApiMock.getCourt).toHaveBeenCalledWith('unknown-court');
+      expect(dataApiMock.getCourtDetails).toHaveBeenCalledWith('unknown-court');
       expect(req.i18n.getDataByLanguage).toHaveBeenCalledWith('en');
       expect(res.status).toHaveBeenCalledWith(404);
       expect(res.render).toHaveBeenCalledWith('not-found', { heading: 'Not found JSON' });

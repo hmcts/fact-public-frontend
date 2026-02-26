@@ -89,48 +89,6 @@ describe('DataApiRequests', () => {
     });
   });
 
-  describe('getCourt', () => {
-    it('returns parsed court data on success', async () => {
-      const payload = { raw: 'court' };
-      const parsedCourt = { id: 'court-1' };
-
-      sandbox.stub(dataApi, 'get').withArgs('courts/slug/reading-county-court').resolves({ data: payload });
-      sandbox
-        .stub(courtSchema, 'parse')
-        .withArgs(payload)
-        .returns(parsedCourt as never);
-
-      await expect(requests.getCourt('reading-county-court')).resolves.toBe(parsedCourt);
-    });
-
-    it('returns API status code for axios errors with response status', async () => {
-      sandbox
-        .stub(dataApi, 'get')
-        .withArgs('courts/slug/reading-county-court')
-        .rejects({
-          isAxiosError: true,
-          response: { status: HttpStatusCode.NotFound },
-        });
-
-      await expect(requests.getCourt('reading-county-court')).resolves.toBe(HttpStatusCode.NotFound);
-    });
-
-    it('returns internal server error for non-axios errors', async () => {
-      sandbox.stub(dataApi, 'get').withArgs('courts/slug/reading-county-court').rejects(new Error('boom'));
-
-      await expect(requests.getCourt('reading-county-court')).resolves.toBe(HttpStatusCode.InternalServerError);
-    });
-
-    it('returns internal server error for axios errors without status', async () => {
-      sandbox.stub(dataApi, 'get').withArgs('courts/slug/reading-county-court').rejects({
-        isAxiosError: true,
-        response: {},
-      });
-
-      await expect(requests.getCourt('reading-county-court')).resolves.toBe(HttpStatusCode.InternalServerError);
-    });
-  });
-
   describe('getAll', () => {
     it('returns parsed courts array on success', async () => {
       const payload = [{ raw: 'court-a' }];
