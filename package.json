@@ -129,7 +129,7 @@
     "@jsonjoy.com/util": "1.9.0",
     "lodash": "4.17.23",
     "axios": "1.13.5",
-    "minimatch": "^10.2.3"
+    "minimatch": "^3.1.2"
   },
   "packageManager": "yarn@4.12.0"
 }
