@@ -1,0 +1,82 @@
+{
+  "title": "Dewisiadau Cwcis - Dod o hyd i Lys neu Dribiwnlys - GOV.UK",
+  "serviceName": "Dod o hyd i Lys neu Dribiwnlys",
+  "h1": "Cwcis",
+  "p1": "Ffeiliau sy'n cael eu cadw ar eich ffôn symudol, tabled neu gyfrifiadur yw cwcis. Mae angen cwcis ar y rhan fwyaf o wefannau iddynt weithio'n iawn.",
+  "p2": "Mae'r wefan hon yn defnyddio cwcis i:",
+  "bullets": [
+    "storio eich dewis iaith",
+    "storio eich dewisiadau cwcis",
+    "mesur sut ydych chi'n defnyddio'r gwasanaeth fel y gellir ei wella"
+  ],
+  "h2": "Sut mae'r gwasanaeth hwn yn defnyddio cwcis",
+  "caption": "Manylion y cwci",
+  "name": "Enw",
+  "purpose": "Pwrpas",
+  "expires": "Dod i ben",
+  "saved": "Cafodd eich gosodiadau cwcis eu cadw",
+  "additionalCookies": "Gall gwasanaethau'r llywodraeth osod cwcis ychwanegol ac, os felly, bydd ganddynt bolisi a baner cwcis eu hunain.",
+  "homePageLink": "Ewch i'r hafan",
+
+  "language_": {
+    "header": "1. Storio eich dewis iaith",
+    "i18nDescription": "Eich dewis iaith: Cymraeg neu Saesneg",
+    "i18nDuration": "1 flwyddyn"
+  },
+  "preferences": {
+    "header": "2. Storio eich dewisiadau cwcis",
+    "factCookiePreferencesDescription": "Eich dewisiadau cwcis",
+    "factCookiePreferencesDuration": "1 flwyddyn"
+  },
+  "analytics": {
+    "header": "3. Mesur y defnydd a wneir o'r wefan",
+    "p1": "Rydym yn defnyddio meddalwedd Google Analytics i gasglu gwybodaeth am sut rydych yn defnyddio'r gwasanaeth hwn. Rydym yn gwneud hyn i helpu i sicrhau bod y gwasanaeth yn bodloni anghenion ei ddefnyddwyr ac i'n helpu ni i wneud gwelliannau. Nid ydym yn caniatáu i Google ddefnyddio neu rannu'r data am sut rydych yn defnyddio'r wefan hon.",
+    "gaDescription": "Cyfeirnod a gynhyrchir ar hap a ddefnyddir i adnabod defnyddwyr gwahanol a chyfarwyddo gwefannau cyfeirio a chyfrif nifer y defnyddwyr a nifer y sesiynau",
+    "gaDuration": "2 flynedd",
+    "gidDescription": "Fe'i ddefnyddir i wahaniaethu rhwng defnyddwyr",
+    "gidDuration": "24 awr",
+    "gatDescription": "Fe'i ddefnyddir i reoli cyfradd y ceisiadau a ganiateir ar y wefan",
+    "gatDuration": "1 munud"
+  },
+  "apm": {
+    "header": "4. To measure application performance",
+    "p1": "Rydym yn defnyddio Platfform Deallusrwydd Meddalwedd Dynatrace i ddarparu Gwasanaeth Monitro Perfformiad i gasglu gwybodaeth am sut yr ydych yn defnyddio gwasanaethau GLlTEF. Rydym yn gwneud hyn i fonitro gwasanaethau GLlTEF er mwyn datrys problemau yn ein gwasanaethau a chasglu data ar sut y gallwn eu gwella. Mae GLlTEF yn storio gwybodaeth am:",
+    "bullets": ["Perfformiad y wefan", "Y defnydd a wneir o'r wefan", "Ymddygiad defnyddwyr"],
+    "p2": "Cyflwynir yr wybodaeth angenrheidiol yn y Gwasanaeth Monitro Perfformiad at y dibenion a nodwyd uchod. Nid ydym yn defnyddio neu’n rhannu'r wybodaeth ar gyfer unrhyw bwrpas arall. Nid ydym yn caniatáu i Dynatrace ddefnyddio neu rannu'r wybodaeth ar gyfer unrhyw bwrpas arall.",
+    "dtCookieDescription": "Olrhain ymweliad ar draws ceisiadau amryfal",
+    "dtCookieDuration": "Diwedd y sesiwn",
+    "dtLatCDescription": "Mesur natur gudd y gweinydd i fonitro perfformiad y gwasanaeth",
+    "dtLatCDuration": "Diwedd y sesiwn",
+    "dtPCDescription": "Canfod pwyntiau terfyn priodol ar gyfer trosglwyddo tywysydd: mae’n cynnwys rhif adnabod y sesiwn at ddibenion cydberthyniad",
+    "dtPCDuration": "Diwedd y sesiwn",
+    "dtSaDescription": "Storfa gyfryngol ar gyfer gweithrediadau rhychwantu tudalennau",
+    "dtSaDuration": "Diwedd y sesiwn",
+    "rxVisitorDescription": "Rhif adnabod ymwelydd i gyd-berthnasu sesiynau",
+    "rxVisitorDuration": "1 blwyddyn",
+    "rxvtDescription": "Terfyn amser y sesiwn",
+    "rxvtDuration": "Diwedd y sesiwn"
+  },
+  "optionsHeader1": "Caniatáu cwcis sy’n mesur defnydd o'r wefan?",
+  "optionsHeader2": "Caniatáu cwcis sy'n mesur y broses o fonitro perfformiad gwefannau?",
+  "analyticsCookieOptions": [
+    {
+      "value": "on",
+      "text": "Defnyddio cwcis sy’n mesur fy nefnydd o'r wefan"
+    },
+    {
+      "value": "off",
+      "text": "Peidio â defnyddio cwcis sy'n mesur fy nefnydd o'r wefan"
+    }
+  ],
+  "performanceCookieOptions": [
+    {
+      "value": "on",
+      "text": "Defnyddio cwcis sy’n mesur y broses o fonitro perfformiad gwefannau"
+    },
+    {
+      "value": "off",
+      "text": "Peidio â defnyddio cwcis sy’n mesur y broses o fonitro perfformiad gwefannau"
+    }
+  ],
+  "saveText": "Cadw"
+}

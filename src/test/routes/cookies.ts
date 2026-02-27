@@ -3,14 +3,14 @@ import request from 'supertest';
 
 import { app } from '../../main/app';
 
-describe('Cookie policy page', () => {
+describe('Cookies page', () => {
   describe('on GET', () => {
-    test('should return cookie policy page', async () => {
+    test('should return cookies page', async () => {
       await request(app)
-        .get('/cookie-policy')
+        .get('/cookies')
         .expect(res => {
           expect(res.status).to.equal(200);
-          expect(res.text).to.contain('Cookie Policy');
+          expect(res.text).to.contain('Cookies');
         });
     });
   });
