@@ -74,7 +74,7 @@
 
       {{ renderAddresses(court.courtAddresses, addresses) }}
       <hr class="govuk-section-break govuk-section-break--m">
-      {{ renderOpeningHours(court.openingHoursByType, openingHours) }}
+      {{ renderOpeningHours(court.openingHoursByType, court.counterService, openingHours, htmlLang) }}
 
       {% if court.courtPhotos and court.courtPhotos.length %}
         <img class="govuk-!-margin-top-4" src="{{ court.courtPhotos[0].fileLink }}" alt="{{ court.name }}">

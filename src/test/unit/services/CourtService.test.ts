@@ -186,21 +186,33 @@ describe('CourtService', () => {
 
     const openingHours = [
       {
-        dayOfWeek: 'TUESDAY',
-        openingHour: '09:00:00',
-        closingHour: '17:00:00',
+        openingTimesDetails: [
+          {
+            dayOfWeek: 'TUESDAY',
+            openingTime: '09:00:00',
+            closingTime: '17:00:00',
+          },
+        ],
         openingHourType: { name: 'B Type', nameCy: 'B' },
       },
       {
-        dayOfWeek: 'MONDAY',
-        openingHour: '10:00:00',
-        closingHour: '16:00:00',
+        openingTimesDetails: [
+          {
+            dayOfWeek: 'MONDAY',
+            openingTime: '10:00:00',
+            closingTime: '16:00:00',
+          },
+        ],
         openingHourType: { name: 'A Type', nameCy: 'A' },
       },
       {
-        dayOfWeek: 'UNKNOWN',
-        openingHour: '11:00:00',
-        closingHour: '15:00:00',
+        openingTimesDetails: [
+          {
+            dayOfWeek: 'UNKNOWN',
+            openingTime: '11:00:00',
+            closingTime: '15:00:00',
+          },
+        ],
         openingHourType: { name: 'A Type', nameCy: 'A' },
       },
     ] as Court['courtOpeningHours'];
@@ -237,6 +249,58 @@ describe('CourtService', () => {
     const service = new CourtService();
     const formatTime = (service as unknown as { formatTime: (v: string) => string }).formatTime;
     expect(formatTime('13:30:00')).toBe('1:30pm');
+  });
+
+  test('builds counter service when all help flags are false but opening times are present', () => {
+    const service = new CourtService();
+    const court: Court = {
+      ...baseCourt,
+      courtCounterServiceOpeningHours: [
+        {
+          counterService: true,
+          assistWithForms: false,
+          assistWithDocuments: false,
+          assistWithSupport: false,
+          appointmentNeeded: false,
+          appointmentContact: null,
+          openingTimesDetails: [
+            {
+              dayOfWeek: 'EVERYDAY',
+              openingTime: '09:00:00',
+              closingTime: '16:30:00',
+            },
+          ],
+          courtTypes: null,
+        },
+      ],
+    };
+
+    const viewModel = service.formatData(court, 'en');
+    expect(viewModel.counterService).not.toBeNull();
+    expect(viewModel.counterService?.counterOpenHours).toHaveLength(1);
+  });
+
+  test('builds counter service but with no counter open hours when no opening times are provided', () => {
+    const service = new CourtService();
+    const court: Court = {
+      ...baseCourt,
+      courtCounterServiceOpeningHours: [
+        {
+          counterService: true,
+          assistWithForms: true,
+          assistWithDocuments: false,
+          assistWithSupport: false,
+          appointmentNeeded: false,
+          appointmentContact: null,
+          openingTimesDetails: [],
+          courtTypes: null,
+        },
+      ],
+    };
+
+    const viewModel = service.formatData(court, 'en');
+    expect(viewModel.counterService).not.toBeNull();
+    expect(viewModel.counterService?.counterOpenHours).toHaveLength(0);
   });
 
   test('formatData enriches addresses with display fields', () => {

@@ -14,6 +14,17 @@ type OpeningHourGroup = {
   hours: OpeningHourEntry[];
 };
 
+type CounterService = {
+  courtTypes: Court['courtAddresses'][number]['courtTypes'];
+  assistWithForms: boolean;
+  assistWithDocuments: boolean;
+  assistWithSupport: boolean;
+  appointmentNeeded: boolean;
+  appointmentContact: string | null;
+  appointmentContactIsPhone: boolean;
+  counterOpenHours: OpeningHourEntry[];
+};
+
 const DAY_ORDER = ['EVERYDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'] as const;
 
 const DAY_RANK: Map<string, number> = new Map(DAY_ORDER.map((day, index) => [day, index]));
@@ -21,6 +32,7 @@ const DAY_RANK: Map<string, number> = new Map(DAY_ORDER.map((day, index) => [day
 export type CourtViewModel = Court & {
   openingHoursByType: OpeningHourGroup[];
   enquiriesPhoneNumber: string | null;
+  counterService: CounterService | null;
 };
 
 export class CourtService {
@@ -40,6 +52,7 @@ export class CourtService {
       courtOpeningHours: this.orderOpeningHours(court.courtOpeningHours),
       openingHoursByType: this.buildOpeningHoursByType(court.courtOpeningHours),
       enquiriesPhoneNumber: this.findEnquiriesPhoneNumber(court.courtContactDetails),
+      counterService: this.buildCounterService(court.courtCounterServiceOpeningHours),
     } as CourtViewModel;
   }
 
@@ -125,6 +138,43 @@ export class CourtService {
   }
 
   /**
+   * Builds counter service view model from the first configured counter service entry.
+   */
+  private buildCounterService(counterHours: Court['courtCounterServiceOpeningHours']): CounterService | null {
+    if (!counterHours.length) {
+      return null;
+    }
+
+    const counterService = counterHours[0];
+    const hasHelpItems =
+      counterService.assistWithForms || counterService.assistWithDocuments || counterService.assistWithSupport;
+    const hasOpeningTimes = counterService.openingTimesDetails.length > 0;
+
+    if (!hasHelpItems && !hasOpeningTimes) {
+      return null;
+    }
+
+    const appointmentContact = hasText(counterService.appointmentContact) ? counterService.appointmentContact : null;
+
+    return {
+      courtTypes: counterService.courtTypes ?? [],
+      assistWithForms: counterService.assistWithForms,
+      assistWithDocuments: counterService.assistWithDocuments,
+      assistWithSupport: counterService.assistWithSupport,
+      appointmentNeeded: counterService.appointmentNeeded,
+      appointmentContact,
+      appointmentContactIsPhone: appointmentContact ? this.isPhoneLikeValue(appointmentContact) : false,
+      counterOpenHours: this.sortHoursByDay(
+        counterService.openingTimesDetails.map(entry => ({
+          dayOfWeek: entry.dayOfWeek,
+          openingHour: this.formatTime(entry.openingTime),
+          closingHour: this.formatTime(entry.closingTime),
+        }))
+      ),
+    };
+  }
+
+  /**
    * Groups opening hour entries by their type name.
    */
   private groupOpeningHoursByType(openingHours: Court['courtOpeningHours']): Map<string, OpeningHourEntry[]> {
@@ -133,11 +183,13 @@ export class CourtService {
     for (const entry of openingHours) {
       const typeName = entry.openingHourType.name;
       const hours = byType.get(typeName) ?? [];
-      hours.push({
-        dayOfWeek: entry.dayOfWeek,
-        openingHour: this.formatTime(entry.openingHour),
-        closingHour: this.formatTime(entry.closingHour),
-      });
+      for (const openingTimeEntry of entry.openingTimesDetails) {
+        hours.push({
+          dayOfWeek: openingTimeEntry.dayOfWeek,
+          openingHour: this.formatTime(openingTimeEntry.openingTime),
+          closingHour: this.formatTime(openingTimeEntry.closingTime),
+        });
+      }
       byType.set(typeName, hours);
     }
 
@@ -172,5 +224,12 @@ export class CourtService {
    */
   private formatTime(value: string): string {
     return DateTime.fromFormat(value, 'HH:mm:ss', { zone: 'Europe/London' }).toFormat('h:mma').toLowerCase();
+  }
+
+  /**
+   * Returns true when a value looks like a phone number and can be used with tel:.
+   */
+  private isPhoneLikeValue(value: string): boolean {
+    return /\d/.test(value) && /^[+\d\s()-]+$/.test(value);
   }
 }

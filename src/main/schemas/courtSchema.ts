@@ -78,16 +78,25 @@ const courtContactDetailSchema = z.object({
   courtContactDescription: courtContactDescriptionSchema,
 });
 
+const openingTimesDetailSchema = z.object({
+  dayOfWeek: z.string(),
+  openingTime: z.string(),
+  closingTime: z.string(),
+});
+
+const courtTypeSchema = z.object({
+  name: z.string(),
+});
+
 const courtCounterServiceOpeningHourSchema = z.object({
   counterService: z.boolean(),
   assistWithForms: z.boolean(),
   assistWithDocuments: z.boolean(),
   assistWithSupport: z.boolean(),
   appointmentNeeded: z.boolean(),
-  appointmentContact: z.string(),
-  dayOfWeek: z.string(),
-  openingHour: z.string(),
-  closingHour: z.string(),
+  appointmentContact: z.string().nullable(),
+  openingTimesDetails: z.array(openingTimesDetailSchema),
+  courtTypes: z.array(courtTypeSchema).nullable().optional(),
 });
 
 const openingHourTypeSchema = z.object({
@@ -96,17 +105,11 @@ const openingHourTypeSchema = z.object({
 });
 
 const courtOpeningHourSchema = z.object({
-  dayOfWeek: z.string(),
-  openingHour: z.string(),
-  closingHour: z.string(),
+  openingTimesDetails: z.array(openingTimesDetailSchema),
   openingHourType: openingHourTypeSchema,
 });
 
 export const courtAddressTypeSchema = z.enum(['VISIT_US', 'WRITE_TO_US', 'VISIT_OR_CONTACT_US']);
-
-const courtTypeSchema = z.object({
-  name: z.string(),
-});
 
 const courtAddressSchema = z.object({
   addressLine1: z.string(),

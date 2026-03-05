@@ -12,6 +12,20 @@
   },
   "openingHours": {
     "heading": "Opening hours",
+    "counterService": {
+      "title": "Counter service",
+      "titleFor": "Counter service for",
+      "getHelpAbout": "Get help about:",
+      "helpItems": {
+        "forms": "Forms",
+        "documents": "Documents",
+        "support": "Support available at court"
+      },
+      "appointmentRequiredPrefix": "Available by appointment only. Book an appointment by contacting",
+      "appointmentRequiredSuffix": ".",
+      "appointmentNotNeeded": "You do not need an appointment.",
+      "counterOpen": "Counter open"
+    },
     "days": {
       "EVERYDAY": "Monday to Friday",
       "MONDAY": "Monday",

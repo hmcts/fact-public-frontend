@@ -102,7 +102,12 @@ describe('CourtController', () => {
       const res = { render: jest.fn() } as unknown as Response;
 
       const closedCourt = buildCourt({ name: 'Closed Court', slug: 'closed-court', open: false });
-      const viewModel = { ...closedCourt, openingHoursByType: [], enquiriesPhoneNumber: null } as CourtViewModel;
+      const viewModel = {
+        ...closedCourt,
+        openingHoursByType: [],
+        enquiriesPhoneNumber: null,
+        counterService: null,
+      } as CourtViewModel;
       const { dataApiMock, courtServiceMock } = getMocks();
       dataApiMock.getCourtDetails.mockResolvedValue(closedCourt);
       courtServiceMock.formatData.mockReturnValue(viewModel);
@@ -126,7 +131,12 @@ describe('CourtController', () => {
       const res = { render: jest.fn() } as unknown as Response;
 
       const openCourt = buildCourt({ name: 'Open Court', slug: 'open-court', open: true });
-      const viewModel = { ...openCourt, openingHoursByType: [], enquiriesPhoneNumber: null } as CourtViewModel;
+      const viewModel = {
+        ...openCourt,
+        openingHoursByType: [],
+        enquiriesPhoneNumber: null,
+        counterService: null,
+      } as CourtViewModel;
       const { dataApiMock, courtServiceMock } = getMocks();
       dataApiMock.getCourtDetails.mockResolvedValue(openCourt);
       courtServiceMock.formatData.mockReturnValue(viewModel);
@@ -185,6 +195,23 @@ describe('CourtController', () => {
       expect(req.i18n.getDataByLanguage).toHaveBeenCalledWith('en');
       expect(res.status).toHaveBeenCalledWith(404);
       expect(res.render).toHaveBeenCalledWith('not-found', { heading: 'Not found JSON' });
+    });
+
+    test('returns raw non-404 API status on JSON route', async () => {
+      const controller = new CourtController();
+      const req = {
+        params: { slug: 'errored-court' },
+      } as unknown as FactRequest;
+      const res = {
+        json: jest.fn(),
+      } as unknown as Response;
+
+      const { dataApiMock } = getMocks();
+      dataApiMock.getCourtDetails.mockResolvedValue(HttpStatusCode.BadGateway);
+
+      await controller.getJson(req, res);
+
+      expect(res.json).toHaveBeenCalledWith(HttpStatusCode.BadGateway);
     });
   });
 });
