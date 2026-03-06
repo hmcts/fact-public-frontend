@@ -1,7 +1,7 @@
 import { DefaultAzureCredential, DefaultAzureCredentialClientIdOptions } from '@azure/identity';
 import { Logger } from '@hmcts/nodejs-logging';
 import { Mutex } from 'async-mutex';
-import axios from 'axios';
+import axios, { InternalAxiosRequestConfig } from 'axios';
 import config from 'config';
 
 const tokenMutex = new Mutex();
@@ -46,7 +46,7 @@ function getToken(): Promise<string> {
   });
 }
 
-dataApi.interceptors.request.use(async cfg => {
+export async function processRequest(cfg: InternalAxiosRequestConfig): Promise<InternalAxiosRequestConfig> {
   const url = cfg.url ?? '';
   // don't add a bearer token for open paths
   if (!OPEN_URLS.has(url)) {
@@ -57,4 +57,8 @@ dataApi.interceptors.request.use(async cfg => {
     }
   }
   return cfg;
+}
+
+dataApi.interceptors.request.use(async cfg => {
+  return processRequest(cfg);
 });
