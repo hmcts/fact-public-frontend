@@ -7,10 +7,7 @@ export class PropertiesVolume {
   enableFor(server: Application): void {
     if (server.locals.ENV !== 'development') {
       propertiesVolume.addTo(config);
-
       this.setSecret('secrets.fact-kv.APP_INSIGHTS_CONNECTION_STRING', 'appInsights.app-insights-connection-string');
-      this.setSecret('secrets.fact-kv.public-frontend-app-reg-id', 'auth.app-reg-id');
-      this.setSecret('secrets.fact-kv.api-app-reg-id', 'auth.api-app-reg-id');
     }
   }
 

@@ -1,6 +1,8 @@
 {
-  "auth": {
-    "api-app-reg-id": "API_APP_REG_ID"
+  "secrets": {
+    "fact-kv": {
+      "API_APP_REG_ID": "API_APP_REG_ID",
+    }
   },
   "dynatrace": {
     "jstagKey": "DYNATRACE_JSTAG_KEY"

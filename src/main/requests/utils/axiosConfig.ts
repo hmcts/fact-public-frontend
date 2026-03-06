@@ -8,8 +8,8 @@ const tokenMutex = new Mutex();
 
 const OPEN_URLS = new Set<string>(['/health']);
 
-const clientAppRegId: string = config.get('auth.app-reg-id');
-const apiAppRegId: string = config.get('auth.api-app-reg-id');
+const clientAppRegId: string = config.get('secrets.fact-kv.FRONTEND_APP_REG_ID');
+const apiAppRegId: string = config.get('secrets.fact-kv.API_APP_REG_ID');
 const wlOptions: DefaultAzureCredentialClientIdOptions = {
   workloadIdentityClientId: clientAppRegId,
 };

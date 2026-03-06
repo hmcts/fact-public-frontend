@@ -11,12 +11,10 @@
   "secrets": {
     "fact-kv": {
       "APP_INSIGHTS_CONNECTION_STRING": "",
-      "SESSION_SECRET": "local-session-secret"
+      "SESSION_SECRET": "local-session-secret",
+      "FRONTEND_APP_REG_ID": "",
+      "API_APP_REG_ID": ""
     }
-  },
-  "auth": {
-    "app-reg-id": "",
-    "api-app-reg-id": ""
   },
   "dynatrace": {
     "jstagKey": "default",
