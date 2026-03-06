@@ -34,11 +34,11 @@ function getToken(): Promise<string> {
       const at = await cred.getToken(`api://${apiAppRegId}/.default`);
       // if a refresh TS has been specified, use it, otherwise
       // set it to midway between now and the expiry
-      if(at.refreshAfterTimestamp) {
+      if (at.refreshAfterTimestamp) {
         cachedTokenRefreshTS = at.refreshAfterTimestamp;
       } else {
         const lifeSpan = at.expiresOnTimestamp - Date.now();
-        cachedTokenRefreshTS = Date.now() + (lifeSpan / 2);
+        cachedTokenRefreshTS = Date.now() + lifeSpan / 2;
       }
       cachedToken = at.token;
     }
