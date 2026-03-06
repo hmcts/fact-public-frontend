@@ -4233,6 +4233,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"async-mutex@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "async-mutex@npm:0.5.0"
+  dependencies:
+    tslib: "npm:^2.4.0"
+  checksum: 10/4c6bfce1cc9cd43f723c4d96403ac5f4757f885c953b839cde6956ec8817ff39623b82d67614de10c7933e21626925882fb9bac367db7d15d7cb4f84228722c9
+  languageName: node
+  linkType: hard
+
 "async@npm:^2.6.4":
   version: 2.6.4
   resolution: "async@npm:2.6.4"
@@ -6056,6 +6065,7 @@ __metadata:
   resolution: "fact-public-frontend@workspace:."
   dependencies:
     "@axe-core/playwright": "npm:^4.10.0"
+    "@azure/identity": "npm:^4.13.0"
     "@babel/core": "npm:^7.28.6"
     "@eslint/compat": "npm:^2.0.1"
     "@eslint/eslintrc": "npm:^3.3.3"
@@ -6081,6 +6091,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": "npm:^8.53.0"
     "@typescript-eslint/parser": "npm:^8.53.0"
     applicationinsights: "npm:3.13.0"
+    async-mutex: "npm:^0.5.0"
     awilix: "npm:12.1.1"
     awilix-express: "npm:9.0.2"
     axios: "npm:1.13.5"
