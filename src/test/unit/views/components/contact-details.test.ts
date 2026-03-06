@@ -40,4 +40,33 @@ describe('Contact details macro', () => {
     expect(html).toContain('href="tel:05678"');
     expect(html).toContain('href="mailto:b@example.com"');
   });
+
+  test('renders contact headings without links when phone and email are missing', () => {
+    const template = `
+      {% from "components/contact-details.njk" import contactDetails %}
+      {{ contactDetails(courtContactDetails, contactDetailsText, language) }}
+    `;
+
+    const html = env.renderString(template, {
+      language: 'en',
+      contactDetailsText: i18n.contactDetails,
+      courtContactDetails: [
+        {
+          courtContactDescriptionId: '3',
+          explanation: 'General queries',
+          explanationCy: '',
+          email: '',
+          phoneNumber: '',
+          courtContactDescription: { name: 'General', nameCy: 'Cyffredinol' },
+        },
+      ],
+    });
+
+    expect(html).toContain('General');
+    expect(html).toContain('General queries');
+    expect(html).not.toContain('href="tel:');
+    expect(html).not.toContain('href="mailto:');
+    expect(html).not.toContain(i18n.contactDetails.telephone);
+    expect(html).not.toContain(i18n.contactDetails.email);
+  });
 });

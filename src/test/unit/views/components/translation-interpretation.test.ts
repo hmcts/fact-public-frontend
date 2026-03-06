@@ -19,4 +19,21 @@ describe('Translation and interpretation macro', () => {
     expect(html).toContain(i18n.translationAndInterpretation.infoUrlText);
     expect(html).toContain(i18n.translationAndInterpretation.opensInNewTab);
   });
+
+  test('renders external info link only when no translation contact details are provided', () => {
+    const template = `
+      {% from "components/translation-interpretation.njk" import translationInterpretation %}
+      {{ translationInterpretation(courtTranslations, translationText) }}
+    `;
+
+    const html = env.renderString(template, {
+      translationText: i18n.translationAndInterpretation,
+      courtTranslations: [{ phoneNumber: '', email: '' }],
+    });
+
+    expect(html).toContain(i18n.translationAndInterpretation.infoUrlText);
+    expect(html).not.toContain('href="tel:');
+    expect(html).not.toContain('href="mailto:');
+    expect(html).not.toContain(i18n.translationAndInterpretation.contactIntro);
+  });
 });

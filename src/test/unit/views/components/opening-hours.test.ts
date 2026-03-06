@@ -97,4 +97,63 @@ describe('Opening hours macro', () => {
     expect(html).not.toContain(i18n.openingHours.counterService.getHelpAbout);
     expect(html).not.toContain('Counter service for Civil');
   });
+
+  test('renders counter service row with partial help items and no counter open row when times are missing', () => {
+    const template = `
+      {% from "components/opening-hours.njk" import openingHours %}
+      {{ openingHours(openingHoursByType, counterService, openingHoursText, language) }}
+    `;
+
+    const html = env.renderString(template, {
+      openingHoursText: i18n.openingHours,
+      openingHoursByType: [],
+      counterService: {
+        courtTypes: [],
+        assistWithForms: true,
+        assistWithDocuments: false,
+        assistWithSupport: false,
+        appointmentNeeded: false,
+        appointmentContact: null,
+        appointmentContactIsPhone: false,
+        counterOpenHours: [],
+      },
+      language: 'en',
+    });
+
+    expect(html).toContain(i18n.openingHours.counterService.title);
+    expect(html).toContain(i18n.openingHours.counterService.getHelpAbout);
+    expect(html).toContain(i18n.openingHours.counterService.helpItems.forms);
+    expect(html).not.toContain(i18n.openingHours.counterService.helpItems.documents);
+    expect(html).not.toContain(i18n.openingHours.counterService.helpItems.support);
+    expect(html).toContain(i18n.openingHours.counterService.appointmentNotNeeded);
+    expect(html).not.toContain(i18n.openingHours.counterService.counterOpen);
+  });
+
+  test('renders appointment required text without contact when appointment is needed but no contact is provided', () => {
+    const template = `
+      {% from "components/opening-hours.njk" import openingHours %}
+      {{ openingHours(openingHoursByType, counterService, openingHoursText, language) }}
+    `;
+
+    const html = env.renderString(template, {
+      openingHoursText: i18n.openingHours,
+      openingHoursByType: [],
+      counterService: {
+        courtTypes: [],
+        assistWithForms: true,
+        assistWithDocuments: false,
+        assistWithSupport: false,
+        appointmentNeeded: true,
+        appointmentContact: '',
+        appointmentContactIsPhone: false,
+        counterOpenHours: [],
+      },
+      language: 'en',
+    });
+
+    expect(html).toContain(i18n.openingHours.counterService.appointmentRequiredPrefix);
+    expect(html).toContain(i18n.openingHours.counterService.appointmentRequiredSuffix);
+    expect(html).not.toContain('phone-link');
+    expect(html).not.toContain(i18n.openingHours.counterService.appointmentNotNeeded);
+  });
 });
