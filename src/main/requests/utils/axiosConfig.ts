@@ -8,8 +8,8 @@ const tokenMutex = new Mutex();
 
 const OPEN_URLS = new Set<string>(['/health']);
 
-const clientAppRegId: string = config.get('secrets.fact-kv.public-frontend-app-reg-id');
-const apiAppRegId: string = config.get('secrets.fact-kv.api-app-reg-id');
+const clientAppRegId: string = config.get('auth.app-reg-id');
+const apiAppRegId: string = config.get('auth.api-app-reg-id');
 const wlOptions: DefaultAzureCredentialClientIdOptions = {
   workloadIdentityClientId: clientAppRegId,
 };
@@ -30,6 +30,7 @@ function getToken(): Promise<string> {
   return tokenMutex.runExclusive(async () => {
     if (!cachedToken || Date.now() > cachedTokenRefreshTS) {
       logger.info(`using client app reg id ending: ${clientAppRegId.slice(-4)}`);
+      logger.info(`using api app reg id ending: ${apiAppRegId.slice(-4)}`);
       const cred = new DefaultAzureCredential(wlOptions);
       const at = await cred.getToken(`api://${apiAppRegId}/.default`);
       // if a refresh TS has been specified, use it, otherwise
@@ -42,6 +43,7 @@ function getToken(): Promise<string> {
       }
       cachedToken = at.token;
     }
+    logger.info(`bearer token created (last 16): ${cachedToken.slice(-16)}`);
     return cachedToken;
   });
 }
