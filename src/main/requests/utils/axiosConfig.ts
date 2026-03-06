@@ -1,4 +1,4 @@
-import { DefaultAzureCredential } from '@azure/identity';
+import { ChainedTokenCredential, EnvironmentCredential, WorkloadIdentityCredential } from '@azure/identity';
 import { Logger } from '@hmcts/nodejs-logging';
 import { Mutex } from 'async-mutex';
 import axios, { InternalAxiosRequestConfig } from 'axios';
@@ -28,7 +28,12 @@ function getToken(): Promise<string> {
     if (!cachedToken || Date.now() > cachedTokenRefreshTS) {
       logger.info(`using client app reg id ending: ${clientAppRegId.slice(-4)}`);
       logger.info(`using api app reg id ending: ${apiAppRegId.slice(-4)}`);
-      const cred = new DefaultAzureCredential();
+      const cred = new ChainedTokenCredential(
+        new WorkloadIdentityCredential({
+          tokenFilePath: process.env.AZURE_FEDERATED_TOKEN_FILE ?? '/var/run/secrets/azure/tokens/federated-token',
+        }),
+        new EnvironmentCredential()
+      );
       const at = await cred.getToken(`api://${apiAppRegId}/.default`);
       // if a refresh TS has been specified, use it, otherwise
       // set it to midway between now and the expiry

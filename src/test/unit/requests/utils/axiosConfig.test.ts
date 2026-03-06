@@ -1,4 +1,4 @@
-import { DefaultAzureCredential } from '@azure/identity';
+import { ChainedTokenCredential } from '@azure/identity';
 import { InternalAxiosRequestConfig } from 'axios';
 
 import { processRequest } from '../../../../main/requests/utils/axiosConfig';
@@ -11,7 +11,7 @@ describe('processRequest', () => {
   const mockRefreshAfterTimestamp = Date.now() + 5000;
 
   beforeEach(() => {
-    (DefaultAzureCredential as unknown as jest.Mock).mockImplementation(() => ({
+    (ChainedTokenCredential as unknown as jest.Mock).mockImplementation(() => ({
       getToken: jest.fn().mockResolvedValue({
         token: mockToken,
         expiresOnTimestamp: mockExpiresOnTimestamp,
