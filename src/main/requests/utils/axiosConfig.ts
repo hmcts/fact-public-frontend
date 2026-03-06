@@ -1,4 +1,4 @@
-import { DefaultAzureCredential, DefaultAzureCredentialClientIdOptions } from '@azure/identity';
+import { DefaultAzureCredential } from '@azure/identity';
 import { Logger } from '@hmcts/nodejs-logging';
 import { Mutex } from 'async-mutex';
 import axios, { InternalAxiosRequestConfig } from 'axios';
@@ -10,9 +10,6 @@ const OPEN_URLS = new Set<string>(['/health']);
 
 const clientAppRegId: string = config.get('secrets.fact-kv.FRONTEND_APP_REG_ID');
 const apiAppRegId: string = config.get('secrets.fact-kv.API_APP_REG_ID');
-const wlOptions: DefaultAzureCredentialClientIdOptions = {
-  workloadIdentityClientId: clientAppRegId,
-};
 
 const logger = Logger.getLogger('server');
 
@@ -31,7 +28,7 @@ function getToken(): Promise<string> {
     if (!cachedToken || Date.now() > cachedTokenRefreshTS) {
       logger.info(`using client app reg id ending: ${clientAppRegId.slice(-4)}`);
       logger.info(`using api app reg id ending: ${apiAppRegId.slice(-4)}`);
-      const cred = new DefaultAzureCredential(wlOptions);
+      const cred = new DefaultAzureCredential();
       const at = await cred.getToken(`api://${apiAppRegId}/.default`);
       // if a refresh TS has been specified, use it, otherwise
       // set it to midway between now and the expiry

@@ -3,6 +3,8 @@ import * as fs from 'fs';
 import * as https from 'https';
 import * as path from 'path';
 
+import config from 'config';
+
 import { app } from './app';
 
 const { Logger } = require('@hmcts/nodejs-logging');
@@ -15,6 +17,9 @@ let httpsServer: https.Server | null = null;
 app.locals.shutdown = false;
 
 const port: number = parseInt(process.env.PORT || '3344', 10);
+// force the client app reg id to be available as an env var
+// for the axios interceptor to use when acquiring tokens
+process.env.AZURE_CLIENT_ID = config.get('secrets.fact-kv.FRONTEND_APP_REG_ID');
 
 if (app.locals.ENV === 'development') {
   const sslDirectory = path.join(__dirname, 'resources', 'localhost-ssl');
