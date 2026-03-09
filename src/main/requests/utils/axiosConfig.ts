@@ -10,6 +10,7 @@ const OPEN_URLS = new Set<string>(['/health']);
 
 const clientAppRegId: string = config.get('secrets.fact-kv.FRONTEND_APP_REG_ID');
 const apiAppRegId: string = config.get('secrets.fact-kv.API_APP_REG_ID');
+const federatedTokenPath: string = config.get('auth.azure-identity-token');
 
 const logger = Logger.getLogger('server');
 
@@ -26,11 +27,24 @@ let cachedToken: string | null = null;
 function getToken(): Promise<string> {
   return tokenMutex.runExclusive(async () => {
     if (!cachedToken || Date.now() > cachedTokenRefreshTS) {
-      logger.info(`using client app reg id ending: ${clientAppRegId.slice(-4)}`);
-      logger.info(`using api app reg id ending: ${apiAppRegId.slice(-4)}`);
+      logger.info(`AUTH: using api app reg id ending: ${apiAppRegId.slice(-4)}`);
+
+      logger.info(`AUTH: using client app reg id ending: ${clientAppRegId.slice(-4)}`);
+      logger.info(`AUTH: using azure-identity-token path: ${federatedTokenPath}`);
+
+      logger.info(`AUTH: env.AZURE_TENANT_ID (ending): ${process.env.AZURE_TENANT_ID?.slice(-4)}`);
+      logger.info(`AUTH: env.AZURE_CLIENT_ID (ending): ${process.env.AZURE_CLIENT_ID?.slice(-4)}`);
+      if (process.env.AZURE_CLIENT_SECRET) {
+        logger.info('AUTH: env.AZURE_CLIENT_SECRET is set');
+      } else {
+        logger.info('AUTH: env.AZURE_CLIENT_SECRET is NOT set');
+      }
+      logger.info(`AUTH: env.AZURE_FEDERATED_TOKEN_FILE: ${process.env.AZURE_FEDERATED_TOKEN_FILE}`);
+
       const cred = new ChainedTokenCredential(
         new WorkloadIdentityCredential({
-          tokenFilePath: process.env.AZURE_FEDERATED_TOKEN_FILE ?? '/var/run/secrets/azure/tokens/federated-token',
+          clientId: clientAppRegId,
+          tokenFilePath: federatedTokenPath,
         }),
         new EnvironmentCredential()
       );

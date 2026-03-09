@@ -16,6 +16,9 @@
       "API_APP_REG_ID": ""
     }
   },
+  "auth": {
+    "azure-identity-token": "/var/run/secrets/azure/tokens/azure-identity-token"
+  },
   "dynatrace": {
     "jstagKey": "default",
     "jstags": {
