@@ -24,22 +24,31 @@ export const dataApi = axios.create({
 let cachedTokenRefreshTS: number = 0;
 let cachedToken: string | null = null;
 
+let authDetailsLogged = false;
+
+function logAuthDetails() {
+  if (!authDetailsLogged) {
+    authDetailsLogged = true;
+    logger.info(`AUTH: using api app reg id ending: ${apiAppRegId.slice(-4)}`);
+
+    logger.info(`AUTH: using client app reg id ending: ${clientAppRegId.slice(-4)}`);
+    logger.info(`AUTH: using azure-identity-token path: ${federatedTokenPath}`);
+
+    logger.info(`AUTH: env.AZURE_TENANT_ID (ending): ${process.env.AZURE_TENANT_ID?.slice(-4)}`);
+    logger.info(`AUTH: env.AZURE_CLIENT_ID (ending): ${process.env.AZURE_CLIENT_ID?.slice(-4)}`);
+    if (process.env.AZURE_CLIENT_SECRET) {
+      logger.info('AUTH: env.AZURE_CLIENT_SECRET is set');
+    } else {
+      logger.info('AUTH: env.AZURE_CLIENT_SECRET is NOT set');
+    }
+    logger.info(`AUTH: env.AZURE_FEDERATED_TOKEN_FILE: ${process.env.AZURE_FEDERATED_TOKEN_FILE}`);
+  }
+}
+
 function getToken(): Promise<string> {
   return tokenMutex.runExclusive(async () => {
     if (!cachedToken || Date.now() > cachedTokenRefreshTS) {
-      logger.info(`AUTH: using api app reg id ending: ${apiAppRegId.slice(-4)}`);
-
-      logger.info(`AUTH: using client app reg id ending: ${clientAppRegId.slice(-4)}`);
-      logger.info(`AUTH: using azure-identity-token path: ${federatedTokenPath}`);
-
-      logger.info(`AUTH: env.AZURE_TENANT_ID (ending): ${process.env.AZURE_TENANT_ID?.slice(-4)}`);
-      logger.info(`AUTH: env.AZURE_CLIENT_ID (ending): ${process.env.AZURE_CLIENT_ID?.slice(-4)}`);
-      if (process.env.AZURE_CLIENT_SECRET) {
-        logger.info('AUTH: env.AZURE_CLIENT_SECRET is set');
-      } else {
-        logger.info('AUTH: env.AZURE_CLIENT_SECRET is NOT set');
-      }
-      logger.info(`AUTH: env.AZURE_FEDERATED_TOKEN_FILE: ${process.env.AZURE_FEDERATED_TOKEN_FILE}`);
+      logAuthDetails();
 
       const cred = new ChainedTokenCredential(
         new WorkloadIdentityCredential({
@@ -48,7 +57,9 @@ function getToken(): Promise<string> {
         }),
         new EnvironmentCredential()
       );
+
       const at = await cred.getToken(`api://${apiAppRegId}/.default`);
+
       // if a refresh TS has been specified, use it, otherwise
       // set it to midway between now and the expiry
       if (at.refreshAfterTimestamp) {
@@ -58,8 +69,9 @@ function getToken(): Promise<string> {
         cachedTokenRefreshTS = Date.now() + lifeSpan / 2;
       }
       cachedToken = at.token;
+
+      logger.info('Bearer token created or refreshed');
     }
-    logger.info(`bearer token created (last 16): ${cachedToken.slice(-16)}`);
     return cachedToken;
   });
 }
