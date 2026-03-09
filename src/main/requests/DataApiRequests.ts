@@ -33,7 +33,6 @@ export class DataApiRequests {
       return courtSchema.parse(response.data);
     } catch (error: unknown) {
       logger.error(`Error fetching court details for slug ${slug}:`, error);
-
       return isAxiosError(error) && error.response?.status
         ? (error.response.status as HttpStatusCode)
         : HttpStatusCode.InternalServerError;
