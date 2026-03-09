@@ -16,6 +16,8 @@ nodejs:
           alias: SESSION_SECRET
         - name: public-frontend-app-reg-id
           alias: FRONTEND_APP_REG_ID
+        - name: bstrap-public-frontend-client-secret
+          alias: FRONTEND_APP_REG_SECRET
         - name: api-app-reg-id
           alias: API_APP_REG_ID
   environment:

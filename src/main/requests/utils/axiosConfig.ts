@@ -10,7 +10,7 @@ const OPEN_URLS = new Set<string>(['/health']);
 
 const clientAppRegId: string = config.get('secrets.fact-kv.FRONTEND_APP_REG_ID');
 const apiAppRegId: string = config.get('secrets.fact-kv.API_APP_REG_ID');
-const federatedTokenPath: string = config.get('auth.azure-identity-token');
+const federatedTokenPath: string = config.get('auth.azure-identity-token-path');
 
 const logger = Logger.getLogger('server');
 
