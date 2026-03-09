@@ -3,6 +3,8 @@ import * as fs from 'fs';
 import * as https from 'https';
 import * as path from 'path';
 
+import config from 'config';
+
 import { app } from './app';
 
 const { Logger } = require('@hmcts/nodejs-logging');
@@ -15,6 +17,16 @@ let httpsServer: https.Server | null = null;
 app.locals.shutdown = false;
 
 const port: number = parseInt(process.env.PORT || '3344', 10);
+
+const env = process.env.NODE_ENV || 'development';
+const developmentMode = env === 'development';
+
+if (!developmentMode) {
+  // force the client credential env vars to be set from config, rather than the deployment
+  // environment, as we don't have control over that in k8s environments.
+  process.env.AZURE_CLIENT_ID = config.get('secrets.fact-kv.FRONTEND_APP_REG_ID');
+  process.env.AZURE_CLIENT_SECRET = config.get('secrets.fact-kv.FRONTEND_APP_REG_SECRET');
+}
 
 if (app.locals.ENV === 'development') {
   const sslDirectory = path.join(__dirname, 'resources', 'localhost-ssl');

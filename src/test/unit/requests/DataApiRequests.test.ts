@@ -77,7 +77,7 @@ describe('DataApiRequests', () => {
     };
 
     it('should return court details when API call is successful', async () => {
-      getStub.withArgs(`courts/slug/${courtSlug}`).resolves({ data: mockCourt });
+      getStub.withArgs(`courts/slug/${courtSlug}/v1`).resolves({ data: mockCourt });
 
       const response = await dataApiRequests.getCourt(courtSlug);
       expect(response).toEqual(mockCourt);
@@ -88,7 +88,7 @@ describe('DataApiRequests', () => {
         response: { status: 500 },
         isAxiosError: true,
       } as AxiosError;
-      getStub.withArgs(`courts/slug/${courtSlug}`).rejects(error);
+      getStub.withArgs(`courts/slug/${courtSlug}/v1`).rejects(error);
 
       const response = await dataApiRequests.getCourt(courtSlug);
       expect(response).toEqual(500);
@@ -99,7 +99,7 @@ describe('DataApiRequests', () => {
         response: { status: 404 },
         isAxiosError: true,
       } as AxiosError;
-      getStub.withArgs(`courts/slug/${courtSlug}`).rejects(error404);
+      getStub.withArgs(`courts/slug/${courtSlug}/v1`).rejects(error404);
 
       const response = await dataApiRequests.getCourt(courtSlug);
       expect(response).toEqual(404);
