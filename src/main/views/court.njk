@@ -86,6 +86,10 @@
 
       {{ govukAccordion({
         id: "court-details-accordion",
+        hideAllSectionsText: accordion.hideAllSections,
+        hideSectionText: accordion.hideSection,
+        showSectionText: accordion.showSection,
+        showAllSectionsText: accordion.showAllSections,
         items: [
           {
             heading: { text: accordion.contactDetailsHeading },

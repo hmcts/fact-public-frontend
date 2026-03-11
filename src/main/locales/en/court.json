@@ -47,7 +47,11 @@
     "makeAComplaintHeading": "Make a complaint",
     "makeAComplaintUrl": "https://www.gov.uk/government/organisations/hm-courts-and-tribunals-service/about/complaints-procedure",
     "makeAComplaintUrlText": "Contact us to make a complaint",
-    "opensInNewTab": "(opens in a new tab)"
+    "opensInNewTab": "(opens in a new tab)",
+    "showSection": "Show",
+    "hideSection": "Hide",
+    "showAllSections": "Show all sections",
+    "hideAllSections": "Hide all sections"
   },
   "contactDetails": {
     "telephone": "Telephone",

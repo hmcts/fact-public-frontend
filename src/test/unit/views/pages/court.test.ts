@@ -50,5 +50,9 @@ describe('Court page', () => {
     expect(html).toContain('Test Court');
     expect(html).toContain(i18n.accordion.contactDetailsHeading);
     expect(html).toContain(i18n.accordion.casesHeardHeading);
+    expect(html).toContain(i18n.accordion.showAllSections);
+    expect(html).toContain(i18n.accordion.hideAllSections);
+    expect(html).toContain(i18n.accordion.showSection);
+    expect(html).toContain(i18n.accordion.hideSection);
   });
 });

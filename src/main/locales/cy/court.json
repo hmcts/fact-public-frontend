@@ -47,7 +47,11 @@
     "makeAComplaintHeading": "Gwneud cwyn",
     "makeAComplaintUrl": "https://www.gov.uk/government/organisations/hm-courts-and-tribunals-service/about/complaints-procedure",
     "makeAComplaintUrlText": "Cysylltu â ni i wneud cwyn",
-    "opensInNewTab": "(yn agor mewn tab newydd)"
+    "opensInNewTab": "(yn agor mewn tab newydd)",
+    "showSection": "Dangos",
+    "hideSection": "Cuddio",
+    "showAllSections": "Dangos pob adran",
+    "hideAllSections": "Cuddio pob adran"
   },
   "contactDetails": {
     "telephone": "Rhif ffôn",
