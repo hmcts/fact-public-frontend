@@ -11,8 +11,14 @@
   "secrets": {
     "fact-kv": {
       "APP_INSIGHTS_CONNECTION_STRING": "",
-      "SESSION_SECRET": "local-session-secret"
+      "SESSION_SECRET": "local-session-secret",
+      "FRONTEND_APP_REG_ID": "",
+      "FRONTEND_APP_REG_SECRET": "",
+      "API_APP_REG_ID": ""
     }
+  },
+  "auth": {
+    "azure-identity-token-path": "/var/run/secrets/azure/tokens/azure-identity-token"
   },
   "dynatrace": {
     "jstagKey": "default",
