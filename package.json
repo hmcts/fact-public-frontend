@@ -128,10 +128,11 @@
     "@isaacs/brace-expansion": "5.0.1",
     "diff": "8.0.3",
     "undici": "7.22.0",
-    "tar": "7.5.10",
+    "tar": "7.5.11",
     "@jsonjoy.com/util": "1.9.0",
     "lodash": "4.17.23",
-    "axios": "1.13.5"
+    "axios": "1.13.5",
+    "minimatch": "^3.1.2"
   },
   "packageManager": "yarn@4.12.0"
 }
