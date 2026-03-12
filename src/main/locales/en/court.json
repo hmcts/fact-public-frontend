@@ -12,6 +12,7 @@
   },
   "openingHours": {
     "heading": "Opening hours",
+    "rangeSeparator": "to",
     "counterService": {
       "title": "Counter service",
       "titleFor": "Counter service for",

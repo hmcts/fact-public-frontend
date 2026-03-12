@@ -10,7 +10,7 @@
       {% set hoursHtml %}
         {% for entry in group.hours %}
           <p class="govuk-body">
-            {{ text.days[entry.dayOfWeek] or entry.dayOfWeek }} {{ entry.openingHour }} to {{ entry.closingHour }}
+            {{ text.days[entry.dayOfWeek] or entry.dayOfWeek }} {{ entry.openingHour }} {{ text.rangeSeparator }} {{ entry.closingHour }}
           </p>
         {% endfor %}
       {% endset %}
@@ -89,7 +89,7 @@
         {% set counterOpenHtml %}
           {% for entry in counterService.counterOpenHours %}
             <p class="govuk-body">
-              {{ text.days[entry.dayOfWeek] or entry.dayOfWeek }} {{ entry.openingHour }} to {{ entry.closingHour }}
+              {{ text.days[entry.dayOfWeek] or entry.dayOfWeek }} {{ entry.openingHour }} {{ text.rangeSeparator }} {{ entry.closingHour }}
             </p>
           {% endfor %}
         {% endset %}

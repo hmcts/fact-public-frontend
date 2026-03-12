@@ -1,5 +1,6 @@
 import { env } from '../helpers/nunjucksEnv';
 
+const i18nCy = require('../../../../main/locales/cy/court.json');
 const i18n = require('../../../../main/locales/en/court.json');
 
 describe('Opening hours macro', () => {
@@ -68,6 +69,27 @@ describe('Opening hours macro', () => {
     });
 
     expect(html).toContain('Counter service for Civil');
+  });
+
+  test('renders Welsh range separator for opening times', () => {
+    const template = `
+      {% from "components/opening-hours.njk" import openingHours %}
+      {{ openingHours(openingHoursByType, counterService, openingHoursText, language) }}
+    `;
+
+    const html = env.renderString(template, {
+      openingHoursText: i18nCy.openingHours,
+      openingHoursByType: [
+        {
+          typeName: 'Swyddfa',
+          hours: [{ dayOfWeek: 'MONDAY', openingHour: '9:00yb', closingHour: '5:00yh' }],
+        },
+      ],
+      counterService: null,
+      language: 'cy',
+    });
+
+    expect(html).toContain('Dydd Llun 9:00yb i 5:00yh');
   });
 
   test('renders counter open row without counter service row when all help flags are false', () => {

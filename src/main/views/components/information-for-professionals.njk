@@ -68,8 +68,8 @@
     {% endif %}
 
     {% if info %}
-      {% set commonPlatformText %}{% if info.commonPlatform %}{{ text.schemeAvailable }}{% else %}{{ text.schemeNotAvailable }}{% endif %}{% endset %}
-      {% set accessSchemeText %}{% if info.accessScheme %}{{ text.schemeAvailable }}{% else %}{{ text.schemeNotAvailable }}{% endif %}{% endset %}
+      {% set commonPlatformText = text.schemeAvailable if info.commonPlatform else text.schemeNotAvailable %}
+      {% set accessSchemeText = text.schemeAvailable if info.accessScheme else text.schemeNotAvailable %}
       {% set rows = rows.concat([{ key: { text: text.commonPlatform }, value: { text: commonPlatformText } }]) %}
       {% set rows = rows.concat([{ key: { text: text.accessScheme }, value: { text: accessSchemeText } }]) %}
     {% endif %}

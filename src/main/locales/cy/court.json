@@ -12,6 +12,7 @@
   },
   "openingHours": {
     "heading": "Oriau agor",
+    "rangeSeparator": "i",
     "counterService": {
       "title": "Gwasanaeth cownter",
       "titleFor": "Gwasanaeth cownter ar gyfer",
