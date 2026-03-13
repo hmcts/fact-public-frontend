@@ -11,23 +11,16 @@ test.describe('Court Page with dynamic data', () => {
 
   test.beforeAll(async () => {
     requests = new DataApiRequests();
-    console.log('Creating test court');
     const response = await requests.createTestCourt(courtName, false);
     if (typeof response === 'number') {
-      console.log(`API Error: ${response}`);
+      return;
     } else {
       courtSlug = response.slug;
     }
   });
 
   test.afterAll(async () => {
-    console.log(`Cleaning up test court with prefix: ${courtName}`);
-    const response = await requests.deleteCourtsByNamePrefix(courtName);
-    if (typeof response === 'number') {
-      console.log(`Cleanup API Error: ${response}`);
-    } else {
-      console.log(`Cleanup successful: ${response}`);
-    }
+    await requests.deleteCourtsByNamePrefix(courtName);
   });
 
   test('should display the dynamically created court', async ({ page }) => {

@@ -268,7 +268,10 @@ describe('DataApiRequests', () => {
     it('returns success message on success', async () => {
       const prefix = 'Test Court';
       const successMessage = '1 court(s) with prefix Test Court deleted successfully';
-      sandbox.stub(dataApi, 'delete').withArgs(`/testing-support/courts/name-prefix/${prefix}`).resolves({ data: successMessage });
+      sandbox
+        .stub(dataApi, 'delete')
+        .withArgs(`/testing-support/courts/name-prefix/${prefix}`)
+        .resolves({ data: successMessage });
 
       await expect(requests.deleteCourtsByNamePrefix(prefix)).resolves.toBe(successMessage);
     });
