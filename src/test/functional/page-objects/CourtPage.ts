@@ -15,11 +15,11 @@ export class CourtPage extends Base {
   private readonly openingHoursSection = this.page.locator('.govuk-accordion__section', { hasText: 'Opening hours' });
   private readonly accordion = this.page.locator('.govuk-accordion');
 
-  async goto(lng?: string): Promise<void> {
+  async goto(slug: string, lng?: string): Promise<void> {
     if (lng) {
-      await this.page.goto(`/courts/test-court?lng=${lng}`);
+      await this.page.goto(`/courts/${slug}?lng=${lng}`);
     } else {
-      await this.page.goto('/courts/test-court');
+      await this.page.goto(`/courts/${slug}`);
     }
   }
 

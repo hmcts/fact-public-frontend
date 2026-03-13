@@ -53,4 +53,46 @@ export class DataApiRequests {
         : HttpStatusCode.InternalServerError;
     }
   }
+
+  /**
+   * Request to data API to create a test court
+   *
+   * @param courtName The name of the court to create
+   * @param serviceCenter Whether the court is a service center
+   */
+  public async createTestCourt(courtName: string, serviceCenter: boolean): Promise<Court | HttpStatusCode> {
+    try {
+      const response = await dataApi.get('/testing-support/courts', {
+        params: {
+          courtName,
+          serviceCenter,
+        },
+        responseType: 'json',
+      });
+      const data = typeof response.data === 'string' ? JSON.parse(response.data) : response.data;
+      return courtSchema.parse(data);
+    } catch (error: unknown) {
+      logger.error('Error creating test court:', error);
+      return isAxiosError(error) && error.response?.status
+        ? (error.response.status as HttpStatusCode)
+        : HttpStatusCode.InternalServerError;
+    }
+  }
+
+  /**
+   * Request to data API to delete courts by name prefix
+   *
+   * @param courtNamePrefix The prefix of the court name to delete
+   */
+  public async deleteCourtsByNamePrefix(courtNamePrefix: string): Promise<string | HttpStatusCode> {
+    try {
+      const response = await dataApi.delete(`/testing-support/courts/name-prefix/${courtNamePrefix}`);
+      return response.data;
+    } catch (error: unknown) {
+      logger.error(`Error deleting courts with prefix ${courtNamePrefix}:`, error);
+      return isAxiosError(error) && error.response?.status
+        ? (error.response.status as HttpStatusCode)
+        : HttpStatusCode.InternalServerError;
+    }
+  }
 }
