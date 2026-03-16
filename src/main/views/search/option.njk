@@ -1,7 +1,8 @@
-{% extends "template.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% extends "template.njk" %}
 
 {% block pageTitle %}
   {% if errors %}
@@ -27,9 +28,9 @@
     <div class="govuk-grid-column-two-thirds">
       <form method="post" novalidate>
         {{ govukRadios({
-          idPrefix: "know-location",
-          name: "knowLocation",
-          value: knowLocation,
+          idPrefix: "knows-location",
+          name: "knowsLocation",
+          value: knowsLocation,
           fieldset: {
             legend: {
               text: question,

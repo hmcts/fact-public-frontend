@@ -12,6 +12,7 @@ export interface FactRequest extends Request {
       accessibilityStatement: object;
       search: {
         option: object;
+        location: object;
       };
     };
   };
