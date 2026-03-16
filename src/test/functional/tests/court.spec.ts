@@ -10,7 +10,7 @@ test.describe('Court Page with dynamic data', () => {
 
   test.beforeAll(async ({ playwright }) => {
     apiContext = await playwright.request.newContext({
-      baseURL: 'http://localhost:8989',
+      baseURL: `${process.env.TEST_URL}`,
       extraHTTPHeaders: {
         Accept: 'application/json',
       },
@@ -20,10 +20,9 @@ test.describe('Court Page with dynamic data', () => {
         courtName,
         serviceCenter: false,
       },
-      responseType: 'json',
     });
-
-    courtSlug = response.body.slug;
+    const responseBody = await response.json();
+    courtSlug = responseBody.slug;
   });
 
   test.beforeEach(async () => {
