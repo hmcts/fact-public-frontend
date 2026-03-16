@@ -1,0 +1,18 @@
+{
+  "errorTitle": "Error:",
+  "title": "What is the court name? - Find a Court or Tribunal - GOV.UK",
+  "serviceName": "Find a Court or Tribunal",
+  "question": "Do you know the name of the court or tribunal?",
+  "hint": "The name of the court or tribunal can be found on a letter, email or text from us.",
+  "answers": {
+    "a1": "I have the name",
+    "a2": "I do not have the name",
+    "a3": "I want to find the nearest court or tribunal by postcode"
+  },
+  "button": "Continue",
+  "error": {
+    "title": "There is a problem",
+    "text": "Select if you have the name or not"
+  },
+  "seoMetadataDescription": "Tell us if you know the court or tribunal name or address to find a court or tribunal in England or Wales"
+}
