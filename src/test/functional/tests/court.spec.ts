@@ -19,6 +19,7 @@ test.describe('Court Page with dynamic data', () => {
       params: {
         courtName,
         serviceCenter: false,
+        open: true,
       },
     });
     const responseBody = await response.json();
