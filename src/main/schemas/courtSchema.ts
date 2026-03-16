@@ -149,7 +149,7 @@ const courtAccessibilityOptionSchema = z.object({
   accessibleToiletDescription: z.string().nullable(),
   accessibleToiletDescriptionCy: z.string().nullable(),
   accessibleEntrance: z.boolean(),
-  accessibleEntrancePhoneNumber: z.string(),
+  accessibleEntrancePhoneNumber: z.string().nullable(),
   hearingEnhancementEquipment: hearingEnhancementEquipmentSchema,
   lift: z.boolean(),
   liftDoorWidth: z.number().nullable(),

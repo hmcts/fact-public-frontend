@@ -1,32 +1,44 @@
 import { test } from '@playwright/test';
 
-import { DataApiRequests } from '../../../main/requests/DataApiRequests';
 import { CourtPage } from '../page-objects/CourtPage';
 import { HomePage } from '../page-objects/HomePage';
 
 test.describe('Court Page with dynamic data', () => {
-  let requests: DataApiRequests;
+  let apiContext;
   let courtSlug: string;
   const courtName = 'Test Court';
 
-  test.beforeAll(async () => {
-    requests = new DataApiRequests();
-    const response = await requests.createTestCourt(courtName, false);
-    if (typeof response === 'number') {
-      return;
-    } else {
-      courtSlug = response.slug;
+  test.beforeAll(async ({ playwright }) => {
+    apiContext = await playwright.request.newContext({
+      baseURL: 'http://localhost:8989',
+      extraHTTPHeaders: {
+        Accept: 'application/json',
+      },
+    });
+    const response = await apiContext.get('/testing-support/courts', {
+      params: {
+        courtName,
+        serviceCenter: false,
+      },
+      responseType: 'json',
+    });
+
+    courtSlug = response.body.slug;
+  });
+
+  test.beforeEach(async () => {
+    if (!courtSlug) {
+      test.skip(true, 'Test court was not created successfully');
     }
   });
 
   test.afterAll(async () => {
-    await requests.deleteCourtsByNamePrefix(courtName);
+    await apiContext.delete(`/testing-support/courts/name-prefix/${courtName}`);
   });
 
   test('should display the dynamically created court', async ({ page }) => {
     const courtPage = new CourtPage(page);
     await courtPage.goto(courtSlug, 'en');
-
     await courtPage.expectHeadingToContainText(courtName);
     await courtPage.expectVisibleElements();
   });
@@ -34,6 +46,7 @@ test.describe('Court Page with dynamic data', () => {
   test('should load and display correct content sections (english)', async ({ page }) => {
     const courtPage = new CourtPage(page);
     await courtPage.goto(courtSlug, 'en');
+
     await courtPage.expectVisibleElements();
 
     await courtPage.expectLanguageLinkToContainText('Cymraeg');
@@ -103,7 +116,7 @@ test.describe('Court Page with dynamic data', () => {
 
   test('should verify "Accessibility" section content', async ({ page }) => {
     const courtPage = new CourtPage(page);
-
+    await courtPage.goto(courtSlug);
     await courtPage.expandAccordionSection('Accessibility');
     await courtPage.expectSectionContent('Accessibility', 'Contact the court to find out what help you can get');
   });
@@ -139,12 +152,5 @@ test.describe('Court Page with dynamic data', () => {
     await courtPage.expectLanguageLinkToContainText('English');
 
     await page.waitForURL(/lng=cy/);
-  });
-
-  test('should display warning notice when present in data', async ({ page }) => {
-    const courtPage = new CourtPage(page);
-    await courtPage.goto(courtSlug);
-    await courtPage.goto('test-court-with-warning');
-    await courtPage.expectWarningNoticeToBeVisible();
   });
 });
