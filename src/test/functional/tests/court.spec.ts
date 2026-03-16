@@ -10,7 +10,7 @@ test.describe('Court Page with dynamic data', () => {
 
   test.beforeAll(async ({ playwright }) => {
     apiContext = await playwright.request.newContext({
-      baseURL: `${process.env.TEST_URL}`,
+      baseURL: `${process.env.DATA_API_URL}`,
       extraHTTPHeaders: {
         Accept: 'application/json',
       },
