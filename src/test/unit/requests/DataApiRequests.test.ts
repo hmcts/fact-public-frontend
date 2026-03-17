@@ -140,4 +140,31 @@ describe('DataApiRequests', () => {
       expect(response).toEqual(mockData);
     });
   });
+
+  describe('getByName', () => {
+    const query = 'Blackburn';
+    const mockCourt = {
+      name: 'Blackburn Family Court',
+      slug: 'blackburn-family-court',
+    };
+
+    it('should return matching courts when API call is successful', async () => {
+      const mockData = [mockCourt];
+      getStub.withArgs('search/courts/v1/name', { params: { q: query } }).resolves({ data: mockData });
+
+      const response = await dataApiRequests.getByName(query);
+      expect(response).toEqual(mockData);
+    });
+
+    it('should return HttpStatusCode when API call fails', async () => {
+      const error = {
+        response: { status: 500 },
+        isAxiosError: true,
+      } as AxiosError;
+      getStub.withArgs('search/courts/v1/name', { params: { q: query } }).rejects(error);
+
+      const response = await dataApiRequests.getByName(query);
+      expect(response).toEqual(500);
+    });
+  });
 });

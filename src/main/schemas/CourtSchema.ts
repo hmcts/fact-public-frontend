@@ -173,3 +173,12 @@ export const courtSchema = z.object({
 });
 
 export type Court = z.infer<typeof courtSchema>;
+
+export const courtSearchResultSchema = z
+  .object({
+    name: z.string(),
+    slug: z.string(),
+  })
+  .loose();
+
+export type CourtSearchResult = z.infer<typeof courtSearchResultSchema>;
