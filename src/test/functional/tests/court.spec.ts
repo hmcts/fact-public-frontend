@@ -1,5 +1,4 @@
 import { test } from '@playwright/test';
-
 import { DateTime } from 'luxon';
 
 import { CourtPage } from '../page-objects/CourtPage';
@@ -17,8 +16,8 @@ function generateRandomString(): string {
 
 test.describe('Court Page with dynamic data', () => {
   let apiContext;
+  let responseBody;
   let courtSlug: string;
-  let responseBody: any;
   const courtName = 'Test Court ' + generateRandomString();
 
   test.beforeAll(async ({ playwright }) => {
@@ -37,7 +36,6 @@ test.describe('Court Page with dynamic data', () => {
     });
     responseBody = await response.json();
     courtSlug = responseBody.slug;
-    console.log(responseBody);
   });
 
   test.beforeEach(async () => {
@@ -99,7 +97,8 @@ test.describe('Court Page with dynamic data', () => {
     if (responseBody.courtAddresses.length > 0) {
       await courtPage.expectStaticSectionContent('Address', responseBody.courtAddresses[0].addressLine1);
       await courtPage.expectStaticSectionContent('Address', responseBody.courtAddresses[0].townCity);
-      await courtPage.expectStaticSectionContent('Address', responseBody.courtAddresses[0].postcode);}
+      await courtPage.expectStaticSectionContent('Address', responseBody.courtAddresses[0].postcode);
+    }
   });
 
   test('should verify "Opening hours" section content', async ({ page }) => {
@@ -191,7 +190,10 @@ test.describe('Court Page with dynamic data', () => {
     const courtPage = new CourtPage(page);
     await courtPage.goto(courtSlug);
     await courtPage.expandAccordionSection('Accessibility');
-    await courtPage.expectAccordionSectionContent('Accessibility', 'Contact the court to find out what help you can get');
+    await courtPage.expectAccordionSectionContent(
+      'Accessibility',
+      'Contact the court to find out what help you can get'
+    );
     if (responseBody.courtAccessibilityOptions.length > 0) {
       await courtPage.expectAccordionSectionContent(
         'Accessibility',
@@ -223,7 +225,8 @@ test.describe('Court Page with dynamic data', () => {
       if (responseBody.courtProfessionalInformation[0].interviewRooms) {
         await courtPage.expectAccordionSectionContent(
           'Information for professionals',
-          `There are ${responseBody.courtProfessionalInformation[0].interviewRoomCount} interview rooms available.`);
+          `There are ${responseBody.courtProfessionalInformation[0].interviewRoomCount} interview rooms available.`
+        );
       }
     }
   });
@@ -246,5 +249,3 @@ test.describe('Court Page with dynamic data', () => {
     await page.waitForURL(/lng=cy/);
   });
 });
-
-
