@@ -49,15 +49,8 @@ export class CourtPage extends Base {
   }
 
   async expectStaticSectionContent(headingText: string, contentText: string): Promise<void> {
-    const sectionSelectors: { [key: string]: string } = {
-      'Address': '#addresses',
-      'Opening hours': '#opening-hours',
-      'Useful information': '#useful-information',
-    };
-    const selector =
-      sectionSelectors[headingText] ||
-      this.page.locator('section', { has: this.page.locator('h2', { hasText: headingText }) });
-    const sectionContent = typeof selector === 'string' ? this.page.locator(selector) : selector;
+    const sectionContent = this.page.locator('section', { has: this.page.locator('h2', { hasText: headingText }) });
+
     await expect(sectionContent).toContainText(contentText);
   }
 
