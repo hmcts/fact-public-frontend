@@ -9,10 +9,9 @@ export class CourtPage extends Base {
   private readonly languageLink = this.page.locator('a.govuk-link.fact-language');
   private readonly mainContent = this.page.locator('#main-content');
   private readonly footer = this.page.locator('footer');
-  private readonly heading = this.page.locator('h1.govuk-heading-xl');
-  private readonly warningNotice = this.page.locator('.govuk-warning-text');
-  private readonly addressesSection = this.page.locator('.govuk-accordion__section', { hasText: 'Addresses' });
-  private readonly openingHoursSection = this.page.locator('.govuk-accordion__section', { hasText: 'Opening hours' });
+  private readonly heading = this.page.locator('h1.govuk-heading-l');
+  private readonly addressesSection = this.page.locator('h2.govuk-heading-m', { hasText: 'Address' });
+  private readonly openingHoursSection = this.page.locator('h2.govuk-heading-m', { hasText: 'Opening hours' });
   private readonly accordion = this.page.locator('.govuk-accordion');
 
   async goto(slug: string, lng?: string): Promise<void> {
@@ -41,14 +40,6 @@ export class CourtPage extends Base {
     await expect(this.heading).toContainText(text);
   }
 
-  async expectMainContentToBePopulated(): Promise<void> {
-    await expect(this.mainContent).toContainText(/\w+/);
-  }
-
-  async expectWarningNoticeToBeVisible(): Promise<void> {
-    await expect(this.warningNotice).toBeVisible();
-  }
-
   async expectAddressesToBeVisible(): Promise<void> {
     await expect(this.addressesSection).toBeVisible();
   }
@@ -58,7 +49,7 @@ export class CourtPage extends Base {
   }
 
   async expectAccordionSectionVisible(headingText: string): Promise<void> {
-    const section = this.accordion.locator('.govuk-accordion__section', { hasText: headingText });
+    const section = this.accordion.locator('.govuk-accordion__section-heading-text-focus', { hasText: headingText });
     await expect(section).toBeVisible();
   }
 
@@ -71,8 +62,9 @@ export class CourtPage extends Base {
 
   async expectSectionContent(headingText: string, contentText: string): Promise<void> {
     const sectionContent = this.accordion
-      .locator('.govuk-accordion__section', { hasText: headingText })
-      .locator('.govuk-accordion__section-content');
+      .locator('.govuk-accordion__section--expanded', { hasText: headingText })
+      .locator('.govuk-accordion__section-content')
+      .locator('p.govuk-body');
     await expect(sectionContent).toContainText(contentText);
   }
 }
