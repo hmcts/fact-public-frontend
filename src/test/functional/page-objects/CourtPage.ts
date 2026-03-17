@@ -48,6 +48,17 @@ export class CourtPage extends Base {
     await expect(this.openingHoursSection).toBeVisible();
   }
 
+  async expectStaticSectionContent(headingText: string, contentText: string): Promise<void> {
+    const sectionSelectors: { [key: string]: string } = {
+      'Address': '#addresses',
+      'Opening hours': '#opening-hours',
+      'Useful information': '#useful-information',
+    };
+    const selector = sectionSelectors[headingText] || this.page.locator('section', { has: this.page.locator('h2', { hasText: headingText }) });
+    const sectionContent = (typeof selector === 'string' ? this.page.locator(selector) : selector);
+    await expect(sectionContent).toContainText(contentText);
+  }
+
   async expectAccordionSectionVisible(headingText: string): Promise<void> {
     const section = this.accordion.locator('.govuk-accordion__section-heading-text-focus', { hasText: headingText });
     await expect(section).toBeVisible();
@@ -60,11 +71,10 @@ export class CourtPage extends Base {
     await expect(section).toHaveClass(/govuk-accordion__section--expanded/);
   }
 
-  async expectSectionContent(headingText: string, contentText: string): Promise<void> {
+  async expectAccordionSectionContent(headingText: string, contentText: string): Promise<void> {
     const sectionContent = this.accordion
       .locator('.govuk-accordion__section--expanded', { hasText: headingText })
-      .locator('.govuk-accordion__section-content')
-      .locator('p.govuk-body');
+      .locator('.govuk-accordion__section-content');
     await expect(sectionContent).toContainText(contentText);
   }
 }
