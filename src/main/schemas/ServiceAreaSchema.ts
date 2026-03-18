@@ -15,6 +15,7 @@ const typeSchema = z.enum([
 export const serviceAreaSchema = z.object({
   id: z.string(),
   name: z.string(),
+  slug: z.string().optional(),
   nameCy: z.string(),
   description: z.string().nullable(),
   descriptionCy: z.string().nullable(),
@@ -26,7 +27,12 @@ export const serviceAreaSchema = z.object({
   catchmentMethod: catchmentMethodSchema.nullable(),
   areaOfLawId: z.string(),
   type: typeSchema.nullable(),
-  sortOrder: z.int().nullable()
-});
+  sortOrder: z.int().nullable(),
+  hasLocal: z.boolean(),
+  hasNational: z.boolean(),
+}).transform((serviceArea) => ({
+  ...serviceArea,
+  slug: serviceArea.name.replace(/[\s|,]+/g, '-').toLowerCase(),
+}));
 
 export type ServiceArea = z.infer<typeof serviceAreaSchema>;
