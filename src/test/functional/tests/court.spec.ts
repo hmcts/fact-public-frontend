@@ -36,7 +36,6 @@ test.describe('Court Page with dynamic data', () => {
     });
     responseBody = await response.json();
     courtSlug = responseBody.slug;
-    console.log(responseBody);
   });
 
   test.beforeEach(async () => {
@@ -109,9 +108,9 @@ test.describe('Court Page with dynamic data', () => {
     if (responseBody.courtAddresses.length > 0) {
       for (const address of responseBody.courtAddresses) {
         const addressTypeMap = {
-          'WRITE_TO_US': 'Send documents to',
-          'VISIT_US': 'Visit',
-          'VISIT_OR_CONTACT_US': 'Visit and send documents to',
+          WRITE_TO_US: 'Send documents to',
+          VISIT_US: 'Visit',
+          VISIT_OR_CONTACT_US: 'Visit and send documents to',
         };
         await courtPage.expectStaticSectionContent('Address', addressTypeMap[address.addressType]);
         await courtPage.expectStaticSectionContent('Address', address.addressLine1);
@@ -349,11 +348,16 @@ test.describe('Court Page with dynamic data', () => {
     if (responseBody.courtTranslations.length > 0) {
       await courtPage.expectAccordionSectionContent(
         'Translation and interpretation',
-        'If you need a language interpreter, including sign language, contact the court on');
+        'If you need a language interpreter, including sign language, contact the court on'
+      );
       await courtPage.expectAccordionSectionContent(
         'Translation and interpretation',
-         responseBody.courtTranslations[0].phoneNumber);
-      await courtPage.expectAccordionSectionContent('Translation and interpretation', responseBody.courtTranslations[0].email);
+        responseBody.courtTranslations[0].phoneNumber
+      );
+      await courtPage.expectAccordionSectionContent(
+        'Translation and interpretation',
+        responseBody.courtTranslations[0].email
+      );
     }
   });
 
@@ -396,12 +400,11 @@ test.describe('Court Page with dynamic data', () => {
       }
 
       if (responseBody.courtAccessibilityOptions[0].accessibleParking) {
+        await courtPage.expectAccordionSectionContent('Accessibility', 'Accessible parking is available.');
         await courtPage.expectAccordionSectionContent(
           'Accessibility',
-          'Accessible parking is available.');
-        await courtPage.expectAccordionSectionContent(
-          'Accessibility',
-          responseBody.courtAccessibilityOptions[0].accessibleParkingContact);
+          responseBody.courtAccessibilityOptions[0].accessibleParkingContact
+        );
       } else {
         await courtPage.expectAccordionSectionContent(
           'Accessibility',
@@ -427,7 +430,8 @@ test.describe('Court Page with dynamic data', () => {
 
       if (responseBody.courtAccessibilityOptions[0].hearingEnhancementEquipment) {
         const equipmentMap = {
-          INFRARED_SYSTEMS_AND_HEARING_LOOP_SYSTEMS: 'Infrared systems and hearing loop systems are available at this court.',
+          INFRARED_SYSTEMS_AND_HEARING_LOOP_SYSTEMS:
+            'Infrared systems and hearing loop systems are available at this court.',
           HEARING_LOOP_SYSTEMS: 'Hearing loop systems are available at this court.',
           INFRARED_SYSTEMS: 'Infrared systems are available at this court.',
         };
@@ -447,19 +451,19 @@ test.describe('Court Page with dynamic data', () => {
           'Accessibility',
           responseBody.courtAccessibilityOptions[0].liftDoorLimit
         );
-        }
-      } else {
-        await courtPage.expectAccordionSectionContent('Accessibility', 'Lifts are not available.');
       }
+    } else {
+      await courtPage.expectAccordionSectionContent('Accessibility', 'Lifts are not available.');
+    }
 
-      if (responseBody.courtAccessibilityOptions[0].quietRoom) {
-        await courtPage.expectAccordionSectionContent(
-          'Accessibility',
-          'A quiet room is available for people of all faiths or none, for prayer and reflection.'
-        );
-      } else {
-        await courtPage.expectAccordionSectionContent('Accessibility', 'A quiet room is not available.');
-      }
+    if (responseBody.courtAccessibilityOptions[0].quietRoom) {
+      await courtPage.expectAccordionSectionContent(
+        'Accessibility',
+        'A quiet room is available for people of all faiths or none, for prayer and reflection.'
+      );
+    } else {
+      await courtPage.expectAccordionSectionContent('Accessibility', 'A quiet room is not available.');
+    }
   });
 
   test('should verify "Accessibility" "Hygyrchedd" section content in Welsh', async ({ page }) => {
@@ -481,10 +485,7 @@ test.describe('Court Page with dynamic data', () => {
           responseBody.courtAccessibilityOptions[0].accessibleParkingContact
         );
       } else {
-        await courtPage.expectAccordionSectionContent(
-          'Hygyrchedd',
-          'Nid oes parcio hygyrch yn y llys.'
-        );
+        await courtPage.expectAccordionSectionContent('Hygyrchedd', 'Nid oes parcio hygyrch yn y llys.');
       }
 
       if (responseBody.courtAccessibilityOptions[0].accessibleEntrance) {
@@ -649,9 +650,11 @@ test.describe('Court Page with dynamic data', () => {
   test('Not found page is rendered when the court does not exist', async ({ page }) => {
     const courtPage = new CourtPage(page);
     await courtPage.goto('not-a-real-slug');
-    const sectionContent= page.locator('h1.govuk-heading-xl');
+    const sectionContent = page.locator('h1.govuk-heading-xl');
     await expect(sectionContent).toContainText('Page Not Found');
     await courtPage.expectMainContentToContainText('If you typed the web address, check it is correct.');
-    await courtPage.expectMainContentToContainText('If you pasted the web address, check you copied the entire address.');
+    await courtPage.expectMainContentToContainText(
+      'If you pasted the web address, check you copied the entire address.'
+    );
   });
 });
