@@ -51,11 +51,7 @@ export default class SearchByLocationController {
     return typeof rawSearch === 'string' ? rawSearch.trim() : undefined;
   }
 
-  private renderValidationError(
-    res: Response,
-    data: object,
-    searchQuery: string
-  ): boolean {
+  private renderValidationError(res: Response, data: object, searchQuery: string): boolean {
     if (!searchQuery) {
       res.render('search/location', { ...data, errorType: 'blank' });
       return true;
