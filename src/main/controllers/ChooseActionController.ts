@@ -3,6 +3,7 @@ import { Response } from 'express';
 import { cloneDeep } from 'lodash';
 
 import { FactRequest } from '../interfaces/FactRequest';
+import { isValidAction } from '../utils/validationUtils';
 
 @route('/service-choose-action')
 export default class ChooseActionController {
@@ -13,7 +14,7 @@ export default class ChooseActionController {
 
   @POST()
   public continue(req: FactRequest, res: Response): void {
-    if (req.body?.action) {
+    if (req.body?.action && isValidAction(req.body.action)) {
       const action = req.body?.action as string;
       res.redirect('/services/' + action);
     } else {

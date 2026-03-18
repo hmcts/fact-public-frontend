@@ -6,6 +6,7 @@ import { FactRequest } from '../interfaces/FactRequest';
 import { DataApiRequests } from '../requests/DataApiRequests';
 import { ServiceArea } from '../schemas/ServiceAreaSchema';
 import { Service } from '../schemas/ServiceSchema';
+import { isValidAction } from '../utils/validationUtils';
 
 interface LocalisedServiceArea {
   id: string;
@@ -16,7 +17,7 @@ interface LocalisedServiceArea {
 const dataApiRequests = new DataApiRequests();
 
 @route('/services/:service/service-areas/:action')
-export class ChooseServiceController {
+export class ChooseServiceAreaController {
   @GET()
   public async render(req: FactRequest, res: Response): Promise<void> {
     await this.renderInternal(req, res);
@@ -28,26 +29,19 @@ export class ChooseServiceController {
       const action = req.params.action as string;
       const service = req.params.service as string;
       const area = req.body.area as string;
-      let serviceArea: ServiceArea | undefined = undefined;
-      let serviceName: string | undefined = undefined;
 
-      // determine the service name
-      const services = req.session['services'] ?? (await dataApiRequests.getAllServices());
-      if (Array.isArray(services)) {
-        req.session['services'] = services;
-        serviceName = services.find((s: Service) => s.slug === service)?.name;
+      // fail-fast to the not listed page.
+      if(area === 'not-listed') {
+        return res.redirect('/service-not-found');
       }
 
-      // determine the service area
-      if (serviceName) {
-        const result = req.session[`service-areas-${serviceName}`] ??
-          await dataApiRequests.getServiceAreas(serviceName);
-        if (Array.isArray(result)) {
-          req.session[`service-areas-${serviceName}`] = result;
-          serviceArea = result.find(a => a.id === area);
-        }
-      } else {
-        // treating everything as a not found
+      if(!isValidAction(action)) {
+        return res.status(404).render('not-found', req.i18n.getDataByLanguage(req.lng).notFound);
+      }
+
+      const serviceName = await this.calculateServiceName(service);
+      const serviceArea = await this.calculateServiceArea(serviceName, area);
+      if(!serviceArea) {
         return res.status(404).render('not-found', req.i18n.getDataByLanguage(req.lng).notFound);
       }
 
@@ -55,13 +49,35 @@ export class ChooseServiceController {
       if (serviceArea) {
         return this.redirectToSearch(service, serviceArea, action, res);
       } else {
-        // or show a not found if we don't have a service area
+        // show a not found if we don't have a service area
         return res.status(404).render('not-found', req.i18n.getDataByLanguage(req.lng).notFound);
       }
     } else {
       // set the error state to true and re-render the page
       await this.renderInternal(req, res, true);
     }
+  }
+
+
+  private async calculateServiceName(service: string): Promise<string | undefined> {
+    let serviceName: string | undefined = undefined;
+    const services = await dataApiRequests.getAllServices();
+    if (Array.isArray(services)) {
+      serviceName = services.find((s: Service) => s.slug === service)?.name;
+    }
+    return serviceName;
+  }
+
+  private async calculateServiceArea(serviceName: string | undefined, area: string): Promise<ServiceArea | undefined> {
+    // determine the service area
+    let serviceArea: ServiceArea | undefined = undefined;
+    if (serviceName) {
+      const result = await dataApiRequests.getServiceAreas(serviceName);
+      if (Array.isArray(result)) {
+        serviceArea = result.find(a => a.id === area);
+      }
+    }
+    return serviceArea;
   }
 
   /**
@@ -101,23 +117,34 @@ export class ChooseServiceController {
    * @private
    */
   private async renderInternal(req: FactRequest, res: Response, err: boolean = false): Promise<void> {
+    const action = req.params.action as string;
     const service = req.params.service as string;
-    const services = req.session['services'] ?? (await dataApiRequests.getAllServices());
+    const services = await dataApiRequests.getAllServices();
+
+    if(!isValidAction(action)) {
+      return res.status(404).render('not-found', req.i18n.getDataByLanguage(req.lng).notFound);
+    }
+
     if (Array.isArray(services)) {
-      req.session['services'] = services;
       const serviceName = services.find((s: Service) => s.slug === service)?.name;
-      const result = req.session[`service-areas-${serviceName}`] ??
-        await dataApiRequests.getServiceAreas(serviceName);
-      if (Array.isArray(result)) {
-        req.session[`service-areas-${serviceName}`] = result;
-        res.render('choose-service-area', {
-          ...cloneDeep(req.i18n.getDataByLanguage(req.lng)['choose-service-area']),
-          areas: this.localiseResult(result, req.lng),
-          serviceName,
-          errors: err,
-        });
+      if(serviceName) {
+        const result = await dataApiRequests.getServiceAreas(serviceName);
+        if (Array.isArray(result) && result.length > 1) {
+          return res.render('choose-service-area', {
+            ...cloneDeep(req.i18n.getDataByLanguage(req.lng)['choose-service-area']),
+            areas: this.localiseResult(result, req.lng),
+            serviceName,
+            errors: err,
+          });
+        } else if (Array.isArray(result) && result.length === 1) {
+          // if there's only one service area, skip the page and redirect to the appropriate search page
+          return this.redirectToSearch(service, result[0], action, res);
+        } else {
+          res.redirect('/service-not-found');
+        }
       }
     }
+    return res.status(404).render('not-found', req.i18n.getDataByLanguage(req.lng).notFound);
   }
 
   /**
