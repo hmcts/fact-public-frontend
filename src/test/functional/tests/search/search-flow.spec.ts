@@ -78,7 +78,7 @@ test.describe('Search Journey - Validation', () => {
   });
 });
 
-test.describe('Search Journey - No Name Route (FACT-2654 dependency)', () => {
+test.describe('Search Journey - No Name Route', () => {
   test('should go from start -> no -> find/contact page (english)', async ({ page }) => {
     const searchFlowPage = new SearchFlowPage(page);
 
