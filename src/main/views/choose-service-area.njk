@@ -1,0 +1,72 @@
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+
+{% extends "template.njk" %}
+
+{% block pageTitle %}
+  {% if errors %}
+    {{ errorTitle }}
+  {% endif %}
+  {{ title | replace("{serviceName}", serviceName) | lower }}
+{% endblock %}
+
+{% block content %}
+
+  {% if errors %}
+    {% for area in areas.slice(0, 1) %}
+      {% set firstRadioArea = "#" + area.id %}
+      {{ govukErrorSummary({
+        titleText: error.title,
+        errorList: [{
+          text: error.text | replace("{serviceName}", serviceName) | lower,
+          href: firstRadioArea
+        }]
+      }) }}
+    {% endfor %}
+  {% endif %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <form method="POST">
+
+        {# Loop through the service area list and set up the radios for the selection #}
+        {% set options = [] %}
+        {% for area in areas %}
+          {% set options = (options.push({
+            id: area.id,
+            text: area.text,
+            hint: {
+              text: area.description
+            },
+            value: area.id
+            }), options) %}
+        {% endfor %}
+        {# add a divider and add the "I can't find what I'm looking for" option #}
+        {% set options = (options.push({ divider: divider }), options) %}
+        {% set options = (options.push({ id: "not-listed", text: answers.a1, value: "not-listed" }), options) %}
+
+        {{ govukRadios({
+          idPrefix: "choose-service-area",
+          name: "area",
+          fieldset: {
+            legend: {
+              text: question  | replace("{serviceName}", serviceName) | lower,
+              classes: "govuk-fieldset__legend--l",
+              isPageHeading: true
+            }
+          },
+          errorMessage: { text: error.text  | replace("{serviceName}", serviceName) | lower } if errors,
+          items: options
+        }) }}
+
+        {{ govukButton({
+          text: button,
+          classes: "govuk-!-margin-top-2 govuk-!-margin-bottom-8 continue"
+        }) }}
+
+      </form>
+    </div>
+  </div>
+
+{% endblock %}
