@@ -12,6 +12,7 @@ export class CourtPage extends Base {
   private readonly heading = this.page.locator('h1.govuk-heading-l');
   private readonly addressesSection = this.page.locator('h2.govuk-heading-m', { hasText: 'Address' });
   private readonly openingHoursSection = this.page.locator('h2.govuk-heading-m', { hasText: 'Opening hours' });
+  private readonly courtPhoto = this.page.locator('img.govuk-\\!-margin-top-4');
   private readonly accordion = this.page.locator('.govuk-accordion');
 
   async goto(slug: string, lng?: string): Promise<void> {
@@ -48,6 +49,16 @@ export class CourtPage extends Base {
     await expect(this.openingHoursSection).toBeVisible();
   }
 
+  async expectCourtPhotoToBeVisible(fileLink: string, altText: string): Promise<void> {
+    await expect(this.courtPhoto).toBeVisible();
+    await expect(this.courtPhoto).toHaveAttribute('src', fileLink);
+    await expect(this.courtPhoto).toHaveAttribute('alt', altText);
+  }
+
+  async expectMainContentToContainText(text: string): Promise<void> {
+    await expect(this.mainContent).toContainText(text);
+  }
+
   async expectStaticSectionContent(headingText: string, contentText: string): Promise<void> {
     const sectionContent = this.page.locator('section', { has: this.page.locator('h2', { hasText: headingText }) });
 
@@ -62,8 +73,27 @@ export class CourtPage extends Base {
   async expandAccordionSection(headingText: string): Promise<void> {
     const button = this.accordion.locator('button.govuk-accordion__section-button', { hasText: headingText });
     await button.click();
+    await this.expectAccordionSectionExpanded(headingText);
+  }
+
+  async expectAccordionSectionExpanded(headingText: string): Promise<void> {
     const section = this.accordion.locator('.govuk-accordion__section', { hasText: headingText });
     await expect(section).toHaveClass(/govuk-accordion__section--expanded/);
+  }
+
+  async expectAccordionSectionCollapsed(headingText: string): Promise<void> {
+    const section = this.accordion.locator('.govuk-accordion__section', { hasText: headingText });
+    await expect(section).not.toHaveClass(/govuk-accordion__section--expanded/);
+  }
+
+  async clickShowAllSections(): Promise<void> {
+    const showAllButton = this.accordion.locator('.govuk-accordion__show-all');
+    await showAllButton.click();
+  }
+
+  async clickHideAllSections(): Promise<void> {
+    const hideAllButton = this.accordion.locator('.govuk-accordion__show-all');
+    await hideAllButton.click();
   }
 
   async expectAccordionSectionContent(headingText: string, contentText: string): Promise<void> {
