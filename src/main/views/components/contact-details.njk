@@ -1,0 +1,57 @@
+{% macro contactDetails(courtContactDetails, text, language) %}
+  <section id="contact-details">
+    {% set isWelsh = language == "cy" %}
+    {% set enquiries = [] %}
+    {% set others = [] %}
+    {% for contact in courtContactDetails %}
+      {% set contactNameLower = contact.courtContactDescription.name | lower %}
+      {% if contactNameLower == "enquiries" %}
+        {% set enquiries = enquiries.concat([contact]) %}
+      {% else %}
+        {% set others = others.concat([contact]) %}
+      {% endif %}
+    {% endfor %}
+
+    {% if isWelsh %}
+      {% set others = others | sort(attribute="courtContactDescription.nameCy") %}
+    {% else %}
+      {% set others = others | sort(attribute="courtContactDescription.name") %}
+    {% endif %}
+
+    {% set contacts = enquiries.concat(others) %}
+
+    {% for contact in contacts %}
+      {% set caption = contact.courtContactDescription.nameCy if isWelsh else contact.courtContactDescription.name %}
+      {% set explanation = contact.explanationCy if isWelsh else contact.explanation %}
+      <table class="govuk-table">
+        <caption class="govuk-table__caption govuk-table__caption--s govuk-!-margin-bottom-0">
+          {{ caption }}{% if explanation and explanation | trim %}
+          <p class="govuk-hint govuk-!-margin-top-0 govuk-!-margin-bottom-0">{{ explanation }}</p>{% endif %}
+        </caption>
+        <tbody class="govuk-table__body">
+          {% if contact.phoneNumber and contact.phoneNumber | trim %}
+            <tr class="govuk-table__row">
+              <th scope="row" class="govuk-table__header govuk-!-font-weight-regular">{{ text.telephone }}</th>
+              <td class="govuk-table__cell govuk-!-width-two-thirds">
+                <span class="phone-text">{{ contact.phoneNumber }}</span>
+                <a href="tel:{{ contact.phoneNumber }}" class="govuk-link govuk-link--no-visited-state phone-link">
+                  {{ contact.phoneNumber }}
+                </a>
+              </td>
+            </tr>
+          {% endif %}
+          {% if contact.email and contact.email | trim %}
+            <tr class="govuk-table__row">
+              <th scope="row" class="govuk-table__header govuk-!-font-weight-regular">{{ text.email }}</th>
+              <td class="govuk-table__cell govuk-!-width-two-thirds">
+                <a href="mailto:{{ contact.email }}" class="govuk-link govuk-link--no-visited-state">
+                  <span class="govuk-!-text-break-word">{{ contact.email }}</span>
+                </a>
+              </td>
+            </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    {% endfor %}
+  </section>
+{% endmacro %}

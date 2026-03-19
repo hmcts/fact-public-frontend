@@ -1,0 +1,17 @@
+{% extends "template.njk" %}
+
+{% block pageTitle %}
+  {{ title | safe }}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row court-tribunal-details">
+    <div class="govuk-grid-column-full">
+      <h1 class="govuk-heading-l">{{ name }}</h1>
+
+      <p class="govuk-body-m">{{ p1 }}</p>
+      <p class="govuk-body-m"><a id="homeLink" class="govuk-link" href="/">{{ linkText }}</a></p>
+    </div>
+  </div>
+{% endblock %}

@@ -44,6 +44,10 @@ export class SearchFlowPage extends Base {
     await expect(this.searchResults.locator('a.govuk-link').first()).toBeVisible();
   }
 
+  async expectSearchResultLinkText(text: string): Promise<void> {
+    await expect(this.searchResults.getByRole('link', { name: text }).first()).toBeVisible();
+  }
+
   async expectNoResultsVisible(): Promise<void> {
     await expect(this.noSearchResults).toBeVisible();
   }
