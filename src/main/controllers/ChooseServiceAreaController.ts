@@ -126,14 +126,16 @@ export class ChooseServiceAreaController {
     }
 
     if (Array.isArray(services)) {
-      const serviceName = services.find((s: Service) => s.slug === service)?.name;
+      const serviceInstance = services.find((s: Service) => s.slug === service);
+      const serviceName = serviceInstance?.name;
+      const serviceNameLocalised =req.lng === 'cy' ? serviceInstance?.nameCy : serviceInstance?.name;
       if(serviceName) {
         const result = await dataApiRequests.getServiceAreas(serviceName);
         if (Array.isArray(result) && result.length > 1) {
           return res.render('choose-service-area', {
             ...cloneDeep(req.i18n.getDataByLanguage(req.lng)['choose-service-area']),
             areas: this.localiseResult(result, req.lng),
-            serviceName,
+            serviceNameLocalised,
             errors: err,
           });
         } else if (Array.isArray(result) && result.length === 1) {
