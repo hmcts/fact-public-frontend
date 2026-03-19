@@ -74,7 +74,7 @@ setupDev(app, developmentMode);
 app.use((req: express.Request, res: express.Response) => {
   const factReq = req as FactRequest;
   res.status(404);
-  const data = factReq.i18n?.getDataByLanguage(factReq.lng)?.notFound;
+  const data = factReq.i18n?.getDataByLanguage(factReq.lng)['not-found'];
   res.render('not-found', data ?? {});
 });
 
