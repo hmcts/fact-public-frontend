@@ -35,27 +35,15 @@ const courtProfessionalInformationSchema = z.object({
 
 const areaOfLawSchema = z.object({
   name: z.string(),
-  nameCy: z.string().optional().nullable(),
-  externalLink: z.string().nullable().optional(),
-  externalLinkCy: z.string().nullable().optional(),
-  displayName: z.string().nullable().optional(),
-  displayNameCy: z.string().nullable().optional(),
+  nameCy: z.string(),
+  externalLink: z.string().nullable(),
+  externalLinkCy: z.string().nullable(),
+  displayName: z.string().nullable(),
+  displayNameCy: z.string().nullable(),
 });
 
-const areaOfLawElementSchema = z.union([
-  areaOfLawSchema,
-  z.string().transform(name => ({
-    name,
-    nameCy: null,
-    externalLink: null,
-    externalLinkCy: null,
-    displayName: null,
-    displayNameCy: null,
-  })),
-]);
-
 const courtAreasOfLawSchema = z.object({
-  areasOfLaw: z.array(areaOfLawElementSchema),
+  areasOfLaw: z.array(areaOfLawSchema),
 });
 
 const courtFacilitiesSchema = z.object({
@@ -133,7 +121,7 @@ const courtAddressSchema = z.object({
   lat: z.number().nullable(),
   lon: z.number().nullable(),
   addressType: courtAddressTypeSchema,
-  areasOfLaw: z.array(areaOfLawElementSchema),
+  areasOfLaw: z.array(areaOfLawSchema),
   courtTypes: z.array(courtTypeSchema),
 });
 
