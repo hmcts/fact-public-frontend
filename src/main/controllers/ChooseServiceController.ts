@@ -50,7 +50,7 @@ export class ChooseServiceController {
         });
       }
     }
-    return res.status(404).render('not-found', req.i18n.getDataByLanguage(req.lng).notFound);
+    return res.status(404).render('not-found', req.i18n.getDataByLanguage(req.lng)['not-found']);
   }
 
   /**

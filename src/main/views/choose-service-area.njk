@@ -8,7 +8,7 @@
   {% if errors %}
     {{ errorTitle }}
   {% endif %}
-  {{ title | replace("{serviceName}", serviceName) | lower }}
+  {{ title | replace("{serviceName}", serviceNameLocalised | lower) }}
 {% endblock %}
 
 {% block content %}
@@ -19,7 +19,7 @@
       {{ govukErrorSummary({
         titleText: error.title,
         errorList: [{
-          text: error.text | replace("{serviceName}", serviceName) | lower,
+          text: error.text | replace("{serviceName}", serviceNameLocalised | lower),
           href: firstRadioArea
         }]
       }) }}
@@ -51,12 +51,12 @@
           name: "area",
           fieldset: {
             legend: {
-              text: question  | replace("{serviceName}", serviceName) | lower,
+              text: question  | replace("{serviceName}", serviceNameLocalised | lower),
               classes: "govuk-fieldset__legend--l",
               isPageHeading: true
             }
           },
-          errorMessage: { text: error.text  | replace("{serviceName}", serviceName) | lower } if errors,
+          errorMessage: { text: error.text  | replace("{serviceName}", serviceNameLocalised| lower) } if errors,
           items: options
         }) }}
 

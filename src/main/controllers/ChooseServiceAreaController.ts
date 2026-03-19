@@ -36,13 +36,13 @@ export class ChooseServiceAreaController {
       }
 
       if (!isValidAction(action)) {
-        return res.status(404).render('not-found', req.i18n.getDataByLanguage(req.lng).notFound);
+        return res.status(404).render('not-found', req.i18n.getDataByLanguage(req.lng)['not-found']);
       }
 
       const serviceName = await this.calculateServiceName(service);
       const serviceArea = await this.calculateServiceArea(serviceName, area);
       if (!serviceArea) {
-        return res.status(404).render('not-found', req.i18n.getDataByLanguage(req.lng).notFound);
+        return res.status(404).render('not-found', req.i18n.getDataByLanguage(req.lng)['not-found']);
       }
 
       // redirect to the appropriate search page (local or national)
@@ -116,7 +116,7 @@ export class ChooseServiceAreaController {
     const services = await dataApiRequests.getAllServices();
 
     if (!isValidAction(action)) {
-      return res.status(404).render('not-found', req.i18n.getDataByLanguage(req.lng).notFound);
+      return res.status(404).render('not-found', req.i18n.getDataByLanguage(req.lng)['not-found']);
     }
 
     if (Array.isArray(services)) {
@@ -140,7 +140,7 @@ export class ChooseServiceAreaController {
         }
       }
     }
-    return res.status(404).render('not-found', req.i18n.getDataByLanguage(req.lng).notFound);
+    return res.status(404).render('not-found', req.i18n.getDataByLanguage(req.lng)['not-found']);
   }
 
   /**
