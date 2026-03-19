@@ -71,11 +71,21 @@ const courtContactDescriptionSchema = z.object({
 
 const courtContactDetailSchema = z.object({
   courtContactDescriptionId: z.string(),
-  explanation: z.string(),
-  explanationCy: z.string(),
-  email: z.string(),
-  phoneNumber: z.string(),
+  explanation: z.string().nullable(),
+  explanationCy: z.string().nullable(),
+  email: z.string().nullable(),
+  phoneNumber: z.string().nullable(),
   courtContactDescription: courtContactDescriptionSchema,
+});
+
+const openingTimesDetailSchema = z.object({
+  dayOfWeek: z.string(),
+  openingTime: z.string(),
+  closingTime: z.string(),
+});
+
+const courtTypeSchema = z.object({
+  name: z.string(),
 });
 
 const courtCounterServiceOpeningHourSchema = z.object({
@@ -84,10 +94,9 @@ const courtCounterServiceOpeningHourSchema = z.object({
   assistWithDocuments: z.boolean(),
   assistWithSupport: z.boolean(),
   appointmentNeeded: z.boolean(),
-  appointmentContact: z.string(),
-  dayOfWeek: z.string(),
-  openingHour: z.string(),
-  closingHour: z.string(),
+  appointmentContact: z.string().nullable(),
+  openingTimesDetails: z.array(openingTimesDetailSchema),
+  courtTypes: z.array(courtTypeSchema).nullable().optional(),
 });
 
 const openingHourTypeSchema = z.object({
@@ -96,17 +105,11 @@ const openingHourTypeSchema = z.object({
 });
 
 const courtOpeningHourSchema = z.object({
-  dayOfWeek: z.string(),
-  openingHour: z.string(),
-  closingHour: z.string(),
+  openingTimesDetails: z.array(openingTimesDetailSchema),
   openingHourType: openingHourTypeSchema,
 });
 
 export const courtAddressTypeSchema = z.enum(['VISIT_US', 'WRITE_TO_US', 'VISIT_OR_CONTACT_US']);
-
-const courtTypeSchema = z.object({
-  name: z.string(),
-});
 
 const courtAddressSchema = z.object({
   addressLine1: z.string(),
@@ -130,11 +133,11 @@ const hearingEnhancementEquipmentSchema = z.enum([
 
 const courtAccessibilityOptionSchema = z.object({
   accessibleParking: z.boolean(),
-  accessibleParkingPhoneNumber: z.string(),
+  accessibleParkingPhoneNumber: z.string().nullable(),
   accessibleToiletDescription: z.string().nullable(),
   accessibleToiletDescriptionCy: z.string().nullable(),
   accessibleEntrance: z.boolean(),
-  accessibleEntrancePhoneNumber: z.string(),
+  accessibleEntrancePhoneNumber: z.string().nullable(),
   hearingEnhancementEquipment: hearingEnhancementEquipmentSchema,
   lift: z.boolean(),
   liftDoorWidth: z.number().nullable(),

@@ -1,0 +1,93 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% macro buildingFacilities(enquiriesPhoneNumber, facilities, text) %}
+  <section id="building-facilities">
+    {% if enquiriesPhoneNumber and enquiriesPhoneNumber | trim %}
+      <p class="govuk-body">
+        {{ text.contactPrefix }}
+        <span class="phone-text">{{ enquiriesPhoneNumber }}</span>
+        <a href="tel:{{ enquiriesPhoneNumber }}" class="govuk-link govuk-link--no-visited-state phone-link">
+          {{ enquiriesPhoneNumber }}
+        </a>
+        {{ text.contactSuffix }}
+      </p>
+    {% else %}
+      <p class="govuk-body">{{ text.contactFallback }}</p>
+    {% endif %}
+
+    {% set options = facilities[0] if facilities and facilities.length else null %}
+    {% set rows = [] %}
+
+    {% if options %}
+      {% if options.parking %}
+        {% set rows = rows.concat([{ key: { text: text.parkingLabel }, value: { text: text.parkingAvailable } }]) %}
+      {% else %}
+        {% set rows = rows.concat([{ key: { text: text.parkingLabel }, value: { text: text.parkingUnavailable } }]) %}
+      {% endif %}
+
+      {% set rows = rows.concat([{ key: { text: text.toiletsLabel }, value: { text: text.toiletsAvailable } }]) %}
+
+      {% set foodItems = [] %}
+      {% if options.freeWaterDispensers %}
+        {% set foodItems = foodItems.concat([text.foodWater]) %}
+      {% endif %}
+      {% if options.snackVendingMachines %}
+        {% set foodItems = foodItems.concat([text.foodSnack]) %}
+      {% endif %}
+      {% if options.drinkVendingMachines %}
+        {% set foodItems = foodItems.concat([text.foodDrink]) %}
+      {% endif %}
+      {% if options.cafeteria %}
+        {% set foodItems = foodItems.concat([text.foodCafeteria]) %}
+      {% endif %}
+
+      {% if foodItems.length == 1 %}
+        {% set rows = rows.concat([{ key: { text: text.foodAndDrinkLabel }, value: { text: foodItems[0] } }]) %}
+      {% elseif foodItems.length > 1 %}
+        {% set foodHtml %}
+          <p class="govuk-body">{{ text.foodAndDrinkIntro }}</p>
+          <ul class="govuk-list govuk-list--bullet">
+            {% for item in foodItems %}
+              <li>{{ item }}</li>
+            {% endfor %}
+          </ul>
+        {% endset %}
+        {% set rows = rows.concat([{ key: { text: text.foodAndDrinkLabel }, value: { html: foodHtml } }]) %}
+      {% endif %}
+
+      {% if options.waitingArea or options.waitingAreaChildren %}
+        {% if options.waitingArea and options.waitingAreaChildren %}
+          {% set rows = rows.concat([{ key: { text: text.waitingAreasLabel }, value: { text: text.waitingAreasBoth } }]) %}
+        {% elseif options.waitingArea %}
+          {% set rows = rows.concat([{ key: { text: text.waitingAreasLabel }, value: { text: text.waitingAreasAvailable } }]) %}
+        {% else %}
+          {% set rows = rows.concat([{ key: { text: text.waitingAreasLabel }, value: { text: text.waitingAreaChildrenAvailable } }]) %}
+        {% endif %}
+      {% endif %}
+
+      {% if options.quietRoom %}
+        {% set rows = rows.concat([{ key: { text: text.quietRoomLabel }, value: { text: text.quietRoomAvailable } }]) %}
+      {% else %}
+        {% set rows = rows.concat([{ key: { text: text.quietRoomLabel }, value: { text: text.quietRoomUnavailable } }]) %}
+      {% endif %}
+
+      {% if options.babyChanging %}
+        {% set rows = rows.concat([{ key: { text: text.babyChangingLabel }, value: { text: text.babyChangingAvailable } }]) %}
+      {% else %}
+        {% set rows = rows.concat([{ key: { text: text.babyChangingLabel }, value: { text: text.babyChangingUnavailable } }]) %}
+      {% endif %}
+
+      {% set rows = rows.concat([{ key: { text: text.securityLabel }, value: { text: text.securityDescription } }]) %}
+
+      {% if options.wifi %}
+        {% set rows = rows.concat([{ key: { text: text.wifiLabel }, value: { text: text.wifiAvailable } }]) %}
+      {% else %}
+        {% set rows = rows.concat([{ key: { text: text.wifiLabel }, value: { text: text.wifiUnavailable } }]) %}
+      {% endif %}
+    {% endif %}
+
+    {% if rows.length %}
+      {{ govukSummaryList({ rows: rows }) }}
+    {% endif %}
+  </section>
+{% endmacro %}

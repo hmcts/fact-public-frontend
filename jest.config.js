@@ -6,5 +6,5 @@ module.exports = {
   transform: {
     '^.+\\.ts?$': 'ts-jest',
   },
-  modulePathIgnorePatterns: ['<rootDir>/src/test/unit/mocks'],
+  modulePathIgnorePatterns: ['<rootDir>/src/test/unit/mocks', '<rootDir>/src/test/unit/views/helpers'],
 };
