@@ -57,8 +57,11 @@ test.describe('Court Page Core', () => {
     const courtPage = new CourtPage(page);
     await courtPage.goto(courtData.warningNoticeCourt.slug, 'en');
 
-    expect(hasText(courtData.warningNoticeCourt.body.warningNotice)).toBeTruthy();
-    await expect(page.locator('.govuk-warning-text')).toContainText(courtData.warningNoticeCourt.body.warningNotice);
+    const warningNotice = courtData.warningNoticeCourt.body.warningNotice;
+    expect(hasText(warningNotice)).toBeTruthy();
+    if (hasText(warningNotice)) {
+      await expect(page.locator('.govuk-warning-text')).toContainText(warningNotice);
+    }
   });
 
   test('should load and display correct content sections (english)', async ({ page }) => {

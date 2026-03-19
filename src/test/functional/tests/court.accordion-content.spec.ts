@@ -38,6 +38,16 @@ const LINKS = {
   complaint: 'https://www.gov.uk/government/organisations/hm-courts-and-tribunals-service/about/complaints-procedure',
 } as const;
 
+type ContactWithOptionalNames = {
+  contact: CourtTestData['defaultCourt']['body']['courtContactDetails'][number];
+  names: ReturnType<typeof getContactName>;
+};
+
+type ContactWithNames = {
+  contact: CourtTestData['defaultCourt']['body']['courtContactDetails'][number];
+  names: NonNullable<ReturnType<typeof getContactName>>;
+};
+
 test.describe('Court Page Accordion Content', () => {
   let courtData: CourtTestData;
 
@@ -247,7 +257,7 @@ test.describe('Court Page Accordion Content', () => {
     const courtPage = new CourtPage(page);
     const contactsWithNames = courtData.defaultCourt.body.courtContactDetails
       .map(contact => ({ contact, names: getContactName(contact) }))
-      .filter(item => item.names !== null);
+      .filter((item: ContactWithOptionalNames): item is ContactWithNames => item.names !== null);
     const englishExpectedOrder = [
       ...contactsWithNames.filter(item => item.names.name.toLowerCase() === 'enquiries').map(item => item.names.name),
       ...contactsWithNames

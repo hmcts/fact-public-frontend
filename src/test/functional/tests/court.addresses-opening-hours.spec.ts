@@ -37,9 +37,13 @@ test.describe('Court Page Addresses And Opening Hours', () => {
         };
         await courtPage.expectStaticSectionContent(SECTION_HEADINGS.addressEn, addressTypeMap[address.addressType]);
         await courtPage.expectStaticSectionContent(SECTION_HEADINGS.addressEn, address.addressLine1);
-        await courtPage.expectStaticSectionContent(SECTION_HEADINGS.addressEn, address.addressLine2);
+        if (hasText(address.addressLine2)) {
+          await courtPage.expectStaticSectionContent(SECTION_HEADINGS.addressEn, address.addressLine2);
+        }
         await courtPage.expectStaticSectionContent(SECTION_HEADINGS.addressEn, address.townCity);
-        await courtPage.expectStaticSectionContent(SECTION_HEADINGS.addressEn, address.county);
+        if (hasText(address.county)) {
+          await courtPage.expectStaticSectionContent(SECTION_HEADINGS.addressEn, address.county);
+        }
         await courtPage.expectStaticSectionContent(SECTION_HEADINGS.addressEn, address.postcode);
       }
     }
@@ -57,9 +61,13 @@ test.describe('Court Page Addresses And Opening Hours', () => {
         };
         await courtPage.expectStaticSectionContent(SECTION_HEADINGS.addressCy, addressTypeMap[address.addressType]);
         await courtPage.expectStaticSectionContent(SECTION_HEADINGS.addressCy, address.addressLine1);
-        await courtPage.expectStaticSectionContent(SECTION_HEADINGS.addressCy, address.addressLine2);
+        if (hasText(address.addressLine2)) {
+          await courtPage.expectStaticSectionContent(SECTION_HEADINGS.addressCy, address.addressLine2);
+        }
         await courtPage.expectStaticSectionContent(SECTION_HEADINGS.addressCy, address.townCity);
-        await courtPage.expectStaticSectionContent(SECTION_HEADINGS.addressCy, address.county);
+        if (hasText(address.county)) {
+          await courtPage.expectStaticSectionContent(SECTION_HEADINGS.addressCy, address.county);
+        }
         await courtPage.expectStaticSectionContent(SECTION_HEADINGS.addressCy, address.postcode);
       }
     }

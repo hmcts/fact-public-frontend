@@ -1,8 +1,14 @@
-import { APIRequestContext, Playwright, expect } from '@playwright/test';
+import { APIRequestContext, expect } from '@playwright/test';
 
 import { Court } from '../../../main/schemas/courtSchema';
 
 import { generateRandomString } from './courtTestUtils';
+
+type PlaywrightLike = {
+  request: {
+    newContext: (options: { baseURL: string; extraHTTPHeaders: { Accept: string } }) => Promise<APIRequestContext>;
+  };
+};
 
 type CourtData = {
   name: string;
@@ -37,7 +43,7 @@ async function createCourt(
   };
 }
 
-export async function createCourtTestData(playwright: Playwright, suiteLabel: string): Promise<CourtTestData> {
+export async function createCourtTestData(playwright: PlaywrightLike, suiteLabel: string): Promise<CourtTestData> {
   const apiContext = await playwright.request.newContext({
     baseURL: `${process.env.DATA_API_URL}`,
     extraHTTPHeaders: {
