@@ -46,12 +46,7 @@ export class ChooseServiceAreaController {
       }
 
       // redirect to the appropriate search page (local or national)
-      if (serviceArea) {
-        return this.redirectToSearch(service, serviceArea, action, res);
-      } else {
-        // show a not found if we don't have a service area
-        return res.status(404).render('not-found', req.i18n.getDataByLanguage(req.lng).notFound);
-      }
+      return this.redirectToSearch(service, serviceArea, action, res);
     } else {
       // set the error state to true and re-render the page
       await this.renderInternal(req, res, true);
