@@ -2,10 +2,10 @@ import { Logger } from '@hmcts/nodejs-logging';
 import { HttpStatusCode, isAxiosError } from 'axios';
 
 import { Court, courtSchema } from '../schemas/CourtSchema';
+import { ServiceArea, serviceAreaSchema } from '../schemas/ServiceAreaSchema';
+import { Service, serviceSchema } from '../schemas/ServiceSchema';
 
 import { dataApi } from './utils/axiosConfig';
-import { Service, serviceSchema } from '../schemas/ServiceSchema';
-import { ServiceArea, serviceAreaSchema } from '../schemas/ServiceAreaSchema';
 
 const logger = Logger.getLogger('app');
 
