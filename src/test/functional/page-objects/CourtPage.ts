@@ -15,6 +15,22 @@ export class CourtPage extends Base {
   private readonly courtPhoto = this.page.locator('img.govuk-\\!-margin-top-4');
   private readonly accordion = this.page.locator('.govuk-accordion');
 
+  private staticSection(headingText: string) {
+    return this.page.locator('section', { has: this.page.locator('h2', { hasText: headingText }) });
+  }
+
+  private expandedAccordionSection(headingText: string) {
+    return this.accordion.locator('.govuk-accordion__section--expanded', { hasText: headingText });
+  }
+
+  private accordionSection(headingText: string) {
+    return this.accordion
+      .locator('button.govuk-accordion__section-button', { hasText: headingText })
+      .locator(
+        'xpath=ancestor::div[contains(concat(" ", normalize-space(@class), " "), " govuk-accordion__section ")][1]'
+      );
+  }
+
   async goto(slug: string, lng?: string): Promise<void> {
     if (lng) {
       await this.page.goto(`/courts/${slug}?lng=${lng}`);
@@ -60,9 +76,29 @@ export class CourtPage extends Base {
   }
 
   async expectStaticSectionContent(headingText: string, contentText: string): Promise<void> {
-    const sectionContent = this.page.locator('section', { has: this.page.locator('h2', { hasText: headingText }) });
+    const sectionContent = this.staticSection(headingText);
 
     await expect(sectionContent).toContainText(contentText);
+  }
+
+  async expectStaticSectionLinkToHaveAttributes(
+    headingText: string,
+    linkText: string,
+    attributes: Record<string, string>
+  ): Promise<void> {
+    const href = attributes.href;
+    const link = href
+      ? this.staticSection(headingText).locator(`a[href="${href}"]`)
+      : this.staticSection(headingText).getByRole('link', { name: linkText });
+    if (href) {
+      await expect(link).toHaveCount(1);
+    } else {
+      await expect(link).toBeVisible();
+    }
+
+    for (const [name, value] of Object.entries(attributes)) {
+      await expect(link).toHaveAttribute(name, value);
+    }
   }
 
   async expectAccordionSectionVisible(headingText: string): Promise<void> {
@@ -77,12 +113,12 @@ export class CourtPage extends Base {
   }
 
   async expectAccordionSectionExpanded(headingText: string): Promise<void> {
-    const section = this.accordion.locator('.govuk-accordion__section', { hasText: headingText });
+    const section = this.accordionSection(headingText);
     await expect(section).toHaveClass(/govuk-accordion__section--expanded/);
   }
 
   async expectAccordionSectionCollapsed(headingText: string): Promise<void> {
-    const section = this.accordion.locator('.govuk-accordion__section', { hasText: headingText });
+    const section = this.accordionSection(headingText);
     await expect(section).not.toHaveClass(/govuk-accordion__section--expanded/);
   }
 
@@ -97,9 +133,27 @@ export class CourtPage extends Base {
   }
 
   async expectAccordionSectionContent(headingText: string, contentText: string): Promise<void> {
-    const sectionContent = this.accordion
-      .locator('.govuk-accordion__section--expanded', { hasText: headingText })
-      .locator('.govuk-accordion__section-content');
+    const sectionContent = this.expandedAccordionSection(headingText).locator('.govuk-accordion__section-content');
     await expect(sectionContent).toContainText(contentText);
+  }
+
+  async expectAccordionSectionLinkToHaveAttributes(
+    headingText: string,
+    linkName: string,
+    attributes: Record<string, string>
+  ): Promise<void> {
+    const href = attributes.href;
+    const link = href
+      ? this.expandedAccordionSection(headingText).locator(`a[href="${href}"]`)
+      : this.expandedAccordionSection(headingText).getByRole('link', { name: linkName });
+    if (href) {
+      await expect(link).toHaveCount(1);
+    } else {
+      await expect(link).toBeVisible();
+    }
+
+    for (const [name, value] of Object.entries(attributes)) {
+      await expect(link).toHaveAttribute(name, value);
+    }
   }
 }
