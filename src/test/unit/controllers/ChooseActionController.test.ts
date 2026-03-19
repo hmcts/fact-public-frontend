@@ -11,7 +11,7 @@ describe('ChooseActionController', () => {
   beforeEach(() => {
     req = {
       i18n: {
-        getDataByLanguage: jest.fn().mockReturnValue({ 'choose-action': { title: 'Choose Action' } })
+        getDataByLanguage: jest.fn().mockReturnValue({ 'choose-action': { title: 'Choose Action' } }),
       } as unknown as FactRequest['i18n'],
       lng: 'en',
       body: {},
@@ -54,5 +54,4 @@ describe('ChooseActionController', () => {
     expect(res.render).toHaveBeenCalledWith('choose-action', expect.objectContaining({ errors: true }));
     expect(res.redirect).not.toHaveBeenCalled();
   });
-
 });

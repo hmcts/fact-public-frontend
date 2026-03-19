@@ -3,7 +3,7 @@ import { Response } from 'express';
 
 import { FactRequest } from '../interfaces/FactRequest';
 
-@route('/service-not-found', )
+@route('/service-not-found')
 export class UnknownServiceController {
   @GET()
   public async render(req: FactRequest, res: Response): Promise<void> {

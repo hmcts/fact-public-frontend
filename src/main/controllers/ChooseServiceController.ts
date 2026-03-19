@@ -28,7 +28,7 @@ export class ChooseServiceController {
     if (req.body?.service) {
       const action = req.params.action as string;
       const service = req.body.service as string;
-      if(service === 'not-listed') {
+      if (service === 'not-listed') {
         return res.redirect('/service-not-found');
       }
       // let the service area selection page deal with the potentially invalid action
@@ -40,7 +40,7 @@ export class ChooseServiceController {
 
   private async renderInternal(req: FactRequest, res: Response, err: boolean = false): Promise<void> {
     const action = req.params.action as string;
-    if(isValidAction(action)) {
+    if (isValidAction(action)) {
       const result = await dataApiRequests.getAllServices();
       if (Array.isArray(result)) {
         return res.render('choose-service', {

@@ -31,17 +31,17 @@ export class ChooseServiceAreaController {
       const area = req.body.area as string;
 
       // fail-fast to the not listed page.
-      if(area === 'not-listed') {
+      if (area === 'not-listed') {
         return res.redirect('/service-not-found');
       }
 
-      if(!isValidAction(action)) {
+      if (!isValidAction(action)) {
         return res.status(404).render('not-found', req.i18n.getDataByLanguage(req.lng).notFound);
       }
 
       const serviceName = await this.calculateServiceName(service);
       const serviceArea = await this.calculateServiceArea(serviceName, area);
-      if(!serviceArea) {
+      if (!serviceArea) {
         return res.status(404).render('not-found', req.i18n.getDataByLanguage(req.lng).notFound);
       }
 
@@ -52,7 +52,6 @@ export class ChooseServiceAreaController {
       await this.renderInternal(req, res, true);
     }
   }
-
 
   private async calculateServiceName(service: string): Promise<string | undefined> {
     let serviceName: string | undefined = undefined;
@@ -116,15 +115,15 @@ export class ChooseServiceAreaController {
     const service = req.params.service as string;
     const services = await dataApiRequests.getAllServices();
 
-    if(!isValidAction(action)) {
+    if (!isValidAction(action)) {
       return res.status(404).render('not-found', req.i18n.getDataByLanguage(req.lng).notFound);
     }
 
     if (Array.isArray(services)) {
       const serviceInstance = services.find((s: Service) => s.slug === service);
       const serviceName = serviceInstance?.name;
-      const serviceNameLocalised =req.lng === 'cy' ? serviceInstance?.nameCy : serviceInstance?.name;
-      if(serviceName) {
+      const serviceNameLocalised = req.lng === 'cy' ? serviceInstance?.nameCy : serviceInstance?.name;
+      if (serviceName) {
         const result = await dataApiRequests.getServiceAreas(serviceName);
         if (Array.isArray(result) && result.length > 1) {
           return res.render('choose-service-area', {

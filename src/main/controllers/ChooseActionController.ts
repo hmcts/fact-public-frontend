@@ -20,7 +20,7 @@ export default class ChooseActionController {
     } else {
       res.render('choose-action', {
         ...cloneDeep(req.i18n.getDataByLanguage(req.lng)['choose-action']),
-        errors: true
+        errors: true,
       });
     }
   }

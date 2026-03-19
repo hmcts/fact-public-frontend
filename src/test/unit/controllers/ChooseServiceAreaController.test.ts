@@ -147,9 +147,7 @@ describe('ChooseServiceAreaController', () => {
     mockGetServiceAreas.mockResolvedValue([mockServiceArea]);
     req.params = { action: 'documents', service: 'test-service' };
     await new ChooseServiceAreaController().render(req as FactRequest, res);
-    expect(res.redirect).toHaveBeenCalledWith(
-      `/services/${req.params.service}/${mockServiceArea.slug}/search-results`
-    );
+    expect(res.redirect).toHaveBeenCalledWith(`/services/${req.params.service}/${mockServiceArea.slug}/search-results`);
   });
 
   test('redirects to postcode page if only one area, action is documents and only local results are available', async () => {
@@ -179,9 +177,7 @@ describe('ChooseServiceAreaController', () => {
     req.params = { action: 'documents', service: 'test-service' };
     req.body = { area: mockServiceArea.id };
     await new ChooseServiceAreaController().continue(req as FactRequest, res);
-    expect(res.redirect).toHaveBeenCalledWith(
-      `/services/${req.params.service}/${mockServiceArea.slug}/search-results`
-    );
+    expect(res.redirect).toHaveBeenCalledWith(`/services/${req.params.service}/${mockServiceArea.slug}/search-results`);
   });
 
   test('redirects to search-results page when area selected, action is documents and national results are available', async () => {
@@ -190,9 +186,7 @@ describe('ChooseServiceAreaController', () => {
     req.params = { action: 'documents', service: 'test-service' };
     req.body = { area: mockServiceArea.id };
     await new ChooseServiceAreaController().continue(req as FactRequest, res);
-    expect(res.redirect).toHaveBeenCalledWith(
-      `/services/${req.params.service}/${mockServiceArea.slug}/search-results`
-    );
+    expect(res.redirect).toHaveBeenCalledWith(`/services/${req.params.service}/${mockServiceArea.slug}/search-results`);
   });
 
   test('redirects to postcode page when area selected, action is documents and national results are NOT available', async () => {

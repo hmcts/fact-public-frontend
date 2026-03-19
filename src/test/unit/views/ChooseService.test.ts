@@ -13,13 +13,13 @@ describe('ChooseService View', () => {
 
   const services = [
     { id: 'service1', text: 'Service 1', description: 'Description 1', value: 'service1' },
-    { id: 'service2', text: 'Service 2', description: 'Description 2', value: 'service2' }
+    { id: 'service2', text: 'Service 2', description: 'Description 2', value: 'service2' },
   ];
 
   test('renders the choose-service page with correct English content', () => {
     const html = env.render('choose-service.njk', {
       ...i18n,
-      services
+      services,
     });
     // Check for fragments in HTML
     expect(html).toContain('<title>');
@@ -36,7 +36,7 @@ describe('ChooseService View', () => {
   test('renders the choose-service page with correct Welsh content', () => {
     const html = env.render('choose-service.njk', {
       ...welshI18n,
-      services
+      services,
     });
     expect(html).toContain('<title>');
     expect(html).toContain(welshI18n.title);
@@ -50,10 +50,10 @@ describe('ChooseService View', () => {
   });
 
   test('renders error summary when errors are present', () => {
-    const html = env.render('choose-service.njk',{
+    const html = env.render('choose-service.njk', {
       ...i18n,
       services,
-      errors: true
+      errors: true,
     });
     expect(html).toContain('govuk-error-summary');
     expect(html).toContain(i18n.errorTitle);
@@ -61,5 +61,3 @@ describe('ChooseService View', () => {
     expect(html).toContain(i18n.error.text);
   });
 });
-
-

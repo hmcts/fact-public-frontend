@@ -52,10 +52,7 @@ describe('ChooseServiceController', () => {
   test('renders choose-service page with valid action and services', async () => {
     mockGetAllServices.mockResolvedValue([mockService]);
     await new ChooseServiceController().render(req as FactRequest, res);
-    expect(res.render).toHaveBeenCalledWith(
-      'choose-service',
-      expect.objectContaining({ title: 'Choose Service' })
-    );
+    expect(res.render).toHaveBeenCalledWith('choose-service', expect.objectContaining({ title: 'Choose Service' }));
   });
 
   test('renders not-found for invalid action', async () => {
@@ -96,10 +93,10 @@ describe('ChooseServiceController', () => {
     mockGetAllServices.mockResolvedValue([mockService]);
     req.lng = 'cy';
     await new ChooseServiceController().render(req as FactRequest, res);
-    const renderArgs = (res.render as jest.Mock).mock.calls[0][1] as { services: { text: string; description: string }[] };
+    const renderArgs = (res.render as jest.Mock).mock.calls[0][1] as {
+      services: { text: string; description: string }[];
+    };
     expect(renderArgs.services[0].text).toBe('Gwasanaeth Prawf');
     expect(renderArgs.services[0].description).toBe('Gwasanaeth prawf');
   });
 });
-
-

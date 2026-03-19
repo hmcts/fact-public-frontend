@@ -13,13 +13,13 @@ describe('ChooseServiceArea View', () => {
 
   const areas = [
     { id: 'area1', text: 'Area 1', description: 'Description 1' },
-    { id: 'area2', text: 'Area 2', description: 'Description 2' }
+    { id: 'area2', text: 'Area 2', description: 'Description 2' },
   ];
 
   test('renders the choose-service-area page with correct English content', () => {
     const html = env.render('choose-service-area.njk', {
       ...i18n,
-      areas
+      areas,
     });
     const expectedTitle = i18n.title.replace('{serviceName}', i18n.serviceName).toLowerCase();
     const expectedQuestion = i18n.question.replace('{serviceName}', i18n.serviceName).toLowerCase();
@@ -36,7 +36,7 @@ describe('ChooseServiceArea View', () => {
   test('renders the choose-service-area page with correct Welsh content', () => {
     const html = env.render('choose-service-area.njk', {
       ...welshI18n,
-      areas
+      areas,
     });
     const expectedTitle = welshI18n.title.replace('{serviceName}', welshI18n.serviceName).toLowerCase();
     const expectedQuestion = welshI18n.question.replace('{serviceName}', welshI18n.serviceName).toLowerCase();
@@ -50,5 +50,3 @@ describe('ChooseServiceArea View', () => {
     expect(html).toContain(welshI18n.divider);
   });
 });
-
-

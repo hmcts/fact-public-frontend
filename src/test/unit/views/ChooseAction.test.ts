@@ -8,7 +8,6 @@ const viewsPath = path.resolve(__dirname, '../../../main/views');
 const env = nunjucks.configure([govukTemplates, viewsPath], { autoescape: false });
 
 describe('ChooseAction View', () => {
-
   const i18n = require('../../../main/locales/en/choose-action.json');
   const welshI18n = require('../../../main/locales/cy/choose-action.json');
 
@@ -37,5 +36,4 @@ describe('ChooseAction View', () => {
     expect(html).toContain('govuk-radios');
     expect(html).toContain('govuk-button');
   });
-
 });

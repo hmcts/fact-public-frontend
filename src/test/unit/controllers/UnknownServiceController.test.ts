@@ -11,7 +11,7 @@ describe('UnknownServiceController', () => {
   beforeEach(() => {
     req = {
       i18n: {
-        getDataByLanguage: jest.fn().mockReturnValue({ 'unknown-service': { title: 'Unknown Service' } })
+        getDataByLanguage: jest.fn().mockReturnValue({ 'unknown-service': { title: 'Unknown Service' } }),
       } as unknown as FactRequest['i18n'],
       lng: 'en',
     };
@@ -25,13 +25,4 @@ describe('UnknownServiceController', () => {
     await new UnknownServiceController().render(req as FactRequest, res);
     expect(res.render).toHaveBeenCalledWith('unknown-service', { title: 'Unknown Service' });
   });
-
 });
-
-
-
-
-
-
-
-

@@ -55,4 +55,3 @@ describe('UnknownService View', () => {
     expect(html).toContain('govuk-body');
   });
 });
-
