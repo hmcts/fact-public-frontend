@@ -178,7 +178,7 @@ describe('CourtController', () => {
         params: { slug: 'unknown-court' },
         lng: 'en',
         i18n: {
-          getDataByLanguage: jest.fn().mockReturnValue({ notFound: { heading: 'Not found JSON' } }),
+          getDataByLanguage: jest.fn().mockReturnValue({ 'not-found': { heading: 'Not found JSON' } }),
         },
       } as unknown as FactRequest;
       const res = {
