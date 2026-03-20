@@ -34,7 +34,7 @@ describe('ChooseServiceController', () => {
       i18n: {
         getDataByLanguage: jest.fn().mockReturnValue({
           'choose-service': { title: 'Choose Service' },
-          notFound: { title: 'Not Found' },
+          'not-found': { title: 'Not Found' },
         }),
       } as unknown as FactRequest['i18n'],
       lng: 'en',

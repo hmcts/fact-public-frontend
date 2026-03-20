@@ -20,9 +20,10 @@ describe('ChooseServiceArea View', () => {
     const html = env.render('choose-service-area.njk', {
       ...i18n,
       areas,
+      serviceNameLocalised: 'some service',
     });
-    const expectedTitle = i18n.title.replace('{serviceName}', i18n.serviceName).toLowerCase();
-    const expectedQuestion = i18n.question.replace('{serviceName}', i18n.serviceName).toLowerCase();
+    const expectedTitle = i18n.title.replace('{serviceName}', 'some service');
+    const expectedQuestion = i18n.question.replace('{serviceName}', 'some service');
     expect(html).toContain(expectedTitle);
     expect(html).toContain(expectedQuestion);
     expect(html).toContain(i18n.answers.a1);
@@ -37,9 +38,10 @@ describe('ChooseServiceArea View', () => {
     const html = env.render('choose-service-area.njk', {
       ...welshI18n,
       areas,
+      serviceNameLocalised: 'some service',
     });
-    const expectedTitle = welshI18n.title.replace('{serviceName}', welshI18n.serviceName).toLowerCase();
-    const expectedQuestion = welshI18n.question.replace('{serviceName}', welshI18n.serviceName).toLowerCase();
+    const expectedTitle = welshI18n.title.replace('{serviceName}', 'some service');
+    const expectedQuestion = welshI18n.question.replace('{serviceName}', 'some service');
     expect(html).toContain(expectedTitle);
     expect(html).toContain(expectedQuestion);
     expect(html).toContain(welshI18n.answers.a1);
