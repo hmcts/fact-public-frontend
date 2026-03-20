@@ -16,12 +16,10 @@ describe('ChooseActionController', () => {
       lng: 'en',
       body: {},
     };
-    // Create a mock Response object with required methods
     res = {
       render: jest.fn(),
       redirect: jest.fn(),
       status: jest.fn().mockReturnThis(),
-      // Add any other Response methods if needed
     } as unknown as Response;
   });
 
