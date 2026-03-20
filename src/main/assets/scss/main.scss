@@ -11,3 +11,21 @@
 .cookie-preference-success {
   display: none;
 }
+
+.phone-link {
+  display: none;
+}
+
+.phone-text {
+  display: inline;
+}
+
+@media (max-width: 640px) {
+  .phone-link {
+    display: inline;
+  }
+
+  .phone-text {
+    display: none;
+  }
+}

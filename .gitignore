@@ -35,3 +35,4 @@ version
 
 .yarn/*
 !.yarn/releases
+.env

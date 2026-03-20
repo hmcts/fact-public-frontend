@@ -1,0 +1,134 @@
+{% extends "template.njk" %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+{% from "govuk/components/accordion/macro.njk" import govukAccordion %}
+
+{% from "components/addresses.njk" import addresses as renderAddresses %}
+{% from "components/opening-hours.njk" import openingHours as renderOpeningHours %}
+{% from "components/useful-information.njk" import usefulInformation as renderUsefulInformation %}
+{% from "components/translation-interpretation.njk" import translationInterpretation as renderTranslationInterpretation %}
+{% from "components/information-for-professionals.njk" import informationForProfessionals as renderInformationForProfessionals %}
+{% from "components/cases-heard.njk" import casesHeard as renderCasesHeard %}
+{% from "components/contact-details.njk" import contactDetails as renderContactDetails %}
+{% from "components/accessibility.njk" import accessibility as renderAccessibility %}
+{% from "components/building-facilities.njk" import buildingFacilities as renderBuildingFacilities %}
+
+{% set makeAComplaintHtml %}
+  <p class="govuk-body">
+    <a href="{{ accordion.makeAComplaintUrl }}"
+       class="govuk-link govuk-link--no-visited-state"
+       rel="noreferrer noopener"
+       target="_blank">
+      {{ accordion.makeAComplaintUrlText }}
+      {{ accordion.opensInNewTab }}
+    </a>
+  </p>
+{% endset %}
+
+{% set translationHtml %}
+  {{ renderTranslationInterpretation(court.courtTranslations, translationAndInterpretation) }}
+{% endset %}
+
+{% set informationForProfessionalsHtml %}
+  {{ renderInformationForProfessionals(
+    court.courtCodes,
+    court.courtProfessionalInformation,
+    court.courtDxCodes,
+    court.courtFaxNumbers,
+    informationForProfessionals
+  ) }}
+{% endset %}
+
+{% set casesHeardHtml %}
+  {{ renderCasesHeard(court.courtAreasOfLaw, casesHeard, htmlLang) }}
+{% endset %}
+
+{% set contactDetailsHtml %}
+  {{ renderContactDetails(court.courtContactDetails, contactDetails, htmlLang) }}
+{% endset %}
+
+{% set accessibilityHtml %}
+  {{ renderAccessibility(court.enquiriesPhoneNumber, court.courtAccessibilityOptions, accessibility, htmlLang) }}
+{% endset %}
+
+{% set buildingFacilitiesHtml %}
+  {{ renderBuildingFacilities(court.enquiriesPhoneNumber, court.courtFacilities, buildingFacilities) }}
+{% endset %}
+
+{% block pageTitle %}
+  {{ court.name }} - {{ pageTitleSuffix }}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l govuk-!-margin-bottom-2">{{ court.name }}</h1>
+      <p class="govuk-body-s">{{ pageLastReviewed }} {{ court.lastUpdatedAt }}</p>
+
+      {% if court.warningNotice %}
+        {{ govukWarningText({
+          text: court.warningNotice,
+          iconFallbackText: "Warning"
+        }) }}
+      {% endif %}
+      <hr class="govuk-section-break govuk-section-break--m">
+
+      {{ renderAddresses(court.courtAddresses, addresses) }}
+      <hr class="govuk-section-break govuk-section-break--m">
+      {{ renderOpeningHours(court.openingHoursByType, court.counterService, openingHours, htmlLang) }}
+
+      {% if court.courtPhotos and court.courtPhotos.length %}
+        <img class="govuk-!-margin-top-4" src="{{ court.courtPhotos[0].fileLink }}" alt="{{ court.name }}">
+        <p class="govuk-body-s">{{ court.name }}</p>
+      {% endif %}
+      <hr class="govuk-section-break govuk-section-break--m">
+      {{ renderUsefulInformation(usefulInformation) }}
+      <hr class="govuk-section-break govuk-section-break--m">
+
+      {{ govukAccordion({
+        id: "court-details-accordion",
+        hideAllSectionsText: accordion.hideAllSections,
+        hideSectionText: accordion.hideSection,
+        showSectionText: accordion.showSection,
+        showAllSectionsText: accordion.showAllSections,
+        items: [
+          {
+            heading: { text: accordion.contactDetailsHeading },
+            expanded: false,
+            content: { html: contactDetailsHtml }
+          },
+          {
+            heading: { text: accordion.casesHeardHeading },
+            expanded: false,
+            content: { html: casesHeardHtml }
+          },
+          {
+            heading: { text: accordion.translationAndInterpretationHeading },
+            expanded: false,
+            content: { html: translationHtml }
+          },
+          {
+            heading: { text: accordion.accessibilityHeading },
+            expanded: false,
+            content: { html: accessibilityHtml }
+          },
+          {
+            heading: { text: accordion.buildingFacilitiesHeading },
+            expanded: false,
+            content: { html: buildingFacilitiesHtml }
+          },
+          {
+            heading: { text: accordion.informationForProfessionalsHeading },
+            expanded: false,
+            content: { html: informationForProfessionalsHtml }
+          },
+          {
+            heading: { text: accordion.makeAComplaintHeading },
+            expanded: false,
+            content: { html: makeAComplaintHtml }
+          }
+        ]
+      }) }}
+
+    </div>
+  </div>
+{% endblock %}

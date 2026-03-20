@@ -1,0 +1,115 @@
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% macro accessibility(enquiriesPhoneNumber, accessibilityOptions, text, language) %}
+  <section id="accessibility">
+    {% set isWelsh = language == "cy" %}
+    {% if enquiriesPhoneNumber and enquiriesPhoneNumber | trim %}
+      <p class="govuk-body">
+        {{ text.contactPrefix }}
+        <span class="phone-text">{{ enquiriesPhoneNumber }}</span>
+        <a href="tel:{{ enquiriesPhoneNumber }}" class="govuk-link govuk-link--no-visited-state phone-link">
+          {{ enquiriesPhoneNumber }}
+        </a>
+        {{ text.contactSuffix }}
+      </p>
+    {% else %}
+      <p class="govuk-body">{{ text.contactFallback }}</p>
+    {% endif %}
+
+    {% set options = accessibilityOptions[0] if accessibilityOptions and accessibilityOptions.length else null %}
+    {% set rows = [] %}
+
+    {% if options %}
+      {% if options.accessibleParking %}
+        {% if options.accessibleParkingPhoneNumber and options.accessibleParkingPhoneNumber | trim %}
+          {% set parkingText %}
+            {{ text.accessibleParkingAvailable }}
+            {{ text.accessibleParkingContact }}
+            <span class="phone-text">{{ options.accessibleParkingPhoneNumber }}</span>
+            <a href="tel:{{ options.accessibleParkingPhoneNumber }}" class="govuk-link govuk-link--no-visited-state phone-link">
+              {{ options.accessibleParkingPhoneNumber }}
+            </a>
+            {{ text.accessibleParkingContactSuffix }}
+          {% endset %}
+          {% set rows = rows.concat([{ key: { text: text.accessibleParkingLabel }, value: { html: parkingText } }]) %}
+        {% else %}
+          {% set rows = rows.concat([{ key: { text: text.accessibleParkingLabel }, value: { text: text.accessibleParkingAvailable } }]) %}
+        {% endif %}
+      {% else %}
+        {% set rows = rows.concat([{ key: { text: text.accessibleParkingLabel }, value: { text: text.accessibleParkingUnavailable } }]) %}
+      {% endif %}
+      {% set toiletDescription = options.accessibleToiletDescriptionCy if isWelsh else options.accessibleToiletDescription %}
+      {% if isWelsh and (not toiletDescription or not (toiletDescription | trim)) %}
+        {% set toiletDescription = options.accessibleToiletDescription %}
+      {% endif %}
+      {% if toiletDescription and toiletDescription | trim %}
+        {% set rows = rows.concat([{ key: { text: text.accessibleToiletLabel }, value: { text: toiletDescription } }]) %}
+      {% endif %}
+
+      {% if options.accessibleEntrance %}
+        {% set rows = rows.concat([{ key: { text: text.accessibleEntranceLabel }, value: { text: text.accessibleEntranceAvailable } }]) %}
+      {% else %}
+        {% set entranceText %}
+          {{ text.accessibleEntranceUnavailable }}
+          {{ text.accessibleEntranceContact }}
+          <span class="phone-text">{{ options.accessibleEntrancePhoneNumber }}</span>
+          <a href="tel:{{ options.accessibleEntrancePhoneNumber }}" class="govuk-link govuk-link--no-visited-state phone-link">
+            {{ options.accessibleEntrancePhoneNumber }}
+          </a>
+          {{ text.accessibleEntranceContactSuffix }}
+        {% endset %}
+        {% set rows = rows.concat([{ key: { text: text.accessibleEntranceLabel }, value: { html: entranceText } }]) %}
+      {% endif %}
+
+      {% set rows = rows.concat([{ key: { text: text.assistanceDogsLabel }, value: { text: text.assistanceDogsAllowed } }]) %}
+
+      {% if options.hearingEnhancementEquipment == "INFRARED_SYSTEMS_AND_HEARING_LOOP_SYSTEMS" %}
+        {% set hearingText = text.hearingEnhancementInfraredAndLoop %}
+      {% elseif options.hearingEnhancementEquipment == "INFRARED_SYSTEMS" %}
+        {% set hearingText = text.hearingEnhancementInfrared %}
+      {% else %}
+        {% set hearingText = text.hearingEnhancementLoop %}
+      {% endif %}
+      {% set rows = rows.concat([{ key: { text: text.hearingEnhancementLabel }, value: { text: hearingText } }]) %}
+
+      {% set rows = rows.concat([
+        { key: { text: text.sunflowerLabel }, value: { text: text.sunflowerDescription } }
+      ]) %}
+
+      {% if options.lift %}
+        {% set liftText %}
+          {{ text.liftAvailablePrefix }}
+          {{ options.liftDoorWidth }}{{ text.liftWidthUnit }}
+          {{ text.liftAvailableMiddle }}
+          {{ options.liftDoorLimit }}{{ text.liftLimitUnit }}{{ text.liftAvailableSuffix }}
+        {% endset %}
+        {% set rows = rows.concat([{ key: { text: text.liftLabel }, value: { html: liftText } }]) %}
+      {% else %}
+        {% if enquiriesPhoneNumber and enquiriesPhoneNumber | trim %}
+          {% set liftText %}
+            {{ text.liftUnavailable }}
+            {{ text.liftContact }}
+            <span class="phone-text">{{ enquiriesPhoneNumber }}</span>
+            <a href="tel:{{ enquiriesPhoneNumber }}" class="govuk-link govuk-link--no-visited-state phone-link">
+              {{ enquiriesPhoneNumber }}
+            </a>
+            {{ text.liftContactSuffix }}
+          {% endset %}
+          {% set rows = rows.concat([{ key: { text: text.liftLabel }, value: { html: liftText } }]) %}
+        {% else %}
+          {% set rows = rows.concat([{ key: { text: text.liftLabel }, value: { text: text.liftUnavailableFallback } }]) %}
+        {% endif %}
+      {% endif %}
+
+      {% if options.quietRoom %}
+        {% set rows = rows.concat([{ key: { text: text.quietRoomLabel }, value: { text: text.quietRoomAvailable } }]) %}
+      {% else %}
+        {% set rows = rows.concat([{ key: { text: text.quietRoomLabel }, value: { text: text.quietRoomUnavailable } }]) %}
+      {% endif %}
+    {% endif %}
+
+    {% if rows.length %}
+      {{ govukSummaryList({ rows: rows }) }}
+    {% endif %}
+  </section>
+{% endmacro %}
