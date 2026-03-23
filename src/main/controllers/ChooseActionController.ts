@@ -1,6 +1,5 @@
 import { GET, POST, route } from 'awilix-express';
 import { Response } from 'express';
-import { cloneDeep } from 'lodash';
 
 import { FactRequest } from '../interfaces/FactRequest';
 import { isValidAction } from '../utils/validationUtils';
@@ -14,12 +13,11 @@ export default class ChooseActionController {
 
   @POST()
   public continue(req: FactRequest, res: Response): void {
-    if (req.body?.action && isValidAction(req.body.action)) {
-      const action = req.body?.action as string;
-      res.redirect('/services/' + action);
+    if (isValidAction(req.body?.action)) {
+      res.redirect(`/services/${req.body.action}`);
     } else {
       res.render('choose-action', {
-        ...cloneDeep(req.i18n.getDataByLanguage(req.lng)['choose-action']),
+        ...req.i18n.getDataByLanguage(req.lng)['choose-action'],
         errors: true,
       });
     }
