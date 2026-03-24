@@ -16,6 +16,7 @@ export class I18next {
       resources,
       fallbackLng: 'en',
       supportedLngs: ['en', 'cy'],
+      showSupportNotice: false,
       detection: {
         order: ['querystring', 'session', 'cookie'],
         caches: ['session', 'cookie'],
