@@ -1481,7 +1481,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jsonjoy.com/buffers@npm:^1.0.0, @jsonjoy.com/buffers@npm:^1.2.0":
+"@jsonjoy.com/buffers@npm:18.1.0":
+  version: 18.1.0
+  resolution: "@jsonjoy.com/buffers@npm:18.1.0"
+  peerDependencies:
+    tslib: 2
+  checksum: 10/3d6a50c52ed11cb70bdd150a70a1abeb89ab0783fbf2b4476cb77fcc91d8578403ed12a3ce5717c5c327e5c8e3f3756b608b2e35305e71d0e779f79d1c6a613e
+  languageName: node
+  linkType: hard
+
+"@jsonjoy.com/buffers@npm:^1.2.0":
   version: 1.2.1
   resolution: "@jsonjoy.com/buffers@npm:1.2.1"
   peerDependencies:
@@ -1496,6 +1505,15 @@ __metadata:
   peerDependencies:
     tslib: 2
   checksum: 10/e2462836c708999d045c4a15099f12e721089a3731f0ad33da210559a52ed763b8bddbec3c181857341984ef12ea355290609f37f0dc6f8de1545c028090adf5
+  languageName: node
+  linkType: hard
+
+"@jsonjoy.com/codegen@npm:18.1.0":
+  version: 18.1.0
+  resolution: "@jsonjoy.com/codegen@npm:18.1.0"
+  peerDependencies:
+    tslib: 2
+  checksum: 10/8586e65eac6cc9da06ed8681cc7d8e251e74be914d02678b0581d5969ee414564c6a750e660aee482f5871de16b1c106693f5e653f823756859bee2e4068d1e0
   languageName: node
   linkType: hard
 
@@ -1611,6 +1629,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@jsonjoy.com/json-equal@npm:18.1.0":
+  version: 18.1.0
+  resolution: "@jsonjoy.com/json-equal@npm:18.1.0"
+  dependencies:
+    "@jsonjoy.com/codegen": "npm:18.1.0"
+  peerDependencies:
+    tslib: "*"
+  checksum: 10/5311ff67a81086ec269aacc6c895780f03457c3f2a30b5fa9aa266dccd59ddbb091493415d2079d7c99392061a0e950685cee79d7e4f79e6197ab8aa768ae934
+  languageName: node
+  linkType: hard
+
 "@jsonjoy.com/json-pack@npm:^1.11.0":
   version: 1.21.0
   resolution: "@jsonjoy.com/json-pack@npm:1.21.0"
@@ -1670,15 +1699,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jsonjoy.com/util@npm:1.9.0":
-  version: 1.9.0
-  resolution: "@jsonjoy.com/util@npm:1.9.0"
+"@jsonjoy.com/util@npm:18.1.0":
+  version: 18.1.0
+  resolution: "@jsonjoy.com/util@npm:18.1.0"
   dependencies:
-    "@jsonjoy.com/buffers": "npm:^1.0.0"
-    "@jsonjoy.com/codegen": "npm:^1.0.0"
+    "@jsonjoy.com/buffers": "npm:18.1.0"
+    "@jsonjoy.com/codegen": "npm:18.1.0"
+    "@jsonjoy.com/json-equal": "npm:18.1.0"
   peerDependencies:
     tslib: 2
-  checksum: 10/1a6e5301d725a7161b93ff707eb1a954bf4552a2fa96eee9a960d3ae3ed5f993d18b56dcff29e98036341a5968c5d1b2dfe21f76695390e7f0d89b81f24c85e0
+  checksum: 10/30a03088b0a4b3a662a080df54539d2d1815174f6512e1470e18bdc1a3dd39e94716c7d640b6e672c6a5c59d764fabccb3be62d70faf00488311353c6352b5f9
   languageName: node
   linkType: hard
 
