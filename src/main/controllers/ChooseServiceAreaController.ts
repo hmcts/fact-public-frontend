@@ -6,12 +6,14 @@ import { FactRequest } from '../interfaces/FactRequest';
 import { DataApiRequests } from '../requests/DataApiRequests';
 import { ServiceArea } from '../schemas/ServiceAreaSchema';
 import { Service } from '../schemas/ServiceSchema';
+import { calculateServiceAreaFromSlug, calculateServiceNameFromSlug } from '../utils/SchemaUtils';
 import { isValidAction } from '../utils/validationUtils';
 
 interface LocalisedServiceArea {
   id: string;
   text: string;
   description: string | null;
+  value: string;
 }
 
 const dataApiRequests = new DataApiRequests();
@@ -40,8 +42,8 @@ export class ChooseServiceAreaController {
       }
 
       try {
-        const serviceName = await this.calculateServiceName(service);
-        const serviceArea = await this.calculateServiceArea(serviceName, area);
+        const serviceName = await calculateServiceNameFromSlug(service);
+        const serviceArea = await calculateServiceAreaFromSlug(serviceName, area);
         // redirect to the appropriate search page (local or national)
         return this.redirectToSearch(service, serviceArea, action, res);
       } catch {
@@ -51,28 +53,6 @@ export class ChooseServiceAreaController {
       // set the error state to true and re-render the page
       await this.renderChooseServiceAreaPage(req, res, true);
     }
-  }
-
-  private async calculateServiceName(service: string): Promise<string> {
-    const services = await dataApiRequests.getAllServices();
-    if (Array.isArray(services)) {
-      const serviceName = services.find((s: Service) => s.slug === service)?.name;
-      if (serviceName) {
-        return serviceName;
-      }
-    }
-    throw new Error('Service not found');
-  }
-
-  private async calculateServiceArea(serviceName: string, area: string): Promise<ServiceArea> {
-    const result = await dataApiRequests.getServiceAreas(serviceName);
-    if (Array.isArray(result)) {
-      const serviceArea = result.find(a => a.id === area);
-      if (serviceArea) {
-        return serviceArea;
-      }
-    }
-    throw new Error('Service area not found');
   }
 
   /**
@@ -165,6 +145,7 @@ export class ChooseServiceAreaController {
         id: area.id,
         text: lng === 'cy' ? area.nameCy : area.name,
         description: lng === 'cy' ? area.descriptionCy : area.description,
+        value: area.slug,
       });
     }
     return result;

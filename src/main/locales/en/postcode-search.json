@@ -1,0 +1,32 @@
+{
+  "errorTitle": "Error:",
+  "title": "What is your postcode? - Find a Court or Tribunal - GOV.UK",
+  "question": "What is your postcode?",
+  "hints": {
+    "default": "We will use your postcode to show you the closest court or tribunal that deals with {serviceArea} to you.",
+    "noService": "We will use your postcode to show you the closest court or tribunal to you",
+    "childcare": "We will use the postcode of your children’s home to show you the closest court or tribunal that handles childcare arrangements to them."
+  },
+  "text": "Enter your postcode",
+  "button": "Continue",
+  "noResults": {
+    "p1": "There are no matching results.",
+    "p2": "Improve your search results by:",
+    "list": {
+      "li1": "double-checking your spelling",
+      "li2": "using fewer keywords",
+      "li3": "searching for something less specific"
+    }
+  },
+  "errorText": {
+    "title": "There is a problem",
+    "blankPostcode": "Enter a postcode",
+    "invalidPostcode": "Enter a valid postcode format",
+    "scotlandPostcode": "We do not have court information for this service. Contact the Scottish Courts and Tribunals for help.",
+    "scottishChildrenPostcode": "If the child (or children) resides in Scotland they will be outside the jurisdiction for this service. Contact the Scottish Courts and Tribunals for help.",
+    "northernIrelandPostcode": "We do not have court information for Northern Ireland. Contact the Northern Ireland Courts and Tribunals for help.",
+    "guernseyPostcode": "We do not have court information for Guernsey. Contact the Royal Court of Guernsey for help.",
+    "jerseyPostcode": "We do not have court information for Jersey. Contact The Courts of Jersey for help.",
+    "isleOfManPostcode": "We do not have court information for Isle of Man. Contact the Isle of Man Courts of Justice for help."
+  }
+}
