@@ -2,21 +2,23 @@ import { GET, POST, route } from 'awilix-express';
 import { Response } from 'express';
 
 import { FactRequest } from '../interfaces/FactRequest';
-import { DataApiRequests } from '../requests/DataApiRequests';
 import { ServiceArea } from '../schemas/ServiceAreaSchema';
 import { calculateServiceAreaFromSlug, calculateServiceNameFromSlug } from '../utils/SchemaUtils';
 import { checkPostcode } from '../utils/validationUtils';
 
 const CHILDCARE_SERVICE_LIST = new Set(['childcare-arrangements']);
 
-const dataApiRequests = new DataApiRequests();
-
 @route('/services/:service/:serviceArea/:action/search-by-postcode')
 @route('/search-by-postcode')
 export default class PostcodeSearchController {
   @GET()
   public async render(req: FactRequest, res: Response): Promise<void> {
-    return this.renderPostcodeSearchPage(req, res);
+    return this.renderPostcodeSearchPage(
+      req,
+      res,
+      req.query?.error as string,
+      req.query?.noResults !== undefined
+    );
   }
 
   @POST()
@@ -28,25 +30,10 @@ export default class PostcodeSearchController {
     if (errorType) {
       return this.renderPostcodeSearchPage(req, res, errorType);
     } else if (noServiceSearch) {
-      const result = await dataApiRequests.performPostcodeOnlySearch(postcode);
-      if (!Array.isArray(result) || result.length === 0) {
-        return this.renderPostcodeSearchPage(req, res, undefined, true);
-      } else {
-        // TODO: render postcode results!
-        return this.renderPostcodeSearchPage(req, res);
-      }
+      res.redirect(`/search-by-postcode/courts/near?postcode=${postcode}`);
     } else {
       try {
-        const service = await calculateServiceNameFromSlug(req.params.service as string);
-        const serviceArea = await calculateServiceAreaFromSlug(service, req.params.serviceArea as string);
-        const action = req.params.action as string;
-        const result = await dataApiRequests.performPostcodeSearch(postcode, serviceArea.name, action);
-        if (!Array.isArray(result) || result.length === 0) {
-          return this.renderPostcodeSearchPage(req, res, undefined, true);
-        } else {
-          // TODO: render postcode results!
-          return this.renderPostcodeSearchPage(req, res);
-        }
+        res.redirect(`/services/${req.params.service}/${req.params.serviceArea}/${req.params.action}/search-by-postcode/courts/near?postcode=${postcode}`);
       } catch {
         return res.status(404).render('not-found', req.i18n.getDataByLanguage(req.lng)['not-found']);
       }
