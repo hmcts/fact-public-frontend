@@ -4,6 +4,7 @@ import { AxiosRequestConfig, HttpStatusCode, isAxiosError } from 'axios';
 import { ServiceArea, serviceAreaSchema } from '../schemas/ServiceAreaSchema';
 import { Service, serviceSchema } from '../schemas/ServiceSchema';
 import { Court, courtSchema } from '../schemas/courtSchema';
+import { CourtServiceAreas, courtServiceAreasSchema } from '../schemas/courtServiceAreas';
 import { CourtWithDistance, courtWithDistanceSchema } from '../schemas/courtWithDistance';
 
 import { dataApi } from './utils/axiosConfig';
@@ -83,6 +84,23 @@ export class DataApiRequests {
       return serviceAreaSchema.array().parse(response.data);
     } catch (error: unknown) {
       logger.error('Error fetching service area details:', error);
+      return isAxiosError(error) && error.response?.status
+        ? (error.response.status as HttpStatusCode)
+        : HttpStatusCode.InternalServerError;
+    }
+  }
+
+  /**
+   * Perform a search for court service areas based on the service area name.
+   *
+   * @param serviceAreaName the name of the service area
+   */
+  public async getCourtServiceAreas(serviceAreaName: string): Promise<CourtServiceAreas[] | HttpStatusCode> {
+    try {
+      const response = await dataApi.get(`/search/service-area/v1/${serviceAreaName}`);
+      return courtServiceAreasSchema.array().parse(response.data);
+    } catch (error: unknown) {
+      logger.error('Error fetching court service area details:', error);
       return isAxiosError(error) && error.response?.status
         ? (error.response.status as HttpStatusCode)
         : HttpStatusCode.InternalServerError;

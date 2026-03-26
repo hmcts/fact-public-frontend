@@ -1,8 +1,16 @@
 import { z } from 'zod';
 
-const catchmentMethodSchema = z.enum(['POSTCODE', 'PROXIMITY', 'LOCAL_AUTHORITY']);
+export enum CATCHMENT_METHOD {
+  POSTCODE = 'POSTCODE',
+  PROXIMITY = 'PROXIMITY',
+  LOCAL_AUTHORITY = 'LOCAL_AUTHORITY',
+}
 
-const typeSchema = z.enum(['CIVIL', 'FAMILY', 'OTHER']);
+export enum SERVICE_AREA_TYPE {
+  CIVIL = 'CIVIL',
+  FAMILY = 'FAMILY',
+  OTHER = 'OTHER',
+}
 
 export const serviceAreaSchema = z
   .object({
@@ -17,9 +25,9 @@ export const serviceAreaSchema = z
     onlineTextCy: z.string().nullable(),
     text: z.string().nullable(),
     textCy: z.string().nullable(),
-    catchmentMethod: catchmentMethodSchema.nullable(),
+    catchmentMethod: z.enum(CATCHMENT_METHOD).nullable(),
     areaOfLawId: z.string(),
-    type: typeSchema.nullable(),
+    type: z.enum(SERVICE_AREA_TYPE),
     sortOrder: z.int().nullable(),
     hasLocal: z.boolean(),
     hasNational: z.boolean(),

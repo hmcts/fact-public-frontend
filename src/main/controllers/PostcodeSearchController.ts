@@ -13,12 +13,7 @@ const CHILDCARE_SERVICE_LIST = new Set(['childcare-arrangements']);
 export default class PostcodeSearchController {
   @GET()
   public async render(req: FactRequest, res: Response): Promise<void> {
-    return this.renderPostcodeSearchPage(
-      req,
-      res,
-      req.query?.error as string,
-      req.query?.noResults !== undefined
-    );
+    return this.renderPostcodeSearchPage(req, res, req.query?.error as string, req.query?.noResults !== undefined);
   }
 
   @POST()
@@ -33,7 +28,9 @@ export default class PostcodeSearchController {
       res.redirect(`/search-by-postcode/courts/near?postcode=${postcode}`);
     } else {
       try {
-        res.redirect(`/services/${req.params.service}/${req.params.serviceArea}/${req.params.action}/search-by-postcode/courts/near?postcode=${postcode}`);
+        res.redirect(
+          `/services/${req.params.service}/${req.params.serviceArea}/${req.params.action}/search-by-postcode/courts/near?postcode=${postcode}`
+        );
       } catch {
         return res.status(404).render('not-found', req.i18n.getDataByLanguage(req.lng)['not-found']);
       }
