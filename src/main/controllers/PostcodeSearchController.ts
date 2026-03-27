@@ -6,7 +6,7 @@ import { ServiceArea } from '../schemas/ServiceAreaSchema';
 import { calculateServiceAreaFromSlug, calculateServiceNameFromSlug } from '../utils/SchemaUtils';
 import { checkPostcode } from '../utils/validationUtils';
 
-const CHILDCARE_SERVICE_LIST = new Set(['childcare-arrangements']);
+const CHILDCARE_SERVICE_AREA_LIST = new Set(['childcare-arrangements-if-you-separate-from-your-partner']);
 
 @route('/services/:service/:serviceArea/:action/search-by-postcode')
 @route('/search-by-postcode')
@@ -57,7 +57,7 @@ export default class PostcodeSearchController {
     res.render('postcode-search', {
       ...req.i18n.getDataByLanguage(req.lng)['postcode-search'],
       serviceAreaLocalised,
-      serviceAreaIsChildcare: CHILDCARE_SERVICE_LIST.has(req.params?.serviceArea as string),
+      serviceAreaIsChildcare: CHILDCARE_SERVICE_AREA_LIST.has(req.params?.serviceArea as string),
       errorType: errorType || null,
       error: errorType !== undefined,
       hasNoResults,

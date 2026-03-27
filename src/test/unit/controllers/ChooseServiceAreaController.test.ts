@@ -4,7 +4,7 @@ import { Response } from 'express';
 
 import { ChooseServiceAreaController } from '../../../main/controllers/ChooseServiceAreaController';
 import { FactRequest } from '../../../main/interfaces/FactRequest';
-import { ServiceArea } from '../../../main/schemas/ServiceAreaSchema';
+import { CATCHMENT_METHOD, SERVICE_AREA_TYPE, ServiceArea } from '../../../main/schemas/ServiceAreaSchema';
 import { Service } from '../../../main/schemas/ServiceSchema';
 
 const mockGetAllServices: jest.MockedFunction<() => Promise<Service[] | HttpStatusCode>> = jest.fn();
@@ -32,9 +32,9 @@ const mockServiceArea: ServiceArea = {
   onlineTextCy: 'Ardal 1 Ar-lein',
   text: 'Area 1 info',
   textCy: 'Ardal 1 info',
-  catchmentMethod: 'POSTCODE',
+  catchmentMethod: CATCHMENT_METHOD.POSTCODE,
   areaOfLawId: 'law-1',
-  type: 'CIVIL',
+  type: SERVICE_AREA_TYPE.CIVIL,
   sortOrder: 1,
   hasLocal: false,
   hasNational: true,
@@ -52,9 +52,9 @@ const mockServiceArea2: ServiceArea = {
   onlineTextCy: 'Ardal 2 Ar-lein',
   text: 'Area 2 info',
   textCy: 'Ardal 2 info',
-  catchmentMethod: 'POSTCODE',
+  catchmentMethod: CATCHMENT_METHOD.POSTCODE,
   areaOfLawId: 'law-2',
-  type: 'FAMILY',
+  type: SERVICE_AREA_TYPE.FAMILY,
   sortOrder: 2,
   hasLocal: true,
   hasNational: true,
@@ -72,9 +72,9 @@ const mockServiceArea3: ServiceArea = {
   onlineTextCy: 'Ardal 3 Ar-lein',
   text: 'Area 3 info',
   textCy: 'Ardal 3 info',
-  catchmentMethod: 'POSTCODE',
+  catchmentMethod: CATCHMENT_METHOD.POSTCODE,
   areaOfLawId: 'law-3',
-  type: 'FAMILY',
+  type: SERVICE_AREA_TYPE.FAMILY,
   sortOrder: 3,
   hasLocal: true,
   hasNational: false,
@@ -164,7 +164,7 @@ describe('ChooseServiceAreaController', () => {
     mockGetAllServices.mockResolvedValue([mockService]);
     mockGetServiceAreas.mockResolvedValue([mockServiceArea, mockServiceArea2]);
     req.params = { action: 'nearest', service: 'test-service' };
-    req.body = { area: mockServiceArea2.id };
+    req.body = { area: mockServiceArea2.slug };
     await new ChooseServiceAreaController().continue(req as FactRequest, res);
     expect(res.redirect).toHaveBeenCalledWith(
       `/services/${req.params.service}/${mockServiceArea2.slug}/${req.params.action}/search-by-postcode`
@@ -175,7 +175,7 @@ describe('ChooseServiceAreaController', () => {
     mockGetAllServices.mockResolvedValue([mockService]);
     mockGetServiceAreas.mockResolvedValue([mockServiceArea, mockServiceArea3]);
     req.params = { action: 'documents', service: 'test-service' };
-    req.body = { area: mockServiceArea.id };
+    req.body = { area: mockServiceArea.slug };
     await new ChooseServiceAreaController().continue(req as FactRequest, res);
     expect(res.redirect).toHaveBeenCalledWith(`/services/${req.params.service}/${mockServiceArea.slug}/search-results`);
   });
@@ -184,7 +184,7 @@ describe('ChooseServiceAreaController', () => {
     mockGetAllServices.mockResolvedValue([mockService]);
     mockGetServiceAreas.mockResolvedValue([mockServiceArea, mockServiceArea2]);
     req.params = { action: 'documents', service: 'test-service' };
-    req.body = { area: mockServiceArea.id };
+    req.body = { area: mockServiceArea.slug };
     await new ChooseServiceAreaController().continue(req as FactRequest, res);
     expect(res.redirect).toHaveBeenCalledWith(`/services/${req.params.service}/${mockServiceArea.slug}/search-results`);
   });
@@ -193,7 +193,7 @@ describe('ChooseServiceAreaController', () => {
     mockGetAllServices.mockResolvedValue([mockService]);
     mockGetServiceAreas.mockResolvedValue([mockServiceArea, mockServiceArea3]);
     req.params = { action: 'documents', service: 'test-service' };
-    req.body = { area: mockServiceArea3.id };
+    req.body = { area: mockServiceArea3.slug };
     await new ChooseServiceAreaController().continue(req as FactRequest, res);
     expect(res.redirect).toHaveBeenCalledWith(
       `/services/${req.params.service}/${mockServiceArea3.slug}/${req.params.action}/search-by-postcode`
