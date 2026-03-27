@@ -92,8 +92,9 @@ export class ChooseServiceAreaController {
    */
   private redirectToSearch(serviceName: string, serviceArea: ServiceArea, action: string, res: Response) {
     if (
-      (action.toLowerCase() === 'nearest' && serviceArea.hasLocal) ||
-      (action.toLowerCase() !== 'nearest' && !serviceArea.hasNational)
+      (!serviceArea.hasLocal && !serviceArea.hasNational) || // no associated courts
+      (action.toLowerCase() === 'nearest' && serviceArea.hasLocal) || // nearest and has local results
+      (action.toLowerCase() !== 'nearest' && !serviceArea.hasNational) // not nearest and is missing national results
     ) {
       res.redirect(`/services/${serviceName}/${serviceArea.slug}/${action}/search-by-postcode`);
     } else {
