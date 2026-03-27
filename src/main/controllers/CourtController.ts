@@ -13,6 +13,18 @@ const courtService = new CourtService();
 
 @route('/courts')
 export default class CourtController {
+  @route('/:slug' + '.json')
+  @GET()
+  public async getJson(req: FactRequest, res: Response): Promise<void> {
+    const result = await dataApiRequests.getCourtDetails(req.params.slug as string);
+
+    if (result === HttpStatusCode.NotFound) {
+      return res.status(404).render('not-found', req.i18n.getDataByLanguage(req.lng).notFound);
+    }
+
+    res.json(result);
+  }
+
   @route('/:slug')
   @GET()
   public async get(req: FactRequest, res: Response): Promise<void> {
@@ -38,17 +50,5 @@ export default class CourtController {
       ...cloneDeep(req.i18n.getDataByLanguage(req.lng)['court']),
       court: viewModel,
     });
-  }
-
-  @route('/:slug' + '.json')
-  @GET()
-  public async getJson(req: FactRequest, res: Response): Promise<void> {
-    const result = await dataApiRequests.getCourtDetails(req.params.slug as string);
-
-    if (result === HttpStatusCode.NotFound) {
-      return res.status(404).render('not-found', req.i18n.getDataByLanguage(req.lng)['not-found']);
-    }
-
-    res.json(result);
   }
 }
