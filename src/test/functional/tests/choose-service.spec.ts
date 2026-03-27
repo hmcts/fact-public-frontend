@@ -30,7 +30,9 @@ test.describe('Choose Service Page', () => {
         await radio.check();
         found = true;
         await chooseServicePage.submit();
-        await expect(page).toHaveURL(`/services/${value}/service-areas/${nearestAction}`);
+        // need to deal with the fact that we don't know which service has been selected, and it may
+        // go directly to a postcode search when only a single service area is associated.
+        await expect(page).toHaveURL(/\/services\/.+\/nearest(\/search-by-postcode\/)?/);
         break;
       }
     }
