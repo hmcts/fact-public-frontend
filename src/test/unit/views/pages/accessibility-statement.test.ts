@@ -25,8 +25,18 @@ describe('AccessibilityStatement View', () => {
       expect(html).toContain(bullet);
     });
 
+    // Check Accessibility details
+    expect(html).toContain(i18n.accessibility_details.heading);
+    expect(html).toContain(i18n.accessibility_details.intro);
+    expect(html).toContain(i18n.accessibility_details.sub_heading);
+    expect(html).toContain(i18n.accessibility_details.main_content.p1);
+    expect(html).toContain(i18n.accessibility_details.main_content.p2.content);
+    for (const bullet of i18n.accessibility_details.main_content.p2.bullets) {
+      expect(html).toContain(bullet);
+    }
+    expect(html).toContain(i18n.accessibility_details.main_content.p3);
+
     // Check H2s
-    expect(html).toContain(i18n.h13);
     expect(html).toContain(i18n.h3);
     expect(html).toContain(i18n.h4);
     expect(html).toContain(i18n.h5);
@@ -69,8 +79,18 @@ describe('AccessibilityStatement View', () => {
       expect(html).toContain(bullet);
     });
 
+    // Check Accessibility details
+    expect(html).toContain(welshI18n.accessibility_details.heading);
+    expect(html).toContain(welshI18n.accessibility_details.intro);
+    expect(html).toContain(welshI18n.accessibility_details.sub_heading);
+    expect(html).toContain(welshI18n.accessibility_details.main_content.p1);
+    expect(html).toContain(welshI18n.accessibility_details.main_content.p2.content);
+    for (const bullet of welshI18n.accessibility_details.main_content.p2.bullets) {
+      expect(html).toContain(bullet);
+    }
+    expect(html).toContain(welshI18n.accessibility_details.main_content.p3);
+
     // Check H2s
-    expect(html).toContain(welshI18n.h13);
     expect(html).toContain(welshI18n.h3);
     expect(html).toContain(welshI18n.h4);
     expect(html).toContain(welshI18n.h5);
