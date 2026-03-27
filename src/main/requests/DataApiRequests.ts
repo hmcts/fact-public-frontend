@@ -7,6 +7,7 @@ import { Court, courtSchema } from '../schemas/courtSchema';
 
 import { dataApi } from './utils/axiosConfig';
 import { Service, serviceSchema } from '../schemas/ServiceSchema';
+import { CourtBasic } from '../schemas/courtBasicSchema';
 
 const logger = Logger.getLogger('app');
 
@@ -142,7 +143,7 @@ export class DataApiRequests {
     }
   }
 
-  public async getCourtsByPrefix(prefix: string): Promise<any[] | HttpStatusCode> {
+  public async getCourtsByPrefix(prefix: string): Promise<CourtBasic[] | HttpStatusCode> {
     try {
       const response = await dataApi.get('/search/courts/v1/prefix', {
         params: { prefix }
