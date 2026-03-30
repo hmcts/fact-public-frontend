@@ -48,6 +48,7 @@ const BASE_SERVICE_AREA: ServiceArea = {
   sortOrder: null,
   hasLocal: true,
   hasNational: true,
+  hasRegional: true,
 };
 
 // Common base CourtServiceAreas mocks for tests
