@@ -38,6 +38,7 @@ const mockServiceArea: ServiceArea = {
   sortOrder: 1,
   hasLocal: false,
   hasNational: true,
+  hasRegional: false,
 };
 
 const mockServiceArea2: ServiceArea = {
@@ -58,6 +59,7 @@ const mockServiceArea2: ServiceArea = {
   sortOrder: 2,
   hasLocal: true,
   hasNational: true,
+  hasRegional: false,
 };
 
 const mockServiceArea3: ServiceArea = {
@@ -78,6 +80,7 @@ const mockServiceArea3: ServiceArea = {
   sortOrder: 3,
   hasLocal: true,
   hasNational: false,
+  hasRegional: false,
 };
 
 jest.mock('../../../main/requests/DataApiRequests', () => {
