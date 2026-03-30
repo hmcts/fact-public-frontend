@@ -3,11 +3,11 @@ import { AxiosRequestConfig, HttpStatusCode, isAxiosError } from 'axios';
 
 import { CourtWithDistance, courtWithDistanceSchema } from '../schemas/CourtWithDistanceSchema';
 import { ServiceArea, serviceAreaSchema } from '../schemas/ServiceAreaSchema';
+import { Service, serviceSchema } from '../schemas/ServiceSchema';
+import { CourtBasic } from '../schemas/courtBasicSchema';
 import { Court, courtSchema } from '../schemas/courtSchema';
 
 import { dataApi } from './utils/axiosConfig';
-import { Service, serviceSchema } from '../schemas/ServiceSchema';
-import { CourtBasic } from '../schemas/courtBasicSchema';
 
 const logger = Logger.getLogger('app');
 

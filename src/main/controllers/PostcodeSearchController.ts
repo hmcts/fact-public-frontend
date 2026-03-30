@@ -25,7 +25,7 @@ export default class PostcodeSearchController {
     if (errorType) {
       return this.renderPostcodeSearchPage(req, res, errorType);
     } else if (noServiceSearch) {
-      res.redirect(`/search-by-postcode/courts/near?postcode=${postcode}`);
+      res.redirect(`/services/search-by-postcode/courts/near?postcode=${postcode}`);
     } else {
       try {
         res.redirect(
