@@ -45,7 +45,7 @@ async function createCourt(
 
 export async function createCourtTestData(playwright: PlaywrightLike, suiteLabel: string): Promise<CourtTestData> {
   const apiContext = await playwright.request.newContext({
-    baseURL: `${process.env.DATA_API_URL}`,
+    baseURL: `${process.env.DATA_API_URL ?? 'http://localhost:8989'}`,
     extraHTTPHeaders: {
       Accept: 'application/json',
     },

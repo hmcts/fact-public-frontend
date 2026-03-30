@@ -78,11 +78,14 @@ export class ChooseServiceAreaController {
   /**
    * Redirects to the appropriate search page based on the service area and action chosen.
    *
-   * - If the user has chosen to search for the nearest service, but the chosen service area
-   * doesn't have a local search, they will be redirected to the postcode search page.
-   * - If the user has chosen to search nationally, but the chosen service area doesn't have
-   * a national search, they will also be redirected to the postcode search page.
-   * - In all other cases, the user will be redirected to the standard search results page.
+   * The logic is as follows:
+   * - If there are no associations, redirect to the postcode search page.
+   * - If the action is "nearest" and there are local or regional associations, redirect to the
+   *   postcode search page. Otherwise, redirect to the national search page.
+   * - If the action is "documents" and there are national but no regional associations, redirect
+   *   to the national search page. Otherwise, redirect to the postcode search page.
+   * - For all other actions, if there are national associations, redirect to the national search
+   *   page. Otherwise, redirect to the postcode search page.
    *
    * @param serviceName the service name
    * @param serviceArea the serviceArea object
@@ -91,14 +94,28 @@ export class ChooseServiceAreaController {
    * @private
    */
   private redirectToSearch(serviceName: string, serviceArea: ServiceArea, action: string, res: Response) {
-    if (
-      (!serviceArea.hasLocal && !serviceArea.hasNational) || // no associated courts
-      (action.toLowerCase() === 'nearest' && serviceArea.hasLocal) || // nearest and has local results
-      (action.toLowerCase() !== 'nearest' && !serviceArea.hasNational) // not nearest and is missing national results
-    ) {
-      res.redirect(`/services/${serviceName}/${serviceArea.slug}/${action}/search-by-postcode`);
-    } else {
-      res.redirect(`/services/${serviceName}/${serviceArea.slug}/search-results`);
+    const postcode = () => res.redirect(`/services/${serviceName}/${serviceArea.slug}/${action}/search-by-postcode`);
+    const service = () => res.redirect(`/services/${serviceName}/${serviceArea.slug}/search-results`);
+    // no associations then just skip to the postcode screen
+    if (!serviceArea.hasLocal && !serviceArea.hasNational && !serviceArea.hasRegional) {
+      return postcode();
+    }
+    switch (action.toLowerCase()) {
+      case 'nearest':
+        if (serviceArea.hasLocal || serviceArea.hasRegional) {
+          return postcode();
+        }
+        return service();
+      case 'documents':
+        if (!serviceArea.hasRegional && serviceArea.hasNational) {
+          return service();
+        }
+        return postcode();
+      default:
+        if (serviceArea.hasNational) {
+          return service();
+        }
+        return postcode();
     }
   }
 

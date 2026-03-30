@@ -23,6 +23,7 @@ export const serviceAreaSchema = z
     sortOrder: z.int().nullable(),
     hasLocal: z.boolean(),
     hasNational: z.boolean(),
+    hasRegional: z.boolean(),
   })
   .transform(serviceArea => ({
     ...serviceArea,
