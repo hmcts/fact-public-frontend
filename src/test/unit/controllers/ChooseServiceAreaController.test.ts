@@ -214,10 +214,11 @@ describe('ChooseServiceAreaController', () => {
     expect(res.render).toHaveBeenCalledWith('not-found', expect.objectContaining({ title: 'Not Found' }));
   });
 
-  test('redirects to /service-not-found if area is not-listed', async () => {
+  test('redirects back to service selection if area is not-listed', async () => {
     req.body = { area: 'not-listed' };
+    req.params = { action: 'nearest', service: 'test-service' };
     await new ChooseServiceAreaController().continue(req as FactRequest, res);
-    expect(res.redirect).toHaveBeenCalledWith('/service-not-found');
+    expect(res.redirect).toHaveBeenCalledWith(`/services/${req.params.action}`);
   });
 
   test('renders not-found if service area is not found', async () => {

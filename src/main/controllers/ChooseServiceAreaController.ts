@@ -32,9 +32,9 @@ export class ChooseServiceAreaController {
       const service = req.params.service as string;
       const area = req.body.area as string;
 
-      // fail-fast to the not listed page.
+      // redirect back to the service selection page
       if (area === 'not-listed') {
-        return res.redirect('/service-not-found');
+        return res.redirect(`/services/${action}`);
       }
 
       if (!isValidAction(action)) {
