@@ -1,9 +1,9 @@
 import { Logger } from '@hmcts/nodejs-logging';
 import { HttpStatusCode, isAxiosError } from 'axios';
 
-import { CourtBasic } from '../schemas/courtBasicSchema';
 import { ServiceArea, serviceAreaSchema } from '../schemas/ServiceAreaSchema';
 import { Service, serviceSchema } from '../schemas/ServiceSchema';
+import { CourtBasic } from '../schemas/courtBasicSchema';
 import { Court, courtSchema } from '../schemas/courtSchema';
 
 import { dataApi } from './utils/axiosConfig';
@@ -56,7 +56,7 @@ export class DataApiRequests {
         : HttpStatusCode.InternalServerError;
     }
   }
-  
+
   /**
    * Request all service details from the API
    */
@@ -88,7 +88,7 @@ export class DataApiRequests {
         : HttpStatusCode.InternalServerError;
     }
   }
-  
+
   /**
    * Request courts from the API that match the given prefix
    *
@@ -102,7 +102,7 @@ export class DataApiRequests {
       return response.data;
     } catch (error: unknown) {
       logger.error(`Error fetching court details for prefix ${prefix}:`, error);
-            return isAxiosError(error) && error.response?.status
+      return isAxiosError(error) && error.response?.status
         ? (error.response.status as HttpStatusCode)
         : HttpStatusCode.InternalServerError;
     }
