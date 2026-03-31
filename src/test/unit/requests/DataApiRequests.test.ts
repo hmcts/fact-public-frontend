@@ -127,4 +127,43 @@ describe('DataApiRequests', () => {
       await expect(requests.getAll()).resolves.toBe(HttpStatusCode.InternalServerError);
     });
   });
+
+  describe('getCourtsByPrefix', () => {
+    it('returns parsed courts array on success', async () => {
+      const payload = [{ raw: 'court-a' }, { raw: 'court-b' }];
+      const parsedCourts = [{ id: 'a' }, { id: 'b' }];
+      const arrayParseStub = sandbox.stub().withArgs(payload).returns(parsedCourts);
+
+      sandbox.stub(dataApi, 'get').withArgs('/courts/name-prefix/test').resolves({ data: payload });
+      sandbox.stub(courtSchema, 'array').returns({ parse: arrayParseStub } as never);
+
+      await expect(requests.getCourtsByPrefix('test')).resolves.toBe(parsedCourts);
+    });
+
+    it('returns API status code for axios errors with response status', async () => {
+      sandbox
+        .stub(dataApi, 'get')
+        .withArgs('/courts/name-prefix/test')
+        .rejects({
+          isAxiosError: true,
+          response: { status: HttpStatusCode.NotFound },
+        });
+
+      await expect(requests.getCourtsByPrefix('test')).resolves.toBe(HttpStatusCode.NotFound);
+    });
+
+    it('returns internal server error for non-axios errors', async () => {
+      sandbox.stub(dataApi, 'get').withArgs('/courts/name-prefix/test').rejects(new Error('boom'));
+
+      await expect(requests.getCourtsByPrefix('test')).resolves.toBe(HttpStatusCode.InternalServerError);
+    });
+
+    it('returns internal server error for axios errors with no status', async () => {
+      sandbox.stub(dataApi, 'get').withArgs('/courts/name-prefix/test').rejects({
+        isAxiosError: true,
+      });
+
+      await expect(requests.getCourtsByPrefix('test')).resolves.toBe(HttpStatusCode.InternalServerError);
+    });
+  });
 });

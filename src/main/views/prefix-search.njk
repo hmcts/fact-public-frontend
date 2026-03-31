@@ -13,7 +13,13 @@
 
 {% block content %}
   {% if error %}
-    {{ errorSummary(errorText.title, errorText[errorType], "#prefix") }}
+    {{ govukErrorSummary({
+      titleText: errorText.title,
+      errorList: [{
+        text: errorText[errorType],
+        href: "#prefix"
+      }]
+    }) }}
   {% endif %}
 
   <div class="govuk-grid-row">

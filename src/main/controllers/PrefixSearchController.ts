@@ -25,6 +25,13 @@ export default class PrefixSearchController {
       return res.status(404).render('not-found', req.i18n.getDataByLanguage(req.lng)['not-found']);
     }
 
+    if (typeof result === 'number') {
+      return res.render('prefix-search', {
+        ...data,
+        error: true,
+      });
+    }
+
     const courts = result as CourtBasic[];
 
     return res.render('prefix-search', {
