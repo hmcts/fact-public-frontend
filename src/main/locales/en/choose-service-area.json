@@ -1,0 +1,16 @@
+{
+  "errorTitle": "Error:",
+  "title": "{serviceName} cases - Find a Court or Tribunal - GOV.UK",
+  "serviceName": "Find a Court or Tribunal",
+  "question": "What kind of help do you need with {serviceName}?",
+  "answers": {
+    "a1": "I can't find what I'm looking for"
+  },
+  "button": "Continue",
+  "divider": "or",
+  "error": {
+    "title": "There is a problem",
+    "text": "Select what kind of help you need with {serviceName}"
+  },
+  "courtsManaging": "Courts managing "
+}

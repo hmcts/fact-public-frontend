@@ -1,0 +1,16 @@
+{
+  "errorTitle": "Gwall:",
+  "title": "Achosion {serviceName} - Dod o hyd i lys neu dribiwnlys - GOV.UK",
+  "serviceName": "Dod o hyd i lys neu dribiwnlys",
+  "question": "Dewiswch pa fath o help sydd ei angen arnoch mewn perthynas â {serviceName}?",
+  "answers": {
+    "a1": "Alla i ddim dod o hyd i'r hyn yr ydw i’n chwilio amdano"
+  },
+  "button": "Parhau",
+  "divider": "neu",
+  "error": {
+    "title": "Mae yna broblem",
+    "text": "Dewiswch pa fath o help sydd ei angen arnoch mewn perthynas â {serviceName}"
+  },
+  "courtsManaging": "Llysoedd sy'n rheoli "
+}

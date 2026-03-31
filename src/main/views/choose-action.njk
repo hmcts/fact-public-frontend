@@ -1,0 +1,75 @@
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+
+{% extends "template.njk" %}
+
+{% block pageTitle %}
+  {% if errors %}
+    {{ errorTitle }}
+  {% endif %}
+  {{ title }}
+{% endblock %}
+
+{% block content %}
+  {% if errors %}
+    {{ govukErrorSummary({
+      titleText: error.title,
+      errorList: [{
+        text: error.text,
+        href: "#nearest-court"
+      }]
+    }) }}
+  {% endif %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <form method="POST">
+
+        {{ govukRadios({
+          idPrefix: "choose-action",
+          name: "action",
+          fieldset: {
+            legend: {
+              text: question,
+              classes: "govuk-fieldset__legend--l",
+              isPageHeading: true
+            }
+          },
+          errorMessage: { text: error.text } if errors,
+          items: [
+            {
+              id: "nearest-court",
+              text: answers.a1,
+              value: "nearest"
+            },
+            {
+              id: "document-court",
+              text: answers.a2,
+              value: "documents"
+            },
+            {
+              id: "update-court",
+              text: answers.a3,
+              value: "update"
+            },
+            {
+              divider: divider
+            },
+            {
+              id: "not-listed",
+              text: answers.a4,
+              value: "not-listed"
+            }
+          ]
+        }) }}
+
+        {{ govukButton({
+          text: button,
+          classes: "govuk-!-margin-top-2 govuk-!-margin-bottom-8 continue"
+        }) }}
+
+      </form>
+    </div>
+  </div>
+
+{% endblock %}
