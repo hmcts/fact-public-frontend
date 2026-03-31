@@ -17,7 +17,7 @@ test.describe('Service Results Page', () => {
     await resultsPage.expectHeadingToContainText(en_i18n.question);
     await resultsPage.expectVisibleElements();
     await resultsPage.expectRegionStatementToBeVisible(en_i18n.regionStatement);
-    await resultsPage.expectCourtLinkToBeVisible();
+    // can't make the assumption that a court will be present in the results
     await resultsPage.expectOnlineSectionToBeVisible();
   });
 
@@ -27,7 +27,7 @@ test.describe('Service Results Page', () => {
     await resultsPage.expectHeadingToContainText(cy_i18n.question);
     await resultsPage.expectVisibleElements();
     await resultsPage.expectRegionStatementToBeVisible(cy_i18n.regionStatement);
-    await resultsPage.expectCourtLinkToBeVisible();
+    // can't make the assumption that a court will be present in the results
     await resultsPage.expectOnlineSectionToBeVisible();
   });
 
