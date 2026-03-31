@@ -25,7 +25,7 @@ export default class AZPrefixSearchController {
       return res.status(404).render('not-found', req.i18n.getDataByLanguage(req.lng)['not-found']);
     }
 
-    if (typeof result === 'number') {
+    if (Object.values(HttpStatusCode).includes(result as HttpStatusCode)) {
       return res.render('prefix-search', {
         ...data,
         error: true,

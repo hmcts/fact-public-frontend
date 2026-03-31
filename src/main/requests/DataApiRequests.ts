@@ -96,10 +96,7 @@ export class DataApiRequests {
    */
   public async getCourtsByPrefix(prefix: string): Promise<CourtBasic[] | HttpStatusCode> {
     try {
-      const response = await dataApi.get('/search/courts/v1/prefix', {
-        params: { prefix },
-      });
-      return response.data;
+      return (await dataApi.get('/search/courts/v1/prefix', { params: { prefix } })).data;
     } catch (error: unknown) {
       logger.error(`Error fetching court details for prefix ${prefix}:`, error);
       return isAxiosError(error) && error.response?.status
