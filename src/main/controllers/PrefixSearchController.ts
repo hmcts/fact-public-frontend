@@ -37,7 +37,7 @@ export default class PrefixSearchController {
     return res.render('prefix-search', {
       ...data,
       prefix,
-      results: courts
+      results: courts,
     });
   }
 }

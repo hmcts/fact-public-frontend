@@ -20,8 +20,12 @@ export class PrefixSearchPage extends Base {
   async goto(lng?: string, prefix?: string): Promise<void> {
     let url = '/services/search-by-prefix';
     const params = new URLSearchParams();
-    if (lng) params.set('lng', lng);
-    if (prefix) params.set('prefix', prefix);
+    if (lng) {
+      params.set('lng', lng);
+    }
+    if (prefix) {
+      params.set('prefix', prefix);
+    }
 
     const queryString = params.toString();
     if (queryString) {

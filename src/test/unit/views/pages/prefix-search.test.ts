@@ -1,7 +1,8 @@
+import { CourtBasic } from '../../../../main/schemas/courtBasicSchema';
 import { env } from '../helpers/nunjucksEnv';
 
-const i18n = require('../../../../main/locales/en/prefix-search.json');
 const welshI18n = require('../../../../main/locales/cy/prefix-search.json');
+const i18n = require('../../../../main/locales/en/prefix-search.json');
 
 describe('Prefix search page', () => {
   test('renders prefix search content (English)', () => {
@@ -32,15 +33,15 @@ describe('Prefix search page', () => {
     const prefix = 'A';
     const results = [
       { name: 'A-Court', slug: 'a-court' },
-      { name: 'Another-Court', slug: 'another-court' }
+      { name: 'Another-Court', slug: 'another-court' },
     ];
     const html = env.render('prefix-search.njk', {
       ...i18n,
       prefix,
-      results
+      results,
     });
 
-    expect(html).toContain('2 ' + i18n.resultsHint + ' \'A\'');
+    expect(html).toContain('2 ' + i18n.resultsHint + " 'A'");
     expect(html).toContain('A-Court');
     expect(html).toContain('/courts/a-court');
     expect(html).toContain('Another-Court');
@@ -68,20 +69,20 @@ describe('Prefix search page', () => {
 
   test('renders no results hint when prefix is provided but results are empty (English)', () => {
     const prefix = 'Z';
-    const results: any[] = [];
+    const results: CourtBasic[] = [];
     const html = env.render('prefix-search.njk', {
       ...i18n,
       prefix,
-      results
+      results,
     });
 
-    expect(html).toContain(i18n.noResultsHint + ' \'Z\'');
+    expect(html).toContain(i18n.noResultsHint + " 'Z'");
     expect(html).not.toContain('results-list');
   });
 
   test('renders no results hint when prefix is provided but results are empty (Welsh)', () => {
     const prefix = 'Z';
-    const results: any[] = [];
+    const results: CourtBasic[] = [];
     const html = env.render('prefix-search.njk', {
       ...welshI18n,
       prefix,
@@ -96,7 +97,7 @@ describe('Prefix search page', () => {
     const html = env.render('prefix-search.njk', {
       ...i18n,
       error: true,
-      errorType: 'title'
+      errorType: 'title',
     });
 
     expect(html).toContain(i18n.errorTitle);

@@ -34,6 +34,7 @@ describe('PrefixSearchController', () => {
 
     await controller.get(request, response);
     responseMock.verify();
+    expect(mockGetCourtsByPrefix).toHaveBeenCalledTimes(0);
   });
 
   test('renders the prefix-search view with results when a prefix is provided', async () => {
@@ -48,11 +49,14 @@ describe('PrefixSearchController', () => {
     } as unknown as Response;
     const responseMock = mock(response);
 
-    responseMock.expects('render').once().withArgs('prefix-search', {
-      ...mockPageData,
-      prefix,
-      results: mockCourts,
-    });
+    responseMock
+      .expects('render')
+      .once()
+      .withArgs('prefix-search', {
+        ...mockPageData,
+        prefix,
+        results: mockCourts,
+      });
 
     await controller.get(request, response);
     responseMock.verify();
@@ -80,6 +84,7 @@ describe('PrefixSearchController', () => {
     await controller.get(request, response);
     responseMock.verify();
     statusMock.verify();
+    expect(mockGetCourtsByPrefix).toHaveBeenCalled();
   });
 
   test('renders the prefix-search view with error when API returns other error', async () => {
@@ -93,12 +98,16 @@ describe('PrefixSearchController', () => {
     } as unknown as Response;
     const responseMock = mock(response);
 
-    responseMock.expects('render').once().withArgs('prefix-search', {
-      ...mockPageData,
-      error: true,
-    });
+    responseMock
+      .expects('render')
+      .once()
+      .withArgs('prefix-search', {
+        ...mockPageData,
+        error: true,
+      });
 
     await controller.get(request, response);
     responseMock.verify();
+    expect(mockGetCourtsByPrefix).toHaveBeenCalled();
   });
 });

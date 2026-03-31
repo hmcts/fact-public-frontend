@@ -5,13 +5,11 @@ import en_i18n from '../../../main/locales/en/prefix-search.json';
 import { CourtTestData, createCourtTestData } from '../helpers/courtTestData';
 import { PrefixSearchPage } from '../page-objects/PrefixSearchPage';
 
-
 test.describe('Prefix Search Page', () => {
   let courtData: CourtTestData;
 
   test.beforeAll(async ({ playwright }) => {
     if (!process.env.DATA_API_URL) {
-      console.warn('DATA_API_URL not set, skipping functional tests that require test data');
       return;
     }
     courtData = await createCourtTestData(playwright, 'prefix-search');
@@ -24,7 +22,9 @@ test.describe('Prefix Search Page', () => {
   });
 
   test.describe('Prefix Search Page', () => {
-    test('should render the prefix search page with all alphabet buttons in both English and Welsh', async ({ page }) => {
+    test('should render the prefix search page with all alphabet buttons in both English and Welsh', async ({
+      page,
+    }) => {
       const prefixSearchPage = new PrefixSearchPage(page);
       await prefixSearchPage.goto('en');
       await prefixSearchPage.expectHeadingToContainText(en_i18n.heading);
@@ -46,7 +46,7 @@ test.describe('Prefix Search Page', () => {
       await prefixSearchPage.goto('en');
       await prefixSearchPage.clickAlphabetButton('C');
 
-      await expect(page.locator('#header-hint')).toContainText('courts or tribunals starting with \'C\'');
+      await expect(page.locator('#header-hint')).toContainText("courts or tribunals starting with 'C'");
     });
 
     test('should show the correct number of results for a given prefix', async ({ page }) => {
@@ -61,7 +61,7 @@ test.describe('Prefix Search Page', () => {
         courtData.warningNoticeCourt,
         courtData.translationCourt,
         courtData.noTranslationCourt,
-        courtData.noEnquiriesCourt
+        courtData.noEnquiriesCourt,
       ];
 
       for (const court of courts) {
