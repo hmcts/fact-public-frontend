@@ -1,0 +1,15 @@
+{
+  "errorTitle": "Gwall:",
+  "title": "Pam eich bod angen llys? - Dod o hyd i Lys neu Dribiwnlys - GOV.UK",
+  "serviceName": "Dod o hyd i lys neu dribiwnlys",
+  "question": "Beth ydych chi’n awyddus i wybod mwy amdano?",
+  "answers": {
+    "a1": "Alla i ddim dod o hyd i'r hyn yr ydw i’n chwilio amdano"
+  },
+  "button": "Parhau",
+  "divider": "neu",
+  "error": {
+    "title": "Mae yna broblem",
+    "text": "Dewis beth yr ydych am wybod mwy amdano"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "errorTitle": "Gwall:",
+  "title": "Dod i hyd i, neu gysylltu â llys - Dod o hyd i Lys neu Dribiwnlys - GOV.UK",
+  "serviceName": "Dod o hyd i lys neu dribiwnlys",
+  "question": "Beth ydych chi eisiau ei wneud?",
+  "answers": {
+    "a1": "Dod o hyd i’r llys neu’r tribiwnlys agosaf",
+    "a2": "Dod o hyd i lys neu dribiwnlys i anfon dogfennau iddo",
+    "a3": "Cysylltu â llys neu dribiwnlys i gael diweddariad ynglŷn â’ch cais",
+    "a4": "Nid yw wedi ei restru yma"
+  },
+  "divider": "neu",
+  "button": "Parhau",
+  "error": {
+    "title": "Mae yna broblem",
+    "text": "Beth ydych chi eisiau ei wneud?"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "errorTitle": "Error:",
+  "title": "Find or contact a court - Find a Court or Tribunal - GOV.UK",
+  "serviceName": "Find a Court or Tribunal",
+  "question": "What do you want to do?",
+  "answers": {
+    "a1": "Find the nearest court or tribunal",
+    "a2": "Find a court or tribunal to send documents to",
+    "a3": "Contact a court or tribunal to get an update on your application",
+    "a4": "It is not listed here"
+  },
+  "divider": "or",
+  "button": "Continue",
+  "error": {
+    "title": "There is a problem",
+    "text": "Select what you want to do"
+  }
+}

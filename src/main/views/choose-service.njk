@@ -1,0 +1,72 @@
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+
+{% extends "template.njk" %}
+
+{% block pageTitle %}
+  {% if errors %}
+    {{ errorTitle }}
+  {% endif %}
+  {{ title }}
+{% endblock %}
+
+{% block content %}
+
+  {% if errors %}
+    {% for service in services.slice(0, 1) %}
+      {% set firstRadioService = "#" + service.id %}
+      {{ govukErrorSummary({
+        titleText: error.title,
+        errorList: [{
+          text: error.text,
+          href: firstRadioService
+        }]
+      }) }}
+    {% endfor %}
+  {% endif %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <form method="POST">
+
+        {# Loop through the service list and set up the radios for the service selection #}
+        {% set options = [] %}
+        {% for service in services %}
+          {% set options = (options.push({
+            id: service.id,
+            text: service.text,
+            hint: {
+              text: service.description
+            },
+            value: service.value
+            }), options) %}
+        {% endfor %}
+        {# add a divider and add the "I can't find what I'm looking for" option #}
+        {% set options = (options.push({ divider: divider }), options) %}
+        {% set options = (options.push({ id: "not-listed", text: answers.a1, value: "not-listed" }), options) %}
+
+        {{ govukRadios({
+          idPrefix: "choose-service",
+          name: "service",
+          fieldset: {
+            legend: {
+              text: question,
+              classes: "govuk-fieldset__legend--l",
+              isPageHeading: true
+            }
+          },
+          errorMessage: { text: error.text } if errors,
+          items: options
+        }) }}
+
+        {{ govukButton({
+          text: button,
+          classes: "govuk-!-margin-top-2 govuk-!-margin-bottom-8 continue"
+        }) }}
+
+      </form>
+    </div>
+  </div>
+
+{% endblock %}
