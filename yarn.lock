@@ -4172,14 +4172,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:1.13.5":
-  version: 1.13.5
-  resolution: "axios@npm:1.13.5"
+"axios@npm:1.13.6":
+  version: 1.13.6
+  resolution: "axios@npm:1.13.6"
   dependencies:
     follow-redirects: "npm:^1.15.11"
     form-data: "npm:^4.0.5"
     proxy-from-env: "npm:^1.1.0"
-  checksum: 10/db726d09902565ef9a0632893530028310e2ec2b95b727114eca1b101450b00014133dfc3871cffc87983fb922bca7e4874d7e2826d1550a377a157cdf3f05b6
+  checksum: 10/a7ed83c2af3ef21d64609df0f85e76893a915a864c5934df69241001d0578082d6521a0c730bf37518ee458821b5695957cb10db9fc705f2a8996c8686ea7a89
   languageName: node
   linkType: hard
 
@@ -5980,7 +5980,7 @@ __metadata:
     async-mutex: "npm:^0.5.0"
     awilix: "npm:12.1.1"
     awilix-express: "npm:9.0.2"
-    axios: "npm:1.13.5"
+    axios: "npm:1.13.6"
     babel-loader: "npm:^10.0.0"
     chai: "npm:4.5.0"
     chokidar: "npm:^3.6.0"
@@ -6009,7 +6009,7 @@ __metadata:
     lint-staged: "npm:16.2.7"
     lodash: "npm:4.17.23"
     luxon: "npm:^3.7.2"
-    mini-css-extract-plugin: "npm:2.10.1"
+    mini-css-extract-plugin: "npm:2.10.2"
     nunjucks: "npm:3.2.4"
     playwright: "npm:1.58.2"
     playwright-core: "npm:1.58.2"
@@ -8554,15 +8554,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mini-css-extract-plugin@npm:2.10.1":
-  version: 2.10.1
-  resolution: "mini-css-extract-plugin@npm:2.10.1"
+"mini-css-extract-plugin@npm:2.10.2":
+  version: 2.10.2
+  resolution: "mini-css-extract-plugin@npm:2.10.2"
   dependencies:
     schema-utils: "npm:^4.0.0"
     tapable: "npm:^2.2.1"
   peerDependencies:
     webpack: ^5.0.0
-  checksum: 10/2d0cecc3bea85cd7f9b1ce0974f1672976d610a9267e2988ff19f5d03b017bff12b32151a412de0f519a70be7d3b050b499b20101445fb21728cc2d35dd4041a
+  checksum: 10/d2b01f25e229d04263274fceccfcb3ec0937a448859e4cb65e32652e26dde46ae6ecf7d15a52a4bb700bea6e47675db88691d3abc418901ec8542e1cfdc62b85
   languageName: node
   linkType: hard
 
