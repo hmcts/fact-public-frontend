@@ -10,7 +10,6 @@ export class PrefixSearchPage extends Base {
   private readonly mainContent = this.page.locator('#main-content');
   private readonly footer = this.page.locator('footer');
   private readonly heading = this.page.locator('h1.govuk-fieldset__heading');
-  private readonly summary = this.page.locator('#prefix-hint');
   private readonly alphabetButtons = this.page.locator('#alphabet-buttons .govuk-button');
   private readonly resultsHint = this.page.locator('#header-hint');
   private readonly resultsList = this.page.locator('#results-list');
