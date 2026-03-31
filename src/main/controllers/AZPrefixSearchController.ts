@@ -9,7 +9,7 @@ import { CourtBasic } from '../schemas/courtBasicSchema';
 const dataApiRequests = new DataApiRequests();
 
 @route('/services/search-by-prefix')
-export default class PrefixSearchController {
+export default class AZPrefixSearchController {
   @GET()
   public async get(req: FactRequest, res: Response): Promise<void> {
     const data = req.i18n.getDataByLanguage(req.lng)['prefix-search'];

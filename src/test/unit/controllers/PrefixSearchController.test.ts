@@ -10,11 +10,11 @@ jest.mock('../../../main/requests/DataApiRequests', () => ({
   })),
 }));
 
-import PrefixSearchController from '../../../main/controllers/PrefixSearchController';
+import AZPrefixSearchController from '../../../main/controllers/AZPrefixSearchController';
 import { mockRequest } from '../mocks/mockRequest';
 
-describe('PrefixSearchController', () => {
-  const controller = new PrefixSearchController();
+describe('AZPrefixSearchController', () => {
+  const controller = new AZPrefixSearchController();
   const mockPageData = { title: 'Search by prefix' };
   const mockNotFoundData = { title: 'Not found' };
   const mockData = {

@@ -42,7 +42,7 @@
       "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"] %}
       {{ govukButton({
         text: letter,
-        href: "search-by-prefix?prefix=" + letter,
+        href: "/services/search-by-prefix?prefix=" + letter,
         classes: "govuk-!-margin-top-0 govuk-!-margin-bottom-2 continue",
         disabled:  true if prefix === letter else false
       }) }}
