@@ -6,6 +6,7 @@ import { FactRequest } from '../interfaces/FactRequest';
 import { DataApiRequests } from '../requests/DataApiRequests';
 import { ServiceArea } from '../schemas/ServiceAreaSchema';
 import { Service } from '../schemas/ServiceSchema';
+import { servicePostcodeSearchRedirect } from '../utils/RedirectUtils';
 import { calculateServiceAreaFromSlug, calculateServiceNameFromSlug } from '../utils/SchemaUtils';
 import { isValidAction } from '../utils/validationUtils';
 
@@ -74,7 +75,7 @@ export class ChooseServiceAreaController {
    * @private
    */
   private redirectToSearch(serviceName: string, serviceArea: ServiceArea, action: string, res: Response) {
-    const postcode = () => res.redirect(`/services/${serviceName}/${serviceArea.slug}/${action}/search-by-postcode`);
+    const postcode = () => servicePostcodeSearchRedirect(res, serviceName, serviceArea.slug, action);
     const service = () => res.redirect(`/services/${serviceName}/${serviceArea.slug}/search-results`);
     // no associations then just skip to the postcode screen
     if (!serviceArea.hasLocal && !serviceArea.hasNational && !serviceArea.hasRegional) {

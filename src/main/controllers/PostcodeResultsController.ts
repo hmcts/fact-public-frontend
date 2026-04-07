@@ -4,6 +4,7 @@ import { Response } from 'express';
 import { FactRequest } from '../interfaces/FactRequest';
 import { DataApiRequests } from '../requests/DataApiRequests';
 import { ServiceArea } from '../schemas/ServiceAreaSchema';
+import { postcodeSearchRedirect, servicePostcodeSearchRedirect } from '../utils/RedirectUtils';
 import { calculateServiceAreaFromSlug, calculateServiceNameFromSlug } from '../utils/SchemaUtils';
 import { checkPostcode, isValidPostcode } from '../utils/validationUtils';
 
@@ -28,10 +29,17 @@ export default class PostcodeSearchController {
     }
     // postcode is invalid, so redirect to the search page with error message
     if (noServiceSearch) {
-      res.redirect(`/search-by-postcode?error=${checkPostcode(req.query?.postcode as string)}`);
+      return postcodeSearchRedirect(res, checkPostcode(req.query?.postcode as string));
     }
-    res.redirect(
-      `/services/${req.params.service}/${req.params.serviceArea}/${req.params.action}/search-by-postcode?error=${checkPostcode(req.query?.postcode as string)}`
+    const service = req.params?.service as string;
+    const serviceArea = req.params?.serviceArea as string;
+    const action = req.params?.action as string;
+    return servicePostcodeSearchRedirect(
+      res,
+      service,
+      serviceArea,
+      action,
+      checkPostcode(req.query?.postcode as string)
     );
   }
 
@@ -42,8 +50,13 @@ export default class PostcodeSearchController {
       const action = req.params.action as string;
       const results = await dataApiRequests.performPostcodeSearch(postcode, serviceArea.name, action);
       if (!Array.isArray(results) || results.length === 0) {
-        return res.redirect(
-          `/services/${req.params.service}/${req.params.serviceArea}/${req.params.action}/search-by-postcode?noResults=true`
+        return servicePostcodeSearchRedirect(
+          res,
+          req.params.service as string,
+          req.params.serviceArea as string,
+          req.params.action as string,
+          null,
+          true
         );
       } else {
         const data = {
@@ -68,9 +81,7 @@ export default class PostcodeSearchController {
   private async performPostcodeOnlySearch(req: FactRequest, res: Response, postcode: string) {
     const results = await dataApiRequests.performPostcodeOnlySearch(postcode);
     if (!Array.isArray(results) || results.length === 0) {
-      return res.redirect(
-        `/services/${req.params.service}/${req.params.serviceArea}/${req.params.action}/search-by-postcode?noResults=true`
-      );
+      return postcodeSearchRedirect(res, null, true);
     } else {
       const data = {
         ...req.i18n.getDataByLanguage(req.lng)['postcode-results'],
