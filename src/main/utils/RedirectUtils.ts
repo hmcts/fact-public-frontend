@@ -16,11 +16,7 @@ export const servicePostcodeSearchRedirect = (
   res.redirect(`/services/${service}/${serviceArea}/${action}/search-by-postcode`);
 };
 
-export const postcodeSearchRedirect = (
-  res: Response,
-  error?: string | null,
-  noResults?: boolean
-): void => {
+export const postcodeSearchRedirect = (res: Response, error?: string | null, noResults?: boolean): void => {
   if (error) {
     res.redirect(`/search-by-postcode?error=${error}`);
   } else if (noResults) {
