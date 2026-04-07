@@ -80,7 +80,7 @@ export default class PostcodeSearchController {
 
   private async performPostcodeOnlySearch(req: FactRequest, res: Response, postcode: string) {
     const results = await dataApiRequests.performPostcodeOnlySearch(postcode);
-    if (!Array.isArray(results) || results.length === 0) {
+    if (!Array.isArray(results) || (Array.isArray(results) && results.length === 0)) {
       return postcodeSearchRedirect(res, null, true);
     } else {
       const data = {

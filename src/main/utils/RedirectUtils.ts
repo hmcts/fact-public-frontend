@@ -9,18 +9,18 @@ export const servicePostcodeSearchRedirect = (
   noResults?: boolean
 ): void => {
   if (error) {
-    res.redirect(`/services/${service}/${serviceArea}/${action}/search-by-postcode?error=${error}`);
+    return res.redirect(`/services/${service}/${serviceArea}/${action}/search-by-postcode?error=${error}`);
   } else if (noResults) {
-    res.redirect(`/services/${service}/${serviceArea}/${action}/search-by-postcode?noResults=true`);
+    return res.redirect(`/services/${service}/${serviceArea}/${action}/search-by-postcode?noResults=true`);
   }
-  res.redirect(`/services/${service}/${serviceArea}/${action}/search-by-postcode`);
+  return res.redirect(`/services/${service}/${serviceArea}/${action}/search-by-postcode`);
 };
 
 export const postcodeSearchRedirect = (res: Response, error?: string | null, noResults?: boolean): void => {
   if (error) {
-    res.redirect(`/search-by-postcode?error=${error}`);
+    return res.redirect(`/search-by-postcode?error=${error}`);
   } else if (noResults) {
-    res.redirect('/search-by-postcode?noResults=true');
+    return res.redirect('/search-by-postcode?noResults=true');
   }
-  res.redirect('/search-by-postcode');
+  return res.redirect('/search-by-postcode');
 };
