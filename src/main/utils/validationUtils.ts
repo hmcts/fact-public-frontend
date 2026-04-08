@@ -12,14 +12,14 @@ const JURISDICTION_ERROR_REGEXES = {
 
 export const isValidAction = (value: string): boolean => !!value && ACTIONS.has(value);
 
-export const isValidPostcode = (value: string): boolean => checkPostcode(value) === null;
+export const isValidPostcode = (value: string): boolean => checkPostcode(value) === undefined;
 
 /**
  * Checks the postcode and returns an appropriate error type if there are any issues with the postcode.
  * If there are no issues, returns null.
  * @param postcode
  */
-export const checkPostcode = (postcode: string): string | null => {
+export const checkPostcode = (postcode: string): string | undefined => {
   // might be missing
   if (!postcode) {
     return 'blankPostcode';
@@ -41,5 +41,5 @@ export const checkPostcode = (postcode: string): string | null => {
   }
 
   // no obvious issues with the postcode
-  return null;
+  return undefined;
 };

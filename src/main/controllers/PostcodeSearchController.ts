@@ -3,8 +3,9 @@ import { Response } from 'express';
 
 import { FactRequest } from '../interfaces/FactRequest';
 import { ServiceArea } from '../schemas/ServiceAreaSchema';
+import { postcodeResultsRedirect, servicePostcodeResultsRedirect } from '../utils/RedirectUtils';
 import { calculateServiceAreaFromSlug, calculateServiceNameFromSlug } from '../utils/SchemaUtils';
-import { checkPostcode } from '../utils/validationUtils';
+import { checkPostcode, isValidPostcode } from '../utils/validationUtils';
 
 const CHILDCARE_SERVICE_AREA_LIST = new Set(['childcare-arrangements-if-you-separate-from-your-partner']);
 
@@ -19,22 +20,24 @@ export default class PostcodeSearchController {
   @POST()
   public async continue(req: FactRequest, res: Response): Promise<void> {
     const noServiceSearch: boolean = req.params?.service === undefined;
-    // check postcode is valid
     const postcode = req.body?.postcode;
-    const errorType = checkPostcode(postcode);
-    if (errorType) {
-      return this.renderPostcodeSearchPage(req, res, errorType);
-    } else if (noServiceSearch) {
-      res.redirect(`/search-by-postcode/courts/near?postcode=${postcode}`);
-    } else {
+    if (isValidPostcode(postcode)) {
+      if (noServiceSearch) {
+        return postcodeResultsRedirect(res, postcode);
+      }
       try {
-        res.redirect(
-          `/services/${req.params.service}/${req.params.serviceArea}/${req.params.action}/search-by-postcode/courts/near?postcode=${postcode}`
-        );
+        // if any of these fail to resolve, then the slugs in the
+        // URL are invalid, and we should return a 404
+        const service = req.params.service as string;
+        const serviceArea = req.params.serviceArea as string;
+        const action = req.params.action as string;
+        return servicePostcodeResultsRedirect(res, service, serviceArea, action, postcode);
       } catch {
         return res.status(404).render('not-found', req.i18n.getDataByLanguage(req.lng)['not-found']);
       }
     }
+    // postcode is invalid
+    return this.renderPostcodeSearchPage(req, res, checkPostcode(postcode));
   }
 
   private async renderPostcodeSearchPage(
@@ -47,6 +50,9 @@ export default class PostcodeSearchController {
     let serviceAreaLocalised: string | undefined;
     if (!noServiceSearch) {
       try {
+        // if we're doing a service based search then we need
+        // the localised service area to be set for the search
+        // template to render correctly.
         const service = await calculateServiceNameFromSlug(req.params.service as string);
         const serviceArea = await calculateServiceAreaFromSlug(service, req.params.serviceArea as string);
         serviceAreaLocalised = this.localiseServiceAreaName(serviceArea, req);
@@ -54,7 +60,7 @@ export default class PostcodeSearchController {
         return res.status(404).render('not-found', req.i18n.getDataByLanguage(req.lng)['not-found']);
       }
     }
-    res.render('postcode-search', {
+    return res.render('postcode-search', {
       ...req.i18n.getDataByLanguage(req.lng)['postcode-search'],
       serviceAreaLocalised,
       serviceAreaIsChildcare: CHILDCARE_SERVICE_AREA_LIST.has(req.params?.serviceArea as string),

@@ -39,7 +39,7 @@ export default class ServiceSearchResultsController {
         data.hint = serviceArea.text ?? data.hint.replace('{serviceArea}', serviceArea.name.toLowerCase());
       }
 
-      res.render('service-results', data);
+      return res.render('service-results', data);
     } catch {
       return res.status(404).render('not-found', req.i18n.getDataByLanguage(req.lng)['not-found']);
     }

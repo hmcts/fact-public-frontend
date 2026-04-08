@@ -164,6 +164,7 @@ describe('PostcodeResultsController', () => {
       nameCy: 'Ardal',
       onlineText: 'Online',
       onlineUrl: 'url',
+      slug: 'area',
     } as ServiceArea);
     mockPerformPostcodeSearch.mockResolvedValue([]);
     await controller.get(req as FactRequest, res);

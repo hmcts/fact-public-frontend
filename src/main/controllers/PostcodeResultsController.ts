@@ -20,27 +20,28 @@ export default class PostcodeSearchController {
     const noServiceSearch: boolean = req.params?.service === undefined;
     if (isValidPostcode(req.query?.postcode as string)) {
       const postcode = req.query.postcode as string;
-      // perform the search
+      // perform the appropriate search based on the @route used to get here
       if (noServiceSearch) {
         return this.performPostcodeOnlySearch(req, res, postcode);
       } else {
         return this.performServiceAreaPostcodeSearch(req, res, postcode);
       }
     }
-    // postcode is invalid, so redirect to the search page with error message
+    const errorType = checkPostcode(req.query?.postcode as string);
+    // postcode is invalid, so redirect to the appropriate search page with and error message
     if (noServiceSearch) {
-      return postcodeSearchRedirect(res, checkPostcode(req.query?.postcode as string));
+      return postcodeSearchRedirect(res, errorType);
     }
-    const service = req.params?.service as string;
-    const serviceArea = req.params?.serviceArea as string;
-    const action = req.params?.action as string;
-    return servicePostcodeSearchRedirect(
-      res,
-      service,
-      serviceArea,
-      action,
-      checkPostcode(req.query?.postcode as string)
-    );
+    try {
+      // if any of these fail to resolve, then the slugs in the URL
+      // are invalid, and we should return a 404
+      const service = req.params.service as string;
+      const serviceArea = req.params.serviceArea as string;
+      const action = req.params.action as string;
+      return servicePostcodeSearchRedirect(res, service, serviceArea, action, errorType);
+    } catch {
+      return res.status(404).render('not-found', req.i18n.getDataByLanguage(req.lng)['not-found']);
+    }
   }
 
   private async performServiceAreaPostcodeSearch(req: FactRequest, res: Response, postcode: string) {
@@ -49,30 +50,22 @@ export default class PostcodeSearchController {
       const serviceArea = await calculateServiceAreaFromSlug(service, req.params.serviceArea as string);
       const action = req.params.action as string;
       const results = await dataApiRequests.performPostcodeSearch(postcode, serviceArea.name, action);
-      if (!Array.isArray(results) || results.length === 0) {
-        return servicePostcodeSearchRedirect(
-          res,
-          req.params.service as string,
-          req.params.serviceArea as string,
-          req.params.action as string,
-          null,
-          true
-        );
-      } else {
-        const data = {
-          ...req.i18n.getDataByLanguage(req.lng)['postcode-results'],
-          results: {
-            courts: results,
-          },
-          postcodeOnlySearch: false,
-          serviceArea: this.localiseServiceAreaName(serviceArea, req).toLowerCase(),
-          postcode,
-          isDivorceOrCivil: DIVORCE_OR_CIVIL_SERVICE_LIST.has(req.params.serviceArea as string),
-          onlineText: serviceArea.onlineText,
-          onlineUrl: serviceArea.onlineUrl,
-        };
-        return res.render('postcode-results', data);
+      if (!Array.isArray(results) || (Array.isArray(results) && results.length === 0)) {
+        return servicePostcodeSearchRedirect(res, req.params.service as string, serviceArea.slug, action, null, true);
       }
+      const data = {
+        ...req.i18n.getDataByLanguage(req.lng)['postcode-results'],
+        results: {
+          courts: results,
+        },
+        postcodeOnlySearch: false,
+        serviceArea: this.localiseServiceAreaName(serviceArea, req).toLowerCase(),
+        postcode,
+        isDivorceOrCivil: DIVORCE_OR_CIVIL_SERVICE_LIST.has(req.params.serviceArea as string),
+        onlineText: serviceArea.onlineText,
+        onlineUrl: serviceArea.onlineUrl,
+      };
+      return res.render('postcode-results', data);
     } catch {
       return res.status(404).render('not-found', req.i18n.getDataByLanguage(req.lng)['not-found']);
     }
