@@ -29,3 +29,15 @@
     display: none;
   }
 }
+
+#alphabet-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+#alphabet-buttons .govuk-button {
+  margin-right: 0;
+  min-width: 40px;
+  max-width: 60px;
+}
