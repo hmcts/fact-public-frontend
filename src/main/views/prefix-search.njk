@@ -5,19 +5,19 @@
 {% extends "template.njk" %}
 
 {% block pageTitle %}
-  {% if error %}
+  {% if errors %}
     {{ errorTitle }}
   {% endif %}
   {{ title }}
 {% endblock %}
 
 {% block content %}
-  {% if error %}
+  {% if errors %}
     {{ govukErrorSummary({
-      titleText: errorText.title,
+      titleText: error.title,
       errorList: [{
-        text: errorText[errorType],
-        href: "#prefix"
+        text: errorMessage,
+        href: "#alphabet-buttons"
       }]
     }) }}
   {% endif %}
@@ -52,7 +52,7 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      {% if prefix %}
+      {% if prefix and not errors %}
         {% if results.length %}
           <span id="header-hint" class="govuk-hint">{{ results.length }} {{ resultsHint }} '{{ prefix }}'</span>
         {% else %}

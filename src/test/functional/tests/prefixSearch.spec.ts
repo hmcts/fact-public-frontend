@@ -35,10 +35,13 @@ test.describe('Prefix Search Page', () => {
       await prefixSearchPage.expectVisibleElements();
     });
 
-    test('should show error when submitting invalid prefix', async ({ page }) => {
+    test('should show error when submitting an invalid prefix query', async ({ page }) => {
       const prefixSearchPage = new PrefixSearchPage(page);
-      await prefixSearchPage.goto('en', '1');
-      await prefixSearchPage.expectErrorSummaryToContainText(en_i18n.errorText.title);
+
+      for (const invalidPrefix of ['1', 'bb', '$']) {
+        await prefixSearchPage.goto('en', invalidPrefix);
+        await prefixSearchPage.expectErrorSummaryToContainText(en_i18n.error.invalidPrefix);
+      }
     });
 
     test('should display results when an alphabet button is clicked', async ({ page }) => {

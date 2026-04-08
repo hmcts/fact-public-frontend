@@ -5,6 +5,7 @@ import { Response } from 'express';
 import { FactRequest } from '../interfaces/FactRequest';
 import { DataApiRequests } from '../requests/DataApiRequests';
 import { CourtBasic } from '../schemas/courtBasicSchema';
+import { isValidPrefix } from '../utils/validationUtils';
 
 const dataApiRequests = new DataApiRequests();
 
@@ -13,12 +14,21 @@ export default class AZPrefixSearchController {
   @GET()
   public async get(req: FactRequest, res: Response): Promise<void> {
     const data = req.i18n.getDataByLanguage(req.lng)['prefix-search'];
-    const prefix = req.query.prefix as string;
+    const prefixQuery = req.query.prefix;
 
-    if (!prefix) {
+    if (!prefixQuery) {
       return res.render('prefix-search', data);
     }
 
+    if (!isValidPrefix(prefixQuery)) {
+      return res.render('prefix-search', {
+        ...data,
+        errors: true,
+        errorMessage: data.error.invalidPrefix,
+      });
+    }
+
+    const prefix = prefixQuery.toUpperCase();
     const result = await dataApiRequests.getCourtsByPrefix(prefix);
 
     if (result === HttpStatusCode.NotFound) {
@@ -28,7 +38,9 @@ export default class AZPrefixSearchController {
     if (Object.values(HttpStatusCode).includes(result as HttpStatusCode)) {
       return res.render('prefix-search', {
         ...data,
-        error: true,
+        errors: true,
+        errorMessage: data.error.api,
+        prefix,
       });
     }
 

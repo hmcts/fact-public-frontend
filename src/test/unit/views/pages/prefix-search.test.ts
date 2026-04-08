@@ -96,22 +96,24 @@ describe('Prefix search page', () => {
   test('renders error summary when error flag is set (English)', () => {
     const html = env.render('prefix-search.njk', {
       ...i18n,
-      error: true,
-      errorType: 'title',
+      errors: true,
+      errorMessage: i18n.error.invalidPrefix,
     });
 
     expect(html).toContain(i18n.errorTitle);
-    expect(html).toContain(i18n.errorText.title);
+    expect(html).toContain(i18n.error.title);
+    expect(html).toContain(i18n.error.invalidPrefix);
   });
 
   test('renders error summary when error flag is set (Welsh)', () => {
     const html = env.render('prefix-search.njk', {
       ...welshI18n,
-      error: true,
-      errorType: 'title',
+      errors: true,
+      errorMessage: welshI18n.error.invalidPrefix,
     });
 
     expect(html).toContain(welshI18n.errorTitle);
-    expect(html).toContain(welshI18n.errorText.title);
+    expect(html).toContain(welshI18n.error.title);
+    expect(html).toContain(welshI18n.error.invalidPrefix);
   });
 });
