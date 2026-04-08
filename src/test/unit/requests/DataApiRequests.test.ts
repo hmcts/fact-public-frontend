@@ -4,7 +4,7 @@ import { type SinonSandbox, createSandbox } from 'sinon';
 
 import { DataApiRequests } from '../../../main/requests/DataApiRequests';
 import { dataApi } from '../../../main/requests/utils/axiosConfig';
-import { courtSchema } from '../../../main/schemas/courtSchema';
+import { courtSchema, courtSearchResultSchema } from '../../../main/schemas/courtSchema';
 
 describe('DataApiRequests', () => {
   let sandbox: SinonSandbox;
@@ -128,32 +128,58 @@ describe('DataApiRequests', () => {
     });
   });
 
-<<<<<<< HEAD
   describe('getByName', () => {
-    const query = 'Blackburn';
-    const mockCourt = {
-      name: 'Blackburn Family Court',
-      slug: 'blackburn-family-court',
-    };
+    it('returns parsed search results on success', async () => {
+      const payload = [{ raw: 'court-search-result' }];
+      const parsedResults = [{ name: 'Blackburn Family Court', slug: 'blackburn-family-court' }];
+      const arrayParseStub = sandbox.stub().withArgs(payload).returns(parsedResults);
+      const query = 'Blackburn';
 
-    it('should return matching courts when API call is successful', async () => {
-      const mockData = [mockCourt];
-      getStub.withArgs('search/courts/v1/name', { params: { q: query } }).resolves({ data: mockData });
+      sandbox
+        .stub(dataApi, 'get')
+        .withArgs('search/courts/v1/name', { params: { q: query } })
+        .resolves({ data: payload });
+      sandbox.stub(courtSearchResultSchema, 'array').returns({ parse: arrayParseStub } as never);
 
-      const response = await dataApiRequests.getByName(query);
-      expect(response).toEqual(mockData);
+      await expect(requests.getByName(query)).resolves.toBe(parsedResults);
     });
 
-    it('should return HttpStatusCode when API call fails', async () => {
-      const error = {
-        response: { status: 500 },
-        isAxiosError: true,
-      } as AxiosError;
-      getStub.withArgs('search/courts/v1/name', { params: { q: query } }).rejects(error);
+    it('returns API status code for axios errors with response status', async () => {
+      const query = 'Blackburn';
+      sandbox
+        .stub(dataApi, 'get')
+        .withArgs('search/courts/v1/name', { params: { q: query } })
+        .rejects({
+          isAxiosError: true,
+          response: { status: HttpStatusCode.BadGateway },
+        });
 
-      const response = await dataApiRequests.getByName(query);
-      expect(response).toEqual(500);
-=======
+      await expect(requests.getByName(query)).resolves.toBe(HttpStatusCode.BadGateway);
+    });
+
+    it('returns internal server error for non-axios errors', async () => {
+      const query = 'Blackburn';
+      sandbox
+        .stub(dataApi, 'get')
+        .withArgs('search/courts/v1/name', { params: { q: query } })
+        .rejects(new Error('boom'));
+
+      await expect(requests.getByName(query)).resolves.toBe(HttpStatusCode.InternalServerError);
+    });
+
+    it('returns internal server error for axios errors with no status', async () => {
+      const query = 'Blackburn';
+      sandbox
+        .stub(dataApi, 'get')
+        .withArgs('search/courts/v1/name', { params: { q: query } })
+        .rejects({
+          isAxiosError: true,
+        });
+
+      await expect(requests.getByName(query)).resolves.toBe(HttpStatusCode.InternalServerError);
+    });
+  });
+
   describe('getCourtsByPrefix', () => {
     it('returns parsed courts array on success', async () => {
       const payload = [{ raw: 'court-a' }, { raw: 'court-b' }];
@@ -197,7 +223,6 @@ describe('DataApiRequests', () => {
       });
 
       await expect(requests.getCourtsByPrefix(prefix)).resolves.toBe(HttpStatusCode.InternalServerError);
->>>>>>> master
     });
   });
 });

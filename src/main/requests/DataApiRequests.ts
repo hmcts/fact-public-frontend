@@ -3,8 +3,8 @@ import { HttpStatusCode, isAxiosError } from 'axios';
 
 import { ServiceArea, serviceAreaSchema } from '../schemas/ServiceAreaSchema';
 import { Service, serviceSchema } from '../schemas/ServiceSchema';
-import { Court, CourtSearchResult, courtSchema, courtSearchResultSchema } from '../schemas/courtSchema';
 import { CourtBasic } from '../schemas/courtBasicSchema';
+import { Court, CourtSearchResult, courtSchema, courtSearchResultSchema } from '../schemas/courtSchema';
 
 import { dataApi } from './utils/axiosConfig';
 
