@@ -1,4 +1,5 @@
 const ACTIONS = new Set(['nearest', 'documents', 'update', 'not-listed']);
+const SINGLE_LETTER_PREFIX = /^[a-z]$/i;
 
 const VALID_POSTCODE_REGEX = /^[A-Z]{1,2}\d{1,2}[A-Z]? ?\d[A-Z]{2}$/i;
 
@@ -11,6 +12,9 @@ const JURISDICTION_ERROR_REGEXES = {
 };
 
 export const isValidAction = (value: string): boolean => !!value && ACTIONS.has(value);
+
+export const isValidPrefix = (value: unknown): value is string =>
+  typeof value === 'string' && SINGLE_LETTER_PREFIX.test(value);
 
 export const isValidPostcode = (value: string): boolean => checkPostcode(value) === undefined;
 
