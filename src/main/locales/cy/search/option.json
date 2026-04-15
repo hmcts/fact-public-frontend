@@ -1,0 +1,17 @@
+{
+  "errorTitle": "Gwall:",
+  "title": "Beth yw enw'r llys? - Dod o hyd i Lys neu Dribiwnlys - GOV.UK",
+  "serviceName": "Dod o hyd i lys neu dribiwnlys",
+  "question": "A ydych chi'n gwybod enw'r llys neu'r tribiwnlys?",
+  "hint": "Gellir gweld enw'r llys neu'r tribiwnlys ar lythyr, e-bost neu neges testun a anfonwyd gennym.",
+  "answers": {
+    "a1": "Mae'r enw gennyf",
+    "a2": "Nid yw'r enw gennyf"
+  },
+  "button": "Parhau",
+  "error": {
+    "title": "Mae yna broblem",
+    "text": "Dywedwch a yw'r enw gennych ai peidio"
+  },
+  "seoMetadataDescription": "Dywedwch wrthym os ydych yn gwybod beth yw enw neu gyfeiriad y llys neu'r tribiwnlys i ddod o hyd i lys neu dribiwnlys yng Nghymru neu Loegr"
+}

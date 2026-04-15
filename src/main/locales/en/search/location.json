@@ -1,0 +1,34 @@
+{
+  "errorTitle": "Error:",
+  "title": "Search by name or address - Find a Court or Tribunal - GOV.UK",
+  "resultsTitle": "Search Results - Find a Court or Tribunal - GOV.UK",
+  "serviceName": "Find a Court or Tribunal",
+  "question": "What is the name or address of the court or tribunal?",
+  "hint": "The name of the court or tribunal can be found on a letter, email or text from us.",
+  "courtHistoryText": "This location has been renamed from ",
+  "to": " to ",
+  "text": "Enter a court name, address, town or city",
+  "textExample": "For example, Blackburn Family Court. ",
+  "button": "Continue",
+  "noResults": {
+    "p1": "There are no matching results.",
+    "p2": "Improve your search results by:",
+    "list": {
+      "li1": "double-checking your spelling",
+      "li2": "using fewer keywords",
+      "li3": "searching for something less specific"
+    }
+  },
+  "foundResult": "We found 1 court or tribunal matching your search for '{search}'.",
+  "foundResults": "We found {total} courts or tribunals matching your search for '{search}'.",
+  "mostRelevant": "Most relevant results displayed.",
+  "errorBlank": {
+    "title": "There is a problem",
+    "text": "Enter a court name, address, town or city"
+  },
+  "errorTooShort": {
+    "title": "There is a problem",
+    "text": "Search must be 3 characters or more"
+  },
+  "seoMetadataDescription": "Use the court's name or address to find a court or tribunal in England or Wales"
+}
