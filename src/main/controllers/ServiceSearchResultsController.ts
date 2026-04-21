@@ -6,6 +6,7 @@ import { FactRequest } from '../interfaces/FactRequest';
 import { DataApiRequests } from '../requests/DataApiRequests';
 import { CATCHMENT_TYPES } from '../schemas/courtServiceAreas';
 import { calculateServiceAreaFromSlug, calculateServiceNameFromSlug } from '../utils/SchemaUtils';
+import { ServiceArea } from '../schemas/ServiceAreaSchema';
 
 const dataApiRequests = new DataApiRequests();
 
@@ -20,7 +21,7 @@ export default class ServiceSearchResultsController {
       const data = {
         ...cloneDeep(req.i18n.getDataByLanguage(req.lng)['service-results']),
         results: {},
-        onlineText: serviceArea.onlineText,
+        onlineText: this.localiseOnlineText(serviceArea, req),
         onlineUrl: serviceArea.onlineUrl,
       };
 
@@ -43,5 +44,9 @@ export default class ServiceSearchResultsController {
     } catch {
       return res.status(404).render('not-found', req.i18n.getDataByLanguage(req.lng)['not-found']);
     }
+  }
+
+  private localiseOnlineText(serviceArea: ServiceArea, req: FactRequest): string | null {
+    return req.lng === 'cy' && serviceArea.onlineTextCy ? serviceArea.onlineTextCy : serviceArea.onlineText;
   }
 }

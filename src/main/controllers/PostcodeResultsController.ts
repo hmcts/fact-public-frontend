@@ -62,7 +62,7 @@ export default class PostcodeSearchController {
         serviceArea: this.localiseServiceAreaName(serviceArea, req).toLowerCase(),
         postcode,
         isDivorceOrCivil: DIVORCE_OR_CIVIL_SERVICE_LIST.has(req.params.serviceArea as string),
-        onlineText: serviceArea.onlineText,
+        onlineText: this.localiseOnlineText(serviceArea, req),
         onlineUrl: serviceArea.onlineUrl,
       };
       return res.render('postcode-results', data);
@@ -90,5 +90,9 @@ export default class PostcodeSearchController {
 
   private localiseServiceAreaName(serviceArea: ServiceArea, req: FactRequest): string {
     return req.lng === 'cy' ? serviceArea.nameCy : serviceArea.name;
+  }
+
+  private localiseOnlineText(serviceArea: ServiceArea, req: FactRequest): string | null {
+    return req.lng === 'cy' && serviceArea.onlineTextCy ? serviceArea.onlineTextCy : serviceArea.onlineText;
   }
 }
