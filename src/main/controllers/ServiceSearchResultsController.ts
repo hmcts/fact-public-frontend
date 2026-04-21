@@ -4,9 +4,9 @@ import { cloneDeep } from 'lodash';
 
 import { FactRequest } from '../interfaces/FactRequest';
 import { DataApiRequests } from '../requests/DataApiRequests';
+import { ServiceArea } from '../schemas/ServiceAreaSchema';
 import { CATCHMENT_TYPES } from '../schemas/courtServiceAreas';
 import { calculateServiceAreaFromSlug, calculateServiceNameFromSlug } from '../utils/SchemaUtils';
-import { ServiceArea } from '../schemas/ServiceAreaSchema';
 
 const dataApiRequests = new DataApiRequests();
 
