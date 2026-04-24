@@ -6003,7 +6003,7 @@ __metadata:
     html-webpack-plugin: "npm:5.6.6"
     husky: "npm:9.1.7"
     i18next: "npm:^25.7.4"
-    i18next-http-middleware: "npm:^3.9.2"
+    i18next-http-middleware: "npm:3.9.5"
     jest: "npm:^30.2.0"
     jest-html-reporter: "npm:4.3.0"
     lint-staged: "npm:16.2.7"
@@ -6870,10 +6870,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next-http-middleware@npm:^3.9.2":
-  version: 3.9.2
-  resolution: "i18next-http-middleware@npm:3.9.2"
-  checksum: 10/b42de4d2381fadb0689a1af64e1162671ad185a95b2e52b9edf82f5ae7c0a9947b99769c660544dded3e0852a9415bdfc85015f11dfafe8c4aa8f8254abb5415
+"i18next-http-middleware@npm:3.9.5":
+  version: 3.9.5
+  resolution: "i18next-http-middleware@npm:3.9.5"
+  checksum: 10/e405366674662602beedd40eb566bfc099c8909133ea14b095fc65c62aa56140e13e2a0c80095d11d6981cf0d025590bd0536558327b639388c8da2e60448535
   languageName: node
   linkType: hard
 
@@ -11102,12 +11102,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uuid@npm:^8.3.0":
-  version: 8.3.2
-  resolution: "uuid@npm:8.3.2"
+"uuid@npm:14.0.0":
+  version: 14.0.0
+  resolution: "uuid@npm:14.0.0"
   bin:
-    uuid: dist/bin/uuid
-  checksum: 10/9a5f7aa1d6f56dd1e8d5f2478f855f25c645e64e26e347a98e98d95781d5ed20062d6cca2eecb58ba7c84bc3910be95c0451ef4161906abaab44f9cb68ffbdd1
+    uuid: dist-node/bin/uuid
+  checksum: 10/8ee9b98f9650e25555515f7a28d3c3ae9364e72f7bb19b9e08b681bc135338beba5509b2830f6ae1cfaba4d45401da0d16d4d109b977097bc3d6ba0c5583341b
   languageName: node
   linkType: hard
 
