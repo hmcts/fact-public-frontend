@@ -1,30 +1,40 @@
-/* eslint-disable jest/expect-expect */
 import { Response } from 'express';
 import { assert, match, mock, stub } from 'sinon';
 import type { SinonStub } from 'sinon';
 
-const healthcheck = {
-  raw: stub().callsFake((fn: () => unknown) => fn),
-  up: stub().returns({ status: 'UP' }),
-  down: stub().returns({ status: 'DOWN' }),
-};
-
-const healthRoutes = {
-  configure: stub(),
-  checkReadiness: stub(),
-};
-
-const outputs = {
-  UP: 'UP',
-  status: stub().callsFake((value: string) => ({ status: value })),
-};
-
-jest.mock('@hmcts/nodejs-healthcheck', () => healthcheck);
-jest.mock('@hmcts/nodejs-healthcheck/healthcheck/routes', () => healthRoutes);
-jest.mock('@hmcts/nodejs-healthcheck/healthcheck/outputs', () => outputs);
+jest.mock('@hmcts/nodejs-healthcheck', () => {
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  const { stub } = require('sinon');
+  return {
+    raw: stub().callsFake((fn: () => unknown) => fn),
+    up: stub().returns({ status: 'UP' }),
+    down: stub().returns({ status: 'DOWN' }),
+  };
+});
+jest.mock('@hmcts/nodejs-healthcheck/healthcheck/routes', () => {
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  const { stub } = require('sinon');
+  return {
+    configure: stub(),
+    checkReadiness: stub(),
+  };
+});
+jest.mock('@hmcts/nodejs-healthcheck/healthcheck/outputs', () => {
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  const { stub } = require('sinon');
+  return {
+    UP: 'UP',
+    status: stub().callsFake((value: string) => ({ status: value })),
+  };
+});
 jest.mock('../../../main/app', () => ({ app: { locals: { shutdown: false } } }));
 
 import HealthController from '../../../main/controllers/HealthController';
+
+// Retrieve mocks from require after jest.mock
+const mockHealthcheck = require('@hmcts/nodejs-healthcheck');
+const mockOutputs = require('@hmcts/nodejs-healthcheck/healthcheck/outputs');
+const mockHealthRoutes = require('@hmcts/nodejs-healthcheck/healthcheck/routes');
 
 let configureHandler: SinonStub;
 let readinessHandler: SinonStub;
@@ -40,15 +50,15 @@ describe('HealthController', () => {
     configureHandler = stub();
     readinessHandler = stub();
 
-    healthRoutes.configure.callsFake(() => configureHandler);
-    healthRoutes.checkReadiness.callsFake(() => readinessHandler);
+    mockHealthRoutes.configure.callsFake(() => configureHandler);
+    mockHealthRoutes.checkReadiness.callsFake(() => readinessHandler);
 
-    configureMock = healthRoutes.configure;
-    checkReadinessMock = healthRoutes.checkReadiness;
-    statusMock = outputs.status;
-    rawMock = healthcheck.raw;
-    upMock = healthcheck.up;
-    downMock = healthcheck.down;
+    configureMock = mockHealthRoutes.configure;
+    checkReadinessMock = mockHealthRoutes.checkReadiness;
+    statusMock = mockOutputs.status;
+    rawMock = mockHealthcheck.raw;
+    upMock = mockHealthcheck.up;
+    downMock = mockHealthcheck.down;
 
     configureHandler.resetHistory();
     readinessHandler.resetHistory();

@@ -2,21 +2,22 @@
 import { Response } from 'express';
 import { mock } from 'sinon';
 
-const mockGetByName = jest.fn();
-
-jest.mock('../../../main/requests/DataApiRequests', () => ({
-  DataApiRequests: jest.fn().mockImplementation(() => ({
-    getByName: mockGetByName,
-  })),
-}));
-
 import SearchByLocationController from '../../../main/controllers/SearchByLocationController';
 import { FactRequest } from '../../../main/interfaces/FactRequest';
 import { mockRequest } from '../mocks/mockRequest';
 
+jest.mock('../../../main/requests/DataApiRequests', () => {
+  (global as any).mockGetByName = jest.fn();
+  return {
+    DataApiRequests: jest.fn().mockImplementation(() => ({
+      getByName: (global as any).mockGetByName,
+    })),
+  };
+});
+
 describe('SearchByLocationController', () => {
   beforeEach(() => {
-    mockGetByName.mockReset();
+    (global as any).mockGetByName.mockReset();
   });
 
   test('renders the search by location view', async () => {
@@ -60,7 +61,7 @@ describe('SearchByLocationController', () => {
     const request = mockRequest({ search: { location: data } });
     request.query = { search: 'Blackburn' } as FactRequest['query'];
     const results = [{ name: 'Blackburn Family Court', slug: 'blackburn-family-court' }];
-    mockGetByName.mockResolvedValueOnce(results);
+    (global as any).mockGetByName.mockResolvedValueOnce(results);
     const responseMock = mock(response);
 
     responseMock
@@ -68,7 +69,7 @@ describe('SearchByLocationController', () => {
       .once()
       .withArgs('search/location', { ...data, hasSearched: true, search: 'Blackburn', results });
     await controller.get(request, response);
-    expect(mockGetByName).toHaveBeenCalledWith('Blackburn');
+    expect((global as any).mockGetByName).toHaveBeenCalledWith('Blackburn');
     responseMock.verify();
   });
 
@@ -81,7 +82,7 @@ describe('SearchByLocationController', () => {
     const data = { title: 'Search by name or address' };
     const request = mockRequest({ search: { location: data }, error: { h1: 'Something went wrong' } });
     request.query = { search: 'Blackburn' } as FactRequest['query'];
-    mockGetByName.mockResolvedValueOnce(500);
+    (global as any).mockGetByName.mockResolvedValueOnce(500);
     const responseMock = mock(response);
 
     responseMock.expects('status').once().withArgs(503).returns(response);

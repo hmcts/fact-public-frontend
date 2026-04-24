@@ -2,16 +2,17 @@ import { HttpStatusCode } from 'axios';
 import { Response } from 'express';
 import { mock } from 'sinon';
 
-const mockGetCourtsByPrefix = jest.fn();
-
-jest.mock('../../../main/requests/DataApiRequests', () => ({
-  DataApiRequests: jest.fn().mockImplementation(() => ({
-    getCourtsByPrefix: mockGetCourtsByPrefix,
-  })),
-}));
-
 import AZPrefixSearchController from '../../../main/controllers/AZPrefixSearchController';
 import { mockRequest } from '../mocks/mockRequest';
+
+jest.mock('../../../main/requests/DataApiRequests', () => {
+  (global as any).mockGetCourtsByPrefix = jest.fn();
+  return {
+    DataApiRequests: jest.fn().mockImplementation(() => ({
+      getCourtsByPrefix: (global as any).mockGetCourtsByPrefix,
+    })),
+  };
+});
 
 describe('AZPrefixSearchController', () => {
   const controller = new AZPrefixSearchController();
@@ -29,7 +30,7 @@ describe('AZPrefixSearchController', () => {
   };
 
   beforeEach(() => {
-    mockGetCourtsByPrefix.mockReset();
+    (global as any).mockGetCourtsByPrefix.mockReset();
   });
 
   test('renders the prefix-search view without a prefix', async () => {
@@ -44,7 +45,7 @@ describe('AZPrefixSearchController', () => {
 
     await controller.get(request, response);
     responseMock.verify();
-    expect(mockGetCourtsByPrefix).toHaveBeenCalledTimes(0);
+    expect((global as any).mockGetCourtsByPrefix).toHaveBeenCalledTimes(0);
   });
 
   test('renders the prefix-search view with results when a prefix is provided', async () => {
@@ -52,7 +53,7 @@ describe('AZPrefixSearchController', () => {
     const prefix = 'A';
     request.query = { prefix };
     const mockCourts = [{ name: 'A-Court', slug: 'a-court' }];
-    mockGetCourtsByPrefix.mockResolvedValue(mockCourts);
+    (global as any).mockGetCourtsByPrefix.mockResolvedValue(mockCourts);
 
     const response = {
       render: () => '',
@@ -70,7 +71,7 @@ describe('AZPrefixSearchController', () => {
 
     await controller.get(request, response);
     responseMock.verify();
-    expect(mockGetCourtsByPrefix).toHaveBeenCalledWith(prefix);
+    expect((global as any).mockGetCourtsByPrefix).toHaveBeenCalledWith(prefix);
   });
 
   test('renders the prefix-search view with a validation error for an invalid prefix query', async () => {
@@ -93,14 +94,14 @@ describe('AZPrefixSearchController', () => {
 
     await controller.get(request, response);
     responseMock.verify();
-    expect(mockGetCourtsByPrefix).not.toHaveBeenCalled();
+    expect((global as any).mockGetCourtsByPrefix).not.toHaveBeenCalled();
   });
 
   test('normalises a valid lowercase prefix before calling the API', async () => {
     const request = mockRequest(mockData);
     request.query = { prefix: 'a' };
     const mockCourts = [{ name: 'A-Court', slug: 'a-court' }];
-    mockGetCourtsByPrefix.mockResolvedValue(mockCourts);
+    (global as any).mockGetCourtsByPrefix.mockResolvedValue(mockCourts);
 
     const response = {
       render: () => '',
@@ -118,14 +119,14 @@ describe('AZPrefixSearchController', () => {
 
     await controller.get(request, response);
     responseMock.verify();
-    expect(mockGetCourtsByPrefix).toHaveBeenCalledWith('A');
+    expect((global as any).mockGetCourtsByPrefix).toHaveBeenCalledWith('A');
   });
 
   test('renders the not-found view when API returns 404', async () => {
     const request = mockRequest(mockData);
     const prefix = 'Z';
     request.query = { prefix };
-    mockGetCourtsByPrefix.mockResolvedValue(HttpStatusCode.NotFound);
+    (global as any).mockGetCourtsByPrefix.mockResolvedValue(HttpStatusCode.NotFound);
 
     const response = {
       status: () => '',
@@ -142,14 +143,14 @@ describe('AZPrefixSearchController', () => {
     await controller.get(request, response);
     responseMock.verify();
     statusMock.verify();
-    expect(mockGetCourtsByPrefix).toHaveBeenCalled();
+    expect((global as any).mockGetCourtsByPrefix).toHaveBeenCalled();
   });
 
   test('renders the prefix-search view with error when API returns other error', async () => {
     const request = mockRequest(mockData);
     const prefix = 'A';
     request.query = { prefix };
-    mockGetCourtsByPrefix.mockResolvedValue(HttpStatusCode.InternalServerError);
+    (global as any).mockGetCourtsByPrefix.mockResolvedValue(HttpStatusCode.InternalServerError);
 
     const response = {
       render: () => '',
@@ -168,6 +169,6 @@ describe('AZPrefixSearchController', () => {
 
     await controller.get(request, response);
     responseMock.verify();
-    expect(mockGetCourtsByPrefix).toHaveBeenCalled();
+    expect((global as any).mockGetCourtsByPrefix).toHaveBeenCalled();
   });
 });
