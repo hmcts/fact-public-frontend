@@ -4,7 +4,7 @@ import { AxiosRequestConfig, HttpStatusCode, isAxiosError } from 'axios';
 import { ServiceArea, serviceAreaSchema } from '../schemas/ServiceAreaSchema';
 import { Service, serviceSchema } from '../schemas/ServiceSchema';
 import { CourtBasic } from '../schemas/courtBasicSchema';
-import { Court, courtSchema } from '../schemas/courtSchema';
+import { Court, CourtSearchResult, courtSchema, courtSearchResultSchema } from '../schemas/courtSchema';
 import { CourtServiceAreas, courtServiceAreasSchema } from '../schemas/courtServiceAreas';
 import { CourtWithDistance, courtWithDistanceSchema } from '../schemas/courtWithDistance';
 
@@ -53,6 +53,22 @@ export class DataApiRequests {
       return courtSchema.array().parse(response.data);
     } catch (error: unknown) {
       logger.error('Error fetching court details:', error);
+      return isAxiosError(error) && error.response?.status
+        ? (error.response.status as HttpStatusCode)
+        : HttpStatusCode.InternalServerError;
+    }
+  }
+
+  /**
+   * Request courts by name/address query prefix from the API
+   * @param query The search query
+   */
+  public async getByName(query: string): Promise<CourtSearchResult[] | HttpStatusCode> {
+    try {
+      const response = await dataApi.get('search/courts/v1/name', { params: { q: query } });
+      return courtSearchResultSchema.array().parse(response.data);
+    } catch (error: unknown) {
+      logger.error(`Error fetching courts for query ${query}:`, error);
       return isAxiosError(error) && error.response?.status
         ? (error.response.status as HttpStatusCode)
         : HttpStatusCode.InternalServerError;

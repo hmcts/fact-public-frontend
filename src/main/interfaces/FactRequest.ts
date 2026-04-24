@@ -10,6 +10,10 @@ export interface FactRequest extends Request {
       notFound: object;
       error: object;
       accessibilityStatement: object;
+      search: {
+        option: object;
+        location: object;
+      };
     };
   };
   lng?: string;

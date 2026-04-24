@@ -1,0 +1,65 @@
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% extends "template.njk" %}
+
+{% block pageTitle %}
+  {% if errors %}
+    {{ errorTitle }}
+  {% endif %}
+  {{ title }}
+{% endblock %}
+
+{% block content %}
+  {% if errors %}
+    {{ govukErrorSummary({
+      titleText: error.title,
+      errorList: [
+        {
+          text: error.text,
+          href: "#i-have-the-name"
+        }
+      ]
+    }) }}
+  {% endif %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <form method="post" novalidate>
+        {{ govukRadios({
+          idPrefix: "knows-location",
+          name: "knowsLocation",
+          value: knowsLocation,
+          fieldset: {
+            legend: {
+              text: question,
+              classes: "govuk-fieldset__legend--l",
+              isPageHeading: true
+            }
+          },
+          hint: {
+            text: hint
+          },
+          errorMessage: { text: error.text } if errors,
+          items: [
+            {
+              id: "i-have-the-name",
+              value: "yes",
+              text: answers.a1
+            },
+            {
+              id: "i-do-not-have-the-name",
+              value: "no",
+              text: answers.a2
+            }
+          ]
+        }) }}
+        {{ govukButton({
+          text: button,
+          classes: "govuk-!-margin-top-2 govuk-!-margin-bottom-8 continue"
+        }) }}
+      </form>
+    </div>
+  </div>
+{% endblock %}

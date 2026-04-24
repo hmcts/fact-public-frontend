@@ -1,0 +1,34 @@
+{
+  "errorTitle": "Gwall:",
+  "title": "Chwiliwch yn ôl enw neu gyfeiriad - Dod o hyd i Lys neu Dribiwnlys - GOV.UK",
+  "resultsTitle": "Canlyniadau chwilio - Dod o hyd i lys neu dribiwnlys - GOV.UK",
+  "serviceName": "Dod o hyd i lys neu dribiwnlys",
+  "question": "Beth yw enw a chyfeiriad y llys neu'r tribiwnlys?",
+  "hint": "Gellir gweld enw'r llys neu'r tribiwnlys ar lythyr, e-bost neu neges testun a anfonwyd gennym.",
+  "courtHistoryText": "Mae enw'r lleoliad hwn wedi newid o ",
+  "to": " i ",
+  "text": "Rhowch enw llys, cyfeiriad, tref neu ddinas",
+  "textExample": "Er enghraifft, Llys Teulu Blackburn. ",
+  "button": "Parhau",
+  "noResults": {
+    "p1": "Nid oes canlyniad sy'n cyfateb.",
+    "p2": "Gellir gwella ar y chwiliad drwy:",
+    "list": {
+      "li1": "gwneud yn siŵr eich bod wedi sillafu'r gair yn gywir",
+      "li2": "defnyddio llai o allweddeiriau",
+      "li3": "chwilio am rywbeth llai penodol"
+    }
+  },
+  "foundResult": "Daethpwyd o hyd i 1 llys neu dribiwnlys yn cyfateb i'ch chwiliad am '{search}'.",
+  "foundResults": "Daethpwyd o hyd i {total} llys neu dribiwnlys yn cyfateb i'ch chwiliad am '{search}'.",
+  "mostRelevant": "Mae'r canlyniadau mwyaf perthnasol yn cael eu harddangos.",
+  "errorBlank": {
+    "title": "Mae yna broblem",
+    "text": "Rhowch enw llys, cyfeiriad, tref neu ddinas"
+  },
+  "errorTooShort": {
+    "title": "Mae yna broblem",
+    "text": "Rhaid i beth yr ydych yn chwilio amdano fod yn 3 nod neu fwy"
+  },
+  "seoMetadataDescription": "Defnyddiwch enw neu gyfeiriad y llys i ddod o hyd i lys neu dribiwnlys yng Nghymru neu Loegr"
+}
