@@ -1,13 +1,12 @@
 import { Response } from 'express';
 
-jest.mock('../../../main/requests/DataApiRequests', () => {
-  (global as any).mockGetAll = jest.fn();
-  return {
-    DataApiRequests: jest.fn().mockImplementation(() => ({
-      getAll: (global as any).mockGetAll,
-    })),
-  };
-});
+const mockGetAll = jest.fn();
+
+jest.mock('../../../main/requests/DataApiRequests', () => ({
+  DataApiRequests: jest.fn().mockImplementation(() => ({
+    getAll: mockGetAll,
+  })),
+}));
 
 import SearchController from '../../../main/controllers/SearchController';
 import { FactRequest } from '../../../main/interfaces/FactRequest';
@@ -23,11 +22,11 @@ describe('CourtController', () => {
       const req = {} as unknown as FactRequest;
       const mockCourts = [{ name: 'Test Court 1' }, { name: 'Test Court 2' }];
 
-      (global as any).mockGetAll.mockResolvedValue(mockCourts);
+      mockGetAll.mockResolvedValue(mockCourts);
 
       await controller.getAllJson(req, res);
 
-      expect((global as any).mockGetAll).toHaveBeenCalled();
+      expect(mockGetAll).toHaveBeenCalled();
       expect(res.json).toHaveBeenCalledWith(mockCourts);
     });
   });

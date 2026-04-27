@@ -4,8 +4,10 @@ module.exports = {
   testEnvironment: 'node',
   testRunner: 'jest-circus/runner',
   transform: {
-    '^.+\\.ts$': 'ts-jest',
+    '^.+\\.(ts?)$': 'ts-jest',
+    '^.+\\.(js?)$': 'babel-jest',
   },
+  transformIgnorePatterns: ['/node_modules/(?!uuid)/'],
   moduleFileExtensions: ['ts', 'js', 'json'],
   reporters: [
     'default',
