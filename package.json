@@ -129,6 +129,6 @@
     "postcss": "8.5.10",
     "uuid": "14.0.0",
     "i18next-http-middleware": "3.9.3",
-    "protofufjs": "8.0.1"
+    "protobufjs": "8.0.1"
   }
 }
