@@ -58,7 +58,7 @@ app.use(
 );
 
 app.use(cookieParser(sessionSecret as string));
-new I18next().enableFor(app);
+new I18next(developmentMode).enableFor(app);
 
 app.use(scopePerRequest(app.locals.container));
 app.use(loadControllers('controllers/**/*.+(ts|js)', { cwd: __dirname }));

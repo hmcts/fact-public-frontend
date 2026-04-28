@@ -10,7 +10,7 @@ const resources = requireDir(module, '../../', {
 }).locales as Resource;
 
 export class I18next {
-  constructor() {
+  constructor(developmentMode: boolean) {
     const options = {
       preload: ['en', 'cy'],
       resources,
@@ -20,6 +20,8 @@ export class I18next {
       detection: {
         order: ['querystring', 'session', 'cookie'],
         caches: ['session', 'cookie'],
+        cookieSecure: !developmentMode,
+        cookieSameSite: 'lax',
       },
     };
 
