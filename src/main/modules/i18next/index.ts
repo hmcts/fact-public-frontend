@@ -20,6 +20,11 @@ export class I18next {
       detection: {
         order: ['querystring', 'session', 'cookie'],
         caches: ['session', 'cookie'],
+        lookupCookie: 'i18next',
+        cookieName: 'i18next',
+        setCookie: true,
+        cookieSecure: true,
+        cookieSameSite: (process.env.SESSION_COOKIE_SAME_SITE as 'strict' | 'lax' | 'none') || 'lax',
       },
     };
 
