@@ -4,7 +4,7 @@
   "addresses": {
     "heading": "Address",
     "addressTypes": {
-      "VISIT_US": "Visit",
+      "VISIT_US": "Visit ",
       "WRITE_TO_US": "Send documents to",
       "VISIT_OR_CONTACT_US": "Visit and send documents to"
     },
