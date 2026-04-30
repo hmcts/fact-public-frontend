@@ -1,3 +1,5 @@
+import { describe, expect, test } from '@jest/globals';
+
 import { env } from '../helpers/nunjucksEnv';
 
 const i18n = require('../../../../main/locales/en/error.json');

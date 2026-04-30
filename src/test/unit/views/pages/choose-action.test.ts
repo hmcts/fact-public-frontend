@@ -1,15 +1,10 @@
-import * as path from 'path';
-
 import { describe, expect, test } from '@jest/globals';
-import * as nunjucks from 'nunjucks';
 
-const govukTemplates = path.dirname(require.resolve('govuk-frontend/package.json')) + '/dist';
-const viewsPath = path.resolve(__dirname, '../../../main/views');
-const env = nunjucks.configure([govukTemplates, viewsPath], { autoescape: false });
+import { env } from '../helpers/nunjucksEnv';
 
 describe('ChooseAction View', () => {
-  const i18n = require('../../../main/locales/en/choose-action.json');
-  const welshI18n = require('../../../main/locales/cy/choose-action.json');
+  const i18n = require('../../../../main/locales/en/choose-action.json');
+  const welshI18n = require('../../../../main/locales/cy/choose-action.json');
 
   test('renders the choose-action page with correct English content', () => {
     const html = env.render('choose-action.njk', i18n);

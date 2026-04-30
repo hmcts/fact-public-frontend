@@ -4,7 +4,9 @@ module.exports = {
   moduleFileExtensions: ['ts', 'js', 'json'],
   testEnvironment: 'node',
   transform: {
-    '^.+\\.ts?$': 'ts-jest',
+    '^.+\\.(ts?)$': 'ts-jest',
+    '^.+\\.(js?)$': 'babel-jest',
   },
+  transformIgnorePatterns: ['/node_modules/(?!uuid)/'],
   modulePathIgnorePatterns: ['<rootDir>/src/test/unit/mocks', '<rootDir>/src/test/unit/views/helpers'],
 };

@@ -39,7 +39,7 @@
             hint: {
               text: area.description
             },
-            value: area.id
+            value: area.value
             }), options) %}
         {% endfor %}
         {# add a divider and add the "I can't find what I'm looking for" option #}
@@ -56,7 +56,7 @@
               isPageHeading: true
             }
           },
-          errorMessage: { text: error.text  | replace("{serviceName}", serviceNameLocalised| lower) } if errors,
+          errorMessage: { text: error.text  | replace("{serviceName}", serviceNameLocalised | lower) } if errors,
           items: options
         }) }}
 

@@ -1,17 +1,10 @@
-import * as path from 'path';
+import { describe, expect, test } from '@jest/globals';
 
-import * as nunjucks from 'nunjucks';
-
-const govukTemplates = path.dirname(require.resolve('govuk-frontend/package.json')) + '/dist';
-const viewsPath = path.resolve(__dirname, '../../../main/views');
-
-const env = nunjucks.configure([govukTemplates, viewsPath], {
-  autoescape: false,
-});
+import { env } from '../helpers/nunjucksEnv';
 
 describe('AccessibilityStatement View', () => {
-  const i18n = require('../../../main/locales/en/accessibilityStatement.json');
-  const welshI18n = require('../../../main/locales/cy/accessibilityStatement.json');
+  const i18n = require('../../../../main/locales/en/accessibilityStatement.json');
+  const welshI18n = require('../../../../main/locales/cy/accessibilityStatement.json');
 
   test('renders the accessibility statement page with correct English content', () => {
     const html = env.render('accessibility-statement.njk', i18n);

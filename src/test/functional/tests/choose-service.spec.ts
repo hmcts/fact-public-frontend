@@ -30,8 +30,9 @@ test.describe('Choose Service Page', () => {
         await radio.check();
         found = true;
         await chooseServicePage.submit();
-        // can't know which one
-        expect(page.url()).toBeTruthy();
+        // need to deal with the fact that we don't know which service has been selected, and it may
+        // go directly to a postcode search when only a single service area is associated.
+        await expect(page).toHaveURL(/\/services\/.+\/nearest(\/search-by-postcode\/)?/);
         break;
       }
     }
