@@ -1,15 +1,10 @@
-import * as path from 'path';
-
 import { describe, expect, test } from '@jest/globals';
-import * as nunjucks from 'nunjucks';
 
-const govukTemplates = path.dirname(require.resolve('govuk-frontend/package.json')) + '/dist';
-const viewsPath = path.resolve(__dirname, '../../../main/views');
-const env = nunjucks.configure([govukTemplates, viewsPath], { autoescape: false });
+import { env } from '../helpers/nunjucksEnv';
 
 describe('ChooseService View', () => {
-  const i18n = require('../../../main/locales/en/choose-service.json');
-  const welshI18n = require('../../../main/locales/cy/choose-service.json');
+  const i18n = require('../../../../main/locales/en/choose-service.json');
+  const welshI18n = require('../../../../main/locales/cy/choose-service.json');
 
   const services = [
     { id: 'service1', text: 'Service 1', description: 'Description 1', value: 'service1' },

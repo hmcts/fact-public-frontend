@@ -1,10 +1,12 @@
 import { Logger } from '@hmcts/nodejs-logging';
-import { HttpStatusCode, isAxiosError } from 'axios';
+import { AxiosRequestConfig, HttpStatusCode, isAxiosError } from 'axios';
 
 import { ServiceArea, serviceAreaSchema } from '../schemas/ServiceAreaSchema';
 import { Service, serviceSchema } from '../schemas/ServiceSchema';
 import { CourtBasic } from '../schemas/courtBasicSchema';
 import { Court, CourtSearchResult, courtSchema, courtSearchResultSchema } from '../schemas/courtSchema';
+import { CourtServiceAreas, courtServiceAreasSchema } from '../schemas/courtServiceAreas';
+import { CourtWithDistance, courtWithDistanceSchema } from '../schemas/courtWithDistance';
 
 import { dataApi } from './utils/axiosConfig';
 
@@ -115,6 +117,75 @@ export class DataApiRequests {
       return (await dataApi.get('/search/courts/v1/prefix', { params: { prefix } })).data;
     } catch (error: unknown) {
       logger.error(`Error fetching court details for prefix ${prefix}:`, error);
+      return isAxiosError(error) && error.response?.status
+        ? (error.response.status as HttpStatusCode)
+        : HttpStatusCode.InternalServerError;
+    }
+  }
+
+  /**
+   * Perform a search for court service areas based on the service area name.
+   *
+   * @param serviceAreaName the name of the service area
+   */
+  public async getCourtServiceAreas(serviceAreaName: string): Promise<CourtServiceAreas[] | HttpStatusCode> {
+    try {
+      const response = await dataApi.get(`/search/service-area/v1/${serviceAreaName}`);
+      return courtServiceAreasSchema.array().parse(response.data);
+    } catch (error: unknown) {
+      logger.error('Error fetching court service area details:', error);
+      return isAxiosError(error) && error.response?.status
+        ? (error.response.status as HttpStatusCode)
+        : HttpStatusCode.InternalServerError;
+    }
+  }
+
+  /**
+   * Perform a postcode search for the relevant action.
+   *
+   * @param postcode the postcode
+   * @param serviceArea the service area (name)
+   * @param action the action (nearest, documents, update)
+   */
+  public async performPostcodeSearch(
+    postcode: string,
+    serviceArea: string,
+    action: string
+  ): Promise<CourtWithDistance[] | HttpStatusCode> {
+    try {
+      const config: AxiosRequestConfig = {
+        params: {
+          postcode,
+          serviceArea,
+          action: action.toUpperCase(),
+        },
+      };
+      const response = await dataApi.get('/search/courts/v1/postcode', config);
+      return courtWithDistanceSchema.array().parse(response.data);
+    } catch (error: unknown) {
+      logger.error('Error fetching postcode search results:', error);
+      return isAxiosError(error) && error.response?.status
+        ? (error.response.status as HttpStatusCode)
+        : HttpStatusCode.InternalServerError;
+    }
+  }
+
+  /**
+   * Perform a postcode-only search for a close court.
+   *
+   * @param postcode the postcode
+   */
+  public async performPostcodeOnlySearch(postcode: string): Promise<CourtWithDistance[] | HttpStatusCode> {
+    try {
+      const config: AxiosRequestConfig = {
+        params: {
+          postcode,
+        },
+      };
+      const response = await dataApi.get('/search/courts/v1/postcode', config);
+      return courtWithDistanceSchema.array().parse(response.data);
+    } catch (error: unknown) {
+      logger.error('Error fetching postcode search results:', error);
       return isAxiosError(error) && error.response?.status
         ? (error.response.status as HttpStatusCode)
         : HttpStatusCode.InternalServerError;

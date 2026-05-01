@@ -1,0 +1,32 @@
+{
+  "errorTitle": "Gwall:",
+  "title": "Beth yw eich cod post? - Dod o hyd i lys neu dribiwnlys - GOV.UK",
+  "question": "Beth yw eich cod post?",
+  "hints": {
+    "default": "Byddwn yn defnyddio'ch cod post i ddangos i chi'r llys neu'r tribiwnlys agosaf sy'n delio â {serviceArea}.",
+    "noService": "Byddwn yn defnyddio eich cod post i ddangos pa lys neu dribiwnlys yw’r un agosaf atoch chi.",
+    "childcare": "Byddwn yn defnyddio cod post cartref eich plant i ddangos y llys neu’r tribiwnlys agosaf atyn nhw sy’n delio â threfniadau gofal plant."
+  },
+  "text": "Rhowch eich cod post",
+  "button": "Parhau",
+  "noResults": {
+    "p1": "Nid oes canlyniad sy’n cyfateb.",
+    "p2": "Gellir gwella ar y chwiliad drwy:",
+    "list": {
+      "li1": "gwneud yn siŵr eich bod wedi sillafu’r gair yn gywir",
+      "li2": "defnyddio llai o allweddeiriau",
+      "li3": "chwilio am rywbeth llai penodol"
+    }
+  },
+  "errorText": {
+    "title": "Mae yna broblem",
+    "blankPostcode": "Rhowch god post",
+    "invalidPostcode": "Rhowch god post dilys",
+    "scotlandPostcode": "Nid oes gennym wybodaeth am lysoedd ar gyfer y gwasanaeth hwn. Cysylltwch â Llysoedd a Thribiwnlysoedd Yr Alban i gael cymorth.",
+    "scottishChildrenPostcode": "Os yw’r plentyn (neu’r plant) yn byw yn Yr Alban, byddant tu hwnt i awdurdodaeth y gwasanaeth hwn. Cysylltwch â Llysoedd a Thribiwnlysoedd Yr Alban i gael cymorth.",
+    "northernIrelandPostcode": "Nid oed gennym wybodaeth am y llysoedd yng Ngogledd Iwerddon. Cysylltwch â Llysoedd a Thribiwnlysoedd Gogledd Iwerddon i gael cymorth.",
+    "guernseyPostcode": "Nid oes gennym wybodaeth am lysoedd Guernsey. Cysylltwch â Llys Brenhinol Guernsey am gymorth.",
+    "jerseyPostcode": "Nid oes gennym wybodaeth am lysoedd Jersey. Cysylltwch â Llysoedd Jersey am gymorth.",
+    "isleOfManPostcode": "Nid oes gennym wybodaeth am lysoedd Ynys Manaw. Cysylltwch â Llysoedd Barn Ynys Manaw am gymorth."
+  }
+}

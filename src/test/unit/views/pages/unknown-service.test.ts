@@ -1,15 +1,10 @@
-import * as path from 'path';
-
 import { describe, expect, test } from '@jest/globals';
-import * as nunjucks from 'nunjucks';
 
-const govukTemplates = path.dirname(require.resolve('govuk-frontend/package.json')) + '/dist';
-const viewsPath = path.resolve(__dirname, '../../../main/views');
-const env = nunjucks.configure([govukTemplates, viewsPath], { autoescape: false });
+import { env } from '../helpers/nunjucksEnv';
 
 describe('UnknownService View', () => {
-  const i18n = require('../../../main/locales/en/unknown-service.json');
-  const welshI18n = require('../../../main/locales/cy/unknown-service.json');
+  const i18n = require('../../../../main/locales/en/unknown-service.json');
+  const welshI18n = require('../../../../main/locales/cy/unknown-service.json');
 
   test('renders the unknown-service page with correct content', () => {
     const html = env.render('unknown-service.njk', i18n);
