@@ -18,8 +18,8 @@ export class I18next {
       supportedLngs: ['en', 'cy'],
       showSupportNotice: false,
       detection: {
-        order: ['querystring', 'session', 'cookie'],
-        caches: ['session', 'cookie'],
+        order: ['querystring', 'cookie'],
+        caches: ['cookie'],
       },
     };
 

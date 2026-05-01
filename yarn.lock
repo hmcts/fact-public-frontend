@@ -1662,13 +1662,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.28.6":
-  version: 7.28.6
-  resolution: "@babel/runtime@npm:7.28.6"
-  checksum: 10/fbcd439cb74d4a681958eb064c509829e3f46d8a4bfaaf441baa81bb6733d1e680bccc676c813883d7741bcaada1d0d04b15aa320ef280b5734e2192b50decf9
-  languageName: node
-  linkType: hard
-
 "@babel/template@npm:^7.28.6":
   version: 7.28.6
   resolution: "@babel/template@npm:7.28.6"
@@ -7018,8 +7011,8 @@ __metadata:
     helmet: "npm:8.1.0"
     html-webpack-plugin: "npm:5.6.6"
     husky: "npm:9.1.7"
-    i18next: "npm:^25.7.4"
-    i18next-http-middleware: "npm:3.9.5"
+    i18next: "npm:^26.0.8"
+    i18next-http-middleware: "npm:^3.9.6"
     jest: "npm:^30.2.0"
     jest-html-reporter: "npm:4.3.0"
     lint-staged: "npm:16.2.7"
@@ -7886,24 +7879,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next-http-middleware@npm:3.9.5":
-  version: 3.9.5
-  resolution: "i18next-http-middleware@npm:3.9.5"
-  checksum: 10/e405366674662602beedd40eb566bfc099c8909133ea14b095fc65c62aa56140e13e2a0c80095d11d6981cf0d025590bd0536558327b639388c8da2e60448535
+"i18next-http-middleware@npm:^3.9.6":
+  version: 3.9.6
+  resolution: "i18next-http-middleware@npm:3.9.6"
+  checksum: 10/98fac01c9afdf0281fbdb6f33f57a4ac6409435d38fcb3557aa07813a65ae38de2b5adb8db5a3a3152eb86062db8f85a682ae7041d78573e5f59648aee472e07
   languageName: node
   linkType: hard
 
-"i18next@npm:^25.7.4":
-  version: 25.8.18
-  resolution: "i18next@npm:25.8.18"
-  dependencies:
-    "@babel/runtime": "npm:^7.28.6"
+"i18next@npm:^26.0.8":
+  version: 26.0.8
+  resolution: "i18next@npm:26.0.8"
   peerDependencies:
-    typescript: ^5
+    typescript: ^5 || ^6
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10/a5b9be29bd664dc12002f200b6c01dc6436c1a014f46b9f97e11c0733511328d3063409829af7dfd88cd744b5e0bd3575be71bb39c0955c6cfe747ae78274269
+  checksum: 10/e25ca27671fb04d358ff7b2d5253482e4bb091bb3f26bd245b443e9e5d68c8c09388d2242a78688f5523ad0a141bd4bea361842a746e13391256aee41e4e8e91
   languageName: node
   linkType: hard
 
@@ -10458,9 +10449,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"protobufjs@npm:7.5.5":
-  version: 7.5.5
-  resolution: "protobufjs@npm:7.5.5"
+"protobufjs@npm:8.0.1":
+  version: 8.0.1
+  resolution: "protobufjs@npm:8.0.1"
   dependencies:
     "@protobufjs/aspromise": "npm:^1.1.2"
     "@protobufjs/base64": "npm:^1.1.2"
@@ -10474,7 +10465,7 @@ __metadata:
     "@protobufjs/utf8": "npm:^1.1.0"
     "@types/node": "npm:>=13.7.0"
     long: "npm:^5.0.0"
-  checksum: 10/048898023a38d22f5fc9a1bcf0dcce5cfbcd37fb00753bd72283720eee7e2cb6055b23957542e5bcdc136379af66203a2ddb8d8c39d11f73169bacf07885fedd
+  checksum: 10/71431cbb8013206052f404a01b0e10b2f1a07595937eebaba7f30e168b50d26ad1a1d5d6f6d23fa3497c0ee4ad2983ad598aec7e68f0f3ee17ed49a4842a86da
   languageName: node
   linkType: hard
 
