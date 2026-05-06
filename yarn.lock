@@ -5096,22 +5096,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"awilix-express@npm:9.0.2":
-  version: 9.0.2
-  resolution: "awilix-express@npm:9.0.2"
+"awilix-express@npm:11.0.1":
+  version: 11.0.1
+  resolution: "awilix-express@npm:11.0.1"
   dependencies:
-    awilix-router-core: "npm:^2.1.0"
-    tslib: "npm:^2.8.1"
-  checksum: 10/872333b55e1f35f40c076db4c25d18540a6fb15d11aa964e0c97b67ab61a66c916eaa7cab423ebcd507b8dea6a00b97d2094d3e9449bbc338c44902525807f40
+    awilix-router-core: "npm:^4.0.0"
+  checksum: 10/b9695b87430cbc94f6639b7209d0e22fcd14d0b1113a7b3938ecefc09b18fe24ea6f9ca55e65c565f64dbc642a3725fd8673dee59570b055a35207e560ba92d6
   languageName: node
   linkType: hard
 
-"awilix-router-core@npm:^2.1.0":
-  version: 2.1.2
-  resolution: "awilix-router-core@npm:2.1.2"
+"awilix-router-core@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "awilix-router-core@npm:4.0.0"
   dependencies:
     fast-glob: "npm:^3.3.3"
-  checksum: 10/a7049550a01bd4490f14a7b5a9704f82d78988bf572f7699006faeb2c96e3754339be314296b4d64558e532bbeb7ad778af077a47830655eebc95ccb8f6c9e6c
+  checksum: 10/dea10cb8a1127e20b8b829b24700d6da2e571afaf2c92210fb71f0cd4ecafe056e1e9e04bf859efdc187eca092a9757a78dad230e2fd3f60be9ae6b4b879549c
   languageName: node
   linkType: hard
 
@@ -6987,7 +6986,7 @@ __metadata:
     applicationinsights: "npm:3.14.0"
     async-mutex: "npm:^0.5.0"
     awilix: "npm:12.1.1"
-    awilix-express: "npm:9.0.2"
+    awilix-express: "npm:11.0.1"
     axios: "npm:1.16.0"
     babel-jest: "npm:^30.3.0"
     babel-loader: "npm:^10.0.0"
