@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { DateTime } from 'luxon';
 
-import { CourtTestData, createCourtTestData } from '../helpers/courtTestData';
+import { CourtTestData, FUNCTIONAL_TEST_RUN_PREFIX, createCourtTestData } from '../helpers/courtTestData';
 import { generateRandomString, hasText } from '../helpers/courtTestUtils';
 import { CourtPage } from '../page-objects/CourtPage';
 import { HomePage } from '../page-objects/HomePage';
@@ -123,7 +123,7 @@ test.describe('Court Page Core', () => {
   test('Closed-court page is rendered when the retrieved court is closed', async ({ page }) => {
     const closedCourtResponse = await courtData.apiContext.get('/testing-support/courts', {
       params: {
-        courtName: `Core Test Closed Court ${generateRandomString()}`,
+        courtName: `${FUNCTIONAL_TEST_RUN_PREFIX} Core Test Closed Court ${generateRandomString()}`,
         serviceCenter: false,
         open: false,
       },

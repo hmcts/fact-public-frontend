@@ -2,7 +2,7 @@ import { APIRequestContext, expect } from '@playwright/test';
 
 import { Court } from '../../../main/schemas/courtSchema';
 
-import { generateRandomString } from './courtTestUtils';
+import { generateRandomString, generateUppercaseRandomString } from './courtTestUtils';
 
 type PlaywrightLike = {
   request: {
@@ -15,6 +15,8 @@ type CourtData = {
   slug: string;
   body: Court;
 };
+
+export const FUNCTIONAL_TEST_RUN_PREFIX = `FaCTPublicTest${generateUppercaseRandomString(4)}`;
 
 export type CourtTestData = {
   apiContext: APIRequestContext;
@@ -53,11 +55,11 @@ export async function createCourtTestData(playwright: PlaywrightLike, suiteLabel
 
   const uniqueSuffix = `${generateRandomString()} ${generateRandomString()}`;
   const prefixes = {
-    defaultCourt: `${suiteLabel} Test Court ${uniqueSuffix}`,
-    warningNoticeCourt: `${suiteLabel} Warning Notice Test Court ${uniqueSuffix}`,
-    translationCourt: `${suiteLabel} Translation Test Court ${uniqueSuffix}`,
-    noTranslationCourt: `${suiteLabel} No Translation Test Court ${uniqueSuffix}`,
-    noEnquiriesCourt: `${suiteLabel} No Enquiries Test Court ${uniqueSuffix}`,
+    defaultCourt: `${FUNCTIONAL_TEST_RUN_PREFIX} ${suiteLabel} Test Court ${uniqueSuffix}`,
+    warningNoticeCourt: `${FUNCTIONAL_TEST_RUN_PREFIX} ${suiteLabel} Warning Notice Test Court ${uniqueSuffix}`,
+    translationCourt: `${FUNCTIONAL_TEST_RUN_PREFIX} ${suiteLabel} Translation Test Court ${uniqueSuffix}`,
+    noTranslationCourt: `${FUNCTIONAL_TEST_RUN_PREFIX} ${suiteLabel} No Translation Test Court ${uniqueSuffix}`,
+    noEnquiriesCourt: `${FUNCTIONAL_TEST_RUN_PREFIX} ${suiteLabel} No Enquiries Test Court ${uniqueSuffix}`,
   };
 
   const cleanup = async (): Promise<void> => {
@@ -69,44 +71,48 @@ export async function createCourtTestData(playwright: PlaywrightLike, suiteLabel
   };
 
   await cleanup();
+  try {
+    const defaultCourt = await createCourt(apiContext, {
+      courtName: prefixes.defaultCourt,
+      serviceCenter: false,
+      open: true,
+    });
+    const warningNoticeCourt = await createCourt(apiContext, {
+      courtName: prefixes.warningNoticeCourt,
+      serviceCenter: false,
+      open: true,
+      addWarningNotice: true,
+    });
+    const translationCourt = await createCourt(apiContext, {
+      courtName: prefixes.translationCourt,
+      serviceCenter: false,
+      open: true,
+      withTranslations: true,
+    });
+    const noTranslationCourt = await createCourt(apiContext, {
+      courtName: prefixes.noTranslationCourt,
+      serviceCenter: false,
+      open: true,
+      withTranslations: false,
+    });
+    const noEnquiriesCourt = await createCourt(apiContext, {
+      courtName: prefixes.noEnquiriesCourt,
+      serviceCenter: false,
+      open: true,
+      withEnquiriesContact: false,
+    });
 
-  const defaultCourt = await createCourt(apiContext, {
-    courtName: prefixes.defaultCourt,
-    serviceCenter: false,
-    open: true,
-  });
-  const warningNoticeCourt = await createCourt(apiContext, {
-    courtName: prefixes.warningNoticeCourt,
-    serviceCenter: false,
-    open: true,
-    addWarningNotice: true,
-  });
-  const translationCourt = await createCourt(apiContext, {
-    courtName: prefixes.translationCourt,
-    serviceCenter: false,
-    open: true,
-    withTranslations: true,
-  });
-  const noTranslationCourt = await createCourt(apiContext, {
-    courtName: prefixes.noTranslationCourt,
-    serviceCenter: false,
-    open: true,
-    withTranslations: false,
-  });
-  const noEnquiriesCourt = await createCourt(apiContext, {
-    courtName: prefixes.noEnquiriesCourt,
-    serviceCenter: false,
-    open: true,
-    withEnquiriesContact: false,
-  });
-
-  return {
-    apiContext,
-    defaultCourt,
-    warningNoticeCourt,
-    translationCourt,
-    noTranslationCourt,
-    noEnquiriesCourt,
-    cleanup,
-  };
+    return {
+      apiContext,
+      defaultCourt,
+      warningNoticeCourt,
+      translationCourt,
+      noTranslationCourt,
+      noEnquiriesCourt,
+      cleanup,
+    };
+  } catch (error) {
+    await cleanup();
+    throw error;
+  }
 }
