@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 
 import cy_i18n from '../../../main/locales/cy/prefix-search.json';
 import en_i18n from '../../../main/locales/en/prefix-search.json';
-import { CourtTestData, createCourtTestData } from '../helpers/courtTestData';
+import { CourtTestData, FUNCTIONAL_TEST_RUN_PREFIX, createCourtTestData } from '../helpers/courtTestData';
 import { PrefixSearchPage } from '../page-objects/PrefixSearchPage';
 
 test.describe('Prefix Search Page', () => {
@@ -57,7 +57,7 @@ test.describe('Prefix Search Page', () => {
         test.skip(true, 'DATA_API_URL not set, cannot run test requiring test data');
       }
       const prefixSearchPage = new PrefixSearchPage(page);
-      await prefixSearchPage.goto('en', 'P');
+      await prefixSearchPage.goto('en', FUNCTIONAL_TEST_RUN_PREFIX.charAt(0));
 
       const courts = [
         courtData.defaultCourt,

@@ -6,14 +6,16 @@ import { CourtTestData, createCourtTestData } from '../helpers/courtTestData';
 import { PostcodeSearchPage } from '../page-objects/PostcodeSearchPage';
 
 test.describe('Postcode Search Page', () => {
-  let courtData: CourtTestData;
+  let courtData!: CourtTestData;
 
   test.beforeAll(async ({ playwright }) => {
     courtData = await createCourtTestData(playwright, 'postcode-search');
   });
 
   test.afterAll(async () => {
-    await courtData.cleanup();
+    if (courtData) {
+      await courtData.cleanup();
+    }
   });
 
   test('should render the postcode search page (no service search)', async ({ page }) => {

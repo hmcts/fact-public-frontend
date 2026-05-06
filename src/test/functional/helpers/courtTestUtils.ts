@@ -10,6 +10,15 @@ export function generateRandomString(): string {
   return result;
 }
 
+export function generateUppercaseRandomString(length = 4): string {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let result = '';
+  for (let index = 0; index < length; index += 1) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return result;
+}
+
 export function hasText(value: string | null | undefined): value is string {
   return Boolean(value && value.trim());
 }
