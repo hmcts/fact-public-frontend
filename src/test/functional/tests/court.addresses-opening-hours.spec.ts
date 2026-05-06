@@ -15,14 +15,16 @@ const SECTION_HEADINGS = {
 } as const;
 
 test.describe('Court Page Addresses And Opening Hours', () => {
-  let courtData: CourtTestData;
+  let courtData!: CourtTestData;
 
   test.beforeAll(async ({ playwright }) => {
     courtData = await createCourtTestData(playwright, 'Addresses');
   });
 
   test.afterAll(async () => {
-    await courtData.cleanup();
+    if (courtData) {
+      await courtData.cleanup();
+    }
   });
 
   test('should verify "Address" section content', async ({ page }) => {

@@ -7,14 +7,16 @@ import { CourtPage } from '../page-objects/CourtPage';
 import { HomePage } from '../page-objects/HomePage';
 
 test.describe('Court Page Core', () => {
-  let courtData: CourtTestData;
+  let courtData!: CourtTestData;
 
   test.beforeAll(async ({ playwright }) => {
     courtData = await createCourtTestData(playwright, 'Core');
   });
 
   test.afterAll(async () => {
-    await courtData.cleanup();
+    if (courtData) {
+      await courtData.cleanup();
+    }
   });
 
   test('should display the dynamically created court', async ({ page }) => {

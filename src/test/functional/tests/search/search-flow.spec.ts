@@ -5,7 +5,7 @@ import { CourtPage } from '../../page-objects/CourtPage';
 import { SearchFlowPage } from '../../page-objects/SearchFlowPage';
 
 test.describe('Search Journey - Know Name', () => {
-  let courtData: CourtTestData;
+  let courtData!: CourtTestData;
   let createdCourtQuery: string;
 
   test.beforeAll(async ({ playwright }) => {
@@ -14,7 +14,9 @@ test.describe('Search Journey - Know Name', () => {
   });
 
   test.afterAll(async () => {
-    await courtData.cleanup();
+    if (courtData) {
+      await courtData.cleanup();
+    }
   });
 
   test('should go from start -> yes -> search by name -> show results (english)', async ({ page }) => {
