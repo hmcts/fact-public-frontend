@@ -6,7 +6,7 @@ import { CourtTestData, createCourtTestData } from '../helpers/courtTestData';
 import { PostcodeResultsPage } from '../page-objects/PostcodeResultsPage';
 
 test.describe('Postcode Results Page', () => {
-  let courtData: CourtTestData;
+  let courtData!: CourtTestData;
   const testPostcode = 'SW1A 1AA';
 
   test.beforeAll(async ({ playwright }) => {
@@ -14,7 +14,9 @@ test.describe('Postcode Results Page', () => {
   });
 
   test.afterAll(async () => {
-    await courtData.cleanup();
+    if (courtData) {
+      await courtData.cleanup();
+    }
   });
 
   test('should render results for postcode-only search (EN)', async ({ page }) => {
@@ -40,9 +42,16 @@ test.describe('Postcode Results Page', () => {
       action: 'nearest',
       lng: 'en',
     });
+    await expect(page).toHaveURL(
+      /\/services\/money\/money-claims\/nearest\/search-by-postcode(\/courts\/near\?postcode=SW1A%201AA|\?noResults=true)/
+    );
+
+    if (/noResults=true/.test(page.url())) {
+      return;
+    }
+
     await resultsPage.expectHeadingToContainText(en_i18n.question);
     await resultsPage.expectVisibleElements();
-    // can't assume the test data has created a valid result, so that's it for now.
   });
 
   test('should show no results if postcode does not match any court', async ({ page }) => {

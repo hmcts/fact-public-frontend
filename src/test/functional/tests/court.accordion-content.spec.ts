@@ -49,14 +49,16 @@ type ContactWithNames = {
 };
 
 test.describe('Court Page Accordion Content', () => {
-  let courtData: CourtTestData;
+  let courtData!: CourtTestData;
 
   test.beforeAll(async ({ playwright }) => {
     courtData = await createCourtTestData(playwright, 'Accordion');
   });
 
   test.afterAll(async () => {
-    await courtData.cleanup();
+    if (courtData) {
+      await courtData.cleanup();
+    }
   });
 
   test('should verify "Useful Information" section content', async ({ page }) => {
