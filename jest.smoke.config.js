@@ -4,7 +4,7 @@ module.exports = {
   testEnvironment: 'node',
   testRunner: 'jest-circus/runner',
   transform: {
-    '^.+\\.(ts?)$': 'ts-jest',
+    '^.+\\.(ts?)$': ['ts-jest', { tsconfig: 'tsconfig.jest.json' }],
     '^.+\\.(js?)$': 'babel-jest',
   },
   transformIgnorePatterns: ['/node_modules/(?!uuid)/'],

@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "outDir": "./src/",
+    "rootDir": ".",
     "module": "commonjs",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -11,6 +12,7 @@
     "moduleResolution": "node",
     "noUnusedLocals": true,
     "experimentalDecorators": true,
+    "ignoreDeprecations": "6.0",
     "skipLibCheck": true,
     "lib": ["es2020", "dom", "dom.iterable"],
     "baseUrl": "src/main"
