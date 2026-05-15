@@ -4,7 +4,35 @@ import { type SinonSandbox, createSandbox } from 'sinon';
 
 import { DataApiRequests } from '../../../main/requests/DataApiRequests';
 import { dataApi } from '../../../main/requests/utils/axiosConfig';
-import { courtSchema, courtSearchResultSchema } from '../../../main/schemas/courtSchema';
+import { courtSchema } from '../../../main/schemas/courtSchema';
+
+const validCourt = {
+  id: 'a',
+  name: 'A Court',
+  slug: 'a-court',
+  open: true,
+  warningNotice: null,
+  lastUpdatedAt: '2026-05-15',
+  openOnCath: null,
+  mrdId: null,
+  region: {
+    name: 'London',
+    country: 'England',
+  },
+  courtDxCodes: [],
+  courtCodes: [],
+  courtFaxNumbers: [],
+  courtAddresses: [],
+  courtOpeningHours: [],
+  courtCounterServiceOpeningHours: [],
+  courtContactDetails: [],
+  courtTranslations: [],
+  courtAccessibilityOptions: [],
+  courtFacilities: [],
+  courtProfessionalInformation: [],
+  courtAreasOfLaw: [],
+  courtPhotos: [],
+};
 
 describe('DataApiRequests', () => {
   let sandbox: SinonSandbox;
@@ -91,14 +119,11 @@ describe('DataApiRequests', () => {
 
   describe('getAll', () => {
     it('returns parsed courts array on success', async () => {
-      const payload = [{ raw: 'court-a' }];
-      const parsedCourts = [{ id: 'a' }];
-      const arrayParseStub = sandbox.stub().withArgs(payload).returns(parsedCourts);
+      const payload = [validCourt];
 
       sandbox.stub(dataApi, 'get').withArgs('courts/all.json').resolves({ data: payload });
-      sandbox.stub(courtSchema, 'array').returns({ parse: arrayParseStub } as never);
 
-      await expect(requests.getAll()).resolves.toBe(parsedCourts);
+      await expect(requests.getAll()).resolves.toEqual(payload);
     });
 
     it('returns API status code for axios errors with response status', async () => {
@@ -130,18 +155,15 @@ describe('DataApiRequests', () => {
 
   describe('getByName', () => {
     it('returns parsed search results on success', async () => {
-      const payload = [{ raw: 'court-search-result' }];
-      const parsedResults = [{ name: 'Blackburn Family Court', slug: 'blackburn-family-court' }];
-      const arrayParseStub = sandbox.stub().withArgs(payload).returns(parsedResults);
+      const payload = [{ name: 'Blackburn Family Court', slug: 'blackburn-family-court' }];
       const query = 'Blackburn';
 
       sandbox
         .stub(dataApi, 'get')
         .withArgs('search/courts/v1/name', { params: { q: query } })
         .resolves({ data: payload });
-      sandbox.stub(courtSearchResultSchema, 'array').returns({ parse: arrayParseStub } as never);
 
-      await expect(requests.getByName(query)).resolves.toBe(parsedResults);
+      await expect(requests.getByName(query)).resolves.toEqual(payload);
     });
 
     it('returns API status code for axios errors with response status', async () => {
