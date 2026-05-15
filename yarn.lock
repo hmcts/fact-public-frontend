@@ -1982,10 +1982,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/js@npm:9.39.4, @eslint/js@npm:^9.39.4":
+"@eslint/js@npm:9.39.4":
   version: 9.39.4
   resolution: "@eslint/js@npm:9.39.4"
   checksum: 10/0a7ab4c4108cf2cadf66849ebd20f5957cc53052b88d8807d0b54e489dbf6ffcaf741e144e7f9b187c395499ce2e6ddc565dbfa4f60c6df455cf2b30bcbdc5a3
+  languageName: node
+  linkType: hard
+
+"@eslint/js@npm:^10.0.1":
+  version: 10.0.1
+  resolution: "@eslint/js@npm:10.0.1"
+  peerDependencies:
+    eslint: ^10.0.0
+  peerDependenciesMeta:
+    eslint:
+      optional: true
+  checksum: 10/27ff77b8f0aab350b2f7a69d974eabb816bb9f4cab986b1538782269d6bfdc29e351803fa7a62c22c0b786341324f1a28b86bc83956ddfa189aa6bead1a87758
   languageName: node
   linkType: hard
 
@@ -3879,15 +3891,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/config@npm:4.4.0":
-  version: 4.4.0
-  resolution: "@types/config@npm:4.4.0"
-  dependencies:
-    config: "npm:*"
-  checksum: 10/2b5aaf0684516f63d0c96b6fe709a1164cd39994d015c9139c25d1241e4607adcabe00288ca4ec1951d91554d35b27015cd4ca7792bd55caf99c1bc5269a4102
-  languageName: node
-  linkType: hard
-
 "@types/connect@npm:*":
   version: 3.4.38
   resolution: "@types/connect@npm:3.4.38"
@@ -4163,12 +4166,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/sinon@npm:^17.0.4":
-  version: 17.0.4
-  resolution: "@types/sinon@npm:17.0.4"
+"@types/sinon@npm:^21.0.1":
+  version: 21.0.1
+  resolution: "@types/sinon@npm:21.0.1"
   dependencies:
     "@types/sinonjs__fake-timers": "npm:*"
-  checksum: 10/286c34e66e3573673ba59a332ac81189e20dd591c5c5360c8ff3ed83a59a60bdb1d4c8f13ab8863a4d5ce636282e4b11c640b87f398663eee152988ca09b1933
+  checksum: 10/3d38f217d0ced85b1c1117278de19d0eb40baa80eb708e42bf0d8d7992f2e95d227292b1cbbce6b0d93172718c84e6c2c115cd9d95313ba4f78a631efe006738
   languageName: node
   linkType: hard
 
@@ -4198,13 +4201,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/supertest@npm:^6.0.3":
-  version: 6.0.3
-  resolution: "@types/supertest@npm:6.0.3"
+"@types/supertest@npm:^7.2.0":
+  version: 7.2.0
+  resolution: "@types/supertest@npm:7.2.0"
   dependencies:
     "@types/methods": "npm:^1.1.4"
     "@types/superagent": "npm:^8.1.0"
-  checksum: 10/6ec05eb591c97bc856b0e78c12f5bec10545f3a749688f34232d189797a506d971bc95931718eb57b378d8513f6d2d12462383e6d68455fa72df35c19de6e89e
+  checksum: 10/5a322e29b81033e90ac50ab315d49559b21809ee39b5681ab7386819463e30d68e29c63c946023a1c353e7f13fb3f20d64dcb89d3d8a0fff569450501aff786c
   languageName: node
   linkType: hard
 
@@ -5209,31 +5212,30 @@ __metadata:
   languageName: node
   linkType: hard
 
-"awilix-express@npm:9.0.2":
-  version: 9.0.2
-  resolution: "awilix-express@npm:9.0.2"
+"awilix-express@npm:11.0.1":
+  version: 11.0.1
+  resolution: "awilix-express@npm:11.0.1"
   dependencies:
-    awilix-router-core: "npm:^2.1.0"
-    tslib: "npm:^2.8.1"
-  checksum: 10/872333b55e1f35f40c076db4c25d18540a6fb15d11aa964e0c97b67ab61a66c916eaa7cab423ebcd507b8dea6a00b97d2094d3e9449bbc338c44902525807f40
+    awilix-router-core: "npm:^4.0.0"
+  checksum: 10/b9695b87430cbc94f6639b7209d0e22fcd14d0b1113a7b3938ecefc09b18fe24ea6f9ca55e65c565f64dbc642a3725fd8673dee59570b055a35207e560ba92d6
   languageName: node
   linkType: hard
 
-"awilix-router-core@npm:^2.1.0":
-  version: 2.1.2
-  resolution: "awilix-router-core@npm:2.1.2"
+"awilix-router-core@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "awilix-router-core@npm:4.0.0"
   dependencies:
     fast-glob: "npm:^3.3.3"
-  checksum: 10/a7049550a01bd4490f14a7b5a9704f82d78988bf572f7699006faeb2c96e3754339be314296b4d64558e532bbeb7ad778af077a47830655eebc95ccb8f6c9e6c
+  checksum: 10/dea10cb8a1127e20b8b829b24700d6da2e571afaf2c92210fb71f0cd4ecafe056e1e9e04bf859efdc187eca092a9757a78dad230e2fd3f60be9ae6b4b879549c
   languageName: node
   linkType: hard
 
-"awilix@npm:12.1.1":
-  version: 12.1.1
-  resolution: "awilix@npm:12.1.1"
+"awilix@npm:13.0.3":
+  version: 13.0.3
+  resolution: "awilix@npm:13.0.3"
   dependencies:
     fast-glob: "npm:^3.3.3"
-  checksum: 10/612b6bdb7557a0ca31517b0c480414688db1d0b6d537d5f2f5ee2fd4274b8f14b746a4aad76ac9f07fb0fd730d6b322efe4b81a3ac803d7b3e632520b89e1026
+  checksum: 10/f24968b30771c8abe40dd055b79c1a04b9f5cb0a517aeb6f654cf480ba9388522bd5057d023f6f53aa46ac9f3c828bbe110b8bc6316eb797b3377734df51c095
   languageName: node
   linkType: hard
 
@@ -5898,7 +5900,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"config@npm:*, config@npm:4.4.1":
+"config@npm:4.4.1":
   version: 4.4.1
   resolution: "config@npm:4.4.1"
   dependencies:
@@ -7076,7 +7078,7 @@ __metadata:
     "@babel/preset-typescript": "npm:^7.28.5"
     "@eslint/compat": "npm:^2.1.0"
     "@eslint/eslintrc": "npm:^3.3.5"
-    "@eslint/js": "npm:^9.39.4"
+    "@eslint/js": "npm:^10.0.1"
     "@hmcts/cookie-manager": "npm:^1.1.0"
     "@hmcts/info-provider": "npm:^1.4.0"
     "@hmcts/nodejs-healthcheck": "npm:1.8.6"
@@ -7085,7 +7087,6 @@ __metadata:
     "@playwright/test": "npm:1.60.0"
     "@types/babel__preset-env": "npm:^7.10.0"
     "@types/chai": "npm:^5.2.3"
-    "@types/config": "npm:4.4.0"
     "@types/cookie-parser": "npm:1.4.10"
     "@types/express": "npm:5.0.6"
     "@types/express-session": "npm:^1.19.0"
@@ -7094,14 +7095,14 @@ __metadata:
     "@types/node": "npm:^22.19.19"
     "@types/nunjucks": "npm:3.2.6"
     "@types/require-directory": "npm:^2.1.7"
-    "@types/sinon": "npm:^17.0.4"
-    "@types/supertest": "npm:^6.0.3"
+    "@types/sinon": "npm:^21.0.1"
+    "@types/supertest": "npm:^7.2.0"
     "@typescript-eslint/eslint-plugin": "npm:^8.59.3"
     "@typescript-eslint/parser": "npm:^8.59.3"
     applicationinsights: "npm:3.15.0"
     async-mutex: "npm:^0.5.0"
-    awilix: "npm:12.1.1"
-    awilix-express: "npm:9.0.2"
+    awilix: "npm:13.0.3"
+    awilix-express: "npm:11.0.1"
     axios: "npm:1.16.1"
     babel-jest: "npm:^30.3.0"
     babel-loader: "npm:^10.0.0"
