@@ -3,6 +3,7 @@
 {% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
 {% from "govuk/components/service-navigation/macro.njk" import govukServiceNavigation %}
 {% from "govuk/components/cookie-banner/macro.njk" import govukCookieBanner %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 
 {% block pageTitle %}{{ pageTitle }}{% endblock %}
 
@@ -108,6 +109,7 @@
     },
     html: feedback + languageToggle
   }) }}
+  <a href="/" class="govuk-back-link" onclick="goBack(event);">{{ backLink }}</a>
 {% endblock %}
 
 
@@ -120,6 +122,12 @@
 {% endblock %}
 
 {% block bodyEnd %}
+  <script>
+  function goBack(e) {
+    e.preventDefault();
+    history.go(-1);
+  }
+  </script>
   {# Run JavaScript at end of the <body>, to avoid blocking the initial render. #}
   {% include "webpack/js.njk" %}
 {% endblock %}

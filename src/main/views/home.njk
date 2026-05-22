@@ -2,6 +2,15 @@
 
 {% extends "template.njk" %}
 
+{% block beforeContent %}
+  {{ govukPhaseBanner({
+    tag: {
+      text: "beta"
+    },
+    html: feedback + languageToggle
+  }) }}
+{% endblock %}
+
 {% block content %}
 
   <div class="govuk-grid-row">
