@@ -109,7 +109,9 @@
     },
     html: feedback + languageToggle
   }) }}
-  {{ goBack(text = backLink, cspNonce = cspNonce) }}
+  {% if not hideBackLink %}
+    {{ goBack(text = backLink, cspNonce = cspNonce) }}
+  {% endif %}
 {% endblock %}
 
 

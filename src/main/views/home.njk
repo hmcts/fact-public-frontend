@@ -2,14 +2,7 @@
 
 {% extends "template.njk" %}
 
-{% block beforeContent %}
-  {{ govukPhaseBanner({
-    tag: {
-      text: "beta"
-    },
-    html: feedback + languageToggle
-  }) }}
-{% endblock %}
+{% set hideBackLink = true %}
 
 {% block content %}
 

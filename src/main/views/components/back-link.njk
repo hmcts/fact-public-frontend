@@ -1,7 +1,7 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 
-{% macro goBack(path = '#', text = 'Back', id = '', ariaLabel = 'Back Button', cspNonce) %}
-  <nav class="govuk-back-link-wrapper" aria-label="Back">
+{% macro goBack(path = '#', text = 'Back', ariaLabel = 'Back', cspNonce) %}
+  <nav class="govuk-back-link-wrapper" aria-label=ariaLabel>
     {{ govukBackLink({
       text: text,
       href: path
