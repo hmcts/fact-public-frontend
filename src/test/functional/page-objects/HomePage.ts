@@ -10,6 +10,7 @@ export class HomePage extends Base {
   private readonly mainContent = this.page.locator('#main-content');
   private readonly footer = this.page.locator('footer');
   private readonly heading = this.page.locator('h1.govuk-heading-xl');
+  private readonly backLink = this.page.locator('a.govuk-back-link');
 
   async goto(lng?: string): Promise<void> {
     if (lng) {
@@ -39,5 +40,9 @@ export class HomePage extends Base {
 
   async expectMainContentToBePopulated(): Promise<void> {
     await expect(this.mainContent).toContainText(/\w+/);
+  }
+
+  async expectBackLinkNotVisible(): Promise<void> {
+    await expect(this.backLink).not.toBeVisible();
   }
 }
