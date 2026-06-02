@@ -6764,14 +6764,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-playwright@npm:2.10.2":
-  version: 2.10.2
-  resolution: "eslint-plugin-playwright@npm:2.10.2"
+"eslint-plugin-playwright@npm:2.10.4":
+  version: 2.10.4
+  resolution: "eslint-plugin-playwright@npm:2.10.4"
   dependencies:
     globals: "npm:^17.3.0"
   peerDependencies:
     eslint: ">=8.40.0"
-  checksum: 10/513f4a97cc5331d7a23d27db19e76e4069eaf214fe757871d58c1c47f760f6408d5ed3fb9de01204284fc773f6b3ea1084303c68f6ae1c88b96bafb8c73c3524
+  checksum: 10/1857729c808531fe010fc66c37228b21be327b278380fc02b02e53b137fe1bbb911f15a9ea1592340b9809498a8f899d6066aafbffb54bccb962ca7967b6dd29
   languageName: node
   linkType: hard
 
@@ -7134,7 +7134,7 @@ __metadata:
     eslint-config-prettier: "npm:10.1.8"
     eslint-plugin-import: "npm:2.32.0"
     eslint-plugin-jest: "npm:29.15.2"
-    eslint-plugin-playwright: "npm:2.10.2"
+    eslint-plugin-playwright: "npm:2.10.4"
     express: "npm:5.2.1"
     express-rate-limit: "npm:8.5.2"
     express-session: "npm:1.19.0"
