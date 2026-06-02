@@ -8,5 +8,6 @@ describe('Home page', () => {
   test('renders home content', () => {
     const html = env.render('home.njk', i18n);
     expect(html).toContain(i18n.pageTitle);
+    expect(html).not.toContain('govuk-back-link');
   });
 });

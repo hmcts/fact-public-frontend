@@ -17,6 +17,7 @@ describe('ChooseAction View', () => {
     expect(html).toContain(i18n.button);
     expect(html).toContain('govuk-radios');
     expect(html).toContain('govuk-button');
+    expect(html).toContain('govuk-back-link');
   });
 
   test('renders the choose-action page with correct Welsh content', () => {
@@ -30,5 +31,6 @@ describe('ChooseAction View', () => {
     expect(html).toContain(welshI18n.button);
     expect(html).toContain('govuk-radios');
     expect(html).toContain('govuk-button');
+    expect(html).toContain('govuk-back-link');
   });
 });
