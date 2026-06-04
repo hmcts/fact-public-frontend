@@ -16,8 +16,6 @@ const SECTION_HEADINGS = {
   accessibilityCy: 'Hygyrchedd',
   buildingFacilities: 'Building facilities',
   professionals: 'Information for professionals',
-  complaintEn: 'Make a complaint',
-  complaintCy: 'Gwneud cwyn',
 } as const;
 
 const ACCORDION_SECTIONS = [
@@ -27,7 +25,6 @@ const ACCORDION_SECTIONS = [
   SECTION_HEADINGS.accessibilityEn,
   SECTION_HEADINGS.buildingFacilities,
   SECTION_HEADINGS.professionals,
-  SECTION_HEADINGS.complaintEn,
 ] as const;
 
 const LINKS = {
@@ -35,7 +32,6 @@ const LINKS = {
   usefulInfoCourtTribunal: 'https://www.gov.uk/guidance/what-to-expect-coming-to-a-court-or-tribunal',
   usefulInfoHearings: 'https://www.court-tribunal-hearings.service.gov.uk/',
   usefulInfoScams: 'https://www.gov.uk/government/news/scammers-using-hmcts-telephone-numbers',
-  complaint: 'https://www.gov.uk/government/organisations/hm-courts-and-tribunals-service/about/complaints-procedure',
 } as const;
 
 type ContactWithOptionalNames = {
@@ -790,42 +786,5 @@ test.describe('Court Page Accordion Content', () => {
           : 'This location does not participate in this scheme.'
       );
     }
-  });
-
-  test('should verify "Make a complaint" section content', async ({ page }) => {
-    const courtPage = new CourtPage(page);
-    await courtPage.goto(courtData.defaultCourt.slug);
-    await courtPage.expandAccordionSection(SECTION_HEADINGS.complaintEn);
-    await courtPage.expectAccordionSectionContent(SECTION_HEADINGS.complaintEn, 'Contact us to make a complaint');
-  });
-
-  test('should verify "Make a complaint" section link', async ({ page }) => {
-    const courtPage = new CourtPage(page);
-    await courtPage.goto(courtData.defaultCourt.slug);
-    await courtPage.expandAccordionSection(SECTION_HEADINGS.complaintEn);
-    await courtPage.expectAccordionSectionLinkToHaveAttributes(
-      SECTION_HEADINGS.complaintEn,
-      'Contact us to make a complaint (opens in a new tab)',
-      {
-        href: LINKS.complaint,
-        target: '_blank',
-        rel: 'noreferrer noopener',
-      }
-    );
-  });
-
-  test('should verify "Make a complaint" section link in Welsh', async ({ page }) => {
-    const courtPage = new CourtPage(page);
-    await courtPage.goto(courtData.defaultCourt.slug, 'cy');
-    await courtPage.expandAccordionSection(SECTION_HEADINGS.complaintCy);
-    await courtPage.expectAccordionSectionLinkToHaveAttributes(
-      SECTION_HEADINGS.complaintCy,
-      'Cysylltu â ni i wneud cwyn (yn agor mewn tab newydd)',
-      {
-        href: LINKS.complaint,
-        target: '_blank',
-        rel: 'noreferrer noopener',
-      }
-    );
   });
 });
