@@ -12,18 +12,6 @@
 {% from "components/accessibility.njk" import accessibility as renderAccessibility %}
 {% from "components/building-facilities.njk" import buildingFacilities as renderBuildingFacilities %}
 
-{% set makeAComplaintHtml %}
-  <p class="govuk-body">
-    <a href="{{ accordion.makeAComplaintUrl }}"
-       class="govuk-link govuk-link--no-visited-state"
-       rel="noreferrer noopener"
-       target="_blank">
-      {{ accordion.makeAComplaintUrlText }}
-      {{ accordion.opensInNewTab }}
-    </a>
-  </p>
-{% endset %}
-
 {% set translationHtml %}
   {{ renderTranslationInterpretation(court.courtTranslations, translationAndInterpretation) }}
 {% endset %}
@@ -120,11 +108,6 @@
             heading: { text: accordion.informationForProfessionalsHeading },
             expanded: false,
             content: { html: informationForProfessionalsHtml }
-          },
-          {
-            heading: { text: accordion.makeAComplaintHeading },
-            expanded: false,
-            content: { html: makeAComplaintHtml }
           }
         ]
       }) }}
