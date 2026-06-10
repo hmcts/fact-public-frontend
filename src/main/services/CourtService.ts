@@ -177,7 +177,10 @@ export class CourtService {
   /**
    * Groups opening hour entries by their type name.
    */
-  private groupOpeningHoursByType(openingHours: Court['courtOpeningHours'], language: string): Map<string, OpeningHourEntry[]> {
+  private groupOpeningHoursByType(
+    openingHours: Court['courtOpeningHours'],
+    language: string
+  ): Map<string, OpeningHourEntry[]> {
     const byType = new Map<string, OpeningHourEntry[]>();
 
     for (const entry of openingHours) {
