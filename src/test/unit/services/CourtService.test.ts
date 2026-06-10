@@ -344,4 +344,52 @@ describe('CourtService', () => {
     expect(address.formattedAddressTags).toEqual(['Civil', 'Crown']);
     expect(address.directionsUrl).toBe('https://www.google.com/maps?q=51.5,-0.1');
   });
+
+  test('returns Welsh opening hour type name when language is cy', () => {
+    const service = new CourtService();
+    const court: Court = {
+      ...baseCourt,
+      courtOpeningHours: [
+        {
+          openingHourType: {
+            name: 'Crown Court open',
+            nameCy: 'Llys y Goron ar agor',
+          },
+          openingTimesDetails: [
+            {
+              dayOfWeek: 'MONDAY',
+              openingTime: '09:00',
+              closingTime: '17:00',
+            },
+          ],
+        },
+      ],
+    };
+    const viewModel = service.formatData(court, 'cy');
+    expect(viewModel.openingHoursByType[0].typeName).toBe('Llys y Goron ar agor');
+  });
+
+  test('returns English opening hour type name when language is en', () => {
+    const service = new CourtService();
+    const court: Court = {
+      ...baseCourt,
+      courtOpeningHours: [
+        {
+          openingHourType: {
+            name: 'Crown Court open',
+            nameCy: 'Llys y Goron ar agor',
+          },
+          openingTimesDetails: [
+            {
+              dayOfWeek: 'MONDAY',
+              openingTime: '09:00',
+              closingTime: '17:00',
+            },
+          ],
+        },
+      ],
+    };
+    const viewModel = service.formatData(court, 'en');
+    expect(viewModel.openingHoursByType[0].typeName).toBe('Crown Court open');
+  });
 });
