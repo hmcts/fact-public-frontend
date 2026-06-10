@@ -50,7 +50,7 @@ export class CourtService {
         directionsUrl: this.buildDirectionsUrl(address),
       })),
       courtOpeningHours: this.orderOpeningHours(court.courtOpeningHours),
-      openingHoursByType: this.buildOpeningHoursByType(court.courtOpeningHours),
+      openingHoursByType: this.buildOpeningHoursByType(court.courtOpeningHours, language),
       enquiriesPhoneNumber: this.findEnquiriesPhoneNumber(court.courtContactDetails),
       counterService: this.buildCounterService(court.courtCounterServiceOpeningHours),
     } as CourtViewModel;
@@ -132,8 +132,8 @@ export class CourtService {
   /**
    * Groups opening hours by type, with hours ordered by day of week.
    */
-  private buildOpeningHoursByType(openingHours: Court['courtOpeningHours']): OpeningHourGroup[] {
-    const byType = this.groupOpeningHoursByType(openingHours);
+  private buildOpeningHoursByType(openingHours: Court['courtOpeningHours'], language: string): OpeningHourGroup[] {
+    const byType = this.groupOpeningHoursByType(openingHours, language);
     return this.sortOpeningHourGroups(byType);
   }
 
@@ -177,11 +177,11 @@ export class CourtService {
   /**
    * Groups opening hour entries by their type name.
    */
-  private groupOpeningHoursByType(openingHours: Court['courtOpeningHours']): Map<string, OpeningHourEntry[]> {
+  private groupOpeningHoursByType(openingHours: Court['courtOpeningHours'], language: string): Map<string, OpeningHourEntry[]> {
     const byType = new Map<string, OpeningHourEntry[]>();
 
     for (const entry of openingHours) {
-      const typeName = entry.openingHourType.name;
+      const typeName = language === 'cy' ? entry.openingHourType.nameCy : entry.openingHourType.name;
       const hours = byType.get(typeName) ?? [];
       for (const openingTimeEntry of entry.openingTimesDetails) {
         hours.push({
