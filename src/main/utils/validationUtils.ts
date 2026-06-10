@@ -2,6 +2,7 @@ const ACTIONS = new Set(['nearest', 'documents', 'update', 'not-listed']);
 const SINGLE_LETTER_PREFIX = /^[a-z]$/i;
 
 const VALID_POSTCODE_REGEX = /^[A-Z]{1,2}\d{1,2}[A-Z]? ?\d[A-Z]{2}$/i;
+const POSTCODE_WITHOUT_SPACE_REGEX = /^[A-Z]{1,2}\d{1,2}[A-Z]?\d[A-Z]{2}$/i;
 
 const JURISDICTION_ERROR_REGEXES = {
   scotlandPostcode: /^(ZE|KW|IV|HS|PH|AB|DD|PA|FK|G\d|KY|KA|DG|TD|EH|ML)/i,
@@ -35,6 +36,8 @@ export const checkPostcode = (postcode: string): string | undefined => {
     return 'blankPostcode';
   } else if (!VALID_POSTCODE_REGEX.test(trimmedPostcode)) {
     return 'invalidPostcode';
+  } else if (POSTCODE_WITHOUT_SPACE_REGEX.test(trimmedPostcode)) {
+    return 'missingPostcodeSpace';
   }
 
   // might be in an unhandled jurisdiction
