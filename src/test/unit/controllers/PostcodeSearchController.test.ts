@@ -74,6 +74,17 @@ describe('PostcodeSearchController', () => {
     );
   });
 
+  test('POST: renders missing space error if postcode does not contain a space', async () => {
+    calculateServiceNameFromSlugMock.mockResolvedValue('service');
+    calculateServiceAreaFromSlugMock.mockResolvedValue({ name: 'Area', nameCy: 'Ardal' } as ServiceArea);
+    req.body = { postcode: 'SW1A1AA' };
+    await controller.continue(req as FactRequest, res);
+    expect(res.render).toHaveBeenCalledWith(
+      'postcode-search',
+      expect.objectContaining({ errorType: 'missingPostcodeSpace', error: true })
+    );
+  });
+
   test('POST: redirects to /search-by-postcode/courts/near if no service search', async () => {
     req.body = { postcode: 'SW1A 1AA' };
     req.params = {};

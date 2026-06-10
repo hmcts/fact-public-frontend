@@ -77,6 +77,26 @@ describe('PostcodeSearch View', () => {
     expect(html).toContain(welshI18n.errorText.invalidPostcode);
   });
 
+  test('renders missing postcode space error message (English)', () => {
+    const html = env.render('postcode-search.njk', {
+      ...i18n,
+      serviceAreaLocalised,
+      error: true,
+      errorType: 'missingPostcodeSpace',
+    });
+    expect(html).toContain(i18n.errorText.missingPostcodeSpace);
+  });
+
+  test('renders missing postcode space error message (Welsh)', () => {
+    const html = env.render('postcode-search.njk', {
+      ...welshI18n,
+      serviceAreaLocalised,
+      error: true,
+      errorType: 'missingPostcodeSpace',
+    });
+    expect(html).toContain(welshI18n.errorText.missingPostcodeSpace);
+  });
+
   test('renders childcare hint when serviceAreaIsChildcare is true (English)', () => {
     const html = env.render('postcode-search.njk', {
       ...i18n,
