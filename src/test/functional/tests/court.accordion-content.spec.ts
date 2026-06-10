@@ -669,7 +669,7 @@ test.describe('Court Page Accordion Content', () => {
         await courtPage.expectAccordionSectionContent('Building facilities', 'A quiet room is not available.');
       }
       if (facilities.babyChanging) {
-        await courtPage.expectAccordionSectionContent('Building facilities', 'Baby changing facilities at the court.');
+        await courtPage.expectAccordionSectionContent('Building facilities', 'Baby changing facilities are available.');
       } else {
         await courtPage.expectAccordionSectionContent(
           'Building facilities',
