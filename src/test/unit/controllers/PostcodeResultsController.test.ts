@@ -73,6 +73,14 @@ describe('PostcodeResultsController', () => {
     expect(res.redirect).toHaveBeenCalledWith(expect.stringContaining('/search-by-postcode?error='));
   });
 
+  test('GET: redirects to search page with missing space error if postcode does not contain a space', async () => {
+    req.query = { postcode: 'SW1A1AA' };
+    req.params = {};
+    await controller.get(req as FactRequest, res);
+    expect(res.redirect).toHaveBeenCalledWith('/search-by-postcode?error=missingPostcodeSpace');
+    expect(mockPerformPostcodeOnlySearch).not.toHaveBeenCalled();
+  });
+
   test('GET: redirects to service search page with error if postcode is invalid (with service)', async () => {
     req.query = { postcode: 'bad' };
     await controller.get(req as FactRequest, res);
