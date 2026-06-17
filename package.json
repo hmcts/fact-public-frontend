@@ -45,7 +45,7 @@
     "@types/require-directory": "2.1.7",
     "applicationinsights": "3.15.0",
     "async-mutex": "0.5.0",
-    "awilix": "13.0.3",
+    "awilix": "13.0.5",
     "awilix-express": "11.0.1",
     "axios": "1.17.0",
     "config": "4.4.1",
