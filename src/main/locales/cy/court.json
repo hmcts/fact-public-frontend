@@ -89,7 +89,7 @@
     "liftContactSuffix": "i ddarganfod pa gymorth y gallwch ei gael yn y llys.",
     "liftUnavailableFallback": "Nid oes lifftiau ar gael. Cysylltwch â'r llys i ddarganfod pa gymorth y gallwch ei gael yn y llys.",
     "quietRoomLabel": "Ystafell Dawel",
-    "quietRoomAvailable": "Mae ystafell dawel ar gael i bobl o bob ffydd neu ddim ffydd, ar gyfer gweddio a myfyrio.",
+    "quietRoomAvailable": "Mae ystafell dawel ar gael i bobl pob ffydd neu dim, ar gyfer gweddi, myfyrio neu dawelwch.",
     "quietRoomUnavailable": "Mae ystafell weddïo/ystafell dawel ar gael yn y llys hwn."
   },
   "buildingFacilities": {
@@ -112,7 +112,7 @@
     "waitingAreaChildrenAvailable": "Mae man aros ar wahân ar gael i blant. Rhaid i blant fod dan oruchwyliaeth bob amser. Ni chaniateir i staff y llys oruchwylio plant o dan unrhyw amgylchiadau.",
     "waitingAreasBoth": "Mae ardaloedd aros ar wahân ar gael. Mae man aros ar wahân ar gael i blant. Rhaid i blant fod dan oruchwyliaeth bob amser. Ni chaniateir i staff y llys oruchwylio plant o dan unrhyw amgylchiadau.",
     "quietRoomLabel": "Ystafell Dawel",
-    "quietRoomAvailable": "Mae ystafell dawel ar gael i bobl o bob ffydd neu ddim ffydd, ar gyfer gweddio a myfyrio.",
+    "quietRoomAvailable": "Mae ystafell dawel ar gael i bobl pob ffydd neu dim, ar gyfer gweddi, myfyrio neu dawelwch.",
     "quietRoomUnavailable": "Mae ystafell weddïo/ystafell dawel ar gael yn y llys hwn.",
     "babyChangingLabel": "Cyfleusterau newid cewynnau babanod",
     "babyChangingAvailable": "Mae cyfleusterau newid babanod ar gael. Mae ystafell fwydo ar y fron ar gael ar gais.",
