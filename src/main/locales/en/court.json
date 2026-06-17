@@ -89,7 +89,7 @@
     "liftContactSuffix": "to find out what help you can get at court.",
     "liftUnavailableFallback": "Lifts are not available. Contact the court to find out what help you can get at court.",
     "quietRoomLabel": "Quiet room",
-    "quietRoomAvailable": "A quiet room is available for people of all faiths or none, for prayer and reflection.",
+    "quietRoomAvailable": "A quiet room is available for people of all faiths or none, for prayer, reflection or quiet.",
     "quietRoomUnavailable": "A quiet room is not available."
   },
   "buildingFacilities": {
@@ -112,7 +112,7 @@
     "waitingAreaChildrenAvailable": "A separate children's waiting area is available. Children must be supervised at all times. Court staff are not permitted to supervise children under any circumstances.",
     "waitingAreasBoth": "Separate waiting areas are available. A separate children's waiting area is available. Children must be supervised at all times. Court staff are not permitted to supervise children under any circumstances.",
     "quietRoomLabel": "Quiet room",
-    "quietRoomAvailable": "A quiet room is available for people of all faiths or none, for prayer and reflection.",
+    "quietRoomAvailable": "A quiet room is available for people of all faiths or none, for prayer, reflection or quiet.",
     "quietRoomUnavailable": "A quiet room is not available.",
     "babyChangingLabel": "Baby changing facility",
     "babyChangingAvailable": "Baby changing facilities are available. A breastfeeding room is available on request.",

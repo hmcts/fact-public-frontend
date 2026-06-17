@@ -510,7 +510,7 @@ test.describe('Court Page Accordion Content', () => {
       if (options.quietRoom) {
         await courtPage.expectAccordionSectionContent(
           'Accessibility',
-          'A quiet room is available for people of all faiths or none, for prayer and reflection.'
+          'A quiet room is available for people of all faiths or none, for prayer, reflection or quiet.'
         );
       } else {
         await courtPage.expectAccordionSectionContent('Accessibility', 'A quiet room is not available.');
@@ -663,7 +663,7 @@ test.describe('Court Page Accordion Content', () => {
       if (facilities.quietRoom) {
         await courtPage.expectAccordionSectionContent(
           'Building facilities',
-          'A quiet room is available for people of all faiths or none, for prayer and reflection.'
+          'A quiet room is available for people of all faiths or none, for prayer, reflection or quiet.'
         );
       } else {
         await courtPage.expectAccordionSectionContent('Building facilities', 'A quiet room is not available.');

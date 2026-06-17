@@ -127,8 +127,13 @@
     "**/*.{js,ts}": "eslint --fix"
   },
   "resolutions": {
+    "@grpc/grpc-js": "^1.14.4",
     "protobufjs": "7.6.3",
-    "uuid": "14.0.0"
+    "uuid": "14.0.0",
+    "@opentelemetry/core": "npm:2.8.0",
+    "form-data": "4.0.6",
+    "joi": "18.2.1",
+    "js-yaml": "^4.1.2"
   },
   "packageManager": "yarn@4.16.0"
 }
