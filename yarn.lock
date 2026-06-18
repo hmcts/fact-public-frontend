@@ -5499,12 +5499,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"awilix@npm:13.0.3":
-  version: 13.0.3
-  resolution: "awilix@npm:13.0.3"
+"awilix@npm:13.0.5":
+  version: 13.0.5
+  resolution: "awilix@npm:13.0.5"
   dependencies:
     fast-glob: "npm:^3.3.3"
-  checksum: 10/f24968b30771c8abe40dd055b79c1a04b9f5cb0a517aeb6f654cf480ba9388522bd5057d023f6f53aa46ac9f3c828bbe110b8bc6316eb797b3377734df51c095
+  checksum: 10/6c6fc8a8804918617b7791bc2838f713e6822072431347211081ecc80082ab3054769d48ebc0e62aabc2968078ec7bba5f76b9612f718c8013005cfcc751b74b
   languageName: node
   linkType: hard
 
@@ -7318,7 +7318,7 @@ __metadata:
     "@typescript-eslint/parser": "npm:8.61.0"
     applicationinsights: "npm:3.15.0"
     async-mutex: "npm:0.5.0"
-    awilix: "npm:13.0.3"
+    awilix: "npm:13.0.5"
     awilix-express: "npm:11.0.1"
     axios: "npm:1.17.0"
     babel-jest: "npm:30.4.1"
