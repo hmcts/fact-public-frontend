@@ -31,6 +31,7 @@
   },
   "dependencies": {
     "@azure/identity": "4.13.1",
+    "@grpc/grpc-js": "^1.14.4",
     "@hmcts/cookie-manager": "1.1.0",
     "@hmcts/info-provider": "1.4.0",
     "@hmcts/nodejs-healthcheck": "1.8.6",
@@ -44,7 +45,7 @@
     "@types/require-directory": "2.1.7",
     "applicationinsights": "3.15.0",
     "async-mutex": "0.5.0",
-    "awilix": "13.0.3",
+    "awilix": "13.0.5",
     "awilix-express": "11.0.1",
     "axios": "1.17.0",
     "config": "4.4.1",
@@ -104,7 +105,7 @@
     "mini-css-extract-plugin": "2.10.2",
     "playwright": "1.60.0",
     "playwright-core": "1.60.0",
-    "prettier": "3.8.3",
+    "prettier": "3.8.4",
     "sass": "1.100.0",
     "sass-loader": "16.0.8",
     "sinon": "22.0.0",
@@ -126,8 +127,13 @@
     "**/*.{js,ts}": "eslint --fix"
   },
   "resolutions": {
-    "protobufjs": "7.6.2",
-    "uuid": "14.0.0"
+    "@grpc/grpc-js": "^1.14.4",
+    "protobufjs": "7.6.3",
+    "uuid": "14.0.0",
+    "@opentelemetry/core": "npm:2.8.0",
+    "form-data": "4.0.6",
+    "joi": "18.2.1",
+    "js-yaml": "^4.1.2"
   },
   "packageManager": "yarn@4.16.0"
 }
