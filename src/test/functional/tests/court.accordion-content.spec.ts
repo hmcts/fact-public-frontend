@@ -614,13 +614,10 @@ test.describe('Court Page Accordion Content', () => {
       if (options.quietRoom) {
         await courtPage.expectAccordionSectionContent(
           'Hygyrchedd',
-          'Mae ystafell dawel ar gael i bobl pob ffydd neu dim, ar gyfer gweddi, myfyrio neu dawelwch.'
+          'Mae ystafell dawel ar gael i bobl o bob ffydd neu ddim ffydd, ar gyfer gweddio a myfyrio.'
         );
       } else {
-        await courtPage.expectAccordionSectionContent(
-          'Hygyrchedd',
-          'Mae ystafell weddïo/ystafell dawel ar gael yn y llys hwn.'
-        );
+        await courtPage.expectAccordionSectionContent('Hygyrchedd', 'Nid oes ystafell dawel ar gael.');
       }
     }
   });
