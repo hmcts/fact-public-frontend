@@ -162,7 +162,7 @@
     "dxCode": "Cod DX",
     "faxNumber": "Rhif ffacs",
     "interviewRooms": "Ystafell Gyfweld",
-    "interviewRoomsAvailablePrefix": "Mae yna",
+    "interviewRoomsAvailablePrefix": "Mae",
     "interviewRoomsAvailableSuffix": "ystafell gyfweld ar gael.",
     "interviewRoomsUnavailable": "Nid oes ystafelloedd cyfweld ar gael yn y llys hwn.",
     "interviewRoomsNoBooking": "Nid oes angen i chi eu harchebu.",
