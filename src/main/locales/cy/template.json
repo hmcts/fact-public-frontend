@@ -12,13 +12,19 @@
   "cookieBannerHideButton": "Cuddiwch y neges hon",
   "cookieBannerViewCookies": "Gweld cwcis",
   "cookieBannerAnchor": "Set cookie preferences",
+  "contentLicence": {
+    "html": "Mae’r holl gynnwys ar gael dan y <a class=\"govuk-footer__link\" href=\"https://www.nationalarchives.gov.uk/doc/open-government-licence-cymraeg/version/3/\" rel=\"license\">Drwydded Llywodraeth Agored f.3.0</a>, oni nodir yn wahanol"
+  },
+  "copyright": {
+    "text": "Hawlfraint y Goron"
+  },
   "footerLinks": [
     {
-      "text": "Gymorth",
+      "text": "Cymorth",
       "href": "https://www.gov.uk/help"
     },
     {
-      "text": "Cysylltwch",
+      "text": "Cysylltu",
       "href": "https://www.gov.uk/contact"
     },
     {

@@ -58,7 +58,7 @@ test.describe('Court Page Addresses And Opening Hours', () => {
       for (const address of courtData.defaultCourt.body.courtAddresses as CourtAddress[]) {
         const addressTypeMap = {
           VISIT_US: 'Ewch i',
-          WRITE_TO_US: 'Anfonwch y dogfennau i',
+          WRITE_TO_US: 'Anfonwch ddogfennau i',
           VISIT_OR_CONTACT_US: 'Ewch i ac anfonwch ddogfennau i',
         };
         await courtPage.expectStaticSectionContent(SECTION_HEADINGS.addressCy, addressTypeMap[address.addressType]);

@@ -40,7 +40,7 @@ describe('Building facilities macro', () => {
     expect(html).toContain('Security');
     expect(html).toContain('A quiet room is not available.');
     expect(html).not.toContain(
-      'A quiet room is available for people of all faiths or none, for prayer and reflection.'
+      'A quiet room is available for people of all faiths or none, for prayer, reflection or quiet.'
     );
     expect(html).toContain('Wifi is available.');
     expect(html).not.toContain('No Wifi at the court.');

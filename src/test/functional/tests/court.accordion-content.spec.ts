@@ -510,7 +510,7 @@ test.describe('Court Page Accordion Content', () => {
       if (options.quietRoom) {
         await courtPage.expectAccordionSectionContent(
           'Accessibility',
-          'A quiet room is available for people of all faiths or none, for prayer and reflection.'
+          'A quiet room is available for people of all faiths or none, for prayer, reflection or quiet.'
         );
       } else {
         await courtPage.expectAccordionSectionContent('Accessibility', 'A quiet room is not available.');
@@ -617,10 +617,7 @@ test.describe('Court Page Accordion Content', () => {
           'Mae ystafell dawel ar gael i bobl o bob ffydd neu ddim ffydd, ar gyfer gweddio a myfyrio.'
         );
       } else {
-        await courtPage.expectAccordionSectionContent(
-          'Hygyrchedd',
-          'Mae ystafell weddïo/ystafell dawel ar gael yn y llys hwn.'
-        );
+        await courtPage.expectAccordionSectionContent('Hygyrchedd', 'Nid oes ystafell dawel ar gael.');
       }
     }
   });
@@ -663,13 +660,13 @@ test.describe('Court Page Accordion Content', () => {
       if (facilities.quietRoom) {
         await courtPage.expectAccordionSectionContent(
           'Building facilities',
-          'A quiet room is available for people of all faiths or none, for prayer and reflection.'
+          'A quiet room is available for people of all faiths or none, for prayer, reflection or quiet.'
         );
       } else {
         await courtPage.expectAccordionSectionContent('Building facilities', 'A quiet room is not available.');
       }
       if (facilities.babyChanging) {
-        await courtPage.expectAccordionSectionContent('Building facilities', 'Baby changing facilities at the court.');
+        await courtPage.expectAccordionSectionContent('Building facilities', 'Baby changing facilities are available.');
       } else {
         await courtPage.expectAccordionSectionContent(
           'Building facilities',
