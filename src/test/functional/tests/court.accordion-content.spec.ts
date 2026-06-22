@@ -766,11 +766,21 @@ test.describe('Court Page Accordion Content', () => {
             'They do not need to be booked.'
           );
         }
+      } else {
+        await courtPage.expectAccordionSectionContent(
+          'Information for professionals',
+          'There are no interview rooms available at this court.'
+        );
       }
       if (professionalInformation.videoHearings) {
         await courtPage.expectAccordionSectionContent(
           'Information for professionals',
           'Video hearing facilities are available at the court.'
+        );
+      } else {
+        await courtPage.expectAccordionSectionContent(
+          'Information for professionals',
+          'There are no video hearing facilities at this court.'
         );
       }
       await courtPage.expectAccordionSectionContent(
