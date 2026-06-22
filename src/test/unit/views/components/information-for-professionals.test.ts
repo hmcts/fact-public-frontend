@@ -69,7 +69,10 @@ describe('Information for professionals macro', () => {
     expect(html).toContain(i18n.informationForProfessionals.commonPlatform);
     expect(html).toContain(i18n.informationForProfessionals.accessScheme);
     expect(html).toContain(i18n.informationForProfessionals.schemeNotAvailable);
+    expect(html).toContain(i18n.informationForProfessionals.interviewRooms);
+    expect(html).toContain(i18n.informationForProfessionals.interviewRoomsUnavailable);
+    expect(html).toContain(i18n.informationForProfessionals.videoHearing);
+    expect(html).toContain(i18n.informationForProfessionals.videoHearingUnavailable);
     expect(html).not.toContain(i18n.informationForProfessionals.videoHearingBody);
-    expect(html).not.toContain(i18n.informationForProfessionals.interviewRooms);
   });
 });

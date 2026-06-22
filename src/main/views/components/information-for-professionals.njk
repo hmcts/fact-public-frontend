@@ -61,10 +61,14 @@
         </p>
       {% endset %}
       {% set rows = rows.concat([{ key: { text: text.interviewRooms }, value: { html: interviewRoomsHtml } }]) %}
+    {% elif info %}
+      {% set rows = rows.concat([{ key: { text: text.interviewRooms }, value: { text: text.interviewRoomsUnavailable } }]) %}
     {% endif %}
 
     {% if info and info.videoHearings %}
       {% set rows = rows.concat([{ key: { text: text.videoHearing }, value: { text: text.videoHearingBody } }]) %}
+    {% elif info %}
+      {% set rows = rows.concat([{ key: { text: text.videoHearing }, value: { text: text.videoHearingUnavailable } }]) %}
     {% endif %}
 
     {% if info %}
