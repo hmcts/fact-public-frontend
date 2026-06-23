@@ -111,6 +111,7 @@
     "waitingAreasAvailable": "Separate waiting areas are available.",
     "waitingAreaChildrenAvailable": "A separate children's waiting area is available. Children must be supervised at all times. Court staff are not permitted to supervise children under any circumstances.",
     "waitingAreasBoth": "Separate waiting areas are available. A separate children's waiting area is available. Children must be supervised at all times. Court staff are not permitted to supervise children under any circumstances.",
+    "waitingAreasUnavailable": "Separate waiting areas are not available.",
     "quietRoomLabel": "Quiet room",
     "quietRoomAvailable": "A quiet room is available for people of all faiths or none, for prayer, reflection or quiet.",
     "quietRoomUnavailable": "A quiet room is not available.",

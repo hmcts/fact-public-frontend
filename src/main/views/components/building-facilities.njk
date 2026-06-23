@@ -55,14 +55,12 @@
         {% set rows = rows.concat([{ key: { text: text.foodAndDrinkLabel }, value: { html: foodHtml } }]) %}
       {% endif %}
 
-      {% if options.waitingArea or options.waitingAreaChildren %}
-        {% if options.waitingArea and options.waitingAreaChildren %}
-          {% set rows = rows.concat([{ key: { text: text.waitingAreasLabel }, value: { text: text.waitingAreasBoth } }]) %}
-        {% elseif options.waitingArea %}
-          {% set rows = rows.concat([{ key: { text: text.waitingAreasLabel }, value: { text: text.waitingAreasAvailable } }]) %}
-        {% else %}
-          {% set rows = rows.concat([{ key: { text: text.waitingAreasLabel }, value: { text: text.waitingAreaChildrenAvailable } }]) %}
-        {% endif %}
+      {% if options.waitingArea and options.waitingAreaChildren %}
+        {% set rows = rows.concat([{ key: { text: text.waitingAreasLabel }, value: { text: text.waitingAreasBoth } }]) %}
+      {% elseif options.waitingArea %}
+        {% set rows = rows.concat([{ key: { text: text.waitingAreasLabel }, value: { text: text.waitingAreasAvailable } }]) %}
+       {% else %}
+        {% set rows = rows.concat([{ key: { text: text.waitingAreasLabel }, value: { text: text.waitingAreasUnavailable } }]) %}
       {% endif %}
 
       {% if options.quietRoom %}
