@@ -322,6 +322,24 @@ describe('DataApiRequests', () => {
 
       await expect(requests.getServiceAreaSearchResults('Divorce')).resolves.toEqual(payload);
     });
+
+    it('parses service-centre search results without a catchment type', async () => {
+      const payload = [
+        {
+          id: 'service-area-result-id',
+          serviceCentreId: 'sc-id',
+          serviceCentreName: 'Service Centre',
+          serviceCentreSlug: 'service-centre',
+          serviceAreaIds: [],
+          catchmentType: null,
+          type: SEARCH_RESULT_TYPES.SERVICE_CENTRE,
+        },
+      ];
+
+      sandbox.stub(dataApi, 'get').withArgs('/search/service-area/v1/Divorce').resolves({ data: payload });
+
+      await expect(requests.getServiceAreaSearchResults('Divorce')).resolves.toEqual(payload);
+    });
   });
 
   describe('getCourtServiceAreas', () => {
