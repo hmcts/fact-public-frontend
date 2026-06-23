@@ -74,7 +74,7 @@ describe('Building facilities macro', () => {
     expect(html).toContain(i18n.buildingFacilities.contactFallback);
     expect(html).toContain(i18n.buildingFacilities.parkingUnavailable);
     expect(html).toContain(i18n.buildingFacilities.foodDrink);
-    expect(html).toContain(i18n.buildingFacilities.waitingAreaChildrenAvailable);
+    expect(html).toContain(i18n.buildingFacilities.waitingAreasUnavailable);
     expect(html).toContain(i18n.buildingFacilities.quietRoomAvailable);
     expect(html).toContain(i18n.buildingFacilities.babyChangingUnavailable);
     expect(html).toContain(i18n.buildingFacilities.wifiUnavailable);
