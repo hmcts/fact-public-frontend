@@ -74,11 +74,22 @@ the following command:
 yarn test
 ```
 
-Here's how to run functional tests (the template contains just one sample test):
+Here's how to run functional tests:
 
 ```bash
-yarn test:routes
+yarn test:functional
 ```
+
+Functional and a11y tests create temporary data through the Data API testing-support endpoints.
+Set `DATA_API_URL` to the target data-api host if it is not running on `http://localhost:8989`.
+
+The suites rely on these endpoints:
+
+- `GET /testing-support/courts`
+- `DELETE /testing-support/courts/name-prefix/{courtNamePrefix}`
+- `GET /testing-support/service-centres`
+- `DELETE /testing-support/service-centres/name-prefix/{serviceCentreNamePrefix}`
+- `GET /testing-support/regions`
 
 Running accessibility tests:
 

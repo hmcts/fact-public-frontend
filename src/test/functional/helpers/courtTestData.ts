@@ -1,14 +1,15 @@
-import { APIRequestContext, expect } from '@playwright/test';
+import { APIRequestContext } from '@playwright/test';
 
 import { Court } from '../../../main/schemas/courtSchema';
 
 import { generateRandomString, generateUppercaseRandomString } from './courtTestUtils';
-
-type PlaywrightLike = {
-  request: {
-    newContext: (options: { baseURL: string; extraHTTPHeaders: { Accept: string } }) => Promise<APIRequestContext>;
-  };
-};
+import {
+  CourtCreateParams,
+  PlaywrightLike,
+  createCourt,
+  createTestingSupportContext,
+  deleteCourtsByPrefix,
+} from './testingSupportClient';
 
 type CourtData = {
   name: string;
@@ -28,15 +29,8 @@ export type CourtTestData = {
   cleanup: () => Promise<void>;
 };
 
-async function createCourt(
-  apiContext: APIRequestContext,
-  params: Record<string, string | boolean>
-): Promise<CourtData> {
-  const response = await apiContext.get('/testing-support/courts', { params });
-  const responseBody = (await response.json()) as Court;
-
-  expect(response.ok(), JSON.stringify(responseBody)).toBeTruthy();
-  expect(responseBody.slug).toBeTruthy();
+async function createCourtData(apiContext: APIRequestContext, params: CourtCreateParams): Promise<CourtData> {
+  const responseBody = await createCourt(apiContext, params);
 
   return {
     name: String(params.courtName),
@@ -46,12 +40,7 @@ async function createCourt(
 }
 
 export async function createCourtTestData(playwright: PlaywrightLike, suiteLabel: string): Promise<CourtTestData> {
-  const apiContext = await playwright.request.newContext({
-    baseURL: `${process.env.DATA_API_URL ?? 'http://localhost:8989'}`,
-    extraHTTPHeaders: {
-      Accept: 'application/json',
-    },
-  });
+  const apiContext = await createTestingSupportContext(playwright);
 
   const uniqueSuffix = `${generateRandomString()} ${generateRandomString()}`;
   const prefixes = {
@@ -63,41 +52,36 @@ export async function createCourtTestData(playwright: PlaywrightLike, suiteLabel
   };
 
   const cleanup = async (): Promise<void> => {
-    await apiContext.delete(`/testing-support/courts/name-prefix/${prefixes.defaultCourt}`);
-    await apiContext.delete(`/testing-support/courts/name-prefix/${prefixes.warningNoticeCourt}`);
-    await apiContext.delete(`/testing-support/courts/name-prefix/${prefixes.translationCourt}`);
-    await apiContext.delete(`/testing-support/courts/name-prefix/${prefixes.noTranslationCourt}`);
-    await apiContext.delete(`/testing-support/courts/name-prefix/${prefixes.noEnquiriesCourt}`);
+    await deleteCourtsByPrefix(apiContext, prefixes.defaultCourt);
+    await deleteCourtsByPrefix(apiContext, prefixes.warningNoticeCourt);
+    await deleteCourtsByPrefix(apiContext, prefixes.translationCourt);
+    await deleteCourtsByPrefix(apiContext, prefixes.noTranslationCourt);
+    await deleteCourtsByPrefix(apiContext, prefixes.noEnquiriesCourt);
   };
 
   await cleanup();
   try {
-    const defaultCourt = await createCourt(apiContext, {
+    const defaultCourt = await createCourtData(apiContext, {
       courtName: prefixes.defaultCourt,
-      serviceCenter: false,
       open: true,
     });
-    const warningNoticeCourt = await createCourt(apiContext, {
+    const warningNoticeCourt = await createCourtData(apiContext, {
       courtName: prefixes.warningNoticeCourt,
-      serviceCenter: false,
       open: true,
       addWarningNotice: true,
     });
-    const translationCourt = await createCourt(apiContext, {
+    const translationCourt = await createCourtData(apiContext, {
       courtName: prefixes.translationCourt,
-      serviceCenter: false,
       open: true,
       withTranslations: true,
     });
-    const noTranslationCourt = await createCourt(apiContext, {
+    const noTranslationCourt = await createCourtData(apiContext, {
       courtName: prefixes.noTranslationCourt,
-      serviceCenter: false,
       open: true,
       withTranslations: false,
     });
-    const noEnquiriesCourt = await createCourt(apiContext, {
+    const noEnquiriesCourt = await createCourtData(apiContext, {
       courtName: prefixes.noEnquiriesCourt,
-      serviceCenter: false,
       open: true,
       withEnquiriesContact: false,
     });

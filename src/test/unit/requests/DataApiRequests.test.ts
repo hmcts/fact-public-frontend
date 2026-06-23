@@ -5,6 +5,8 @@ import { type SinonSandbox, createSandbox } from 'sinon';
 import { DataApiRequests } from '../../../main/requests/DataApiRequests';
 import { dataApi } from '../../../main/requests/utils/axiosConfig';
 import { courtSchema } from '../../../main/schemas/courtSchema';
+import { CATCHMENT_TYPES } from '../../../main/schemas/courtServiceAreas';
+import { SEARCH_RESULT_TYPES } from '../../../main/schemas/searchResult';
 
 const validCourt = {
   id: 'a',
@@ -245,6 +247,100 @@ describe('DataApiRequests', () => {
       });
 
       await expect(requests.getCourtsByPrefix(prefix)).resolves.toBe(HttpStatusCode.InternalServerError);
+    });
+  });
+
+  describe('performPostcodeSearch', () => {
+    it('calls the locations endpoint and parses mixed court/service-centre results', async () => {
+      const payload = [
+        {
+          id: 'court-id',
+          name: 'Court A',
+          slug: 'court-a',
+          distance: 1.2,
+          type: SEARCH_RESULT_TYPES.COURT,
+        },
+        {
+          id: 'sc-id',
+          name: 'Service Centre A',
+          slug: 'service-centre-a',
+          distance: 2.3,
+          type: SEARCH_RESULT_TYPES.SERVICE_CENTRE,
+        },
+      ];
+
+      sandbox
+        .stub(dataApi, 'get')
+        .withArgs('/search/locations/v1/postcode', {
+          params: {
+            postcode: 'SW1A 1AA',
+            serviceArea: 'Divorce',
+            action: 'NEAREST',
+          },
+        })
+        .resolves({ data: payload });
+
+      await expect(requests.performPostcodeSearch('SW1A 1AA', 'Divorce', 'nearest')).resolves.toEqual(payload);
+    });
+
+    it('returns API status code when postcode search request fails with axios status', async () => {
+      sandbox
+        .stub(dataApi, 'get')
+        .withArgs('/search/locations/v1/postcode', {
+          params: {
+            postcode: 'SW1A 1AA',
+            serviceArea: 'Divorce',
+            action: 'NEAREST',
+          },
+        })
+        .rejects({
+          isAxiosError: true,
+          response: { status: HttpStatusCode.BadRequest },
+        });
+
+      await expect(requests.performPostcodeSearch('SW1A 1AA', 'Divorce', 'nearest')).resolves.toBe(
+        HttpStatusCode.BadRequest
+      );
+    });
+  });
+
+  describe('getServiceAreaSearchResults', () => {
+    it('returns parsed service-centre search results on success', async () => {
+      const payload = [
+        {
+          id: 'service-area-result-id',
+          serviceCentreId: 'sc-id',
+          serviceCentreName: 'National Service Centre',
+          serviceCentreSlug: 'national-service-centre',
+          serviceAreaIds: ['area-a'],
+          catchmentType: CATCHMENT_TYPES.NATIONAL,
+          type: SEARCH_RESULT_TYPES.SERVICE_CENTRE,
+        },
+      ];
+
+      sandbox.stub(dataApi, 'get').withArgs('/search/service-area/v1/Divorce').resolves({ data: payload });
+
+      await expect(requests.getServiceAreaSearchResults('Divorce')).resolves.toEqual(payload);
+    });
+  });
+
+  describe('getCourtServiceAreas', () => {
+    it('keeps backward compatibility by delegating to service area search results', async () => {
+      const payload = [
+        {
+          id: 'service-area-result-id',
+          serviceCentreId: 'sc-id',
+          serviceCentreName: 'National Service Centre',
+          serviceCentreSlug: 'national-service-centre',
+          serviceAreaIds: ['area-a'],
+          catchmentType: CATCHMENT_TYPES.NATIONAL,
+          type: SEARCH_RESULT_TYPES.SERVICE_CENTRE,
+        },
+      ];
+
+      sandbox.stub(dataApi, 'get').withArgs('/search/service-area/v1/Divorce').resolves({ data: payload });
+
+      await expect(requests.getCourtServiceAreas('Divorce')).resolves.toEqual(payload);
     });
   });
 });

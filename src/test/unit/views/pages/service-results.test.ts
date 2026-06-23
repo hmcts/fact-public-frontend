@@ -7,8 +7,8 @@ describe('ServiceResults View', () => {
   const welshI18n = require('../../../../main/locales/cy/service-results.json');
 
   const baseResults = {
-    courtSlug: 'court-1',
-    courtName: 'Court 1',
+    serviceCentreSlug: 'service-centre-1',
+    serviceCentreName: 'Service Centre 1',
   };
 
   test('renders the page with all main content and result (English)', () => {
@@ -21,7 +21,8 @@ describe('ServiceResults View', () => {
     });
     expect(html).toContain(i18n.title);
     expect(html).toContain(i18n.question);
-    expect(html).toContain('Court 1');
+    expect(html).toContain('Service Centre 1');
+    expect(html).toContain('/service-centres/service-centre-1');
     expect(html).toContain('Apply online');
     expect(html).toContain('https://apply.example.com');
     expect(html).toContain(i18n.applyOnlineHeading);
@@ -39,7 +40,8 @@ describe('ServiceResults View', () => {
     });
     expect(html).toContain(welshI18n.title);
     expect(html).toContain(welshI18n.question);
-    expect(html).toContain('Court 1');
+    expect(html).toContain('Service Centre 1');
+    expect(html).toContain('/service-centres/service-centre-1');
     expect(html).toContain('Gwnewch gais ar-lein');
     expect(html).toContain('https://apply.example.com');
     expect(html).toContain(welshI18n.applyOnlineHeading);
@@ -54,6 +56,17 @@ describe('ServiceResults View', () => {
       hint: i18n.hint.replace('{serviceArea}', 'divorce'),
     });
     expect(html).not.toContain('side-content');
+  });
+
+  test('renders fallback court link when only court fields are present', () => {
+    const html = env.render('service-results.njk', {
+      ...i18n,
+      results: { courtSlug: 'court-1', courtName: 'Court 1' },
+      hint: i18n.hint.replace('{serviceArea}', 'divorce'),
+    });
+
+    expect(html).toContain('/courts/court-1');
+    expect(html).toContain('Court 1');
   });
 
   test('renders correctly with empty results', () => {
