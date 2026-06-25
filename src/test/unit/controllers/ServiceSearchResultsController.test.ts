@@ -4,10 +4,11 @@ import { Response } from 'express';
 import ServiceSearchResultsController from '../../../main/controllers/ServiceSearchResultsController';
 import { FactRequest } from '../../../main/interfaces/FactRequest';
 import { SERVICE_AREA_TYPE, ServiceArea } from '../../../main/schemas/ServiceAreaSchema';
-import { CATCHMENT_TYPES, CourtServiceAreas } from '../../../main/schemas/courtServiceAreas';
+import { CATCHMENT_TYPES, ServiceAreaSearchResult } from '../../../main/schemas/courtServiceAreas';
+import { SEARCH_RESULT_TYPES } from '../../../main/schemas/searchResult';
 
-const mockGetCourtServiceAreas: jest.MockedFunction<
-  (serviceAreaName: string) => Promise<CourtServiceAreas[] | undefined>
+const mockGetServiceAreaSearchResults: jest.MockedFunction<
+  (serviceAreaName: string) => Promise<ServiceAreaSearchResult[] | undefined>
 > = jest.fn();
 const mockCalculateServiceNameFromSlug: jest.MockedFunction<(service: string) => Promise<string>> = jest.fn();
 const mockCalculateServiceAreaFromSlug: jest.MockedFunction<
@@ -17,7 +18,7 @@ const mockCalculateServiceAreaFromSlug: jest.MockedFunction<
 jest.mock('../../../main/requests/DataApiRequests', () => {
   return {
     DataApiRequests: jest.fn().mockImplementation(() => ({
-      getCourtServiceAreas: (serviceAreaName: string) => mockGetCourtServiceAreas(serviceAreaName),
+      getServiceAreaSearchResults: (serviceAreaName: string) => mockGetServiceAreaSearchResults(serviceAreaName),
     })),
   };
 });
@@ -51,23 +52,25 @@ const BASE_SERVICE_AREA: ServiceArea = {
   hasRegional: true,
 };
 
-// Common base CourtServiceAreas mocks for tests
-const BASE_NATIONAL_COURT_SERVICE_AREA: CourtServiceAreas = {
+// Common base service-area search result mocks for tests
+const BASE_NATIONAL_SERVICE_CENTRE_RESULT: ServiceAreaSearchResult = {
   id: 'court-area-id-1',
-  courtId: 'court-id-1',
-  serviceAreaId: ['area-id'],
+  serviceCentreId: 'service-centre-id-1',
+  serviceCentreName: 'National Service Centre',
+  serviceCentreSlug: 'national-service-centre',
+  serviceAreaIds: ['area-id'],
   catchmentType: CATCHMENT_TYPES.NATIONAL,
-  courtName: 'National Court',
-  courtSlug: 'national-court',
+  type: SEARCH_RESULT_TYPES.SERVICE_CENTRE,
 };
 
-const BASE_LOCAL_COURT_SERVICE_AREA: CourtServiceAreas = {
+const BASE_LOCAL_SERVICE_CENTRE_RESULT: ServiceAreaSearchResult = {
   id: 'court-area-id-2',
-  courtId: 'court-id-2',
-  serviceAreaId: ['area-id'],
+  serviceCentreId: 'service-centre-id-2',
+  serviceCentreName: 'Local Service Centre',
+  serviceCentreSlug: 'local-service-centre',
+  serviceAreaIds: ['area-id'],
   catchmentType: CATCHMENT_TYPES.LOCAL,
-  courtName: 'Local Court',
-  courtSlug: 'local-court',
+  type: SEARCH_RESULT_TYPES.SERVICE_CENTRE,
 };
 
 describe('ServiceSearchResultsController', () => {
@@ -88,12 +91,12 @@ describe('ServiceSearchResultsController', () => {
       render: jest.fn(),
       status: jest.fn().mockReturnThis(),
     } as unknown as Response;
-    mockGetCourtServiceAreas.mockReset();
+    mockGetServiceAreaSearchResults.mockReset();
     mockCalculateServiceNameFromSlug.mockReset();
     mockCalculateServiceAreaFromSlug.mockReset();
   });
 
-  test('renders service-results with national catchment court and English hint', async () => {
+  test('renders service-results with national catchment service centre and English hint', async () => {
     mockCalculateServiceNameFromSlug.mockResolvedValue('Test Service');
     mockCalculateServiceAreaFromSlug.mockResolvedValue({
       ...BASE_SERVICE_AREA,
@@ -101,9 +104,9 @@ describe('ServiceSearchResultsController', () => {
       onlineText: 'Online help',
       text: 'Hint for this service area',
     });
-    mockGetCourtServiceAreas.mockResolvedValue([
-      { ...BASE_NATIONAL_COURT_SERVICE_AREA },
-      { ...BASE_LOCAL_COURT_SERVICE_AREA },
+    mockGetServiceAreaSearchResults.mockResolvedValue([
+      { ...BASE_NATIONAL_SERVICE_CENTRE_RESULT },
+      { ...BASE_LOCAL_SERVICE_CENTRE_RESULT },
     ]);
     await new ServiceSearchResultsController().render(req as FactRequest, res);
     expect(res.render).toHaveBeenCalledWith(
@@ -111,7 +114,7 @@ describe('ServiceSearchResultsController', () => {
       expect.objectContaining({
         onlineText: 'Online help',
         onlineUrl: 'http://online',
-        results: expect.objectContaining({ courtName: 'National Court' }),
+        results: expect.objectContaining({ serviceCentreName: 'National Service Centre' }),
         hint: 'Hint for this service area',
       })
     );
@@ -127,7 +130,7 @@ describe('ServiceSearchResultsController', () => {
       text: null,
       textCy: 'Awgrym Cymraeg',
     });
-    mockGetCourtServiceAreas.mockResolvedValue([{ ...BASE_NATIONAL_COURT_SERVICE_AREA }]);
+    mockGetServiceAreaSearchResults.mockResolvedValue([{ ...BASE_NATIONAL_SERVICE_CENTRE_RESULT }]);
     await new ServiceSearchResultsController().render(req as FactRequest, res);
     expect(res.render).toHaveBeenCalledWith(
       'service-results',
@@ -147,7 +150,7 @@ describe('ServiceSearchResultsController', () => {
       text: 'Hint for this service area',
       textCy: null,
     });
-    mockGetCourtServiceAreas.mockResolvedValue([{ ...BASE_NATIONAL_COURT_SERVICE_AREA }]);
+    mockGetServiceAreaSearchResults.mockResolvedValue([{ ...BASE_NATIONAL_SERVICE_CENTRE_RESULT }]);
     (req.i18n!.getDataByLanguage as unknown) = jest.fn().mockReturnValue({
       'service-results': { hint: 'Find a court for {serviceArea}' },
       'not-found': { title: 'Not Found' },
@@ -168,14 +171,14 @@ describe('ServiceSearchResultsController', () => {
     expect(res.render).toHaveBeenCalledWith('not-found', expect.anything());
   });
 
-  test('renders service-results with empty results if getCourtServiceAreas returns non-array', async () => {
+  test('renders service-results with empty results if getServiceAreaSearchResults returns non-array', async () => {
     // current fact simply doesn't set a result in the payload for nunjuks when this happens
     // so that's what we're testing for here
     mockCalculateServiceNameFromSlug.mockResolvedValue('Test Service');
     mockCalculateServiceAreaFromSlug.mockResolvedValue({
       ...BASE_SERVICE_AREA,
     });
-    mockGetCourtServiceAreas.mockResolvedValue(undefined);
+    mockGetServiceAreaSearchResults.mockResolvedValue(undefined);
     await new ServiceSearchResultsController().render(req as FactRequest, res);
     expect(res.render).toHaveBeenCalledWith(
       'service-results',
@@ -190,7 +193,7 @@ describe('ServiceSearchResultsController', () => {
     mockCalculateServiceAreaFromSlug.mockResolvedValue({
       ...BASE_SERVICE_AREA,
     });
-    mockGetCourtServiceAreas.mockResolvedValue([{ ...BASE_LOCAL_COURT_SERVICE_AREA }]);
+    mockGetServiceAreaSearchResults.mockResolvedValue([{ ...BASE_LOCAL_SERVICE_CENTRE_RESULT }]);
     await new ServiceSearchResultsController().render(req as FactRequest, res);
     expect(res.render).toHaveBeenCalledWith(
       'service-results',

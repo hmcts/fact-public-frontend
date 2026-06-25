@@ -5,8 +5,13 @@ import { ServiceArea, serviceAreaSchema } from '../schemas/ServiceAreaSchema';
 import { Service, serviceSchema } from '../schemas/ServiceSchema';
 import { CourtBasic } from '../schemas/courtBasicSchema';
 import { Court, CourtSearchResult, courtSchema, courtSearchResultSchema } from '../schemas/courtSchema';
-import { CourtServiceAreas, courtServiceAreasSchema } from '../schemas/courtServiceAreas';
+import {
+  CourtServiceAreas,
+  ServiceAreaSearchResult,
+  serviceAreaSearchResultSchema,
+} from '../schemas/courtServiceAreas';
 import { CourtWithDistance, courtWithDistanceSchema } from '../schemas/courtWithDistance';
+import { SearchResult, searchResultSchema } from '../schemas/searchResult';
 
 import { dataApi } from './utils/axiosConfig';
 
@@ -128,16 +133,25 @@ export class DataApiRequests {
    *
    * @param serviceAreaName the name of the service area
    */
-  public async getCourtServiceAreas(serviceAreaName: string): Promise<CourtServiceAreas[] | HttpStatusCode> {
+  public async getServiceAreaSearchResults(
+    serviceAreaName: string
+  ): Promise<ServiceAreaSearchResult[] | HttpStatusCode> {
     try {
       const response = await dataApi.get(`/search/service-area/v1/${serviceAreaName}`);
-      return courtServiceAreasSchema.array().parse(response.data);
+      return serviceAreaSearchResultSchema.array().parse(response.data);
     } catch (error: unknown) {
       logger.error('Error fetching court service area details:', error);
       return isAxiosError(error) && error.response?.status
         ? (error.response.status as HttpStatusCode)
         : HttpStatusCode.InternalServerError;
     }
+  }
+
+  /**
+   * Backward-compatible wrapper for older callers still using the previous method name.
+   */
+  public async getCourtServiceAreas(serviceAreaName: string): Promise<CourtServiceAreas[] | HttpStatusCode> {
+    return this.getServiceAreaSearchResults(serviceAreaName);
   }
 
   /**
@@ -151,7 +165,7 @@ export class DataApiRequests {
     postcode: string,
     serviceArea: string,
     action: string
-  ): Promise<CourtWithDistance[] | HttpStatusCode> {
+  ): Promise<SearchResult[] | HttpStatusCode> {
     try {
       const config: AxiosRequestConfig = {
         params: {
@@ -160,8 +174,8 @@ export class DataApiRequests {
           action: action.toUpperCase(),
         },
       };
-      const response = await dataApi.get('/search/courts/v1/postcode', config);
-      return courtWithDistanceSchema.array().parse(response.data);
+      const response = await dataApi.get('/search/locations/v1/postcode', config);
+      return searchResultSchema.array().parse(response.data);
     } catch (error: unknown) {
       logger.error('Error fetching postcode search results:', error);
       return isAxiosError(error) && error.response?.status

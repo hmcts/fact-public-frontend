@@ -3,6 +3,7 @@ import { DateTime } from 'luxon';
 
 import { CourtTestData, FUNCTIONAL_TEST_RUN_PREFIX, createCourtTestData } from '../helpers/courtTestData';
 import { generateRandomString, hasText } from '../helpers/courtTestUtils';
+import { createCourt, deleteCourtsByPrefix } from '../helpers/testingSupportClient';
 import { CourtPage } from '../page-objects/CourtPage';
 import { HomePage } from '../page-objects/HomePage';
 
@@ -123,21 +124,18 @@ test.describe('Court Page Core', () => {
   });
 
   test('Closed-court page is rendered when the retrieved court is closed', async ({ page }) => {
-    const closedCourtResponse = await courtData.apiContext.get('/testing-support/courts', {
-      params: {
-        courtName: `${FUNCTIONAL_TEST_RUN_PREFIX} Core Test Closed Court ${generateRandomString()}`,
-        serviceCenter: false,
-        open: false,
-      },
+    const courtName = `${FUNCTIONAL_TEST_RUN_PREFIX} Core Test Closed Court ${generateRandomString()}`;
+    const closedCourtResponseBody = await createCourt(courtData.apiContext, {
+      courtName,
+      open: false,
     });
-    const closedCourtResponseBody = await closedCourtResponse.json();
     const courtPage = new CourtPage(page);
     await courtPage.goto(closedCourtResponseBody.slug);
     await courtPage.expectHeadingToContainText(closedCourtResponseBody.name);
     await courtPage.expectMainContentToContainText(
       'This court or tribunal is no longer in service. Business has been transferred to other neighbouring courts.'
     );
-    await courtData.apiContext.delete(`/testing-support/courts/name-prefix/${closedCourtResponseBody.name}`);
+    await deleteCourtsByPrefix(courtData.apiContext, courtName);
   });
 
   test('Not found page is rendered when the court does not exist', async ({ page }) => {

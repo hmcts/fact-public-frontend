@@ -115,6 +115,44 @@ describe('PostcodeResults View', () => {
     );
   });
 
+  test('renders service-specific mixed location links for courts and service centres', () => {
+    const html = env.render('postcode-results.njk', {
+      ...i18n,
+      results: {
+        locations: [
+          {
+            id: 'court-id',
+            name: 'Court 1',
+            slug: 'court-1',
+            distance: 12.345,
+            type: 'COURT',
+          },
+          {
+            id: 'service-centre-id',
+            name: 'Service Centre 1',
+            slug: 'service-centre-1',
+            distance: 7.89,
+            type: 'SERVICE_CENTRE',
+          },
+        ],
+      },
+      postcodeOnlySearch: false,
+      postcode: 'AB1 2CD',
+      serviceArea: 'probate',
+      isDivorceOrCivil: false,
+    });
+
+    expect(html).toContain('/courts/court-1');
+    expect(html).toContain('/service-centres/service-centre-1');
+    expect(html).toContain('Service Centre 1');
+    expect(html).toContain(
+      i18n.multipleResultsHint
+        .replace('{postcode}', 'AB1 2CD')
+        .replace('{serviceArea}', 'probate')
+        .replace('{total}', '2')
+    );
+  });
+
   test('renders postcodeSearchResultsHint when postcodeOnlySearch is true', () => {
     const html = env.render('postcode-results.njk', {
       ...i18n,

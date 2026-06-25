@@ -56,7 +56,7 @@ export default class PostcodeSearchController {
       const data = {
         ...req.i18n.getDataByLanguage(req.lng)['postcode-results'],
         results: {
-          courts: results,
+          locations: results,
         },
         postcodeOnlySearch: false,
         serviceArea: this.localiseServiceAreaName(serviceArea, req).toLowerCase(),

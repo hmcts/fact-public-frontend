@@ -20,7 +20,13 @@
             {{ hint }}
           </p>
         </div>
-        {% if results.courtSlug %}
+        {% if results.serviceCentreSlug %}
+          <div class="search-result" id="search-result">
+            <h2 class="govuk-heading-m">
+              <a class="govuk-link" href="/service-centres/{{ results.serviceCentreSlug }}">{{ results.serviceCentreName }}</a>
+            </h2>
+          </div>
+        {% elif results.courtSlug %}
           <div class="search-result" id="search-result">
             <h2 class="govuk-heading-m">
               <a class="govuk-link" href="/courts/{{ results.courtSlug }}">{{ results.courtName }}</a>
