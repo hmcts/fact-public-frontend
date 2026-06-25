@@ -104,6 +104,3 @@ describe('courtSchema - liftSupportPhoneNumber', () => {
     );
   });
 });
-
-
-
