@@ -6,6 +6,7 @@ import PostcodeResultsController from '../../../main/controllers/PostcodeResults
 import { FactRequest } from '../../../main/interfaces/FactRequest';
 import { ServiceArea } from '../../../main/schemas/ServiceAreaSchema';
 import { CourtWithDistance } from '../../../main/schemas/courtWithDistance';
+import { SEARCH_RESULT_TYPES, SearchResult } from '../../../main/schemas/searchResult';
 import { calculateServiceAreaFromSlug, calculateServiceNameFromSlug } from '../../../main/utils/SchemaUtils';
 
 jest.mock('../../../main/utils/SchemaUtils', () => ({
@@ -14,7 +15,7 @@ jest.mock('../../../main/utils/SchemaUtils', () => ({
 }));
 
 const mockPerformPostcodeSearch: jest.MockedFunction<
-  (postcode: string, serviceArea: string, action: string) => Promise<CourtWithDistance[] | HttpStatusCode>
+  (postcode: string, serviceArea: string, action: string) => Promise<SearchResult[] | HttpStatusCode>
 > = jest.fn();
 const mockPerformPostcodeOnlySearch: jest.MockedFunction<
   (postcode: string) => Promise<CourtWithDistance[] | HttpStatusCode>
@@ -138,10 +139,11 @@ describe('PostcodeResultsController', () => {
     } as ServiceArea);
     mockPerformPostcodeSearch.mockResolvedValue([
       {
-        courtName: 'Court',
-        courtSlug: 'court-slug',
-        courtId: '1',
+        id: '1',
+        name: 'Court',
+        slug: 'court-slug',
         distance: 1.2,
+        type: SEARCH_RESULT_TYPES.COURT,
       },
     ]);
     await controller.get(req as FactRequest, res);
@@ -150,12 +152,13 @@ describe('PostcodeResultsController', () => {
       expect.objectContaining({
         postcodeOnlySearch: false,
         results: {
-          courts: [
+          locations: [
             {
-              courtName: 'Court',
-              courtSlug: 'court-slug',
-              courtId: '1',
+              id: '1',
+              name: 'Court',
+              slug: 'court-slug',
               distance: 1.2,
+              type: SEARCH_RESULT_TYPES.COURT,
             },
           ],
         },
@@ -201,10 +204,11 @@ describe('PostcodeResultsController', () => {
     } as ServiceArea);
     mockPerformPostcodeSearch.mockResolvedValue([
       {
-        courtName: 'Court',
-        courtSlug: 'court-slug',
-        courtId: '1',
+        id: '1',
+        name: 'Court',
+        slug: 'court-slug',
         distance: 1.2,
+        type: SEARCH_RESULT_TYPES.COURT,
       },
     ]);
     await controller.get(req as FactRequest, res);
@@ -213,12 +217,13 @@ describe('PostcodeResultsController', () => {
       expect.objectContaining({
         postcodeOnlySearch: false,
         results: {
-          courts: [
+          locations: [
             {
-              courtName: 'Court',
-              courtSlug: 'court-slug',
-              courtId: '1',
+              id: '1',
+              name: 'Court',
+              slug: 'court-slug',
               distance: 1.2,
+              type: SEARCH_RESULT_TYPES.COURT,
             },
           ],
         },

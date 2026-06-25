@@ -17,7 +17,7 @@ export default class ServiceSearchResultsController {
     try {
       const service = await calculateServiceNameFromSlug(req.params.service as string);
       const serviceArea = await calculateServiceAreaFromSlug(service, req.params.serviceArea as string);
-      const results = await dataApiRequests.getCourtServiceAreas(serviceArea.name);
+      const results = await dataApiRequests.getServiceAreaSearchResults(serviceArea.name);
       const data = {
         ...cloneDeep(req.i18n.getDataByLanguage(req.lng)['service-results']),
         results: {},
@@ -26,9 +26,9 @@ export default class ServiceSearchResultsController {
       };
 
       if (Array.isArray(results)) {
-        for (const court of results) {
-          if (court.catchmentType === CATCHMENT_TYPES.NATIONAL) {
-            data.results = court;
+        for (const serviceCentre of results) {
+          if (serviceCentre.catchmentType === CATCHMENT_TYPES.NATIONAL) {
+            data.results = serviceCentre;
             break;
           }
         }

@@ -8,6 +8,10 @@
 {% endblock %}
 
 {% block content %}
+  {% set searchResults = results.courts %}
+  {% if not postcodeOnlySearch and results.locations %}
+    {% set searchResults = results.locations %}
+  {% endif %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
       <h1 class="govuk-heading-l">
@@ -29,9 +33,11 @@
               </p>
             </div>
             <div class="search-result">
+              {% set resultName = searchResults[0].name if searchResults[0].name else searchResults[0].courtName %}
+              {% set resultSlug = searchResults[0].slug if searchResults[0].slug else searchResults[0].courtSlug %}
               <h2 class="govuk-heading-m">
                 <a class="govuk-link"
-                   href="/courts/{{ results.courts[0].courtSlug }}">{{ results.courts[0].courtName }}</a>
+                   href="{% if searchResults[0].type === 'SERVICE_CENTRE' %}/service-centres/{{ resultSlug }}{% else %}/courts/{{ resultSlug }}{% endif %}">{{ resultName }}</a>
               </h2>
             </div>
           {% else %}
@@ -40,31 +46,33 @@
                 <p class="govuk-body-m">
                   {{ postcodeSearchResultsHint
                   | replace('{postcode}', postcode)
-                  | replace('{total}', results.courts.length) }}
+                  | replace('{total}', searchResults.length) }}
                 </p>
               {% else %}
-                {% set resultsHint = singleResultsHint if results.courts.length === 1 else multipleResultsHint %}
+                {% set resultsHint = singleResultsHint if searchResults.length === 1 else multipleResultsHint %}
                 <p class="govuk-body-m">
                   {{ resultsHint
                   | replace('{postcode}', postcode)
-                  | replace('{total}', results.courts.length)
+                  | replace('{total}', searchResults.length)
                   | replace('{serviceArea}', serviceArea) }}
                 </p>
               {% endif %}
 
             </div>
             <div id="search-results">
-              {% for court in results.courts %}
+              {% for result in searchResults %}
+                {% set resultName = result.name if result.name else result.courtName %}
+                {% set resultSlug = result.slug if result.slug else result.courtSlug %}
                 <div class="govuk-grid-row">
                   <div class="govuk-grid-column-three-quarters">
                     <h2 class="govuk-heading-m">
                       <a class="govuk-link"
-                         href="/courts/{{ court.courtSlug }}">{{ court.courtName }}</a>
+                         href="{% if result.type === 'SERVICE_CENTRE' %}/service-centres/{{ resultSlug }}{% else %}/courts/{{ resultSlug }}{% endif %}">{{ resultName }}</a>
                     </h2>
                   </div>
                   <div class="govuk-grid-column-one-quarter distance">
                     <p class="govuk-body-m">
-                      {{ court.distance.toFixed(1) }} {{ unit }}
+                      {{ result.distance.toFixed(1) }} {{ unit }}
                     </p>
                   </div>
                 </div>
