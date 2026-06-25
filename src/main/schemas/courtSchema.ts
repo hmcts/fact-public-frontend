@@ -142,6 +142,7 @@ const courtAccessibilityOptionSchema = z.object({
   lift: z.boolean(),
   liftDoorWidth: z.number().nullable(),
   liftDoorLimit: z.number().nullable(),
+  liftSupportPhoneNumber: z.string().nullable(),
   quietRoom: z.boolean(),
 });
 
