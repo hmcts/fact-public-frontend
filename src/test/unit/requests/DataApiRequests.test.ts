@@ -120,10 +120,121 @@ describe('DataApiRequests', () => {
   });
 
   describe('getAll', () => {
-    it('returns parsed courts array on success', async () => {
-      const payload = [validCourt];
+    it('returns parsed combined location details on success', async () => {
+      const payload = [
+        {
+          locationType: 'COURT',
+          serviceCentre: false,
+          court: {
+            ...validCourt,
+            courtAddresses: [
+              {
+                addressLine1: '1 Court Street',
+                addressLine2: null,
+                townCity: 'London',
+                county: null,
+                postcode: 'SW1A 1AA',
+                epimId: null,
+                lat: null,
+                lon: null,
+                addressType: 'VISIT_US',
+                areasOfLaw: null,
+                courtTypes: null,
+              },
+            ],
+            courtAreasOfLaw: [
+              {
+                areasOfLaw: ['area-of-law-id'],
+              },
+            ],
+          },
+          serviceCentreDetails: null,
+        },
+        {
+          locationType: 'SERVICE_CENTRE',
+          serviceCentre: true,
+          court: null,
+          serviceCentreDetails: {
+            id: 'service-centre-id',
+            name: 'Service Centre A',
+            slug: 'service-centre-a',
+            open: true,
+            warningNotice: null,
+            createdAt: '2026-06-01T10:00:00Z',
+            lastUpdatedAt: '2026-06-02T10:00:00Z',
+            serviceAreas: [
+              {
+                id: 'service-area-id',
+                name: 'Divorce',
+                nameCy: 'Ysgariad',
+                description: null,
+                descriptionCy: null,
+                onlineUrl: null,
+                onlineText: null,
+                onlineTextCy: null,
+                text: null,
+                textCy: null,
+                catchmentMethod: 'NATIONAL',
+                areaOfLawId: 'area-of-law-id',
+                type: 'CIVIL',
+                sortOrder: 1,
+                hasLocal: false,
+                hasNational: true,
+                hasRegional: false,
+              },
+            ],
+            catchmentType: CATCHMENT_TYPES.NATIONAL,
+            serviceCentreAddresses: [
+              {
+                id: 'address-id',
+                serviceCentreId: 'service-centre-id',
+                addressLine1: '1 Service Street',
+                addressLine2: null,
+                townCity: 'London',
+                county: null,
+                postcode: 'SW1A 1AA',
+                lat: 51.501,
+                lon: -0.141,
+                addressType: 'WRITE_TO_US',
+              },
+            ],
+            serviceCentreContactDetails: [
+              {
+                id: 'contact-id',
+                serviceCentreId: 'service-centre-id',
+                explanation: 'General enquiries',
+                explanationCy: null,
+                email: 'service@example.com',
+                phoneNumber: '0300 123 4567',
+                serviceCentreContactDescription: {
+                  id: 'description-id',
+                  name: 'Enquiries',
+                  nameCy: 'Ymholiadau',
+                },
+              },
+            ],
+            serviceCentreAreasOfLaw: [
+              {
+                id: 'service-centre-area-of-law-id',
+                serviceCentreId: 'service-centre-id',
+                areasOfLaw: [
+                  {
+                    id: 'area-of-law-id',
+                    name: 'Family',
+                    nameCy: 'Teulu',
+                    externalLink: null,
+                    externalLinkCy: null,
+                    displayName: 'Family',
+                    displayNameCy: 'Teulu',
+                  },
+                ],
+              },
+            ],
+          },
+        },
+      ];
 
-      sandbox.stub(dataApi, 'get').withArgs('courts/all.json').resolves({ data: payload });
+      sandbox.stub(dataApi, 'get').withArgs('/all/details.json').resolves({ data: payload });
 
       await expect(requests.getAll()).resolves.toEqual(payload);
     });
@@ -131,7 +242,7 @@ describe('DataApiRequests', () => {
     it('returns API status code for axios errors with response status', async () => {
       sandbox
         .stub(dataApi, 'get')
-        .withArgs('courts/all.json')
+        .withArgs('/all/details.json')
         .rejects({
           isAxiosError: true,
           response: { status: HttpStatusCode.BadRequest },
@@ -141,13 +252,13 @@ describe('DataApiRequests', () => {
     });
 
     it('returns internal server error for non-axios errors', async () => {
-      sandbox.stub(dataApi, 'get').withArgs('courts/all.json').rejects(new Error('boom'));
+      sandbox.stub(dataApi, 'get').withArgs('/all/details.json').rejects(new Error('boom'));
 
       await expect(requests.getAll()).resolves.toBe(HttpStatusCode.InternalServerError);
     });
 
     it('returns internal server error for axios errors with no status', async () => {
-      sandbox.stub(dataApi, 'get').withArgs('courts/all.json').rejects({
+      sandbox.stub(dataApi, 'get').withArgs('/all/details.json').rejects({
         isAxiosError: true,
       });
 

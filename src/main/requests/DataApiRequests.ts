@@ -3,6 +3,7 @@ import { AxiosRequestConfig, HttpStatusCode, isAxiosError } from 'axios';
 
 import { ServiceArea, serviceAreaSchema } from '../schemas/ServiceAreaSchema';
 import { Service, serviceSchema } from '../schemas/ServiceSchema';
+import { AllLocationDetails, allLocationDetailsSchema } from '../schemas/allLocationDetails';
 import { CourtBasic } from '../schemas/courtBasicSchema';
 import { Court, CourtSearchResult, courtSchema, courtSearchResultSchema } from '../schemas/courtSchema';
 import {
@@ -50,14 +51,14 @@ export class DataApiRequests {
   }
 
   /**
-   * Request all court details from the API
+   * Request all court and service-centre details from the API
    */
-  public async getAll(): Promise<Court[] | HttpStatusCode> {
+  public async getAll(): Promise<AllLocationDetails[] | HttpStatusCode> {
     try {
-      const response = await dataApi.get('courts/all.json');
-      return courtSchema.array().parse(response.data);
+      const response = await dataApi.get('/all/details.json');
+      return allLocationDetailsSchema.array().parse(response.data);
     } catch (error: unknown) {
-      logger.error('Error fetching court details:', error);
+      logger.error('Error fetching location details:', error);
       return isAxiosError(error) && error.response?.status
         ? (error.response.status as HttpStatusCode)
         : HttpStatusCode.InternalServerError;
