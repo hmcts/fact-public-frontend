@@ -10,6 +10,7 @@ export const courtBasicSchema = z.object({
   openOnCath: z.boolean().nullable(),
   mrdId: z.string().nullable(),
   region: z.string(),
+  isServiceCentre: z.boolean().optional(),
 });
 
 export type CourtBasic = z.infer<typeof courtBasicSchema>;
