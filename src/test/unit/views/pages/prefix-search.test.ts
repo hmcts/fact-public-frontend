@@ -32,8 +32,8 @@ describe('Prefix search page', () => {
   test('renders search results when prefix and results are provided (English)', () => {
     const prefix = 'A';
     const results = [
-      { name: 'A-Court', slug: 'a-court', isServiceCentre: false },
-      { name: 'Another-Court', slug: 'another-court', isServiceCentre: false },
+      { name: 'A-Court', slug: 'a-court', serviceCentre: false, locationType: 'COURT' },
+      { name: 'Another-Court', slug: 'another-court', serviceCentre: false, locationType: 'COURT' },
     ];
     const html = env.render('prefix-search.njk', {
       ...i18n,
@@ -51,8 +51,13 @@ describe('Prefix search page', () => {
   test('renders service-centre prefix search results with service-centre links', () => {
     const prefix = 'P';
     const results = [
-      { name: 'Probate Service Centre', slug: 'probate-service-centre', isServiceCentre: true },
-      { name: 'Probate Court', slug: 'probate-court', isServiceCentre: false },
+      {
+        name: 'Probate Service Centre',
+        slug: 'probate-service-centre',
+        serviceCentre: true,
+        locationType: 'SERVICE_CENTRE',
+      },
+      { name: 'Probate Court', slug: 'probate-court', serviceCentre: false, locationType: 'COURT' },
     ];
     const html = env.render('prefix-search.njk', {
       ...i18n,
