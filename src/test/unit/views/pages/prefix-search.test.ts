@@ -32,8 +32,8 @@ describe('Prefix search page', () => {
   test('renders search results when prefix and results are provided (English)', () => {
     const prefix = 'A';
     const results = [
-      { name: 'A-Court', slug: 'a-court' },
-      { name: 'Another-Court', slug: 'another-court' },
+      { name: 'A-Court', slug: 'a-court', serviceCentre: false, locationType: 'COURT' },
+      { name: 'Another-Court', slug: 'another-court', serviceCentre: false, locationType: 'COURT' },
     ];
     const html = env.render('prefix-search.njk', {
       ...i18n,
@@ -46,6 +46,29 @@ describe('Prefix search page', () => {
     expect(html).toContain('/courts/a-court');
     expect(html).toContain('Another-Court');
     expect(html).toContain('/courts/another-court');
+  });
+
+  test('renders service-centre prefix search results with service-centre links', () => {
+    const prefix = 'P';
+    const results = [
+      {
+        name: 'Probate Service Centre',
+        slug: 'probate-service-centre',
+        serviceCentre: true,
+        locationType: 'SERVICE_CENTRE',
+      },
+      { name: 'Probate Court', slug: 'probate-court', serviceCentre: false, locationType: 'COURT' },
+    ];
+    const html = env.render('prefix-search.njk', {
+      ...i18n,
+      prefix,
+      results,
+    });
+
+    expect(html).toContain('Probate Service Centre');
+    expect(html).toContain('/service-centres/probate-service-centre');
+    expect(html).not.toContain('/courts/probate-service-centre');
+    expect(html).toContain('/courts/probate-court');
   });
 
   test('renders search results when prefix and results are provided (Welsh)', () => {
