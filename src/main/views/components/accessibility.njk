@@ -85,13 +85,13 @@
         {% endset %}
         {% set rows = rows.concat([{ key: { text: text.liftLabel }, value: { html: liftText } }]) %}
       {% else %}
-        {% if enquiriesPhoneNumber and enquiriesPhoneNumber | trim %}
+        {% if options.liftSupportPhoneNumber %}
           {% set liftText %}
             {{ text.liftUnavailable }}
             {{ text.liftContact }}
-            <span class="phone-text">{{ enquiriesPhoneNumber }}</span>
-            <a href="tel:{{ enquiriesPhoneNumber }}" class="govuk-link govuk-link--no-visited-state phone-link">
-              {{ enquiriesPhoneNumber }}
+            <span class="phone-text">{{ options.liftSupportPhoneNumber }}</span>
+            <a href="tel:{{ options.liftSupportPhoneNumber }}" class="govuk-link govuk-link--no-visited-state phone-link">
+              {{ options.liftSupportPhoneNumber }}
             </a>
             {{ text.liftContactSuffix }}
           {% endset %}
