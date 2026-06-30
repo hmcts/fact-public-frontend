@@ -118,6 +118,7 @@ export const serviceCentreDetailsSchema = z.object({
   warningNotice: nullableStringSchema,
   createdAt: nullableStringSchema,
   lastUpdatedAt: nullableStringSchema,
+  regionId: z.string().nullable().optional(),
   serviceAreas: z
     .array(z.union([z.string(), serviceAreaSchema]))
     .nullable()

@@ -162,6 +162,7 @@ describe('DataApiRequests', () => {
             warningNotice: null,
             createdAt: '2026-06-01T10:00:00Z',
             lastUpdatedAt: '2026-06-02T10:00:00Z',
+            regionId: 'region-id',
             serviceAreas: [
               {
                 id: 'service-area-id',
