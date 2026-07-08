@@ -6,7 +6,7 @@ describe('Information for professionals macro', () => {
   test('renders court codes and DX codes', () => {
     const template = `
       {% from "components/information-for-professionals.njk" import informationForProfessionals %}
-      {{ informationForProfessionals(courtCodes, courtProfessionalInformation, courtDxCodes, courtFaxNumbers, infoText) }}
+      {{ informationForProfessionals(courtCodes, courtProfessionalInformation, courtDxCodes, courtFaxNumbers, infoText, language) }}
     `;
 
     const html = env.renderString(template, {
@@ -24,6 +24,7 @@ describe('Information for professionals macro', () => {
       courtDxCodes: [{ dxCode: 'DX 1', explanation: 'DX expl' }],
       courtFaxNumbers: [],
       courtProfessionalInformation: [],
+      language: 'en',
     });
 
     expect(html).toContain(i18n.informationForProfessionals.courtCodes.crownCourtCode);
@@ -34,7 +35,7 @@ describe('Information for professionals macro', () => {
   test('renders scheme unavailable states and fax details when optional fields are absent', () => {
     const template = `
       {% from "components/information-for-professionals.njk" import informationForProfessionals %}
-      {{ informationForProfessionals(courtCodes, courtProfessionalInformation, courtDxCodes, courtFaxNumbers, infoText) }}
+      {{ informationForProfessionals(courtCodes, courtProfessionalInformation, courtDxCodes, courtFaxNumbers, infoText, language) }}
     `;
 
     const html = env.renderString(template, {
@@ -61,6 +62,7 @@ describe('Information for professionals macro', () => {
           accessScheme: false,
         },
       ],
+      language: 'en',
     });
 
     expect(html).toContain(i18n.informationForProfessionals.faxNumber);
@@ -74,5 +76,69 @@ describe('Information for professionals macro', () => {
     expect(html).toContain(i18n.informationForProfessionals.videoHearing);
     expect(html).toContain(i18n.informationForProfessionals.videoHearingUnavailable);
     expect(html).not.toContain(i18n.informationForProfessionals.videoHearingBody);
+  });
+
+  test('renders explanationCy and descriptionCy when Welsh is selected', () => {
+    const template = `
+      {% from "components/information-for-professionals.njk" import informationForProfessionals %}
+      {{ informationForProfessionals(courtCodes, courtProfessionalInformation, courtDxCodes, courtFaxNumbers, infoText, language) }}
+    `;
+
+    const html = env.renderString(template, {
+      infoText: i18n.informationForProfessionals,
+      courtCodes: [],
+      courtDxCodes: [
+        {
+          dxCode: 'DX 1',
+          explanation: 'English explanation',
+          explanationCy: 'Esboniad Cymraeg',
+        },
+      ],
+      courtFaxNumbers: [
+        {
+          faxNumber: '0118 000 0000',
+          description: 'English fax description',
+          descriptionCy: 'Disgrifiad ffacs Cymraeg',
+        },
+      ],
+      courtProfessionalInformation: [],
+      language: 'cy',
+    });
+
+    expect(html).toContain('Esboniad Cymraeg');
+    expect(html).toContain('Disgrifiad ffacs Cymraeg');
+    expect(html).not.toContain('English explanation');
+    expect(html).not.toContain('English fax description');
+  });
+
+  test('falls back to English explanation and description when Welsh values are unavailable', () => {
+    const template = `
+      {% from "components/information-for-professionals.njk" import informationForProfessionals %}
+      {{ informationForProfessionals(courtCodes, courtProfessionalInformation, courtDxCodes, courtFaxNumbers, infoText, language) }}
+    `;
+
+    const html = env.renderString(template, {
+      infoText: i18n.informationForProfessionals,
+      courtCodes: [],
+      courtDxCodes: [
+        {
+          dxCode: 'DX 1',
+          explanation: 'English explanation',
+          explanationCy: '   ',
+        },
+      ],
+      courtFaxNumbers: [
+        {
+          faxNumber: '0118 000 0000',
+          description: 'English fax description',
+          descriptionCy: null,
+        },
+      ],
+      courtProfessionalInformation: [],
+      language: 'cy',
+    });
+
+    expect(html).toContain('English explanation');
+    expect(html).toContain('English fax description');
   });
 });

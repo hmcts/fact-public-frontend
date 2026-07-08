@@ -17,11 +17,13 @@ const courtCodeSchema = z.object({
 const courtDxCodeSchema = z.object({
   dxCode: z.string(),
   explanation: z.string().nullable(),
+  explanationCy: z.string().nullable(),
 });
 
 const courtFaxNumberSchema = z.object({
   faxNumber: z.string(),
   description: z.string().nullable(),
+  descriptionCy: z.string().nullable(),
 });
 
 const courtProfessionalInformationSchema = z.object({
