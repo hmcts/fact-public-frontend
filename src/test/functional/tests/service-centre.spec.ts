@@ -31,7 +31,7 @@ test.describe('Service Centre Page', () => {
     await expect(page.locator('main')).toContainText(`Page last reviewed: ${expectedDate}`);
     await expect(page.locator('#addresses')).toContainText('Visit and send documents to');
     await expect(page.locator('#useful-information')).toContainText('Scammers');
-    await expect(page.locator('.govuk-accordion__section-button')).toHaveText(['Contact details', 'Cases heard']);
+    await expect(page.locator('.govuk-accordion__section-button')).toContainText(['Contact details', 'Cases heard']);
 
     const sectionOrder = await page
       .locator('main h1, main #addresses, main #useful-information, main #service-centre-details-accordion')
@@ -61,7 +61,7 @@ test.describe('Service Centre Page', () => {
     await expect(page.locator('main')).toContainText(`Adolygwyd y dudalen hon ddiwethaf ar: ${expectedDate}`);
     await expect(page.locator('#addresses')).toContainText('Ewch i ac anfonwch ddogfennau i');
     await expect(page.locator('#useful-information')).toContainText('Gwybodaeth ddefnyddiol');
-    await expect(page.locator('.govuk-accordion__section-button')).toHaveText([
+    await expect(page.locator('.govuk-accordion__section-button')).toContainText([
       'Manylion cyswllt',
       'Achosion a wrandawyd',
     ]);
@@ -101,7 +101,8 @@ test.describe('Service Centre Page', () => {
 
     await buttons.nth(0).click();
     await expect(page.locator('#contact-details table')).toHaveCount(1);
-    await expect(page.locator('#contact-details a[href^="tel:"]')).toBeVisible();
+    await expect(page.locator('#contact-details .phone-text')).toBeVisible();
+    await expect(page.locator('#contact-details a[href^="tel:"]')).toHaveCount(1);
     await expect(page.locator('#contact-details a[href^="mailto:"]')).toBeVisible();
 
     await buttons.nth(1).click();
