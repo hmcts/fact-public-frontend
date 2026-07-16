@@ -35,7 +35,7 @@ const locationDisplayService = new LocationDisplayService();
 export type CourtViewModel = Court & {
   openingHoursByType: OpeningHourGroup[];
   enquiriesPhoneNumber: string | null;
-  counterService: CounterService | null;
+  counterServices: CounterService[];
 };
 
 export class CourtService {
@@ -55,7 +55,7 @@ export class CourtService {
       courtOpeningHours: this.orderOpeningHours(court.courtOpeningHours),
       openingHoursByType: this.buildOpeningHoursByType(court.courtOpeningHours, language),
       enquiriesPhoneNumber: this.findEnquiriesPhoneNumber(court.courtContactDetails),
-      counterService: this.buildCounterService(court.courtCounterServiceOpeningHours),
+      counterServices: this.buildCounterServices(court.courtCounterServiceOpeningHours),
     } as CourtViewModel;
   }
 
@@ -135,40 +135,39 @@ export class CourtService {
   }
 
   /**
-   * Builds counter service view model from the first configured counter service entry.
+   * Builds a view model for every configured counter service entry that has displayable content.
    */
-  private buildCounterService(counterHours: Court['courtCounterServiceOpeningHours']): CounterService | null {
-    if (!counterHours.length) {
-      return null;
-    }
+  private buildCounterServices(counterHours: Court['courtCounterServiceOpeningHours']): CounterService[] {
+    return counterHours.flatMap(counterService => {
+      const hasHelpItems =
+        counterService.assistWithForms || counterService.assistWithDocuments || counterService.assistWithSupport;
+      const hasOpeningTimes = counterService.openingTimesDetails.length > 0;
 
-    const counterService = counterHours[0];
-    const hasHelpItems =
-      counterService.assistWithForms || counterService.assistWithDocuments || counterService.assistWithSupport;
-    const hasOpeningTimes = counterService.openingTimesDetails.length > 0;
+      if (!hasHelpItems && !hasOpeningTimes) {
+        return [];
+      }
 
-    if (!hasHelpItems && !hasOpeningTimes) {
-      return null;
-    }
+      const appointmentContact = hasText(counterService.appointmentContact) ? counterService.appointmentContact : null;
 
-    const appointmentContact = hasText(counterService.appointmentContact) ? counterService.appointmentContact : null;
-
-    return {
-      courtTypes: counterService.courtTypes ?? [],
-      assistWithForms: counterService.assistWithForms,
-      assistWithDocuments: counterService.assistWithDocuments,
-      assistWithSupport: counterService.assistWithSupport,
-      appointmentNeeded: counterService.appointmentNeeded,
-      appointmentContact,
-      appointmentContactIsPhone: appointmentContact ? this.isPhoneLikeValue(appointmentContact) : false,
-      counterOpenHours: this.sortHoursByDay(
-        counterService.openingTimesDetails.map(entry => ({
-          dayOfWeek: entry.dayOfWeek,
-          openingHour: this.formatTime(entry.openingTime),
-          closingHour: this.formatTime(entry.closingTime),
-        }))
-      ),
-    };
+      return [
+        {
+          courtTypes: counterService.courtTypes ?? [],
+          assistWithForms: counterService.assistWithForms,
+          assistWithDocuments: counterService.assistWithDocuments,
+          assistWithSupport: counterService.assistWithSupport,
+          appointmentNeeded: counterService.appointmentNeeded,
+          appointmentContact,
+          appointmentContactIsPhone: appointmentContact ? this.isPhoneLikeValue(appointmentContact) : false,
+          counterOpenHours: this.sortHoursByDay(
+            counterService.openingTimesDetails.map(entry => ({
+              dayOfWeek: entry.dayOfWeek,
+              openingHour: this.formatTime(entry.openingTime),
+              closingHour: this.formatTime(entry.closingTime),
+            }))
+          ),
+        },
+      ];
+    });
   }
 
   /**

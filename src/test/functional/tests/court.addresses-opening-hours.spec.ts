@@ -197,16 +197,15 @@ test.describe('Court Page Addresses And Opening Hours', () => {
       return;
     }
 
-    const counterService = courtData.defaultCourt.body.courtCounterServiceOpeningHours[0];
-    const hasHelpItems =
-      counterService.assistWithForms || counterService.assistWithDocuments || counterService.assistWithSupport;
-    const hasOpeningTimes = counterService.openingTimesDetails.length > 0;
+    for (const counterService of courtData.defaultCourt.body.courtCounterServiceOpeningHours) {
+      const hasHelpItems =
+        counterService.assistWithForms || counterService.assistWithDocuments || counterService.assistWithSupport;
+      const hasOpeningTimes = counterService.openingTimesDetails.length > 0;
 
-    if (!hasHelpItems && !hasOpeningTimes) {
-      return;
-    }
+      if (!hasHelpItems && !hasOpeningTimes) {
+        continue;
+      }
 
-    if (hasHelpItems) {
       const counterServiceTypeNames = (counterService.courtTypes ?? [])
         .map(courtType => courtType.name)
         .filter(hasText);
@@ -215,51 +214,61 @@ test.describe('Court Page Addresses And Opening Hours', () => {
           ? `Counter service for ${counterServiceTypeNames.join(', ')}`
           : 'Counter service';
       await courtPage.expectStaticSectionContent(SECTION_HEADINGS.openingHoursEn, expectedTitle);
-      await courtPage.expectStaticSectionContent(SECTION_HEADINGS.openingHoursEn, 'Get help about:');
 
-      if (counterService.assistWithForms) {
-        await courtPage.expectStaticSectionContent(SECTION_HEADINGS.openingHoursEn, 'Forms');
-      }
-      if (counterService.assistWithDocuments) {
-        await courtPage.expectStaticSectionContent(SECTION_HEADINGS.openingHoursEn, 'Documents');
-      }
-      if (counterService.assistWithSupport) {
-        await courtPage.expectStaticSectionContent(SECTION_HEADINGS.openingHoursEn, 'Support available at court');
-      }
+      if (hasHelpItems) {
+        await courtPage.expectStaticSectionContent(SECTION_HEADINGS.openingHoursEn, 'Get help about:');
 
-      if (counterService.appointmentNeeded) {
-        await courtPage.expectStaticSectionContent(SECTION_HEADINGS.openingHoursEn, 'Available by appointment only.');
-        if (hasText(counterService.appointmentContact)) {
+        if (counterService.assistWithForms) {
+          await courtPage.expectStaticSectionContent(SECTION_HEADINGS.openingHoursEn, 'Forms');
+        }
+        if (counterService.assistWithDocuments) {
+          await courtPage.expectStaticSectionContent(SECTION_HEADINGS.openingHoursEn, 'Documents');
+        }
+        if (counterService.assistWithSupport) {
+          await courtPage.expectStaticSectionContent(SECTION_HEADINGS.openingHoursEn, 'Support available at court');
+        }
+
+        if (counterService.appointmentNeeded) {
+          await courtPage.expectStaticSectionContent(SECTION_HEADINGS.openingHoursEn, 'Available by appointment only.');
+          if (hasText(counterService.appointmentContact)) {
+            await courtPage.expectStaticSectionContent(
+              SECTION_HEADINGS.openingHoursEn,
+              counterService.appointmentContact
+            );
+            if (isPhoneLikeValue(counterService.appointmentContact)) {
+              await courtPage.expectStaticSectionLinkToHaveAttributes(
+                SECTION_HEADINGS.openingHoursEn,
+                counterService.appointmentContact,
+                {
+                  href: `tel:${counterService.appointmentContact}`,
+                }
+              );
+            }
+          }
+        } else {
           await courtPage.expectStaticSectionContent(
             SECTION_HEADINGS.openingHoursEn,
-            counterService.appointmentContact
+            'You do not need an appointment.'
           );
-          if (isPhoneLikeValue(counterService.appointmentContact)) {
-            await courtPage.expectStaticSectionLinkToHaveAttributes(
-              SECTION_HEADINGS.openingHoursEn,
-              counterService.appointmentContact,
-              {
-                href: `tel:${counterService.appointmentContact}`,
-              }
-            );
-          }
         }
-      } else {
-        await courtPage.expectStaticSectionContent(SECTION_HEADINGS.openingHoursEn, 'You do not need an appointment.');
       }
-    }
 
-    if (hasOpeningTimes) {
-      await courtPage.expectStaticSectionContent(SECTION_HEADINGS.openingHoursEn, 'Counter open');
-      for (const entry of counterService.openingTimesDetails) {
-        await courtPage.expectStaticSectionContent(
-          SECTION_HEADINGS.openingHoursEn,
-          DateTime.fromFormat(entry.openingTime, 'HH:mm:ss', { zone: 'Europe/London' }).toFormat('h:mma').toLowerCase()
-        );
-        await courtPage.expectStaticSectionContent(
-          SECTION_HEADINGS.openingHoursEn,
-          DateTime.fromFormat(entry.closingTime, 'HH:mm:ss', { zone: 'Europe/London' }).toFormat('h:mma').toLowerCase()
-        );
+      if (hasOpeningTimes) {
+        await courtPage.expectStaticSectionContent(SECTION_HEADINGS.openingHoursEn, 'Counter open');
+        for (const entry of counterService.openingTimesDetails) {
+          await courtPage.expectStaticSectionContent(
+            SECTION_HEADINGS.openingHoursEn,
+            DateTime.fromFormat(entry.openingTime, 'HH:mm:ss', { zone: 'Europe/London' })
+              .toFormat('h:mma')
+              .toLowerCase()
+          );
+          await courtPage.expectStaticSectionContent(
+            SECTION_HEADINGS.openingHoursEn,
+            DateTime.fromFormat(entry.closingTime, 'HH:mm:ss', { zone: 'Europe/London' })
+              .toFormat('h:mma')
+              .toLowerCase()
+          );
+        }
       }
     }
   });
