@@ -106,7 +106,7 @@ describe('CourtController', () => {
         ...closedCourt,
         openingHoursByType: [],
         enquiriesPhoneNumber: null,
-        counterService: null,
+        counterServices: [],
       } as CourtViewModel;
       const { dataApiMock, courtServiceMock } = getMocks();
       dataApiMock.getCourtDetails.mockResolvedValue(closedCourt);
@@ -135,7 +135,7 @@ describe('CourtController', () => {
         ...openCourt,
         openingHoursByType: [],
         enquiriesPhoneNumber: null,
-        counterService: null,
+        counterServices: [],
       } as CourtViewModel;
       const { dataApiMock, courtServiceMock } = getMocks();
       dataApiMock.getCourtDetails.mockResolvedValue(openCourt);

@@ -1,6 +1,6 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
-{% macro openingHours(openingHoursByType, counterService, text, language) %}
+{% macro openingHours(openingHoursByType, counterServices, text, language) %}
   <section id="opening-hours">
     <h2 class="govuk-heading-m">{{ text.heading }}</h2>
 
@@ -27,85 +27,72 @@
       ]) %}
     {% endfor %}
 
-    {% if counterService %}
+    {% for counterService in counterServices %}
+      {% set counterHtml %}
       {% if counterService.assistWithForms or counterService.assistWithDocuments or counterService.assistWithSupport %}
-        {% set counterHtml %}
-          <p class="govuk-body govuk-!-margin-bottom-1">{{ text.counterService.getHelpAbout }}</p>
-          <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-0 govuk-!-margin-bottom-3">
-            {% if counterService.assistWithForms %}
-              <li>{{ text.counterService.helpItems.forms }}</li>
-            {% endif %}
-            {% if counterService.assistWithDocuments %}
-              <li>{{ text.counterService.helpItems.documents }}</li>
-            {% endif %}
-            {% if counterService.assistWithSupport %}
-              <li>{{ text.counterService.helpItems.support }}</li>
-            {% endif %}
-          </ul>
-
-          {% if counterService.appointmentNeeded %}
-            <p class="govuk-body govuk-!-margin-bottom-3">
-              {{ text.counterService.appointmentRequiredPrefix }}
-              {% if counterService.appointmentContact %}
-                {% if counterService.appointmentContactIsPhone %}
-                  <span class="phone-text">{{ counterService.appointmentContact }}</span>
-                  <a href="tel:{{ counterService.appointmentContact }}" class="govuk-link govuk-link--no-visited-state phone-link">
-                    {{ counterService.appointmentContact }}
-                  </a>
-                {% else %}
-                  {{ counterService.appointmentContact }}
-                {% endif %}
-              {% endif %}
-              {{ text.counterService.appointmentRequiredSuffix }}
-            </p>
-          {% else %}
-            <p class="govuk-body govuk-!-margin-bottom-3">{{ text.counterService.appointmentNotNeeded }}</p>
+        <p class="govuk-body govuk-!-margin-bottom-1">{{ text.counterService.getHelpAbout }}</p>
+        <ul class="govuk-list govuk-list--bullet govuk-!-margin-top-0 govuk-!-margin-bottom-3">
+          {% if counterService.assistWithForms %}
+            <li>{{ text.counterService.helpItems.forms }}</li>
           {% endif %}
+          {% if counterService.assistWithDocuments %}
+            <li>{{ text.counterService.helpItems.documents }}</li>
+          {% endif %}
+          {% if counterService.assistWithSupport %}
+            <li>{{ text.counterService.helpItems.support }}</li>
+          {% endif %}
+        </ul>
 
-        {% endset %}
-
-        {% set counterServiceTitle = text.counterService.title %}
-        {% if counterService.courtTypes and counterService.courtTypes.length %}
-          {% set typeNames = [] %}
-          {% for courtType in counterService.courtTypes %}
-            {% set typeNames = typeNames.concat([courtType.name]) %}
-          {% endfor %}
-          {% set counterServiceTitle = text.counterService.titleFor + ' ' + (typeNames | join(', ')) %}
+        {% if counterService.appointmentNeeded %}
+          <p class="govuk-body govuk-!-margin-bottom-3">
+            {{ text.counterService.appointmentRequiredPrefix }}
+            {% if counterService.appointmentContact %}
+              {% if counterService.appointmentContactIsPhone %}
+                <span class="phone-text">{{ counterService.appointmentContact }}</span>
+                <a href="tel:{{ counterService.appointmentContact }}" class="govuk-link govuk-link--no-visited-state phone-link">
+                  {{ counterService.appointmentContact }}
+                </a>
+              {% else %}
+                {{ counterService.appointmentContact }}
+              {% endif %}
+            {% endif %}
+            {{ text.counterService.appointmentRequiredSuffix }}
+          </p>
+        {% else %}
+          <p class="govuk-body govuk-!-margin-bottom-3">{{ text.counterService.appointmentNotNeeded }}</p>
         {% endif %}
-
-        {% set rows = rows.concat([
-          {
-            key: {
-              text: counterServiceTitle
-            },
-            value: {
-              html: counterHtml
-            }
-          }
-        ]) %}
       {% endif %}
 
       {% if counterService.counterOpenHours and counterService.counterOpenHours.length %}
-        {% set counterOpenHtml %}
-          {% for entry in counterService.counterOpenHours %}
-            <p class="govuk-body">
-              {{ text.days[entry.dayOfWeek] or entry.dayOfWeek }} {{ entry.openingHour }} {{ text.rangeSeparator }} {{ entry.closingHour }}
-            </p>
-          {% endfor %}
-        {% endset %}
-
-        {% set rows = rows.concat([
-          {
-            key: {
-              text: text.counterService.counterOpen
-            },
-            value: {
-              html: counterOpenHtml
-            }
-          }
-        ]) %}
+        <p class="govuk-body govuk-!-margin-bottom-1"><strong>{{ text.counterService.counterOpen }}</strong></p>
+        {% for entry in counterService.counterOpenHours %}
+          <p class="govuk-body">
+            {{ text.days[entry.dayOfWeek] or entry.dayOfWeek }} {{ entry.openingHour }} {{ text.rangeSeparator }} {{ entry.closingHour }}
+          </p>
+        {% endfor %}
       {% endif %}
-    {% endif %}
+      {% endset %}
+
+      {% set counterServiceTitle = text.counterService.title %}
+      {% if counterService.courtTypes and counterService.courtTypes.length %}
+        {% set typeNames = [] %}
+        {% for courtType in counterService.courtTypes %}
+          {% set typeNames = typeNames.concat([courtType.name]) %}
+        {% endfor %}
+        {% set counterServiceTitle = text.counterService.titleFor + ' ' + (typeNames | join(', ')) %}
+      {% endif %}
+
+      {% set rows = rows.concat([
+        {
+          key: {
+            text: counterServiceTitle
+          },
+          value: {
+            html: counterHtml
+          }
+        }
+      ]) %}
+    {% endfor %}
 
     {{ govukSummaryList({
       rows: rows
