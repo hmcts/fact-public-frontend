@@ -276,8 +276,8 @@ describe('CourtService', () => {
     };
 
     const viewModel = service.formatData(court, 'en');
-    expect(viewModel.counterService).not.toBeNull();
-    expect(viewModel.counterService?.counterOpenHours).toHaveLength(1);
+    expect(viewModel.counterServices).toHaveLength(1);
+    expect(viewModel.counterServices[0].counterOpenHours).toHaveLength(1);
   });
 
   test('builds counter service but with no counter open hours when no opening times are provided', () => {
@@ -299,8 +299,61 @@ describe('CourtService', () => {
     };
 
     const viewModel = service.formatData(court, 'en');
-    expect(viewModel.counterService).not.toBeNull();
-    expect(viewModel.counterService?.counterOpenHours).toHaveLength(0);
+    expect(viewModel.counterServices).toHaveLength(1);
+    expect(viewModel.counterServices[0].counterOpenHours).toHaveLength(0);
+  });
+
+  test('builds every counter service with displayable content', () => {
+    const service = new CourtService();
+    const court: Court = {
+      ...baseCourt,
+      courtCounterServiceOpeningHours: [
+        {
+          counterService: true,
+          assistWithForms: true,
+          assistWithDocuments: false,
+          assistWithSupport: false,
+          appointmentNeeded: false,
+          appointmentContact: null,
+          openingTimesDetails: [],
+          courtTypes: [{ name: 'Civil' }],
+        },
+        {
+          counterService: true,
+          assistWithForms: false,
+          assistWithDocuments: true,
+          assistWithSupport: false,
+          appointmentNeeded: false,
+          appointmentContact: null,
+          openingTimesDetails: [
+            {
+              dayOfWeek: 'MONDAY',
+              openingTime: '09:00:00',
+              closingTime: '16:30:00',
+            },
+          ],
+          courtTypes: [{ name: 'Family' }],
+        },
+        {
+          counterService: true,
+          assistWithForms: false,
+          assistWithDocuments: false,
+          assistWithSupport: false,
+          appointmentNeeded: false,
+          appointmentContact: null,
+          openingTimesDetails: [],
+          courtTypes: [{ name: 'Tribunal' }],
+        },
+      ],
+    };
+
+    const viewModel = service.formatData(court, 'en');
+
+    expect(viewModel.counterServices).toHaveLength(2);
+    expect(viewModel.counterServices.map(entry => entry.courtTypes?.[0].name)).toEqual(['Civil', 'Family']);
+    expect(viewModel.counterServices[1].counterOpenHours).toEqual([
+      { dayOfWeek: 'MONDAY', openingHour: '9:00am', closingHour: '4:30pm' },
+    ]);
   });
 
   test('formatData enriches addresses with display fields', () => {

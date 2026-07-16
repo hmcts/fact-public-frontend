@@ -18,16 +18,18 @@ describe('Opening hours macro', () => {
           hours: [{ dayOfWeek: 'MONDAY', openingHour: '9:00am', closingHour: '5:00pm' }],
         },
       ],
-      counterService: {
-        courtTypes: [{ name: 'Civil' }, { name: 'Family' }],
-        assistWithForms: true,
-        assistWithDocuments: true,
-        assistWithSupport: true,
-        appointmentNeeded: true,
-        appointmentContact: '0118 987 6777',
-        appointmentContactIsPhone: true,
-        counterOpenHours: [{ dayOfWeek: 'MONDAY', openingHour: '9:00am', closingHour: '4:30pm' }],
-      },
+      counterService: [
+        {
+          courtTypes: [{ name: 'Civil' }, { name: 'Family' }],
+          assistWithForms: true,
+          assistWithDocuments: true,
+          assistWithSupport: true,
+          appointmentNeeded: true,
+          appointmentContact: '0118 987 6777',
+          appointmentContactIsPhone: true,
+          counterOpenHours: [{ dayOfWeek: 'MONDAY', openingHour: '9:00am', closingHour: '4:30pm' }],
+        },
+      ],
       language: 'en',
     });
 
@@ -44,6 +46,48 @@ describe('Opening hours macro', () => {
     expect(html).toContain('9:00am to 4:30pm');
     expect(html).toContain('phone-text');
     expect(html).toContain('phone-link');
+    expect(html.match(/govuk-summary-list__row/g)).toHaveLength(2);
+  });
+
+  test('renders each counter service as one combined row', () => {
+    const template = `
+      {% from "components/opening-hours.njk" import openingHours %}
+      {{ openingHours(openingHoursByType, counterServices, openingHoursText, language) }}
+    `;
+
+    const html = env.renderString(template, {
+      openingHoursText: i18n.openingHours,
+      openingHoursByType: [],
+      counterServices: [
+        {
+          courtTypes: [{ name: 'Civil' }],
+          assistWithForms: true,
+          assistWithDocuments: false,
+          assistWithSupport: false,
+          appointmentNeeded: false,
+          appointmentContact: null,
+          appointmentContactIsPhone: false,
+          counterOpenHours: [{ dayOfWeek: 'MONDAY', openingHour: '9:00am', closingHour: '4:30pm' }],
+        },
+        {
+          courtTypes: [{ name: 'Family' }],
+          assistWithForms: false,
+          assistWithDocuments: true,
+          assistWithSupport: false,
+          appointmentNeeded: true,
+          appointmentContact: 'family@example.com',
+          appointmentContactIsPhone: false,
+          counterOpenHours: [{ dayOfWeek: 'TUESDAY', openingHour: '10:00am', closingHour: '3:00pm' }],
+        },
+      ],
+      language: 'en',
+    });
+
+    expect(html.match(/govuk-summary-list__row/g)).toHaveLength(2);
+    expect(html).toContain('Counter service for Civil');
+    expect(html).toContain('Counter service for Family');
+    expect(html).toContain('Monday 9:00am to 4:30pm');
+    expect(html).toContain('Tuesday 10:00am to 3:00pm');
   });
 
   test('renders counter service title with court types in Welsh page using default name', () => {
@@ -55,16 +99,18 @@ describe('Opening hours macro', () => {
     const html = env.renderString(template, {
       openingHoursText: i18n.openingHours,
       openingHoursByType: [],
-      counterService: {
-        courtTypes: [{ name: 'Civil' }],
-        assistWithForms: true,
-        assistWithDocuments: false,
-        assistWithSupport: false,
-        appointmentNeeded: false,
-        appointmentContact: null,
-        appointmentContactIsPhone: false,
-        counterOpenHours: [{ dayOfWeek: 'MONDAY', openingHour: '9:00am', closingHour: '4:30pm' }],
-      },
+      counterService: [
+        {
+          courtTypes: [{ name: 'Civil' }],
+          assistWithForms: true,
+          assistWithDocuments: false,
+          assistWithSupport: false,
+          appointmentNeeded: false,
+          appointmentContact: null,
+          appointmentContactIsPhone: false,
+          counterOpenHours: [{ dayOfWeek: 'MONDAY', openingHour: '9:00am', closingHour: '4:30pm' }],
+        },
+      ],
       language: 'cy',
     });
 
@@ -85,14 +131,14 @@ describe('Opening hours macro', () => {
           hours: [{ dayOfWeek: 'MONDAY', openingHour: '9:00yb', closingHour: '5:00yh' }],
         },
       ],
-      counterService: null,
+      counterService: [],
       language: 'cy',
     });
 
     expect(html).toContain('Dydd Llun 9:00yb i 5:00yh');
   });
 
-  test('renders counter open row without counter service row when all help flags are false', () => {
+  test('renders counter opening times in the counter service row when all help flags are false', () => {
     const template = `
       {% from "components/opening-hours.njk" import openingHours %}
       {{ openingHours(openingHoursByType, counterService, openingHoursText, language) }}
@@ -101,26 +147,28 @@ describe('Opening hours macro', () => {
     const html = env.renderString(template, {
       openingHoursText: i18n.openingHours,
       openingHoursByType: [],
-      counterService: {
-        courtTypes: [{ name: 'Civil' }],
-        assistWithForms: false,
-        assistWithDocuments: false,
-        assistWithSupport: false,
-        appointmentNeeded: false,
-        appointmentContact: null,
-        appointmentContactIsPhone: false,
-        counterOpenHours: [{ dayOfWeek: 'MONDAY', openingHour: '9:00am', closingHour: '4:30pm' }],
-      },
+      counterService: [
+        {
+          courtTypes: [{ name: 'Civil' }],
+          assistWithForms: false,
+          assistWithDocuments: false,
+          assistWithSupport: false,
+          appointmentNeeded: false,
+          appointmentContact: null,
+          appointmentContactIsPhone: false,
+          counterOpenHours: [{ dayOfWeek: 'MONDAY', openingHour: '9:00am', closingHour: '4:30pm' }],
+        },
+      ],
       language: 'en',
     });
 
     expect(html).toContain(i18n.openingHours.counterService.counterOpen);
     expect(html).toContain('Monday 9:00am to 4:30pm');
     expect(html).not.toContain(i18n.openingHours.counterService.getHelpAbout);
-    expect(html).not.toContain('Counter service for Civil');
+    expect(html).toContain('Counter service for Civil');
   });
 
-  test('renders counter service row with partial help items and no counter open row when times are missing', () => {
+  test('renders counter service row with partial help items when times are missing', () => {
     const template = `
       {% from "components/opening-hours.njk" import openingHours %}
       {{ openingHours(openingHoursByType, counterService, openingHoursText, language) }}
@@ -129,16 +177,18 @@ describe('Opening hours macro', () => {
     const html = env.renderString(template, {
       openingHoursText: i18n.openingHours,
       openingHoursByType: [],
-      counterService: {
-        courtTypes: [],
-        assistWithForms: true,
-        assistWithDocuments: false,
-        assistWithSupport: false,
-        appointmentNeeded: false,
-        appointmentContact: null,
-        appointmentContactIsPhone: false,
-        counterOpenHours: [],
-      },
+      counterService: [
+        {
+          courtTypes: [],
+          assistWithForms: true,
+          assistWithDocuments: false,
+          assistWithSupport: false,
+          appointmentNeeded: false,
+          appointmentContact: null,
+          appointmentContactIsPhone: false,
+          counterOpenHours: [],
+        },
+      ],
       language: 'en',
     });
 
@@ -160,16 +210,18 @@ describe('Opening hours macro', () => {
     const html = env.renderString(template, {
       openingHoursText: i18n.openingHours,
       openingHoursByType: [],
-      counterService: {
-        courtTypes: [],
-        assistWithForms: true,
-        assistWithDocuments: false,
-        assistWithSupport: false,
-        appointmentNeeded: true,
-        appointmentContact: '',
-        appointmentContactIsPhone: false,
-        counterOpenHours: [],
-      },
+      counterService: [
+        {
+          courtTypes: [],
+          assistWithForms: true,
+          assistWithDocuments: false,
+          assistWithSupport: false,
+          appointmentNeeded: true,
+          appointmentContact: '',
+          appointmentContactIsPhone: false,
+          counterOpenHours: [],
+        },
+      ],
       language: 'en',
     });
 
