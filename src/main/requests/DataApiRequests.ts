@@ -3,7 +3,12 @@ import { AxiosRequestConfig, HttpStatusCode, isAxiosError } from 'axios';
 
 import { ServiceArea, serviceAreaSchema } from '../schemas/ServiceAreaSchema';
 import { Service, serviceSchema } from '../schemas/ServiceSchema';
-import { AllLocationDetails, allLocationDetailsSchema } from '../schemas/allLocationDetails';
+import {
+  AllLocationDetails,
+  ServiceCentreDetails,
+  allLocationDetailsSchema,
+  serviceCentreDetailsSchema,
+} from '../schemas/allLocationDetails';
 import { CourtBasic } from '../schemas/courtBasicSchema';
 import { Court, CourtSearchResult, courtSchema, courtSearchResultSchema } from '../schemas/courtSchema';
 import {
@@ -44,6 +49,23 @@ export class DataApiRequests {
       return courtSchema.parse(response.data);
     } catch (error: unknown) {
       logger.error(`Error fetching court details for slug ${slug}:`, error);
+      return isAxiosError(error) && error.response?.status
+        ? (error.response.status as HttpStatusCode)
+        : HttpStatusCode.InternalServerError;
+    }
+  }
+
+  /**
+   * Request service-centre details by slug.
+   *
+   * @param slug The slug identifier for the service centre
+   */
+  public async getServiceCentreDetails(slug: string): Promise<ServiceCentreDetails | HttpStatusCode> {
+    try {
+      const response = await dataApi.get(`/service-centres/slug/${slug}/v1`);
+      return serviceCentreDetailsSchema.parse(response.data);
+    } catch (error: unknown) {
+      logger.error(`Error fetching service-centre details for slug ${slug}:`, error);
       return isAxiosError(error) && error.response?.status
         ? (error.response.status as HttpStatusCode)
         : HttpStatusCode.InternalServerError;

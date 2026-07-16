@@ -38,6 +38,37 @@ describe('Search Location View', () => {
     expect(html).toContain(i18n.noResults.p1);
   });
 
+  test('links court and service-centre results to their respective detail pages', () => {
+    const html = env.render('search/location.njk', {
+      ...i18n,
+      hasSearched: true,
+      search: 'example',
+      results: [
+        { name: 'Example Court', slug: 'example-court', locationType: 'COURT', serviceCentre: false },
+        {
+          name: 'Example Service Centre',
+          slug: 'example-service-centre',
+          locationType: 'SERVICE_CENTRE',
+          serviceCentre: true,
+        },
+      ],
+    });
+
+    expect(html).toContain('href="/courts/example-court"');
+    expect(html).toContain('href="/service-centres/example-service-centre"');
+  });
+
+  test('uses the legacy serviceCentre flag when locationType is not present', () => {
+    const html = env.render('search/location.njk', {
+      ...i18n,
+      hasSearched: true,
+      search: 'example',
+      results: [{ name: 'Example Service Centre', slug: 'example-service-centre', serviceCentre: true }],
+    });
+
+    expect(html).toContain('href="/service-centres/example-service-centre"');
+  });
+
   test('renders the search location page with Welsh content', () => {
     const html = env.render('search/location.njk', welshI18n);
 
