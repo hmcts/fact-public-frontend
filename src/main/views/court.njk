@@ -52,9 +52,14 @@
       <h1 class="govuk-heading-l govuk-!-margin-bottom-2">{{ court.name }}</h1>
       <p class="govuk-body-s">{{ pageLastReviewed }} {{ court.lastUpdatedAt }}</p>
 
-      {% if court.warningNotice %}
+      {% set warningNotice = court.warningNotice %}
+      {% if htmlLang == "cy" and court.warningNoticeCy and court.warningNoticeCy | trim %}
+        {% set warningNotice = court.warningNoticeCy %}
+      {% endif %}
+
+      {% if warningNotice %}
         {{ govukWarningText({
-          text: court.warningNotice,
+          text: warningNotice,
           iconFallbackText: "Warning"
         }) }}
       {% endif %}

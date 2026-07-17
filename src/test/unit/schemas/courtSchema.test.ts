@@ -8,6 +8,7 @@ const baseCourt = {
   slug: 'a-court',
   open: true,
   warningNotice: null,
+  warningNoticeCy: null,
   lastUpdatedAt: '2026-05-15',
   openOnCath: null,
   mrdId: null,

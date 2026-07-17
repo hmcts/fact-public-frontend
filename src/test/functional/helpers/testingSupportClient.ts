@@ -14,6 +14,7 @@ export type CourtCreateParams = {
   seed?: number;
   open?: boolean;
   addWarningNotice?: boolean;
+  addWarningNoticeCy?: boolean;
   withTranslations?: boolean;
   withEnquiriesContact?: boolean;
   forceFamilyCourt?: boolean;
