@@ -4,6 +4,7 @@ import { type SinonSandbox, createSandbox } from 'sinon';
 
 import { DataApiRequests } from '../../../main/requests/DataApiRequests';
 import { dataApi } from '../../../main/requests/utils/axiosConfig';
+import { serviceCentreDetailsSchema } from '../../../main/schemas/allLocationDetails';
 import { courtSchema } from '../../../main/schemas/courtSchema';
 import { CATCHMENT_TYPES } from '../../../main/schemas/courtServiceAreas';
 import { SEARCH_RESULT_TYPES } from '../../../main/schemas/searchResult';
@@ -117,6 +118,60 @@ describe('DataApiRequests', () => {
       });
 
       await expect(requests.getCourtDetails('test-slug')).resolves.toBe(HttpStatusCode.InternalServerError);
+    });
+  });
+
+  describe('getServiceCentreDetails', () => {
+    it('calls the slug endpoint and returns parsed service-centre details', async () => {
+      const payload = { raw: 'service-centre' };
+      const parsedServiceCentre = { id: 'service-centre-id' };
+      sandbox.stub(dataApi, 'get').withArgs('/service-centres/slug/test-slug/v1').resolves({ data: payload });
+      sandbox
+        .stub(serviceCentreDetailsSchema, 'parse')
+        .withArgs(payload)
+        .returns(parsedServiceCentre as never);
+
+      await expect(requests.getServiceCentreDetails('test-slug')).resolves.toBe(parsedServiceCentre);
+    });
+
+    it('parses the Welsh warning notice returned by the slug endpoint', async () => {
+      const payload = {
+        id: 'service-centre-id',
+        name: 'Test Service Centre',
+        slug: 'test-service-centre',
+        warningNotice: 'Important service update',
+        warningNoticeCy: 'Diweddariad gwasanaeth pwysig',
+      };
+      sandbox.stub(dataApi, 'get').withArgs('/service-centres/slug/test-service-centre/v1').resolves({ data: payload });
+
+      await expect(requests.getServiceCentreDetails('test-service-centre')).resolves.toEqual(payload);
+    });
+
+    it('returns the API status for an axios error', async () => {
+      sandbox
+        .stub(dataApi, 'get')
+        .withArgs('/service-centres/slug/test-slug/v1')
+        .rejects({
+          isAxiosError: true,
+          response: { status: HttpStatusCode.NotFound },
+        });
+
+      await expect(requests.getServiceCentreDetails('test-slug')).resolves.toBe(HttpStatusCode.NotFound);
+    });
+
+    it('returns internal server error for parsing or non-axios failures', async () => {
+      sandbox.stub(dataApi, 'get').withArgs('/service-centres/slug/test-slug/v1').rejects(new Error('boom'));
+
+      await expect(requests.getServiceCentreDetails('test-slug')).resolves.toBe(HttpStatusCode.InternalServerError);
+    });
+
+    it('returns internal server error for axios errors without a status', async () => {
+      sandbox.stub(dataApi, 'get').withArgs('/service-centres/slug/test-slug/v1').rejects({
+        isAxiosError: true,
+        response: {},
+      });
+
+      await expect(requests.getServiceCentreDetails('test-slug')).resolves.toBe(HttpStatusCode.InternalServerError);
     });
   });
 
@@ -271,7 +326,20 @@ describe('DataApiRequests', () => {
 
   describe('getByName', () => {
     it('returns parsed search results on success', async () => {
-      const payload = [{ name: 'Blackburn Family Court', slug: 'blackburn-family-court' }];
+      const payload = [
+        {
+          name: 'Blackburn Family Court',
+          slug: 'blackburn-family-court',
+          locationType: 'COURT',
+          serviceCentre: false,
+        },
+        {
+          name: 'Blackburn Service Centre',
+          slug: 'blackburn-service-centre',
+          locationType: 'SERVICE_CENTRE',
+          serviceCentre: true,
+        },
+      ];
       const query = 'Blackburn';
 
       sandbox

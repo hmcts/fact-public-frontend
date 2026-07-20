@@ -69,4 +69,31 @@ describe('Contact details macro', () => {
     expect(html).not.toContain(i18n.contactDetails.telephone);
     expect(html).not.toContain(i18n.contactDetails.email);
   });
+
+  test('renders service-centre descriptions and bilingual explanations', () => {
+    const template = `
+      {% from "components/contact-details.njk" import contactDetails %}
+      {{ contactDetails(serviceCentreContactDetails, contactDetailsText, language, "serviceCentreContactDescription") }}
+    `;
+
+    const html = env.renderString(template, {
+      language: 'cy',
+      contactDetailsText: i18n.contactDetails,
+      serviceCentreContactDetails: [
+        {
+          explanation: 'English explanation',
+          explanationCy: 'Esboniad Cymraeg',
+          email: 'service@example.com',
+          phoneNumber: '0300 123 4567',
+          serviceCentreContactDescription: { name: 'Enquiries', nameCy: 'Ymholiadau' },
+        },
+      ],
+    });
+
+    expect(html).toContain('Ymholiadau');
+    expect(html).toContain('Esboniad Cymraeg');
+    expect(html).not.toContain('English explanation');
+    expect(html).toContain('href="tel:0300 123 4567"');
+    expect(html).toContain('href="mailto:service@example.com"');
+  });
 });

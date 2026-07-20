@@ -103,6 +103,25 @@ describe('Search by name page', () => {
         });
     });
 
+    test('should link service-centre results to the service-centre page', async () => {
+      mockGetByName.mockResolvedValueOnce([
+        {
+          name: 'Big Service Centre',
+          slug: 'big-service-centre',
+          locationType: 'SERVICE_CENTRE',
+          serviceCentre: true,
+        },
+      ]);
+
+      await request(app)
+        .get('/search-by-name?search=big')
+        .expect(res => {
+          expect(res.status).to.equal(200);
+          expect(res.text).to.contain('href="/service-centres/big-service-centre"');
+          expect(res.text).not.to.contain('href="/courts/big-service-centre"');
+        });
+    });
+
     test('should render service error page when search API fails', async () => {
       mockGetByName.mockResolvedValueOnce(500);
       await request(app)

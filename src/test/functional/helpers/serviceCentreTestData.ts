@@ -23,6 +23,7 @@ export type ServiceCentreTestData = {
   defaultServiceCentre: ServiceCentreData;
   warningNoticeServiceCentre: ServiceCentreData;
   noContactServiceCentre: ServiceCentreData;
+  closedServiceCentre: ServiceCentreData;
   cleanup: () => Promise<void>;
 };
 
@@ -50,12 +51,14 @@ export async function createServiceCentreTestData(
     defaultServiceCentre: `${FUNCTIONAL_TEST_SERVICE_CENTRE_PREFIX} ${suiteLabel} Test Service Centre ${uniqueSuffix}`,
     warningNoticeServiceCentre: `${FUNCTIONAL_TEST_SERVICE_CENTRE_PREFIX} ${suiteLabel} Warning Notice Service Centre ${uniqueSuffix}`,
     noContactServiceCentre: `${FUNCTIONAL_TEST_SERVICE_CENTRE_PREFIX} ${suiteLabel} No Contact Service Centre ${uniqueSuffix}`,
+    closedServiceCentre: `${FUNCTIONAL_TEST_SERVICE_CENTRE_PREFIX} ${suiteLabel} Closed Service Centre ${uniqueSuffix}`,
   };
 
   const cleanup = async (): Promise<void> => {
     await deleteServiceCentresByPrefix(apiContext, prefixes.defaultServiceCentre);
     await deleteServiceCentresByPrefix(apiContext, prefixes.warningNoticeServiceCentre);
     await deleteServiceCentresByPrefix(apiContext, prefixes.noContactServiceCentre);
+    await deleteServiceCentresByPrefix(apiContext, prefixes.closedServiceCentre);
   };
 
   await cleanup();
@@ -74,12 +77,17 @@ export async function createServiceCentreTestData(
       open: true,
       withContactDetails: false,
     });
+    const closedServiceCentre = await createServiceCentreData(apiContext, {
+      serviceCentreName: prefixes.closedServiceCentre,
+      open: false,
+    });
 
     return {
       apiContext,
       defaultServiceCentre,
       warningNoticeServiceCentre,
       noContactServiceCentre,
+      closedServiceCentre,
       cleanup,
     };
   } catch (error) {

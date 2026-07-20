@@ -49,7 +49,8 @@ test.describe('Prefix Search Page', () => {
       await prefixSearchPage.goto('en');
       await prefixSearchPage.clickAlphabetButton('C');
 
-      await expect(page.locator('#header-hint')).toContainText("courts or tribunals starting with 'C'");
+      await expect(page.locator('#header-hint')).toContainText(en_i18n.resultsHint.trim());
+      await expect(page.locator('#header-hint')).toContainText("'C'");
     });
 
     test('should show the correct number of results for a given prefix', async ({ page }) => {

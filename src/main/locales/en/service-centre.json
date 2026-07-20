@@ -1,0 +1,43 @@
+{
+  "pageLastReviewed": "Page last reviewed: ",
+  "pageTitleSuffix": "Find a Court or Tribunal - GOV.UK",
+  "warningFallbackText": "Warning",
+  "addresses": {
+    "heading": "Address",
+    "addressTypes": {
+      "VISIT_US": "Visit",
+      "WRITE_TO_US": "Send documents to",
+      "VISIT_OR_CONTACT_US": "Visit and send documents to"
+    },
+    "getDirectionsLink": "Get directions (opens in a new tab)"
+  },
+  "accordion": {
+    "contactDetailsHeading": "Contact details",
+    "casesHeardHeading": "Cases heard",
+    "showSection": "Show",
+    "hideSection": "Hide",
+    "showAllSections": "Show all sections",
+    "hideAllSections": "Hide all sections"
+  },
+  "contactDetails": {
+    "telephone": "Telephone",
+    "email": "Email"
+  },
+  "casesHeard": {
+    "intro": "The types of cases that are heard at this location.",
+    "opensInNewTab": "(opens in a new tab)"
+  },
+  "usefulInformation": {
+    "mainHeading": "Useful information",
+    "scammers": "Scammers",
+    "scammersBodyPrefix": "Some scammers are pretending to be from HMCTS or enforcement.",
+    "scammersUrl": "https://www.gov.uk/government/news/scammers-using-hmcts-telephone-numbers",
+    "scammersUrlText": "Find out what to do if you are asked for money and are unsure whether it's genuine",
+    "opensInNewTab": "(opens in a new tab)"
+  },
+  "closed": {
+    "title": "{name} - Find a Court or Tribunal - GOV.UK",
+    "p1": "This service centre is no longer in service.",
+    "linkText": "Search for an alternative court, tribunal or service centre"
+  }
+}

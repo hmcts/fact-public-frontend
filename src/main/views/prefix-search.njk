@@ -63,8 +63,9 @@
       {% if results.length > 0 %}
         <div id="results-list">
           {% for court in results %}
+            {% set resultPath = '/service-centres/' if court.serviceCentre or court.locationType === 'SERVICE_CENTRE' else '/courts/' %}
             <h2 class="govuk-heading-m">
-              <a class="govuk-link" href="{% if court.serviceCentre or court.locationType === 'SERVICE_CENTRE' %}/service-centres/{{ court.slug }}{% else %}/courts/{{ court.slug }}{% endif %}">{{ court.name }}</a>
+              <a class="govuk-link" href="{{ resultPath }}{{ court.slug }}">{{ court.name }}</a>
             </h2>
           {% endfor %}
         </div>

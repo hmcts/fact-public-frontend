@@ -1,27 +1,31 @@
-{% macro contactDetails(courtContactDetails, text, language) %}
+{% macro contactDetails(contactDetails, text, language, descriptionProperty="courtContactDescription") %}
   <section id="contact-details">
     {% set isWelsh = language == "cy" %}
     {% set enquiries = [] %}
     {% set others = [] %}
-    {% for contact in courtContactDetails %}
-      {% set contactNameLower = contact.courtContactDescription.name | lower %}
-      {% if contactNameLower == "enquiries" %}
-        {% set enquiries = enquiries.concat([contact]) %}
-      {% else %}
-        {% set others = others.concat([contact]) %}
+    {% for contact in contactDetails %}
+      {% set contactDescription = contact[descriptionProperty] %}
+      {% if contactDescription %}
+        {% set contactNameLower = contactDescription.name | lower %}
+        {% if contactNameLower == "enquiries" %}
+          {% set enquiries = enquiries.concat([contact]) %}
+        {% else %}
+          {% set others = others.concat([contact]) %}
+        {% endif %}
       {% endif %}
     {% endfor %}
 
     {% if isWelsh %}
-      {% set others = others | sort(attribute="courtContactDescription.nameCy") %}
+      {% set others = others | sort(attribute=descriptionProperty + ".nameCy") %}
     {% else %}
-      {% set others = others | sort(attribute="courtContactDescription.name") %}
+      {% set others = others | sort(attribute=descriptionProperty + ".name") %}
     {% endif %}
 
     {% set contacts = enquiries.concat(others) %}
 
     {% for contact in contacts %}
-      {% set caption = contact.courtContactDescription.nameCy if isWelsh else contact.courtContactDescription.name %}
+      {% set contactDescription = contact[descriptionProperty] %}
+      {% set caption = contactDescription.nameCy if isWelsh else contactDescription.name %}
       {% set explanation = contact.explanationCy if isWelsh else contact.explanation %}
       <table class="govuk-table">
         <caption class="govuk-table__caption govuk-table__caption--s govuk-!-margin-bottom-0">
