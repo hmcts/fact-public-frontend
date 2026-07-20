@@ -31,7 +31,7 @@
 {% endset %}
 
 {% set contactDetailsHtml %}
-  {{ renderContactDetails(court.courtContactDetails, contactDetails, htmlLang) }}
+  {{ renderContactDetails(court.courtContactDetails, contactDetails, htmlLang, "courtContactDescription") }}
 {% endset %}
 
 {% set accessibilityHtml %}
@@ -69,7 +69,7 @@
         <p class="govuk-body-s">{{ court.name }}</p>
       {% endif %}
       <hr class="govuk-section-break govuk-section-break--m">
-      {{ renderUsefulInformation(usefulInformation) }}
+      {{ renderUsefulInformation(usefulInformation, true) }}
       <hr class="govuk-section-break govuk-section-break--m">
 
       {{ govukAccordion({

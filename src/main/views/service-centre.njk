@@ -1,14 +1,73 @@
 {% extends "template.njk" %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+{% from "govuk/components/accordion/macro.njk" import govukAccordion %}
+
+{% from "components/addresses.njk" import addresses as renderAddresses %}
+{% from "components/useful-information.njk" import usefulInformation as renderUsefulInformation %}
+{% from "components/cases-heard.njk" import casesHeard as renderCasesHeard %}
+{% from "components/contact-details.njk" import contactDetails as renderContactDetails %}
+
+{% set contactDetailsHtml %}
+  {{ renderContactDetails(
+    serviceCentre.serviceCentreContactDetails,
+    contactDetails,
+    htmlLang,
+    "serviceCentreContactDescription"
+  ) }}
+{% endset %}
+
+{% set casesHeardHtml %}
+  {{ renderCasesHeard(serviceCentre.serviceCentreAreasOfLaw, casesHeard, htmlLang) }}
+{% endset %}
+
+{% set warningNotice = serviceCentre.warningNotice %}
+{% if htmlLang == "cy" and serviceCentre.warningNoticeCy and serviceCentre.warningNoticeCy | trim %}
+  {% set warningNotice = serviceCentre.warningNoticeCy %}
+{% endif %}
 
 {% block pageTitle %}
-  Coming soon! - Find a Court or Tribunal - GOV.UK
+  {{ serviceCentre.name }} - {{ pageTitleSuffix }}
 {% endblock %}
 
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <h1 class="govuk-heading-l">Coming soon!</h1>
+      <h1 class="govuk-heading-l govuk-!-margin-bottom-2">{{ serviceCentre.name }}</h1>
+      <p class="govuk-body-s">{{ pageLastReviewed }} {{ serviceCentre.lastUpdatedAt }}</p>
+
+      {% if warningNotice %}
+        {{ govukWarningText({
+          text: warningNotice,
+          iconFallbackText: warningFallbackText
+        }) }}
+      {% endif %}
+      <hr class="govuk-section-break govuk-section-break--m">
+
+      {{ renderAddresses(serviceCentre.serviceCentreAddresses, addresses) }}
+      <hr class="govuk-section-break govuk-section-break--m">
+
+      {{ renderUsefulInformation(usefulInformation, false) }}
+      <hr class="govuk-section-break govuk-section-break--m">
+
+      {{ govukAccordion({
+        id: "service-centre-details-accordion",
+        hideAllSectionsText: accordion.hideAllSections,
+        hideSectionText: accordion.hideSection,
+        showSectionText: accordion.showSection,
+        showAllSectionsText: accordion.showAllSections,
+        items: [
+          {
+            heading: { text: accordion.contactDetailsHeading },
+            expanded: false,
+            content: { html: contactDetailsHtml }
+          },
+          {
+            heading: { text: accordion.casesHeardHeading },
+            expanded: false,
+            content: { html: casesHeardHtml }
+          }
+        ]
+      }) }}
     </div>
   </div>
 {% endblock %}
-

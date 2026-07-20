@@ -1,20 +1,22 @@
-{% macro usefulInformation(text) %}
+{% macro usefulInformation(text, includeCourtSpecificSections=true) %}
   <section id="useful-information">
     <h2 class="govuk-heading-m">{{ text.mainHeading }}</h2>
 
-    <h3 class="govuk-heading-s govuk-!-margin-bottom-2">{{ text.comingToCourt }}</h3>
-    <p class="govuk-body">
-      <a href="{{ text.comingToCourtUrl }}"
-         class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener"
-         target="_blank">{{ text.comingToCourtUrlText }} {{ text.opensInNewTab }}</a>, {{ text.comingToCourtBody }}
-    </p>
+    {% if includeCourtSpecificSections %}
+      <h3 class="govuk-heading-s govuk-!-margin-bottom-2">{{ text.comingToCourt }}</h3>
+      <p class="govuk-body">
+        <a href="{{ text.comingToCourtUrl }}"
+           class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener"
+           target="_blank">{{ text.comingToCourtUrlText }} {{ text.opensInNewTab }}</a>, {{ text.comingToCourtBody }}
+      </p>
 
-    <h3 class="govuk-heading-s govuk-!-margin-bottom-2">{{ text.hearingsAtThisCourt }}</h3>
-    <p class="govuk-body">
-      <a href="{{ text.hearingsAtThisCourtUrl }}"
-         class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener"
-         target="_blank">{{ text.hearingsAtThisCourtUrlText }} {{ text.opensInNewTab }}</a>, {{ text.hearingsAtThisCourtBody }}
-    </p>
+      <h3 class="govuk-heading-s govuk-!-margin-bottom-2">{{ text.hearingsAtThisCourt }}</h3>
+      <p class="govuk-body">
+        <a href="{{ text.hearingsAtThisCourtUrl }}"
+           class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener"
+           target="_blank">{{ text.hearingsAtThisCourtUrlText }} {{ text.opensInNewTab }}</a>, {{ text.hearingsAtThisCourtBody }}
+      </p>
+    {% endif %}
 
     <h3 class="govuk-heading-s govuk-!-margin-bottom-2">{{ text.scammers }}</h3>
     <p class="govuk-body">
