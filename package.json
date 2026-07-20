@@ -36,7 +36,7 @@
     "@hmcts/info-provider": "1.4.0",
     "@hmcts/nodejs-healthcheck": "1.8.6",
     "@hmcts/nodejs-logging": "4.0.4",
-    "@hmcts/properties-volume": "1.4.0",
+    "@hmcts/properties-volume": "1.4.1",
     "@types/cookie-parser": "1.4.10",
     "@types/express": "5.0.6",
     "@types/express-session": "1.19.0",
