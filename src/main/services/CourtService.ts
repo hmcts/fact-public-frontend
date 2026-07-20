@@ -3,6 +3,8 @@ import { DateTime } from 'luxon';
 import { Court, courtAddressTypeSchema } from '../schemas/courtSchema';
 import { hasText } from '../utils/stringUtils';
 
+import { LocationDisplayService } from './LocationDisplayService';
+
 type OpeningHourEntry = {
   dayOfWeek: string;
   openingHour: string;
@@ -28,6 +30,7 @@ type CounterService = {
 const DAY_ORDER = ['EVERYDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'] as const;
 
 const DAY_RANK: Map<string, number> = new Map(DAY_ORDER.map((day, index) => [day, index]));
+const locationDisplayService = new LocationDisplayService();
 
 export type CourtViewModel = Court & {
   openingHoursByType: OpeningHourGroup[];
@@ -60,7 +63,7 @@ export class CourtService {
    * Formats the last updated timestamp into a human-readable date string.
    */
   private formatLastUpdateDate(timestamp: string, language: string): string {
-    return DateTime.fromISO(timestamp, { zone: 'Europe/London' }).setLocale(language).toFormat('d LLLL yyyy');
+    return locationDisplayService.formatLastUpdateDate(timestamp, language);
   }
 
   /**
@@ -80,9 +83,7 @@ export class CourtService {
    * Builds the address lines for display, skipping empty values.
    */
   private buildAddressLines(address: Court['courtAddresses'][number]): string[] {
-    return [address.addressLine1, address.addressLine2, address.townCity, address.county, address.postcode].filter(
-      hasText
-    );
+    return locationDisplayService.buildAddressLines(address);
   }
 
   /**
@@ -96,11 +97,7 @@ export class CourtService {
    * Builds the Google Maps directions link for visit addresses when coordinates are present.
    */
   private buildDirectionsUrl(address: Court['courtAddresses'][number]): string | null {
-    if (address.addressType !== courtAddressTypeSchema.enum.VISIT_US || address.lat === null || address.lon === null) {
-      return null;
-    }
-
-    return `https://www.google.com/maps?q=${address.lat},${address.lon}`;
+    return locationDisplayService.buildDirectionsUrl(address);
   }
 
   /**

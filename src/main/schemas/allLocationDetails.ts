@@ -116,6 +116,7 @@ export const serviceCentreDetailsSchema = z.object({
   slug: z.string(),
   open: z.boolean().nullable().optional(),
   warningNotice: nullableStringSchema,
+  warningNoticeCy: nullableStringSchema,
   createdAt: nullableStringSchema,
   lastUpdatedAt: nullableStringSchema,
   regionId: z.string().nullable().optional(),
