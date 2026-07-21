@@ -34,6 +34,8 @@ export type ServiceCentreDetails = {
   slug: string;
   open?: boolean;
   warningNotice?: string | null;
+  warningNoticeCy?: string | null;
+  lastUpdatedAt?: string | null;
   [key: string]: unknown;
 };
 

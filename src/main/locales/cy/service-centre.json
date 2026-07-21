@@ -1,0 +1,43 @@
+{
+  "pageLastReviewed": "Adolygwyd y dudalen hon ddiwethaf ar:",
+  "pageTitleSuffix": "Dod o hyd i Lys neu Dribiwnlys - GOV.UK",
+  "warningFallbackText": "Rhybudd",
+  "addresses": {
+    "heading": "Cyfeiriad",
+    "addressTypes": {
+      "VISIT_US": "Ewch i",
+      "WRITE_TO_US": "Anfonwch ddogfennau i",
+      "VISIT_OR_CONTACT_US": "Ewch i ac anfonwch ddogfennau i"
+    },
+    "getDirectionsLink": "Cael cyfarwyddiadau (yn agor mewn tab newydd)"
+  },
+  "accordion": {
+    "contactDetailsHeading": "Manylion cyswllt",
+    "casesHeardHeading": "Achosion a wrandawyd",
+    "showSection": "Dangos",
+    "hideSection": "Cuddio",
+    "showAllSections": "Dangos pob adran",
+    "hideAllSections": "Cuddio pob adran"
+  },
+  "contactDetails": {
+    "telephone": "Rhif ffôn",
+    "email": "E-bost"
+  },
+  "casesHeard": {
+    "intro": "Y mathau o achosion sy'n cael eu gwrando yn y lleoliad hwn.",
+    "opensInNewTab": "(yn agor mewn tab newydd)"
+  },
+  "usefulInformation": {
+    "mainHeading": "Gwybodaeth ddefnyddiol",
+    "scammers": "Sgamwyr",
+    "scammersBodyPrefix": "Mae rhai sgamwyr yn cogio eu bod yn gweithio i GLlTEF neu'r adran orfodaeth.",
+    "scammersUrl": "https://www.gov.uk/government/news/scammers-using-hmcts-telephone-numbers",
+    "scammersUrlText": "Darganfyddwch beth i'w wneud os gofynnir i chi am arian ac nad ydych yn siŵr a yw'n ddilys",
+    "opensInNewTab": "(yn agor mewn tab newydd)"
+  },
+  "closed": {
+    "title": "{name} - Dod o hyd i lys neu dribiwnlys - GOV.UK",
+    "p1": "Nid yw'r ganolfan gwasanaeth hon yn weithredol mwyach.",
+    "linkText": "Chwilio am lys, tribiwnlys neu ganolfan gwasanaeth arall"
+  }
+}
