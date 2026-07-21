@@ -22,6 +22,7 @@ const buildCourt = (open: boolean) => ({
   slug: 'test-court',
   open,
   warningNotice: null,
+  warningNoticeCy: null,
   lastUpdatedAt: '2024-01-01T00:00:00.000Z',
   openOnCath: null,
   mrdId: null,
