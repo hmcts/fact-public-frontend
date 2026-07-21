@@ -1,7 +1,8 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
-{% macro informationForProfessionals(courtCodes, courtProfessionalInformation, courtDxCodes, courtFaxNumbers, text) %}
+{% macro informationForProfessionals(courtCodes, courtProfessionalInformation, courtDxCodes, courtFaxNumbers, text, language) %}
   <section id="information-for-professionals">
+    {% set isWelsh = language == 'cy' %}
     {% set code = courtCodes[0] if courtCodes and courtCodes.length else null %}
     {% set info = courtProfessionalInformation[0] if courtProfessionalInformation and courtProfessionalInformation.length else null %}
     {% set rows = [] %}
@@ -26,10 +27,11 @@
     {% endif %}
 
     {% for dx in courtDxCodes %}
+      {% set explanation = dx.explanationCy if isWelsh and dx.explanationCy and dx.explanationCy | trim else dx.explanation %}
       {% set dxHtml %}
         <p class="govuk-body">{{ dx.dxCode }}</p>
-        {% if dx.explanation and dx.explanation | trim %}
-          <p class="govuk-hint">{{ dx.explanation }}</p>
+        {% if explanation and explanation | trim %}
+          <p class="govuk-hint">{{ explanation }}</p>
         {% endif %}
       {% endset %}
 
@@ -37,10 +39,11 @@
     {% endfor %}
 
     {% for fax in courtFaxNumbers %}
+      {% set description = fax.descriptionCy if isWelsh and fax.descriptionCy and fax.descriptionCy | trim else fax.description %}
       {% set faxHtml %}
         <p class="govuk-body">{{ fax.faxNumber }}</p>
-        {% if fax.description and fax.description | trim %}
-          <p class="govuk-hint">{{ fax.description }}</p>
+        {% if description and description | trim %}
+          <p class="govuk-hint">{{ description }}</p>
         {% endif %}
       {% endset %}
 
