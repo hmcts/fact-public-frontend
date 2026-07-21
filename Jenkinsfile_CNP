@@ -11,7 +11,22 @@ def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
 withPipeline(type, product, component) {
   env.DATA_API_URL = 'https://fact-data-api-pr-305.preview.platform.hmcts.net/'
   afterSuccess('akschartsinstall') {
-    yarnBuilder.yarn('playwright install')
     yarnBuilder.yarn('build')
+  }
+
+  before('smoketest:preview') {
+    yarnBuilder.yarn('playwright install')
+  }
+
+  before('smoketest:aat') {
+    yarnBuilder.yarn('playwright install')
+  }
+
+  before('functionalTest:preview') {
+    yarnBuilder.yarn('playwright install')
+  }
+
+  before('functionalTest:aat') {
+    yarnBuilder.yarn('playwright install')
   }
 }
