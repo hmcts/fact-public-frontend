@@ -23,6 +23,7 @@ export type CourtTestData = {
   apiContext: APIRequestContext;
   defaultCourt: CourtData;
   warningNoticeCourt: CourtData;
+  warningNoticeCyCourt: CourtData;
   translationCourt: CourtData;
   noTranslationCourt: CourtData;
   noEnquiriesCourt: CourtData;
@@ -46,6 +47,7 @@ export async function createCourtTestData(playwright: PlaywrightLike, suiteLabel
   const prefixes = {
     defaultCourt: `${FUNCTIONAL_TEST_RUN_PREFIX} ${suiteLabel} Test Court ${uniqueSuffix}`,
     warningNoticeCourt: `${FUNCTIONAL_TEST_RUN_PREFIX} ${suiteLabel} Warning Notice Test Court ${uniqueSuffix}`,
+    warningNoticeCyCourt: `${FUNCTIONAL_TEST_RUN_PREFIX} ${suiteLabel} Welsh Warning Notice Test Court ${uniqueSuffix}`,
     translationCourt: `${FUNCTIONAL_TEST_RUN_PREFIX} ${suiteLabel} Translation Test Court ${uniqueSuffix}`,
     noTranslationCourt: `${FUNCTIONAL_TEST_RUN_PREFIX} ${suiteLabel} No Translation Test Court ${uniqueSuffix}`,
     noEnquiriesCourt: `${FUNCTIONAL_TEST_RUN_PREFIX} ${suiteLabel} No Enquiries Test Court ${uniqueSuffix}`,
@@ -54,6 +56,7 @@ export async function createCourtTestData(playwright: PlaywrightLike, suiteLabel
   const cleanup = async (): Promise<void> => {
     await deleteCourtsByPrefix(apiContext, prefixes.defaultCourt);
     await deleteCourtsByPrefix(apiContext, prefixes.warningNoticeCourt);
+    await deleteCourtsByPrefix(apiContext, prefixes.warningNoticeCyCourt);
     await deleteCourtsByPrefix(apiContext, prefixes.translationCourt);
     await deleteCourtsByPrefix(apiContext, prefixes.noTranslationCourt);
     await deleteCourtsByPrefix(apiContext, prefixes.noEnquiriesCourt);
@@ -69,6 +72,11 @@ export async function createCourtTestData(playwright: PlaywrightLike, suiteLabel
       courtName: prefixes.warningNoticeCourt,
       open: true,
       addWarningNotice: true,
+    });
+    const warningNoticeCyCourt = await createCourtData(apiContext, {
+      courtName: prefixes.warningNoticeCyCourt,
+      open: true,
+      addWarningNoticeCy: true,
     });
     const translationCourt = await createCourtData(apiContext, {
       courtName: prefixes.translationCourt,
@@ -90,6 +98,7 @@ export async function createCourtTestData(playwright: PlaywrightLike, suiteLabel
       apiContext,
       defaultCourt,
       warningNoticeCourt,
+      warningNoticeCyCourt,
       translationCourt,
       noTranslationCourt,
       noEnquiriesCourt,
