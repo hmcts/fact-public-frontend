@@ -157,6 +157,7 @@ export const courtSchema = z.object({
   slug: z.string(),
   open: z.boolean(),
   warningNotice: z.string().nullable(),
+  warningNoticeCy: z.string().nullable(),
   lastUpdatedAt: z.string(),
   openOnCath: z.boolean().nullable(),
   mrdId: z.string().nullable(),

@@ -7,6 +7,7 @@ const baseCourt: Court = {
   slug: 'test-court',
   open: true,
   warningNotice: null,
+  warningNoticeCy: null,
   lastUpdatedAt: '2024-01-15T10:00:00.000Z',
   openOnCath: null,
   mrdId: null,
@@ -396,6 +397,20 @@ describe('CourtService', () => {
     expect(address.formattedAddressLines).toEqual(['Line 1', 'Town', 'AB1 2CD']);
     expect(address.formattedAddressTags).toEqual(['Civil', 'Crown']);
     expect(address.directionsUrl).toBe('https://www.google.com/maps?q=51.5,-0.1');
+  });
+
+  test('keeps warning notices in the view model', () => {
+    const service = new CourtService();
+    const court: Court = {
+      ...baseCourt,
+      warningNotice: 'English warning notice message',
+      warningNoticeCy: 'Neges rhybudd Cymraeg',
+    };
+
+    const viewModel = service.formatData(court, 'cy');
+
+    expect(viewModel.warningNotice).toBe('English warning notice message');
+    expect(viewModel.warningNoticeCy).toBe('Neges rhybudd Cymraeg');
   });
 
   test('returns Welsh opening hour type name when language is cy', () => {
