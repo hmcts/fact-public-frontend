@@ -67,7 +67,7 @@ export class CourtPage extends Base {
 
   async expectCourtPhotoToBeVisible(fileLink: string, altText: string): Promise<void> {
     await expect(this.courtPhoto).toBeVisible();
-    await expect(this.courtPhoto).toHaveAttribute('src', fileLink);
+    await expect(this.courtPhoto).toHaveAttribute('src', new RegExp(String.raw`${fileLink}\?.+`));
     await expect(this.courtPhoto).toHaveAttribute('alt', altText);
   }
 

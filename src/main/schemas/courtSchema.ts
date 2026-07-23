@@ -148,10 +148,24 @@ const courtAccessibilityOptionSchema = z.object({
   quietRoom: z.boolean(),
 });
 
-const courtPhotoSchema = z.object({
-  fileLink: z.string(),
-  lastUpdatedAt: z.string(),
-});
+const courtPhotoSchema = z
+  .object({
+    fileLink: z.string(),
+    lastUpdatedAt: z.string(),
+  })
+  .transform(courtPhoto => ({
+    fileLink: addCacheBuster(courtPhoto.fileLink),
+  }));
+
+function addCacheBuster(fileLink: string | null | undefined): string | undefined {
+  if (!fileLink) {
+    return undefined;
+  }
+
+  const url = new URL(fileLink);
+  url.searchParams.set('cacheBust', crypto.randomUUID());
+  return url.toString();
+}
 
 export const courtSchema = z.object({
   id: z.string(),
