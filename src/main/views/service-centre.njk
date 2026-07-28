@@ -43,7 +43,12 @@
       {% endif %}
       <hr class="govuk-section-break govuk-section-break--m">
 
-      {{ renderAddresses(serviceCentre.serviceCentreAddresses, addresses) }}
+      <h2 class="govuk-heading-m">{{ addresses.heading }}</h2>
+      {% if serviceCentre.serviceCentreAddresses and serviceCentre.serviceCentreAddresses | length > 0 %}
+        {{ renderAddresses(serviceCentre.serviceCentreAddresses, addresses) }}
+      {% else %}
+        <p class="govuk-body"> {{ addresses.noAddressFound}}</p>
+      {% endif %}
       <hr class="govuk-section-break govuk-section-break--m">
 
       {{ renderUsefulInformation(usefulInformation, false) }}

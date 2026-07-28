@@ -4,6 +4,7 @@
   "warningFallbackText": "Warning",
   "addresses": {
     "heading": "Address",
+    "noAddressFound": "This service centre does not have an address for visiting or sending documents to.",
     "addressTypes": {
       "VISIT_US": "Visit",
       "WRITE_TO_US": "Send documents to",

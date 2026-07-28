@@ -4,6 +4,7 @@
   "warningFallbackText": "Rhybudd",
   "addresses": {
     "heading": "Cyfeiriad",
+    "noAddressFound": "Nid oes gan y ganolfan gwasanaethau hon gyfeiriad ar gyfer ymweld â hi neu anfon dogfennau iddi.",
     "addressTypes": {
       "VISIT_US": "Ewch i",
       "WRITE_TO_US": "Anfonwch ddogfennau i",
