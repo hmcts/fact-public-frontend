@@ -14,8 +14,6 @@ nodejs:
       averageUtilization: 70
     memory:
       enabled: false
-  pdb:
-    minAvailable: 1
   image: 'hmctsprod.azurecr.io/fact/public-frontend:latest'
   ingressHost: fact-public-frontend.{{ .Values.global.environment }}.platform.hmcts.net
   aadIdentityName: fact
