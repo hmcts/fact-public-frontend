@@ -41,12 +41,13 @@
           iconFallbackText: warningFallbackText
         }) }}
       {% endif %}
+
       <hr class="govuk-section-break govuk-section-break--m">
 
-      <h2 class="govuk-heading-m">{{ addresses.heading }}</h2>
       {% if serviceCentre.serviceCentreAddresses and serviceCentre.serviceCentreAddresses | length > 0 %}
         {{ renderAddresses(serviceCentre.serviceCentreAddresses, addresses) }}
       {% else %}
+        <h2 class="govuk-heading-m">{{ addresses.heading }}</h2>
         <p class="govuk-body"> {{ addresses.noAddressFound}}</p>
       {% endif %}
       <hr class="govuk-section-break govuk-section-break--m">
