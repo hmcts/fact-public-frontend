@@ -51,6 +51,15 @@ const buildCourtWithLiftSupportPhoneNumber = (liftSupportPhoneNumber: unknown) =
 });
 
 describe('courtSchema - liftSupportPhoneNumber', () => {
+  it('accepts NONE as hearing enhancement equipment', () => {
+    const data = buildCourtWithLiftSupportPhoneNumber(null);
+    data.courtAccessibilityOptions[0].hearingEnhancementEquipment = 'NONE';
+
+    const result = courtSchema.safeParse(data);
+
+    expect(result.success).toBe(true);
+  });
+
   it('accepts a string value', () => {
     const result = courtSchema.safeParse(buildCourtWithLiftSupportPhoneNumber('02070000000'));
 
