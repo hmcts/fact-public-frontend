@@ -142,4 +142,11 @@ describe('Service centre page', () => {
     expect(html).not.toContain('href="tel:');
     expect(html).not.toContain('govuk-list--bullet');
   });
+
+  test('renders a fallback message when service-centre addresses are empty', () => {
+    const html = renderPage(en, 'en', { serviceCentreAddresses: [] });
+
+    expect(html).toContain(en.addresses.noAddressFound);
+    expect(html).not.toContain('1 Service Street');
+  });
 });
