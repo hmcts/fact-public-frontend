@@ -131,6 +131,7 @@ const hearingEnhancementEquipmentSchema = z.enum([
   'INFRARED_SYSTEMS_AND_HEARING_LOOP_SYSTEMS',
   'INFRARED_SYSTEMS',
   'HEARING_LOOP_SYSTEMS',
+  'NONE',
 ]);
 
 const courtAccessibilityOptionSchema = z.object({

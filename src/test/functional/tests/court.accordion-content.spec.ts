@@ -473,7 +473,7 @@ test.describe('Court Page Accordion Content', () => {
       } else {
         await courtPage.expectAccordionSectionContent(
           'Accessibility',
-          'No accessible parking at the court. Check with the local authority for nearby options.'
+          'No accessible parking at the court. Check with the court for options.'
         );
       }
       if (options.accessibleEntrance) {
@@ -496,6 +496,7 @@ test.describe('Court Page Accordion Content', () => {
             'Infrared systems and hearing loop systems are available at this court.',
           HEARING_LOOP_SYSTEMS: 'Hearing loop systems are available at this court.',
           INFRARED_SYSTEMS: 'Infrared systems are available at this court.',
+          NONE: 'No hearing enhancement equipment is available at this court',
         };
         await courtPage.expectAccordionSectionContent(
           'Accessibility',
@@ -579,7 +580,10 @@ test.describe('Court Page Accordion Content', () => {
           await courtPage.expectAccordionSectionContent('Hygyrchedd', options.accessibleParkingPhoneNumber);
         }
       } else {
-        await courtPage.expectAccordionSectionContent('Hygyrchedd', 'Nid oes parcio hygyrch yn y llys.');
+        await courtPage.expectAccordionSectionContent(
+          'Hygyrchedd',
+          "Nid oes parcio hygyrch yn y llys. Holwch efo'r llys am opsiynau."
+        );
       }
       if (options.accessibleEntrance) {
         await courtPage.expectAccordionSectionContent(
@@ -600,6 +604,7 @@ test.describe('Court Page Accordion Content', () => {
           INFRARED_SYSTEMS_AND_HEARING_LOOP_SYSTEMS: 'Mae systemau isgoch a systemau dolen glyw ar gael yn y llys hwn.',
           HEARING_LOOP_SYSTEMS: 'Mae systemau dolen glyw ar gael yn y llys hwn.',
           INFRARED_SYSTEMS: 'Mae systemau isgoch ar gael yn y llys hwn.',
+          NONE: 'Nid oes offer gwella clyw ar gael yn y llys hwn.',
         };
         await courtPage.expectAccordionSectionContent('Hygyrchedd', equipmentMap[options.hearingEnhancementEquipment]);
       }

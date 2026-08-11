@@ -12,6 +12,7 @@
       <h1 class="govuk-heading-xl">{% if serviceName %} {{ serviceName }} {% endif %}</h1>
 
       <p class="govuk-body-m">{{ main.intro }}</p>
+      <p class="govuk-body-m">{{ main.list_intro }}</p>
       <ul class="govuk-list govuk-list--bullet">
         {% for bullet in main.bullets %}
           <li>{{ bullet }}</li>

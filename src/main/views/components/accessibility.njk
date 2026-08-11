@@ -67,8 +67,10 @@
         {% set hearingText = text.hearingEnhancementInfraredAndLoop %}
       {% elseif options.hearingEnhancementEquipment == "INFRARED_SYSTEMS" %}
         {% set hearingText = text.hearingEnhancementInfrared %}
-      {% else %}
+      {% elseif options.hearingEnhancementEquipment == "HEARING_LOOP_SYSTEMS" %}
         {% set hearingText = text.hearingEnhancementLoop %}
+      {% elseif options.hearingEnhancementEquipment == "NONE" %}
+        {% set hearingText = text.hearingEnhancementNone %}
       {% endif %}
       {% set rows = rows.concat([{ key: { text: text.hearingEnhancementLabel }, value: { text: hearingText } }]) %}
 

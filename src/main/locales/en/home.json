@@ -2,6 +2,7 @@
   "pageTitle": "Find a Court or Tribunal - GOV.UK",
   "main": {
     "intro": "Use this service to find a court or tribunal in England and Wales",
+    "list_intro": "You can find the following details:",
     "bullets": [
       "address",
       "contact details",
