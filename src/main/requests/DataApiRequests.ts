@@ -20,6 +20,7 @@ import { CourtWithDistance, courtWithDistanceSchema } from '../schemas/courtWith
 import { SearchResult, searchResultSchema } from '../schemas/searchResult';
 
 import { dataApi } from './utils/axiosConfig';
+import { toSafeErrorDetails } from './utils/safeErrorDetails';
 
 const logger = Logger.getLogger('app');
 
@@ -33,7 +34,7 @@ export class DataApiRequests {
       logger.info('Data API health check response:', response.data);
       return response.data.status === 'UP';
     } catch (error) {
-      logger.error('Error checking data API health:', error);
+      logger.error('Error checking data API health:', toSafeErrorDetails(error));
     }
     return false;
   }
@@ -48,7 +49,7 @@ export class DataApiRequests {
       const response = await dataApi.get(`/courts/slug/${slug}/v1`);
       return courtSchema.parse(response.data);
     } catch (error: unknown) {
-      logger.error(`Error fetching court details for slug ${slug}:`, error);
+      logger.error(`Error fetching court details for slug ${slug}:`, toSafeErrorDetails(error));
       return isAxiosError(error) && error.response?.status
         ? (error.response.status as HttpStatusCode)
         : HttpStatusCode.InternalServerError;
@@ -65,7 +66,7 @@ export class DataApiRequests {
       const response = await dataApi.get(`/service-centres/slug/${slug}/v1`);
       return serviceCentreDetailsSchema.parse(response.data);
     } catch (error: unknown) {
-      logger.error(`Error fetching service-centre details for slug ${slug}:`, error);
+      logger.error(`Error fetching service-centre details for slug ${slug}:`, toSafeErrorDetails(error));
       return isAxiosError(error) && error.response?.status
         ? (error.response.status as HttpStatusCode)
         : HttpStatusCode.InternalServerError;
@@ -80,7 +81,7 @@ export class DataApiRequests {
       const response = await dataApi.get('/all/details.json');
       return allLocationDetailsSchema.array().parse(response.data);
     } catch (error: unknown) {
-      logger.error('Error fetching location details:', error);
+      logger.error('Error fetching location details:', toSafeErrorDetails(error));
       return isAxiosError(error) && error.response?.status
         ? (error.response.status as HttpStatusCode)
         : HttpStatusCode.InternalServerError;
@@ -96,7 +97,7 @@ export class DataApiRequests {
       const response = await dataApi.get('search/courts/v1/name', { params: { q: query } });
       return courtSearchResultSchema.array().parse(response.data);
     } catch (error: unknown) {
-      logger.error(`Error fetching courts for query ${query}:`, error);
+      logger.error(`Error fetching courts for query ${query}:`, toSafeErrorDetails(error));
       return isAxiosError(error) && error.response?.status
         ? (error.response.status as HttpStatusCode)
         : HttpStatusCode.InternalServerError;
@@ -111,7 +112,7 @@ export class DataApiRequests {
       const response = await dataApi.get('/search/services/v1');
       return serviceSchema.array().parse(response.data);
     } catch (error: unknown) {
-      logger.error('Error fetching service details:', error);
+      logger.error('Error fetching service details:', toSafeErrorDetails(error));
       return isAxiosError(error) && error.response?.status
         ? (error.response.status as HttpStatusCode)
         : HttpStatusCode.InternalServerError;
@@ -128,7 +129,7 @@ export class DataApiRequests {
       const response = await dataApi.get('/search/services/v1/' + serviceName + '/service-areas');
       return serviceAreaSchema.array().parse(response.data);
     } catch (error: unknown) {
-      logger.error('Error fetching service area details:', error);
+      logger.error('Error fetching service area details:', toSafeErrorDetails(error));
       return isAxiosError(error) && error.response?.status
         ? (error.response.status as HttpStatusCode)
         : HttpStatusCode.InternalServerError;
@@ -144,7 +145,7 @@ export class DataApiRequests {
     try {
       return (await dataApi.get('/search/courts/v1/prefix', { params: { prefix } })).data;
     } catch (error: unknown) {
-      logger.error(`Error fetching court details for prefix ${prefix}:`, error);
+      logger.error(`Error fetching court details for prefix ${prefix}:`, toSafeErrorDetails(error));
       return isAxiosError(error) && error.response?.status
         ? (error.response.status as HttpStatusCode)
         : HttpStatusCode.InternalServerError;
@@ -163,7 +164,7 @@ export class DataApiRequests {
       const response = await dataApi.get(`/search/service-area/v1/${serviceAreaName}`);
       return serviceAreaSearchResultSchema.array().parse(response.data);
     } catch (error: unknown) {
-      logger.error('Error fetching court service area details:', error);
+      logger.error('Error fetching court service area details:', toSafeErrorDetails(error));
       return isAxiosError(error) && error.response?.status
         ? (error.response.status as HttpStatusCode)
         : HttpStatusCode.InternalServerError;
@@ -200,7 +201,7 @@ export class DataApiRequests {
       const response = await dataApi.get('/search/locations/v1/postcode', config);
       return searchResultSchema.array().parse(response.data);
     } catch (error: unknown) {
-      logger.error('Error fetching postcode search results:', error);
+      logger.error('Error fetching postcode search results:', toSafeErrorDetails(error));
       return isAxiosError(error) && error.response?.status
         ? (error.response.status as HttpStatusCode)
         : HttpStatusCode.InternalServerError;
@@ -222,7 +223,7 @@ export class DataApiRequests {
       const response = await dataApi.get('/search/courts/v1/postcode', config);
       return courtWithDistanceSchema.array().parse(response.data);
     } catch (error: unknown) {
-      logger.error('Error fetching postcode search results:', error);
+      logger.error('Error fetching postcode search results:', toSafeErrorDetails(error));
       return isAxiosError(error) && error.response?.status
         ? (error.response.status as HttpStatusCode)
         : HttpStatusCode.InternalServerError;
