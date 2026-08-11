@@ -1,5 +1,6 @@
 import { env } from '../helpers/nunjucksEnv';
 
+const welshI18n = require('../../../../main/locales/cy/court.json');
 const i18n = require('../../../../main/locales/en/court.json');
 
 describe('Accessibility macro', () => {
@@ -75,5 +76,40 @@ describe('Accessibility macro', () => {
     expect(html).toContain(i18n.accessibility.hearingEnhancementLoop);
     expect(html).toContain(i18n.accessibility.liftUnavailableFallback);
     expect(html).toContain(i18n.accessibility.quietRoomUnavailable);
+  });
+
+  test.each([
+    ['en', i18n.accessibility, i18n.accessibility.hearingEnhancementNone],
+    ['cy', welshI18n.accessibility, welshI18n.accessibility.hearingEnhancementNone],
+  ])('renders explicit no-equipment text in %s', (language, accessibilityText, expectedText) => {
+    const template = `
+      {% from "components/accessibility.njk" import accessibility %}
+      {{ accessibility(enquiriesPhoneNumber, accessibilityOptions, accessibilityText, language) }}
+    `;
+
+    const html = env.renderString(template, {
+      language,
+      enquiriesPhoneNumber: '',
+      accessibilityText,
+      accessibilityOptions: [
+        {
+          accessibleParking: true,
+          accessibleParkingPhoneNumber: null,
+          accessibleToiletDescription: '',
+          accessibleToiletDescriptionCy: '',
+          accessibleEntrance: true,
+          accessibleEntrancePhoneNumber: null,
+          hearingEnhancementEquipment: 'NONE',
+          lift: false,
+          liftDoorWidth: null,
+          liftDoorLimit: null,
+          liftSupportPhoneNumber: null,
+          quietRoom: false,
+        },
+      ],
+    });
+
+    expect(html).toContain(expectedText);
+    expect(html).not.toContain(i18n.accessibility.hearingEnhancementLoop);
   });
 });
