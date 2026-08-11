@@ -1,6 +1,16 @@
-import { Logger } from '@hmcts/nodejs-logging';
 import { HttpStatusCode } from 'axios';
 import { type SinonSandbox, createSandbox } from 'sinon';
+
+const mockDataApiLogger = {
+  error: jest.fn(),
+  info: jest.fn(),
+};
+
+jest.mock('@hmcts/nodejs-logging', () => ({
+  Logger: {
+    getLogger: jest.fn().mockReturnValue(mockDataApiLogger),
+  },
+}));
 
 import { DataApiRequests } from '../../../main/requests/DataApiRequests';
 import { dataApi } from '../../../main/requests/utils/axiosConfig';
@@ -38,20 +48,61 @@ const validCourt = {
   courtPhotos: [],
 };
 
+function expectedAxiosError(status: HttpStatusCode, method: string, path: string) {
+  return {
+    name: 'AxiosError',
+    method: method.toUpperCase(),
+    requestPath: path,
+    message: `Request failed with status code ${status}`,
+    status,
+  };
+}
+
 describe('DataApiRequests', () => {
   let sandbox: SinonSandbox;
   let requests: DataApiRequests;
 
   beforeEach(() => {
+    jest.clearAllMocks();
     sandbox = createSandbox();
     requests = new DataApiRequests();
-    const appLogger = Logger.getLogger('app');
-    sandbox.stub(appLogger, 'info');
-    sandbox.stub(appLogger, 'error');
   });
 
   afterEach(() => {
     sandbox.restore();
+  });
+
+  describe('safeLogging', () => {
+    it('logs error details without sensitive information', async () => {
+      sandbox
+        .stub(dataApi, 'get')
+        .withArgs('/courts/slug/test-slug/v1')
+        .rejects({
+          isAxiosError: true,
+          name: 'AxiosError',
+          message: 'Request failed with status code 503',
+          config: {
+            method: 'get',
+            url: 'https://data-api.example.test/courts/slug/test-slug/v1',
+            headers: {
+              Authorization: 'Bearer secret-token',
+            },
+          },
+          response: {
+            status: HttpStatusCode.ServiceUnavailable,
+            data: {
+              'sensitive data': 'should not be logged',
+            },
+          },
+        });
+
+      await expect(requests.getCourtDetails('test-slug')).resolves.toBe(HttpStatusCode.ServiceUnavailable);
+
+      expect(mockDataApiLogger.error).toHaveBeenCalledWith(
+        'Error fetching court details for slug test-slug:',
+        expectedAxiosError(HttpStatusCode.ServiceUnavailable, 'GET', '/courts/slug/test-slug/v1')
+      );
+    });
   });
 
   describe('checkHealth', () => {
