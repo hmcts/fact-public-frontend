@@ -1,4 +1,4 @@
-import { EnvironmentCredential } from '@azure/identity';
+import { ClientSecretCredential } from '@azure/identity';
 import { Mutex } from 'async-mutex';
 import { InternalAxiosRequestConfig, create } from 'axios';
 import config from 'config';
@@ -8,6 +8,9 @@ const tokenMutex = new Mutex();
 const OPEN_URLS = new Set<string>(['/health']);
 
 const apiAppRegId: string = config.get('secrets.fact-kv.API_APP_REG_ID');
+const clientAppRegId: string = config.get('secrets.fact-kv.FRONTEND_APP_REG_ID');
+const clientSecret: string = config.get('secrets.fact-kv.FRONTEND_APP_REG_SECRET');
+const tenantId: string = process.env.AZURE_TENANT_ID || '';
 
 export const dataApiUrl = process.env.DATA_API_URL || 'http://localhost:8989';
 
@@ -22,7 +25,7 @@ let cachedToken: string | null = null;
 function getToken(): Promise<string> {
   return tokenMutex.runExclusive(async () => {
     if (!cachedToken || Date.now() > cachedTokenRefreshTS) {
-      const cred = new EnvironmentCredential();
+      const cred = new ClientSecretCredential(tenantId, clientAppRegId, clientSecret);
 
       const at = await cred.getToken(`api://${apiAppRegId}/.default`);
 
