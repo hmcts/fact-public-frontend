@@ -4,10 +4,10 @@ module.exports = {
   testEnvironment: 'node',
   testRunner: 'jest-circus/runner',
   transform: {
-    '^.+\\.(ts?)$': ['ts-jest', { tsconfig: 'tsconfig.jest.json' }],
-    '^.+\\.(js?)$': 'babel-jest',
+    '^.+\\.ts$': 'ts-jest',
+    '^.+\\.js$': 'babel-jest',
   },
-  transformIgnorePatterns: ['/node_modules/(?!uuid)/'],
+  transformIgnorePatterns: ['/node_modules/(?!chai|uuid)'],
   moduleFileExtensions: ['ts', 'js', 'json'],
   reporters: [
     'default',

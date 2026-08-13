@@ -27,12 +27,20 @@ src/main/views/govuk
 coverage/
 smoke-output/
 functional-output/
-playwright-report/
-test-results/
 version
 
 .eslintcache
 
 .yarn/*
 !.yarn/releases
+
+# Playwright
+test-results/
+playwright-report/
+src/test/functional/.sessions/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
+
+# Local environment
 .env
