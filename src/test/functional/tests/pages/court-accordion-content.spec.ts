@@ -1,8 +1,6 @@
-import { expect, test } from '@playwright/test';
-
-import { CourtTestData, createCourtTestData } from '../helpers/courtTestData';
-import { getContactName, getEnquiriesPhoneNumber, hasText, isPhoneLikeValue } from '../helpers/courtTestUtils';
-import { CourtPage } from '../page-objects/CourtPage';
+import { expect, test } from '../../fixtures';
+import { CourtTestData, createCourtTestData } from '../../helpers/courtTestData';
+import { getContactName, getEnquiriesPhoneNumber, hasText, isPhoneLikeValue } from '../../helpers/courtTestUtils';
 
 const SECTION_HEADINGS = {
   usefulInformationEn: 'Useful Information',
@@ -44,7 +42,7 @@ type ContactWithNames = {
   names: NonNullable<ReturnType<typeof getContactName>>;
 };
 
-test.describe('Court Page Accordion Content', () => {
+test.describe('Court Page Accordion Content', { tag: '@functional' }, () => {
   let courtData!: CourtTestData;
 
   test.beforeAll(async ({ playwright }) => {
@@ -57,8 +55,7 @@ test.describe('Court Page Accordion Content', () => {
     }
   });
 
-  test('should verify "Useful Information" section content', async ({ page }) => {
-    const courtPage = new CourtPage(page);
+  test('should verify "Useful Information" section content', async ({ courtPage }) => {
     await courtPage.goto(courtData.defaultCourt.slug);
     await courtPage.expectStaticSectionContent(
       SECTION_HEADINGS.usefulInformationEn,
@@ -74,8 +71,7 @@ test.describe('Court Page Accordion Content', () => {
     );
   });
 
-  test('should verify "Useful Information" section links', async ({ page }) => {
-    const courtPage = new CourtPage(page);
+  test('should verify "Useful Information" section links', async ({ courtPage }) => {
     await courtPage.goto(courtData.defaultCourt.slug);
     await courtPage.expectStaticSectionLinkToHaveAttributes(
       SECTION_HEADINGS.usefulInformationEn,
@@ -106,8 +102,9 @@ test.describe('Court Page Accordion Content', () => {
     );
   });
 
-  test('should verify "Useful Information" "Gwybodaeth ddefnyddiol" section content in Welsh', async ({ page }) => {
-    const courtPage = new CourtPage(page);
+  test('should verify "Useful Information" "Gwybodaeth ddefnyddiol" section content in Welsh', async ({
+    courtPage,
+  }) => {
     await courtPage.goto(courtData.defaultCourt.slug, 'cy');
     await courtPage.expectStaticSectionContent(
       SECTION_HEADINGS.usefulInformationCy,
@@ -123,8 +120,7 @@ test.describe('Court Page Accordion Content', () => {
     );
   });
 
-  test('should verify "Useful Information" section links in Welsh', async ({ page }) => {
-    const courtPage = new CourtPage(page);
+  test('should verify "Useful Information" section links in Welsh', async ({ courtPage }) => {
     await courtPage.goto(courtData.defaultCourt.slug, 'cy');
     await courtPage.expectStaticSectionLinkToHaveAttributes(
       SECTION_HEADINGS.usefulInformationCy,
@@ -155,16 +151,14 @@ test.describe('Court Page Accordion Content', () => {
     );
   });
 
-  test('should verify all accordion sections are present', async ({ page }) => {
-    const courtPage = new CourtPage(page);
+  test('should verify all accordion sections are present', async ({ courtPage }) => {
     await courtPage.goto(courtData.defaultCourt.slug);
     for (const section of ACCORDION_SECTIONS) {
       await courtPage.expectAccordionSectionVisible(section);
     }
   });
 
-  test('should open all accordion sections when "Show all sections" button is clicked', async ({ page }) => {
-    const courtPage = new CourtPage(page);
+  test('should open all accordion sections when "Show all sections" button is clicked', async ({ courtPage }) => {
     await courtPage.goto(courtData.defaultCourt.slug);
     await courtPage.clickShowAllSections();
     for (const section of ACCORDION_SECTIONS) {
@@ -172,8 +166,7 @@ test.describe('Court Page Accordion Content', () => {
     }
   });
 
-  test('should close all accordion sections when "Hide all sections" button is clicked', async ({ page }) => {
-    const courtPage = new CourtPage(page);
+  test('should close all accordion sections when "Hide all sections" button is clicked', async ({ courtPage }) => {
     await courtPage.goto(courtData.defaultCourt.slug);
     await courtPage.clickShowAllSections();
     await courtPage.clickHideAllSections();
@@ -182,8 +175,7 @@ test.describe('Court Page Accordion Content', () => {
     }
   });
 
-  test('should verify "Contact details" section content', async ({ page }) => {
-    const courtPage = new CourtPage(page);
+  test('should verify "Contact details" section content', async ({ courtPage }) => {
     await courtPage.goto(courtData.defaultCourt.slug);
     await courtPage.expandAccordionSection(SECTION_HEADINGS.contactDetailsEn);
     for (const contactDetail of courtData.defaultCourt.body.courtContactDetails) {
@@ -199,8 +191,7 @@ test.describe('Court Page Accordion Content', () => {
     }
   });
 
-  test('should verify "Contact details" section links', async ({ page }) => {
-    const courtPage = new CourtPage(page);
+  test('should verify "Contact details" section links', async ({ courtPage }) => {
     await courtPage.goto(courtData.defaultCourt.slug);
     await courtPage.expandAccordionSection(SECTION_HEADINGS.contactDetailsEn);
     for (const contactDetail of courtData.defaultCourt.body.courtContactDetails) {
@@ -225,8 +216,7 @@ test.describe('Court Page Accordion Content', () => {
     }
   });
 
-  test('should verify "Contact details" section links in Welsh', async ({ page }) => {
-    const courtPage = new CourtPage(page);
+  test('should verify "Contact details" section links in Welsh', async ({ courtPage }) => {
     await courtPage.goto(courtData.defaultCourt.slug, 'cy');
     await courtPage.expandAccordionSection(SECTION_HEADINGS.contactDetailsCy);
     for (const contactDetail of courtData.defaultCourt.body.courtContactDetails) {
@@ -251,8 +241,7 @@ test.describe('Court Page Accordion Content', () => {
     }
   });
 
-  test('should order contact details with enquiries first in English and Welsh', async ({ page }) => {
-    const courtPage = new CourtPage(page);
+  test('should order contact details with enquiries first in English and Welsh', async ({ page, courtPage }) => {
     const contactsWithNames = courtData.defaultCourt.body.courtContactDetails
       .map(contact => ({ contact, names: getContactName(contact) }))
       .filter((item: ContactWithOptionalNames): item is ContactWithNames => item.names !== null);
@@ -286,8 +275,7 @@ test.describe('Court Page Accordion Content', () => {
     }
   });
 
-  test('should verify "Contact details" "Manylion cyswllt" section content in Welsh', async ({ page }) => {
-    const courtPage = new CourtPage(page);
+  test('should verify "Contact details" "Manylion cyswllt" section content in Welsh', async ({ courtPage }) => {
     await courtPage.goto(courtData.defaultCourt.slug, 'cy');
     await courtPage.expandAccordionSection('Manylion cyswllt');
     for (const contactDetail of courtData.defaultCourt.body.courtContactDetails) {
@@ -303,8 +291,7 @@ test.describe('Court Page Accordion Content', () => {
     }
   });
 
-  test('should verify "Cases heard" section content', async ({ page }) => {
-    const courtPage = new CourtPage(page);
+  test('should verify "Cases heard" section content', async ({ courtPage }) => {
     await courtPage.goto(courtData.defaultCourt.slug);
     await courtPage.expandAccordionSection('Cases heard');
     await courtPage.expectAccordionSectionContent('Cases heard', 'The types of cases that are heard at this location');
@@ -312,8 +299,8 @@ test.describe('Court Page Accordion Content', () => {
 
   test('should verify "Cases heard" section renders list items and outbound links in English and Welsh', async ({
     page,
+    courtPage,
   }) => {
-    const courtPage = new CourtPage(page);
     await courtPage.goto(courtData.defaultCourt.slug);
     await courtPage.expandAccordionSection('Cases heard');
     const englishItems = page.locator('#cases-heard li');
@@ -339,8 +326,7 @@ test.describe('Court Page Accordion Content', () => {
     }
   });
 
-  test('should verify "Translation and interpretation" section content', async ({ page }) => {
-    const courtPage = new CourtPage(page);
+  test('should verify "Translation and interpretation" section content', async ({ courtPage }) => {
     await courtPage.goto(courtData.translationCourt.slug);
     await courtPage.expandAccordionSection('Translation and interpretation');
     await courtPage.expectAccordionSectionContent(
@@ -366,8 +352,7 @@ test.describe('Court Page Accordion Content', () => {
     }
   });
 
-  test('should verify "Translation and interpretation" section links', async ({ page }) => {
-    const courtPage = new CourtPage(page);
+  test('should verify "Translation and interpretation" section links', async ({ courtPage }) => {
     await courtPage.goto(courtData.translationCourt.slug);
     await courtPage.expandAccordionSection('Translation and interpretation');
     await courtPage.expectAccordionSectionLinkToHaveAttributes(
@@ -396,9 +381,8 @@ test.describe('Court Page Accordion Content', () => {
   });
 
   test('should verify "Translation and interpretation" "Cyfieithu a chyfieithu ar y pryd" section content in Welsh', async ({
-    page,
+    courtPage,
   }) => {
-    const courtPage = new CourtPage(page);
     await courtPage.goto(courtData.translationCourt.slug, 'cy');
     await courtPage.expandAccordionSection('Cyfieithu a chyfieithu ar y pryd');
     await courtPage.expectAccordionSectionContent(
@@ -411,8 +395,7 @@ test.describe('Court Page Accordion Content', () => {
     );
   });
 
-  test('should verify "Translation and interpretation" section links in Welsh', async ({ page }) => {
-    const courtPage = new CourtPage(page);
+  test('should verify "Translation and interpretation" section links in Welsh', async ({ courtPage }) => {
     await courtPage.goto(courtData.translationCourt.slug, 'cy');
     await courtPage.expandAccordionSection('Cyfieithu a chyfieithu ar y pryd');
     await courtPage.expectAccordionSectionLinkToHaveAttributes(
@@ -440,8 +423,10 @@ test.describe('Court Page Accordion Content', () => {
     }
   });
 
-  test('should not render translation contact details when translations were not requested', async ({ page }) => {
-    const courtPage = new CourtPage(page);
+  test('should not render translation contact details when translations were not requested', async ({
+    page,
+    courtPage,
+  }) => {
     await courtPage.goto(courtData.noTranslationCourt.slug);
     await courtPage.expandAccordionSection('Translation and interpretation');
     expect(courtData.noTranslationCourt.body.courtTranslations).toHaveLength(0);
@@ -456,8 +441,7 @@ test.describe('Court Page Accordion Content', () => {
     );
   });
 
-  test('should verify "Accessibility" section content', async ({ page }) => {
-    const courtPage = new CourtPage(page);
+  test('should verify "Accessibility" section content', async ({ courtPage }) => {
     await courtPage.goto(courtData.defaultCourt.slug);
     await courtPage.expandAccordionSection('Accessibility');
     if (courtData.defaultCourt.body.courtAccessibilityOptions.length > 0) {
@@ -519,8 +503,7 @@ test.describe('Court Page Accordion Content', () => {
     }
   });
 
-  test('should verify accessibility contact links when phone numbers are present', async ({ page }) => {
-    const courtPage = new CourtPage(page);
+  test('should verify accessibility contact links when phone numbers are present', async ({ courtPage }) => {
     await courtPage.goto(courtData.defaultCourt.slug);
     await courtPage.expandAccordionSection('Accessibility');
     if (courtData.defaultCourt.body.courtAccessibilityOptions.length === 0) {
@@ -555,8 +538,10 @@ test.describe('Court Page Accordion Content', () => {
     }
   });
 
-  test('should render accessibility fallback text when enquiries contact was not requested', async ({ page }) => {
-    const courtPage = new CourtPage(page);
+  test('should render accessibility fallback text when enquiries contact was not requested', async ({
+    page,
+    courtPage,
+  }) => {
     await courtPage.goto(courtData.noEnquiriesCourt.slug);
     await courtPage.expandAccordionSection('Accessibility');
     expect(getEnquiriesPhoneNumber(courtData.noEnquiriesCourt.body.courtContactDetails)).toBeNull();
@@ -565,8 +550,7 @@ test.describe('Court Page Accordion Content', () => {
     );
   });
 
-  test('should verify "Accessibility" "Hygyrchedd" section content in Welsh', async ({ page }) => {
-    const courtPage = new CourtPage(page);
+  test('should verify "Accessibility" "Hygyrchedd" section content in Welsh', async ({ courtPage }) => {
     await courtPage.goto(courtData.defaultCourt.slug, 'cy');
     await courtPage.expandAccordionSection('Hygyrchedd');
     if (courtData.defaultCourt.body.courtAccessibilityOptions.length > 0) {
@@ -627,8 +611,7 @@ test.describe('Court Page Accordion Content', () => {
     }
   });
 
-  test('should verify "Building facilities" section content', async ({ page }) => {
-    const courtPage = new CourtPage(page);
+  test('should verify "Building facilities" section content', async ({ courtPage }) => {
     await courtPage.goto(courtData.defaultCourt.slug);
     await courtPage.expandAccordionSection('Building facilities');
     if (courtData.defaultCourt.body.courtFacilities.length > 0) {
@@ -699,8 +682,10 @@ test.describe('Court Page Accordion Content', () => {
     }
   });
 
-  test('should render building facilities fallback text when enquiries contact was not requested', async ({ page }) => {
-    const courtPage = new CourtPage(page);
+  test('should render building facilities fallback text when enquiries contact was not requested', async ({
+    page,
+    courtPage,
+  }) => {
     await courtPage.goto(courtData.noEnquiriesCourt.slug);
     await courtPage.expandAccordionSection('Building facilities');
     expect(getEnquiriesPhoneNumber(courtData.noEnquiriesCourt.body.courtContactDetails)).toBeNull();
@@ -710,8 +695,7 @@ test.describe('Court Page Accordion Content', () => {
     await expect(page.locator('#building-facilities .phone-link')).toHaveCount(0);
   });
 
-  test('should verify "Information for professionals" section content', async ({ page }) => {
-    const courtPage = new CourtPage(page);
+  test('should verify "Information for professionals" section content', async ({ courtPage }) => {
     await courtPage.goto(courtData.defaultCourt.slug);
     await courtPage.expandAccordionSection('Information for professionals');
     if (courtData.defaultCourt.body.courtCodes.length > 0) {

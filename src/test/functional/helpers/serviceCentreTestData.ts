@@ -16,7 +16,9 @@ type ServiceCentreData = {
   body: ServiceCentreDetails;
 };
 
-export const FUNCTIONAL_TEST_SERVICE_CENTRE_PREFIX = `FaCTPublicServiceCentreTest${generateUppercaseRandomString(4)}`;
+export const FUNCTIONAL_TEST_SERVICE_CENTRE_PREFIX = `FaCTPublicServiceCentreTest${
+  process.env.PLAYWRIGHT_TEST_RUN_SUFFIX?.toUpperCase() ?? generateUppercaseRandomString(4)
+}`;
 
 export type ServiceCentreTestData = {
   apiContext: APIRequestContext;

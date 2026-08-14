@@ -1,12 +1,9 @@
-import { expect, test } from '@playwright/test';
+import cy_i18n from '../../../../main/locales/cy/choose-action.json';
+import en_i18n from '../../../../main/locales/en/choose-action.json';
+import { expect, test } from '../../fixtures';
 
-import cy_i18n from '../../../main/locales/cy/choose-action.json';
-import en_i18n from '../../../main/locales/en/choose-action.json';
-import { ChooseActionPage } from '../page-objects/ChooseActionPage';
-
-test.describe('Choose Action Page', () => {
-  test('should render the choose action page', async ({ page }) => {
-    const chooseActionPage = new ChooseActionPage(page);
+test.describe('Choose Action Page', { tag: '@functional' }, () => {
+  test('should render the choose action page', async ({ chooseActionPage }) => {
     await chooseActionPage.goto('en');
     await chooseActionPage.expectHeadingToContainText(en_i18n.question);
     await chooseActionPage.expectVisibleElements();
@@ -16,16 +13,14 @@ test.describe('Choose Action Page', () => {
     await chooseActionPage.expectVisibleElements();
   });
 
-  test('should redirect to the correct service when a valid action is selected', async ({ page }) => {
-    const chooseActionPage = new ChooseActionPage(page);
+  test('should redirect to the correct service when a valid action is selected', async ({ page, chooseActionPage }) => {
     await chooseActionPage.goto('en');
     await chooseActionPage.selectAction('nearest');
     await chooseActionPage.submit();
     await expect(page).toHaveURL('/services/nearest');
   });
 
-  test('should show error when no action is selected', async ({ page }) => {
-    const chooseActionPage = new ChooseActionPage(page);
+  test('should show error when no action is selected', async ({ chooseActionPage }) => {
     await chooseActionPage.goto('en');
     await chooseActionPage.submit();
     await chooseActionPage.expectErrorSummaryVisible();
@@ -37,8 +32,7 @@ test.describe('Choose Action Page', () => {
     await chooseActionPage.expectMainContentToContainText(cy_i18n.error.text);
   });
 
-  test('should show error when invalid action is submitted', async ({ page }) => {
-    const chooseActionPage = new ChooseActionPage(page);
+  test('should show error when invalid action is submitted', async ({ page, chooseActionPage }) => {
     await chooseActionPage.goto('en');
     // Simulate submitting an invalid action via form
     await page.evaluate(action => {

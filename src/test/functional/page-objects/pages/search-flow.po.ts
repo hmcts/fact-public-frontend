@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test';
 
-import { Base } from './base';
+import { Base } from '../base';
 
 export class SearchFlowPage extends Base {
   private readonly startNowLink = this.page.locator('a.govuk-button[href="/search-option"]');

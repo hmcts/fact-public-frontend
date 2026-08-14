@@ -1,10 +1,7 @@
-import { test } from '@playwright/test';
-
+import { test } from '../../fixtures';
 import { CourtTestData, createCourtTestData } from '../../helpers/courtTestData';
-import { CourtPage } from '../../page-objects/CourtPage';
-import { SearchFlowPage } from '../../page-objects/SearchFlowPage';
 
-test.describe('Search Journey - Know Name', () => {
+test.describe('Search Journey - Know Name', { tag: '@functional' }, () => {
   let courtData!: CourtTestData;
   let createdCourtQuery: string;
 
@@ -19,10 +16,10 @@ test.describe('Search Journey - Know Name', () => {
     }
   });
 
-  test('should go from start -> yes -> search by name -> show results (english)', async ({ page }) => {
-    const searchFlowPage = new SearchFlowPage(page);
-    const courtPage = new CourtPage(page);
-
+  test('should go from start -> yes -> search by name -> show results (english)', async ({
+    searchFlowPage,
+    courtPage,
+  }) => {
     await searchFlowPage.gotoStart('en');
     await searchFlowPage.expectPath('/');
     await searchFlowPage.expectTitle('Find a Court or Tribunal - GOV.UK');
@@ -53,10 +50,10 @@ test.describe('Search Journey - Know Name', () => {
     await courtPage.expectHeadingToContainText(courtData.defaultCourt.name);
   });
 
-  test('should go from start -> yes -> search by name -> show results (welsh)', async ({ page }) => {
-    const searchFlowPage = new SearchFlowPage(page);
-    const courtPage = new CourtPage(page);
-
+  test('should go from start -> yes -> search by name -> show results (welsh)', async ({
+    searchFlowPage,
+    courtPage,
+  }) => {
     await searchFlowPage.gotoStart('cy');
     await searchFlowPage.expectPath('/');
     await searchFlowPage.expectTitle('Find a Court or Tribunal - GOV.UK');
@@ -88,10 +85,8 @@ test.describe('Search Journey - Know Name', () => {
   });
 });
 
-test.describe('Search Journey - Validation', () => {
-  test('should show radio validation error when no answer is selected (english)', async ({ page }) => {
-    const searchFlowPage = new SearchFlowPage(page);
-
+test.describe('Search Journey - Validation', { tag: '@functional' }, () => {
+  test('should show radio validation error when no answer is selected (english)', async ({ searchFlowPage }) => {
     await searchFlowPage.gotoStart('en');
     await searchFlowPage.clickStartNow();
     await searchFlowPage.expectPath('/search-option');
@@ -100,9 +95,7 @@ test.describe('Search Journey - Validation', () => {
     await searchFlowPage.expectErrorSummaryVisible('Select if you have the name or not');
   });
 
-  test('should show search validation error when search is blank (welsh)', async ({ page }) => {
-    const searchFlowPage = new SearchFlowPage(page);
-
+  test('should show search validation error when search is blank (welsh)', async ({ searchFlowPage }) => {
     await searchFlowPage.gotoStart('cy');
     await searchFlowPage.clickStartNow();
     await searchFlowPage.selectKnowsLocation('yes');
@@ -113,9 +106,7 @@ test.describe('Search Journey - Validation', () => {
     await searchFlowPage.expectErrorSummaryVisible('Rhowch enw llys, cyfeiriad, tref neu ddinas');
   });
 
-  test('should show no-results panel for an unmatched query (english)', async ({ page }) => {
-    const searchFlowPage = new SearchFlowPage(page);
-
+  test('should show no-results panel for an unmatched query (english)', async ({ searchFlowPage }) => {
     await searchFlowPage.gotoStart('en');
     await searchFlowPage.clickStartNow();
     await searchFlowPage.selectKnowsLocation('yes');
@@ -129,10 +120,8 @@ test.describe('Search Journey - Validation', () => {
   });
 });
 
-test.describe('Search Journey - No Name Route', () => {
-  test('should go from start -> no -> find/contact page (english)', async ({ page }) => {
-    const searchFlowPage = new SearchFlowPage(page);
-
+test.describe('Search Journey - No Name Route', { tag: '@functional' }, () => {
+  test('should go from start -> no -> find/contact page (english)', async ({ searchFlowPage }) => {
     await searchFlowPage.gotoStart('en');
     await searchFlowPage.clickStartNow();
     await searchFlowPage.expectPath('/search-option');
@@ -144,9 +133,7 @@ test.describe('Search Journey - No Name Route', () => {
     await searchFlowPage.expectHeading('What do you want to do?');
   });
 
-  test('should go from start -> no -> find/contact page (welsh)', async ({ page }) => {
-    const searchFlowPage = new SearchFlowPage(page);
-
+  test('should go from start -> no -> find/contact page (welsh)', async ({ searchFlowPage }) => {
     await searchFlowPage.gotoStart('cy');
     await searchFlowPage.clickStartNow();
     await searchFlowPage.expectPath('/search-option');

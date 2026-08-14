@@ -1,13 +1,11 @@
-import { expect, test } from '@playwright/test';
 import { DateTime } from 'luxon';
 
-import { CourtTestData, FUNCTIONAL_TEST_RUN_PREFIX, createCourtTestData } from '../helpers/courtTestData';
-import { generateRandomString, hasText } from '../helpers/courtTestUtils';
-import { createCourt, deleteCourtsByPrefix } from '../helpers/testingSupportClient';
-import { CourtPage } from '../page-objects/CourtPage';
-import { HomePage } from '../page-objects/HomePage';
+import { expect, test } from '../../fixtures';
+import { CourtTestData, FUNCTIONAL_TEST_RUN_PREFIX, createCourtTestData } from '../../helpers/courtTestData';
+import { generateRandomString, hasText } from '../../helpers/courtTestUtils';
+import { createCourt, deleteCourtsByPrefix } from '../../helpers/testingSupportClient';
 
-test.describe('Court Page Core', () => {
+test.describe('Court Page Core', { tag: '@functional' }, () => {
   let courtData!: CourtTestData;
 
   test.beforeAll(async ({ playwright }) => {
@@ -20,15 +18,13 @@ test.describe('Court Page Core', () => {
     }
   });
 
-  test('should display the dynamically created court', async ({ page }) => {
-    const courtPage = new CourtPage(page);
+  test('should display the dynamically created court', async ({ courtPage }) => {
     await courtPage.goto(courtData.defaultCourt.slug, 'en');
     await courtPage.expectHeadingToContainText(courtData.defaultCourt.name);
     await courtPage.expectVisibleElements();
   });
 
-  test('should render the page title and last reviewed date in English and Welsh', async ({ page }) => {
-    const courtPage = new CourtPage(page);
+  test('should render the page title and last reviewed date in English and Welsh', async ({ page, courtPage }) => {
     const expectedEnglishDate = DateTime.fromISO(courtData.defaultCourt.body.lastUpdatedAt, { zone: 'Europe/London' })
       .setLocale('en')
       .toFormat('d LLLL yyyy');
@@ -45,8 +41,7 @@ test.describe('Court Page Core', () => {
     await courtPage.expectMainContentToContainText(`Adolygwyd y dudalen hon ddiwethaf ar: ${expectedWelshDate}`);
   });
 
-  test('should not render a warning notice when one was not requested', async ({ page }) => {
-    const courtPage = new CourtPage(page);
+  test('should not render a warning notice when one was not requested', async ({ page, courtPage }) => {
     await courtPage.goto(courtData.defaultCourt.slug, 'en');
 
     if (hasText(courtData.defaultCourt.body.warningNotice)) {
@@ -56,8 +51,7 @@ test.describe('Court Page Core', () => {
     await expect(page.locator('.govuk-warning-text')).toHaveCount(0);
   });
 
-  test('should render a warning notice when one was requested', async ({ page }) => {
-    const courtPage = new CourtPage(page);
+  test('should render a warning notice when one was requested', async ({ page, courtPage }) => {
     await courtPage.goto(courtData.warningNoticeCourt.slug, 'en');
 
     const warningNotice = courtData.warningNoticeCourt.body.warningNotice;
@@ -67,22 +61,19 @@ test.describe('Court Page Core', () => {
     }
   });
 
-  test('should load and display correct content sections (english)', async ({ page }) => {
-    const courtPage = new CourtPage(page);
+  test('should load and display correct content sections (english)', async ({ courtPage }) => {
     await courtPage.goto(courtData.defaultCourt.slug, 'en');
     await courtPage.expectVisibleElements();
     await courtPage.expectLanguageLinkToContainText('Cymraeg');
   });
 
-  test('should load and display correct content sections (welsh)', async ({ page }) => {
-    const courtPage = new CourtPage(page);
+  test('should load and display correct content sections (welsh)', async ({ courtPage }) => {
     await courtPage.goto(courtData.defaultCourt.slug, 'cy');
     await courtPage.expectVisibleElements();
     await courtPage.expectLanguageLinkToContainText('English');
   });
 
-  test('should toggle language between English and Welsh', async ({ page }) => {
-    const courtPage = new CourtPage(page);
+  test('should toggle language between English and Welsh', async ({ page, courtPage }) => {
     await courtPage.goto(courtData.defaultCourt.slug);
     await courtPage.expectLanguageLinkToContainText('Cymraeg');
 
@@ -91,9 +82,7 @@ test.describe('Court Page Core', () => {
     await page.waitForURL(/lng=cy/);
   });
 
-  test('should maintain preselected language during navigation', async ({ page }) => {
-    const homePage = new HomePage(page);
-    const courtPage = new CourtPage(page);
+  test('should maintain preselected language during navigation', async ({ courtPage, homePage }) => {
     await courtPage.goto(courtData.defaultCourt.slug, 'en');
     await courtPage.goto(courtData.defaultCourt.slug);
     await courtPage.expectVisibleElements();
@@ -105,31 +94,26 @@ test.describe('Court Page Core', () => {
     await courtPage.expectLanguageLinkToContainText('English');
   });
 
-  test('should display static content sections', async ({ page }) => {
-    const courtPage = new CourtPage(page);
+  test('should display static content sections', async ({ courtPage }) => {
     await courtPage.goto(courtData.defaultCourt.slug);
     await courtPage.expectAddressesToBeVisible();
     await courtPage.expectOpeningHoursToBeVisible();
   });
 
-  test('should verify photo renders correctly', async ({ page }) => {
-    const courtPage = new CourtPage(page);
+  test('should verify photo renders correctly', async ({ courtPage }) => {
     await courtPage.goto(courtData.defaultCourt.slug);
-    if (courtData.defaultCourt.body.courtPhotos.length > 0) {
-      await courtPage.expectCourtPhotoToBeVisible(
-        courtData.defaultCourt.body.courtPhotos[0].fileLink,
-        courtData.defaultCourt.name
-      );
+    const photo = courtData.defaultCourt.body.courtPhotos[0];
+    if (photo?.fileLink) {
+      await courtPage.expectCourtPhotoToBeVisible(photo.fileLink, courtData.defaultCourt.name);
     }
   });
 
-  test('Closed-court page is rendered when the retrieved court is closed', async ({ page }) => {
+  test('Closed-court page is rendered when the retrieved court is closed', async ({ courtPage }) => {
     const courtName = `${FUNCTIONAL_TEST_RUN_PREFIX} Core Test Closed Court ${generateRandomString()}`;
     const closedCourtResponseBody = await createCourt(courtData.apiContext, {
       courtName,
       open: false,
     });
-    const courtPage = new CourtPage(page);
     await courtPage.goto(closedCourtResponseBody.slug);
     await courtPage.expectHeadingToContainText(closedCourtResponseBody.name);
     await courtPage.expectMainContentToContainText(
@@ -138,8 +122,7 @@ test.describe('Court Page Core', () => {
     await deleteCourtsByPrefix(courtData.apiContext, courtName);
   });
 
-  test('Not found page is rendered when the court does not exist', async ({ page }) => {
-    const courtPage = new CourtPage(page);
+  test('Not found page is rendered when the court does not exist', async ({ page, courtPage }) => {
     await courtPage.goto('not-a-real-slug');
     const sectionContent = page.locator('h1.govuk-heading-xl');
     await expect(sectionContent).toContainText('Page Not Found');

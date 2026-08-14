@@ -1,15 +1,8 @@
 import { expect } from '@playwright/test';
 
-import { Base } from './base';
+import { Base } from '../base';
 
 export class CourtPage extends Base {
-  private readonly header = this.page.locator('header');
-  private readonly title = this.page.locator('section.govuk-service-navigation');
-  private readonly phaseBanner = this.page.locator('div.govuk-phase-banner');
-  private readonly languageLink = this.page.locator('a.govuk-link.fact-language');
-  private readonly mainContent = this.page.locator('#main-content');
-  private readonly footer = this.page.locator('footer');
-  private readonly heading = this.page.locator('h1.govuk-heading-l');
   private readonly addressesSection = this.page.locator('h2.govuk-heading-m', { hasText: 'Address' });
   private readonly openingHoursSection = this.page.locator('h2.govuk-heading-m', { hasText: 'Opening hours' });
   private readonly courtPhoto = this.page.locator('img.govuk-\\!-margin-top-4');
@@ -40,13 +33,7 @@ export class CourtPage extends Base {
   }
 
   async expectVisibleElements(): Promise<void> {
-    await expect(this.header).toBeVisible();
-    await expect(this.title).toBeVisible();
-    await expect(this.phaseBanner).toBeVisible();
-    await expect(this.languageLink).toBeVisible();
-    await expect(this.heading).toBeVisible();
-    await expect(this.mainContent).toBeVisible();
-    await expect(this.footer).toBeVisible();
+    await super.expectVisibleElements();
   }
 
   async expectLanguageLinkToContainText(language: string): Promise<void> {

@@ -1,17 +1,12 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from '../../fixtures';
 
-import { HomePage } from '../page-objects/HomePage';
-
-test.describe('Back Link', () => {
-  test('should not be visible on the home page', async ({ page }) => {
-    const homePage = new HomePage(page);
+test.describe('Back Link', { tag: '@functional' }, () => {
+  test('should not be visible on the home page', async ({ homePage }) => {
     await homePage.goto();
     await homePage.expectBackLinkNotVisible();
   });
 
-  test('should be visible on the choose action page and navigate back to the home page', async ({ page }) => {
-    const homePage = new HomePage(page);
-
+  test('should be visible on the choose action page and navigate back to the home page', async ({ page, homePage }) => {
     await homePage.goto();
     await homePage.expectBackLinkNotVisible();
 
@@ -27,9 +22,7 @@ test.describe('Back Link', () => {
     await homePage.expectBackLinkNotVisible();
   });
 
-  test('should be visible and navigate back correctly after two pages', async ({ page }) => {
-    const homePage = new HomePage(page);
-
+  test('should be visible and navigate back correctly after two pages', async ({ page, homePage }) => {
     await homePage.goto();
     await page.click('a.govuk-button--start');
     const backLink = page.locator('a.govuk-back-link');

@@ -1,9 +1,8 @@
-import { expect, test } from '@playwright/test';
 import { DateTime } from 'luxon';
 
-import { CourtTestData, createCourtTestData } from '../helpers/courtTestData';
-import { hasText, isCounterServiceOpeningHoursLabel, isPhoneLikeValue } from '../helpers/courtTestUtils';
-import { CourtPage } from '../page-objects/CourtPage';
+import { expect, test } from '../../fixtures';
+import { CourtTestData, createCourtTestData } from '../../helpers/courtTestData';
+import { hasText, isCounterServiceOpeningHoursLabel, isPhoneLikeValue } from '../../helpers/courtTestUtils';
 
 type CourtAddress = CourtTestData['defaultCourt']['body']['courtAddresses'][number];
 
@@ -14,7 +13,7 @@ const SECTION_HEADINGS = {
   openingHoursCy: 'Oriau agor',
 } as const;
 
-test.describe('Court Page Addresses And Opening Hours', () => {
+test.describe('Court Page Addresses And Opening Hours', { tag: '@functional' }, () => {
   let courtData!: CourtTestData;
 
   test.beforeAll(async ({ playwright }) => {
@@ -27,8 +26,7 @@ test.describe('Court Page Addresses And Opening Hours', () => {
     }
   });
 
-  test('should verify "Address" section content', async ({ page }) => {
-    const courtPage = new CourtPage(page);
+  test('should verify "Address" section content', async ({ courtPage }) => {
     await courtPage.goto(courtData.defaultCourt.slug);
     if (courtData.defaultCourt.body.courtAddresses.length > 0) {
       for (const address of courtData.defaultCourt.body.courtAddresses as CourtAddress[]) {
@@ -51,8 +49,7 @@ test.describe('Court Page Addresses And Opening Hours', () => {
     }
   });
 
-  test('should verify "Address" "Cyfeiriad" section content in Welsh', async ({ page }) => {
-    const courtPage = new CourtPage(page);
+  test('should verify "Address" "Cyfeiriad" section content in Welsh', async ({ courtPage }) => {
     await courtPage.goto(courtData.defaultCourt.slug, 'cy');
     if (courtData.defaultCourt.body.courtAddresses.length > 0) {
       for (const address of courtData.defaultCourt.body.courtAddresses as CourtAddress[]) {
@@ -75,8 +72,7 @@ test.describe('Court Page Addresses And Opening Hours', () => {
     }
   });
 
-  test('should render directions links for visit addresses', async ({ page }) => {
-    const courtPage = new CourtPage(page);
+  test('should render directions links for visit addresses', async ({ page, courtPage }) => {
     await courtPage.goto(courtData.defaultCourt.slug);
 
     const visitAddresses = courtData.defaultCourt.body.courtAddresses.filter(
@@ -94,8 +90,7 @@ test.describe('Court Page Addresses And Opening Hours', () => {
     }
   });
 
-  test('should render address tags when areas of law or court types are present', async ({ page }) => {
-    const courtPage = new CourtPage(page);
+  test('should render address tags when areas of law or court types are present', async ({ courtPage }) => {
     await courtPage.goto(courtData.defaultCourt.slug);
 
     for (const address of courtData.defaultCourt.body.courtAddresses) {
@@ -106,8 +101,7 @@ test.describe('Court Page Addresses And Opening Hours', () => {
     }
   });
 
-  test('should render addresses in the expected priority order', async ({ page }) => {
-    const courtPage = new CourtPage(page);
+  test('should render addresses in the expected priority order', async ({ page, courtPage }) => {
     await courtPage.goto(courtData.defaultCourt.slug);
 
     const rank = { VISIT_US: 0, VISIT_OR_CONTACT_US: 1, WRITE_TO_US: 2 };
@@ -126,8 +120,7 @@ test.describe('Court Page Addresses And Opening Hours', () => {
     }
   });
 
-  test('should verify "Opening hours" section content', async ({ page }) => {
-    const courtPage = new CourtPage(page);
+  test('should verify "Opening hours" section content', async ({ courtPage }) => {
     await courtPage.goto(courtData.defaultCourt.slug);
     await courtPage.expectOpeningHoursToBeVisible();
     if (courtData.defaultCourt.body.courtOpeningHours.length > 0) {
@@ -158,8 +151,7 @@ test.describe('Court Page Addresses And Opening Hours', () => {
     }
   });
 
-  test('should verify "Opening hours" "Oriau agor" section in Welsh', async ({ page }) => {
-    const courtPage = new CourtPage(page);
+  test('should verify "Opening hours" "Oriau agor" section in Welsh', async ({ courtPage }) => {
     await courtPage.goto(courtData.defaultCourt.slug, 'cy');
     if (courtData.defaultCourt.body.courtOpeningHours.length > 0) {
       await courtPage.expectStaticSectionContent(
@@ -189,8 +181,7 @@ test.describe('Court Page Addresses And Opening Hours', () => {
     }
   });
 
-  test('should verify counter service content in opening hours when present', async ({ page }) => {
-    const courtPage = new CourtPage(page);
+  test('should verify counter service content in opening hours when present', async ({ courtPage }) => {
     await courtPage.goto(courtData.defaultCourt.slug);
 
     if (courtData.defaultCourt.body.courtCounterServiceOpeningHours.length === 0) {
@@ -273,8 +264,7 @@ test.describe('Court Page Addresses And Opening Hours', () => {
     }
   });
 
-  test('should render opening hour groups in alphabetical order', async ({ page }) => {
-    const courtPage = new CourtPage(page);
+  test('should render opening hour groups in alphabetical order', async ({ page, courtPage }) => {
     await courtPage.goto(courtData.defaultCourt.slug);
 
     const renderedLabels = await page.locator('#opening-hours .govuk-summary-list__key').allTextContents();

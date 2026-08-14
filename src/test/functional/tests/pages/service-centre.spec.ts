@@ -1,11 +1,11 @@
-import { expect, test } from '@playwright/test';
 import { DateTime } from 'luxon';
 
-import { ServiceCentreTestData, createServiceCentreTestData } from '../helpers/serviceCentreTestData';
+import { expect, test } from '../../fixtures';
+import { ServiceCentreTestData, createServiceCentreTestData } from '../../helpers/serviceCentreTestData';
 
 const scamLink = 'https://www.gov.uk/government/news/scammers-using-hmcts-telephone-numbers';
 
-test.describe('Service Centre Page', () => {
+test.describe('Service Centre Page', { tag: '@functional' }, () => {
   let serviceCentreData!: ServiceCentreTestData;
 
   test.beforeAll(async ({ playwright }) => {

@@ -1,15 +1,8 @@
 import { Locator, expect } from '@playwright/test';
 
-import { Base } from './base';
+import { Base } from '../base';
 
 export class PrefixSearchPage extends Base {
-  private readonly header = this.page.locator('header');
-  private readonly title = this.page.locator('section.govuk-service-navigation');
-  private readonly phaseBanner = this.page.locator('div.govuk-phase-banner');
-  private readonly languageLink = this.page.locator('a.govuk-link.fact-language');
-  private readonly mainContent = this.page.locator('#main-content');
-  private readonly footer = this.page.locator('footer');
-  private readonly heading = this.page.locator('h1.govuk-fieldset__heading');
   private readonly alphabetButtons = this.page.locator('#alphabet-buttons .govuk-button');
   private readonly resultsHint = this.page.locator('#header-hint');
   private readonly resultsList = this.page.locator('#results-list');
@@ -34,13 +27,7 @@ export class PrefixSearchPage extends Base {
   }
 
   async expectVisibleElements(): Promise<void> {
-    await expect(this.header).toBeVisible();
-    await expect(this.title).toBeVisible();
-    await expect(this.phaseBanner).toBeVisible();
-    await expect(this.languageLink).toBeVisible();
-    await expect(this.heading).toBeVisible();
-    await expect(this.mainContent).toBeVisible();
-    await expect(this.footer).toBeVisible();
+    await super.expectVisibleElements();
     await expect(this.alphabetButtons.first()).toBeVisible();
     await expect(this.alphabetButtons).toHaveCount(26);
   }
