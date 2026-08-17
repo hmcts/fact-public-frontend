@@ -19,10 +19,6 @@ export class ChooseServiceAreaPage extends Base {
     await expect(this.heading).toContainText(text);
   }
 
-  async expectVisibleElements(): Promise<void> {
-    await super.expectVisibleElements();
-  }
-
   async selectArea(area: string): Promise<void> {
     await this.areaRadio(area).check();
   }

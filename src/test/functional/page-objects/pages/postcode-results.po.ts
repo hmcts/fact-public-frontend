@@ -20,10 +20,6 @@ export class PostcodeResultsPage extends Base {
     await this.page.goto(url);
   }
 
-  async expectVisibleElements(): Promise<void> {
-    await super.expectVisibleElements();
-  }
-
   async expectHeadingToContainText(text: string): Promise<void> {
     await expect(this.heading).toContainText(text);
   }

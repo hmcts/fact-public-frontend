@@ -19,10 +19,6 @@ export class ChooseServicePage extends Base {
     await expect(this.heading).toContainText(text);
   }
 
-  async expectVisibleElements(): Promise<void> {
-    await super.expectVisibleElements();
-  }
-
   async selectService(service: string): Promise<void> {
     await this.serviceRadio(service).check();
   }

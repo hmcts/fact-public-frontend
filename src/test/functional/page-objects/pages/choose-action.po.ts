@@ -20,10 +20,6 @@ export class ChooseActionPage extends Base {
     await expect(this.heading).toContainText(text);
   }
 
-  async expectVisibleElements(): Promise<void> {
-    await super.expectVisibleElements();
-  }
-
   async selectAction(action: string): Promise<void> {
     await this.actionRadio(action).check();
   }

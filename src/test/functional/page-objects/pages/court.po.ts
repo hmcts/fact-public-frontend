@@ -5,7 +5,7 @@ import { Base } from '../base';
 export class CourtPage extends Base {
   private readonly addressesSection = this.page.locator('h2.govuk-heading-m', { hasText: 'Address' });
   private readonly openingHoursSection = this.page.locator('h2.govuk-heading-m', { hasText: 'Opening hours' });
-  private readonly courtPhoto = this.page.locator('img.govuk-\\!-margin-top-4');
+  private readonly courtPhoto = this.page.locator(String.raw`img.govuk-\!-margin-top-4`);
   private readonly accordion = this.page.locator('.govuk-accordion');
 
   private staticSection(headingText: string) {
@@ -30,10 +30,6 @@ export class CourtPage extends Base {
     } else {
       await this.page.goto(`/courts/${slug}`);
     }
-  }
-
-  async expectVisibleElements(): Promise<void> {
-    await super.expectVisibleElements();
   }
 
   async expectLanguageLinkToContainText(language: string): Promise<void> {
