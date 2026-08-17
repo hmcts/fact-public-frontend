@@ -4,7 +4,7 @@ import { expect, test } from '../../fixtures';
 
 const nearestAction = 'nearest';
 
-test.describe('Choose Service Page', { tag: '@functional' }, () => {
+test.describe('Choose Service Page', () => {
   test('should render the choose service page', async ({ chooseServicePage }) => {
     await chooseServicePage.goto(nearestAction, 'en');
     await chooseServicePage.expectHeadingToContainText(en_i18n.question);

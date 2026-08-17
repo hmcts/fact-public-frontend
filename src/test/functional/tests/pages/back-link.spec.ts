@@ -1,6 +1,6 @@
 import { expect, test } from '../../fixtures';
 
-test.describe('Back Link', { tag: '@functional' }, () => {
+test.describe('Back Link', () => {
   test('should not be visible on the home page', async ({ homePage }) => {
     await homePage.goto();
     await homePage.expectBackLinkNotVisible();

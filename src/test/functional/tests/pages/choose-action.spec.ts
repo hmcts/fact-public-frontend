@@ -2,7 +2,7 @@ import cy_i18n from '../../../../main/locales/cy/choose-action.json';
 import en_i18n from '../../../../main/locales/en/choose-action.json';
 import { expect, test } from '../../fixtures';
 
-test.describe('Choose Action Page', { tag: '@functional' }, () => {
+test.describe('Choose Action Page', () => {
   test('should render the choose action page', async ({ chooseActionPage }) => {
     await chooseActionPage.goto('en');
     await chooseActionPage.expectHeadingToContainText(en_i18n.question);

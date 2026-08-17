@@ -8,7 +8,7 @@ import { expect, test } from '../../fixtures';
 const testService = 'money';
 const testServiceArea = 'probate';
 
-test.describe('Service Results Page', { tag: '@functional' }, () => {
+test.describe('Service Results Page', () => {
   test('should render service results page (EN)', async ({ serviceResultsPage }) => {
     await serviceResultsPage.goto({ service: testService, serviceArea: testServiceArea, lng: 'en' });
     await serviceResultsPage.expectHeadingToContainText(en_i18n.question);

@@ -3,7 +3,7 @@ import en_i18n from '../../../../main/locales/en/postcode-search.json';
 import { expect, test } from '../../fixtures';
 import { CourtTestData, createCourtTestData } from '../../helpers/courtTestData';
 
-test.describe('Postcode Search Page', { tag: '@functional' }, () => {
+test.describe('Postcode Search Page', () => {
   let courtData!: CourtTestData;
 
   test.beforeAll(async ({ playwright }) => {

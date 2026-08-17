@@ -1,6 +1,6 @@
 import { test } from '../../fixtures';
 
-test.describe('Not Found Page Visual & Language Checks', { tag: '@functional' }, () => {
+test.describe('Not Found Page Visual & Language Checks', () => {
   test('should load and display correct content sections (english)', async ({ notFoundPage }) => {
     await notFoundPage.goto('en');
     await notFoundPage.expectVisibleElements();
@@ -30,7 +30,7 @@ test.describe('Not Found Page Visual & Language Checks', { tag: '@functional' },
   });
 });
 
-test.describe('Not Found Page Content Checks', { tag: '@functional' }, () => {
+test.describe('Not Found Page Content Checks', () => {
   test('should have content and show the correct page heading (english)', async ({ notFoundPage }) => {
     await notFoundPage.goto('en');
     await notFoundPage.expectMainContentToBePopulated();

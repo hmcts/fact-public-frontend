@@ -81,8 +81,9 @@ yarn test:functional
 ```
 
 The default project matrix is Chrome, Edge, Firefox and WebKit. Preview builds (`ENV=preview`) run Edge only.
-Tests are tagged `@functional`, `@a11y`, `@smoke` and `@performance`; the package scripts select the appropriate
-tags:
+Smoke, accessibility and performance tests use the `@smoke`, `@a11y` and `@performance` tags. The functional
+test command runs the functional suite while excluding tests tagged `@smoke`. Playwright configuration
+restricts `@performance` test execution to the Edge project:
 
 ```bash
 yarn test:smoke

@@ -1,6 +1,6 @@
 import { test } from '../../fixtures';
 
-test.describe('Accessibility Page Visual & Language Checks', { tag: '@functional' }, () => {
+test.describe('Accessibility Page Visual & Language Checks', () => {
   test('should load and display correct content sections (english)', async ({ accessibilityPage }) => {
     await accessibilityPage.goto('en');
     await accessibilityPage.expectVisibleElements();
@@ -30,7 +30,7 @@ test.describe('Accessibility Page Visual & Language Checks', { tag: '@functional
   });
 });
 
-test.describe('Accessibility Page Content Checks', { tag: '@functional' }, () => {
+test.describe('Accessibility Page Content Checks', () => {
   test('should have content and show the correct page heading (english)', async ({ accessibilityPage }) => {
     await accessibilityPage.goto('en');
     await accessibilityPage.expectMainContentToBePopulated();

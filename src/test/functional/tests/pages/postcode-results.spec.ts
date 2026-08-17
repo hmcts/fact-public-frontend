@@ -3,7 +3,7 @@ import en_i18n from '../../../../main/locales/en/postcode-results.json';
 import { expect, test } from '../../fixtures';
 import { CourtTestData, createCourtTestData } from '../../helpers/courtTestData';
 
-test.describe('Postcode Results Page', { tag: '@functional' }, () => {
+test.describe('Postcode Results Page', () => {
   let courtData!: CourtTestData;
   const testPostcode = 'SW1A 1AA';
 

@@ -1,7 +1,7 @@
 import { test } from '../../fixtures';
 import { CourtTestData, createCourtTestData } from '../../helpers/courtTestData';
 
-test.describe('Search Journey - Know Name', { tag: '@functional' }, () => {
+test.describe('Search Journey - Know Name', () => {
   let courtData!: CourtTestData;
   let createdCourtQuery: string;
 
@@ -85,7 +85,7 @@ test.describe('Search Journey - Know Name', { tag: '@functional' }, () => {
   });
 });
 
-test.describe('Search Journey - Validation', { tag: '@functional' }, () => {
+test.describe('Search Journey - Validation', () => {
   test('should show radio validation error when no answer is selected (english)', async ({ searchFlowPage }) => {
     await searchFlowPage.gotoStart('en');
     await searchFlowPage.clickStartNow();
@@ -120,7 +120,7 @@ test.describe('Search Journey - Validation', { tag: '@functional' }, () => {
   });
 });
 
-test.describe('Search Journey - No Name Route', { tag: '@functional' }, () => {
+test.describe('Search Journey - No Name Route', () => {
   test('should go from start -> no -> find/contact page (english)', async ({ searchFlowPage }) => {
     await searchFlowPage.gotoStart('en');
     await searchFlowPage.clickStartNow();

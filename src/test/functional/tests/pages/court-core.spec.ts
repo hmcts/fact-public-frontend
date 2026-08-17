@@ -5,7 +5,7 @@ import { CourtTestData, FUNCTIONAL_TEST_RUN_PREFIX, createCourtTestData } from '
 import { generateRandomString, hasText } from '../../helpers/courtTestUtils';
 import { createCourt, deleteCourtsByPrefix } from '../../helpers/testingSupportClient';
 
-test.describe('Court Page Core', { tag: '@functional' }, () => {
+test.describe('Court Page Core', () => {
   let courtData!: CourtTestData;
 
   test.beforeAll(async ({ playwright }) => {

@@ -1,6 +1,6 @@
 import { expect, test } from '../../fixtures';
 
-test.describe('Choose Service Area Page', { tag: '@functional' }, () => {
+test.describe('Choose Service Area Page', () => {
   // TODO: we need a curated set of service->service area data returned by the API be able to
   //       write tests based on expected outcomes. Or we need to write tests that are happy with
   //       a range of outcomes based on the data returned by the API, which is less than ideal.

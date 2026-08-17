@@ -1,6 +1,6 @@
 import { test } from '../../fixtures';
 
-test.describe('Home Page Visual & Language Checks', { tag: '@functional' }, () => {
+test.describe('Home Page Visual & Language Checks', () => {
   test('should load and display correct content sections (english)', { tag: '@smoke' }, async ({ homePage }) => {
     await homePage.goto('en');
     await homePage.expectVisibleElements();
@@ -16,7 +16,7 @@ test.describe('Home Page Visual & Language Checks', { tag: '@functional' }, () =
   });
 });
 
-test.describe('Home Page Content Checks', { tag: '@functional' }, () => {
+test.describe('Home Page Content Checks', () => {
   test('should have content and show the correct page heading (english)', async ({ homePage }) => {
     await homePage.goto('en');
     await homePage.expectMainContentToBePopulated();

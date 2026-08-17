@@ -5,7 +5,7 @@ import { ServiceCentreTestData, createServiceCentreTestData } from '../../helper
 
 const scamLink = 'https://www.gov.uk/government/news/scammers-using-hmcts-telephone-numbers';
 
-test.describe('Service Centre Page', { tag: '@functional' }, () => {
+test.describe('Service Centre Page', () => {
   let serviceCentreData!: ServiceCentreTestData;
 
   test.beforeAll(async ({ playwright }) => {

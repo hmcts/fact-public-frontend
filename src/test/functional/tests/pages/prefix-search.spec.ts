@@ -3,7 +3,7 @@ import en_i18n from '../../../../main/locales/en/prefix-search.json';
 import { expect, test } from '../../fixtures';
 import { CourtTestData, FUNCTIONAL_TEST_RUN_PREFIX, createCourtTestData } from '../../helpers/courtTestData';
 
-test.describe('Prefix Search Page', { tag: '@functional' }, () => {
+test.describe('Prefix Search Page', () => {
   let courtData: CourtTestData;
 
   test.beforeAll(async ({ playwright }) => {
@@ -16,7 +16,7 @@ test.describe('Prefix Search Page', { tag: '@functional' }, () => {
     }
   });
 
-  test.describe('Prefix Search Page', { tag: '@functional' }, () => {
+  test.describe('Prefix Search Page', () => {
     test('should render the prefix search page with all alphabet buttons in both English and Welsh', async ({
       prefixSearchPage,
     }) => {

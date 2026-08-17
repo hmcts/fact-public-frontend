@@ -13,7 +13,7 @@ const SECTION_HEADINGS = {
   openingHoursCy: 'Oriau agor',
 } as const;
 
-test.describe('Court Page Addresses And Opening Hours', { tag: '@functional' }, () => {
+test.describe('Court Page Addresses And Opening Hours', () => {
   let courtData!: CourtTestData;
 
   test.beforeAll(async ({ playwright }) => {

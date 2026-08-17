@@ -42,7 +42,7 @@ type ContactWithNames = {
   names: NonNullable<ReturnType<typeof getContactName>>;
 };
 
-test.describe('Court Page Accordion Content', { tag: '@functional' }, () => {
+test.describe('Court Page Accordion Content', () => {
   let courtData!: CourtTestData;
 
   test.beforeAll(async ({ playwright }) => {
