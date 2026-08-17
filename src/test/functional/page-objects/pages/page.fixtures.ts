@@ -11,6 +11,7 @@ import { PostcodeResultsPage } from './postcode-results.po';
 import { PostcodeSearchPage } from './postcode-search.po';
 import { PrefixSearchPage } from './prefix-search.po';
 import { SearchFlowPage } from './search-flow.po';
+import { ServiceCentrePage } from './service-centre.po';
 import { ServiceResultsPage } from './service-results.po';
 import { UnknownServicePage } from './unknown-service.po';
 
@@ -27,6 +28,7 @@ export interface PageFixtures {
   postcodeSearchPage: PostcodeSearchPage;
   prefixSearchPage: PrefixSearchPage;
   searchFlowPage: SearchFlowPage;
+  serviceCentrePage: ServiceCentrePage;
   serviceResultsPage: ServiceResultsPage;
   unknownServicePage: UnknownServicePage;
 }
@@ -79,6 +81,10 @@ export const pageFixtures = {
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   searchFlowPage: async ({ determinePage }, use): Promise<void> => {
     await use(new SearchFlowPage(determinePage));
+  },
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  serviceCentrePage: async ({ determinePage }, use): Promise<void> => {
+    await use(new ServiceCentrePage(determinePage));
   },
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   serviceResultsPage: async ({ determinePage }, use): Promise<void> => {
