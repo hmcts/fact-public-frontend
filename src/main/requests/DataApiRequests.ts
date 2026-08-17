@@ -1,6 +1,6 @@
-import { Logger } from '@hmcts/nodejs-logging';
 import { AxiosRequestConfig, HttpStatusCode, isAxiosError } from 'axios';
 
+import { Logger } from '../modules/logging';
 import { ServiceArea, serviceAreaSchema } from '../schemas/ServiceAreaSchema';
 import { Service, serviceSchema } from '../schemas/ServiceSchema';
 import {
