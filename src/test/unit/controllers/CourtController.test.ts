@@ -94,6 +94,25 @@ describe('CourtController', () => {
       expect(res.render).toHaveBeenCalledWith('not-found', { heading: 'Not found' });
     });
 
+    test('renders the error page without formatting a non-404 API failure as a court', async () => {
+      const controller = new CourtController();
+      const req = mockRequest({ error: { h1: 'Something went wrong' } });
+      req.params.slug = 'errored-court';
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        render: jest.fn(),
+      } as unknown as Response;
+
+      const { dataApiMock, courtServiceMock } = getMocks();
+      dataApiMock.getCourtDetails.mockResolvedValue(HttpStatusCode.InternalServerError);
+
+      await controller.get(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(HttpStatusCode.InternalServerError);
+      expect(res.render).toHaveBeenCalledWith('error', { h1: 'Something went wrong' });
+      expect(courtServiceMock.formatData).not.toHaveBeenCalled();
+    });
+
     test('renders court-closed with interpolated title when court is closed', async () => {
       const controller = new CourtController();
       const req = mockRequest({

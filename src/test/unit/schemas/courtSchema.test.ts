@@ -50,6 +50,43 @@ const buildCourtWithLiftSupportPhoneNumber = (liftSupportPhoneNumber: unknown) =
   ],
 });
 
+const buildCourtWithTranslation = (email: unknown, phoneNumber: unknown) => ({
+  ...baseCourt,
+  courtTranslations: [{ email, phoneNumber }],
+  courtAccessibilityOptions: [],
+});
+
+describe('courtSchema - translation contact details', () => {
+  it('accepts null translation contact details returned by the Data API', () => {
+    const result = courtSchema.safeParse(buildCourtWithTranslation('sw-cardiffmcenq@justice.gov.uk', null));
+
+    expect(result.success).toBe(true);
+  });
+
+  it('accepts a null translation email with a supplied phone number', () => {
+    const result = courtSchema.safeParse(buildCourtWithTranslation(null, '0330 808 4407'));
+
+    expect(result.success).toBe(true);
+  });
+
+  it('continues to reject invalid translation contact value types', () => {
+    const result = courtSchema.safeParse(buildCourtWithTranslation('sw-cardiffmcenq@justice.gov.uk', 12345));
+
+    expect(result.success).toBe(false);
+    if (result.success) {
+      throw new Error('Expected court schema parse to fail for an invalid translation phone number type');
+    }
+
+    expect(result.error.issues).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          path: ['courtTranslations', 0, 'phoneNumber'],
+        }),
+      ])
+    );
+  });
+});
+
 describe('courtSchema - liftSupportPhoneNumber', () => {
   it('accepts NONE as hearing enhancement equipment', () => {
     const data = buildCourtWithLiftSupportPhoneNumber(null);
