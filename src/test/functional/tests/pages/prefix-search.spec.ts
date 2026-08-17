@@ -7,9 +7,6 @@ test.describe('Prefix Search Page', { tag: '@functional' }, () => {
   let courtData: CourtTestData;
 
   test.beforeAll(async ({ playwright }) => {
-    if (!process.env.DATA_API_URL) {
-      return;
-    }
     courtData = await createCourtTestData(playwright, 'prefix-search');
   });
 
@@ -48,9 +45,6 @@ test.describe('Prefix Search Page', { tag: '@functional' }, () => {
     });
 
     test('should show the correct number of results for a given prefix', async ({ prefixSearchPage }) => {
-      if (!courtData) {
-        test.skip(true, 'DATA_API_URL not set, cannot run test requiring test data');
-      }
       await prefixSearchPage.goto('en', FUNCTIONAL_TEST_RUN_PREFIX.charAt(0));
 
       const courts = [
