@@ -16,4 +16,20 @@ describe('validationUtils', () => {
   test('returns invalidPostcode when postcode is not structurally valid', () => {
     expect(checkPostcode('not-a-postcode')).toBe('invalidPostcode');
   });
+
+  test('returns scottishChildrenPostcode for Scottish postcode in childcare service area', () => {
+    expect(checkPostcode('G2 8GT', 'childcare-arrangements-if-you-separate-from-your-partner')).toBe(
+      'scottishChildrenPostcode'
+    );
+  });
+
+  test('accepts Scottish postcode for allowed service areas', () => {
+    expect(checkPostcode('PH2 0RJ', 'benefits')).toBeUndefined();
+    expect(isValidPostcode('PH2 0RJ', 'claims-against-employers')).toBe(true);
+    expect(isValidPostcode('PH2 0RJ', 'immigration')).toBe(true);
+  });
+
+  test('returns scotlandPostcode for Scottish postcode outside allowed service areas', () => {
+    expect(checkPostcode('PH2 0RJ', 'tax')).toBe('scotlandPostcode');
+  });
 });
