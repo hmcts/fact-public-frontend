@@ -4,9 +4,7 @@ import { Base } from '../base';
 
 export class PrefixSearchPage extends Base {
   private readonly alphabetButtons = this.page.locator('#alphabet-buttons .govuk-button');
-  private readonly resultsHint = this.page.locator('#header-hint');
   private readonly resultsList = this.page.locator('#results-list');
-  private readonly courtLinks = this.page.locator('#results-list a.govuk-link');
   private readonly errorSummary = this.page.locator('.govuk-error-summary');
 
   async goto(lng?: string, prefix?: string): Promise<void> {
@@ -40,16 +38,8 @@ export class PrefixSearchPage extends Base {
     await this.page.locator(`#alphabet-buttons a.govuk-button:has-text("${letter}")`).click();
   }
 
-  async expectResultsHintToContainText(text: string): Promise<void> {
-    await expect(this.resultsHint).toContainText(text);
-  }
-
   async expectResultsListToBeVisible(): Promise<void> {
     await expect(this.resultsList).toBeVisible();
-  }
-
-  async expectResultsCount(count: number): Promise<void> {
-    await expect(this.courtLinks).toHaveCount(count);
   }
 
   async expectErrorSummaryToContainText(text: string): Promise<void> {

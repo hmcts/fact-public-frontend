@@ -14,8 +14,4 @@ export class UnknownServicePage extends Base {
   async expectHeadingToContainText(text: string): Promise<void> {
     await expect(this.heading).toContainText(text);
   }
-
-  async expectMainContentToContainText(text: string): Promise<void> {
-    await expect(this.mainContent).toContainText(text);
-  }
 }
