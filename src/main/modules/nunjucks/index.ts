@@ -1,8 +1,9 @@
 import * as path from 'path';
 
-import { Logger } from '@hmcts/nodejs-logging';
 import * as express from 'express';
 import * as nunjucks from 'nunjucks';
+
+import { Logger } from '../logging';
 
 export interface DynatraceOptions {
   jstagKey: string;

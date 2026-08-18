@@ -4,8 +4,7 @@ import * as https from 'https';
 import * as path from 'path';
 
 import { app } from './app';
-
-const { Logger } = require('@hmcts/nodejs-logging');
+import { Logger } from './modules/logging';
 
 const logger = Logger.getLogger('server');
 
