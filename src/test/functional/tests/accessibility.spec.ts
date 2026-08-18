@@ -26,7 +26,6 @@ test.describe('Accessibility tests', { tag: '@a11y' }, () => {
 
     test.afterAll(async () => {
       await serviceCentreData?.cleanup();
-      await serviceCentreData?.apiContext.dispose();
     });
 
     test('Service-centre details accessibility', async ({ axeUtils, page }) => {
