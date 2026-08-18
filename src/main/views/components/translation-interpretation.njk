@@ -1,8 +1,14 @@
 {% macro translationInterpretation(courtTranslations, text) %}
   <section id="translation-interpretation">
     {% set translationContact = courtTranslations[0] if courtTranslations and courtTranslations.length else null %}
-    {% set translationPhone = translationContact.phoneNumber if translationContact and translationContact.phoneNumber | trim else null %}
-    {% set translationEmail = translationContact.email if translationContact and translationContact.email | trim else null %}
+    {% set translationPhone = null %}
+    {% set translationEmail = null %}
+    {% if translationContact and translationContact.phoneNumber %}
+      {% set translationPhone = translationContact.phoneNumber | trim %}
+    {% endif %}
+    {% if translationContact and translationContact.email %}
+      {% set translationEmail = translationContact.email | trim %}
+    {% endif %}
 
     {% if translationPhone or translationEmail %}
       <p class="govuk-body">{{ text.contactIntro }}

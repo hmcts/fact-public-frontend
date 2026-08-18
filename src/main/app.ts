@@ -1,6 +1,5 @@
 import * as path from 'path';
 
-import { Logger } from '@hmcts/nodejs-logging';
 import { loadControllers, scopePerRequest } from 'awilix-express';
 import * as bodyParser from 'body-parser';
 import config = require('config');
@@ -16,6 +15,7 @@ import { AppInsights } from './modules/appinsights';
 import { Container } from './modules/awilix';
 import { Helmet } from './modules/helmet';
 import { I18next } from './modules/i18next';
+import { Logger } from './modules/logging';
 import { Nunjucks } from './modules/nunjucks';
 import { PropertiesVolume } from './modules/properties-volume';
 

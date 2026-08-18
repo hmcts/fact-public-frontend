@@ -34,6 +34,10 @@ export default class CourtController {
       return res.status(404).render('not-found', req.i18n.getDataByLanguage(req.lng)['not-found']);
     }
 
+    if (typeof result === 'number') {
+      return res.status(result).render('error', req.i18n.getDataByLanguage(req.lng).error);
+    }
+
     const court = result as Court;
     const viewModel: CourtViewModel = courtService.formatData(court, req.lng as string);
 
