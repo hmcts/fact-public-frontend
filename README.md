@@ -30,7 +30,7 @@ Run:
 yarn start
 ```
 
-The applications's home page will be available at http://localhost:3344
+The application's home page will be available at http://localhost:3344
 
 ### Running with Docker
 
@@ -80,8 +80,23 @@ Here's how to run functional tests:
 yarn test:functional
 ```
 
-Functional and a11y tests create temporary data through the Data API testing-support endpoints.
+The default project matrix is Chrome, Edge, Firefox and WebKit. Preview builds (`ENV=preview`) run Edge only.
+Smoke, accessibility and performance tests use the `@smoke`, `@a11y` and `@performance` tags. The functional
+test command runs the functional suite while excluding tests tagged `@smoke`. Playwright configuration
+restricts `@performance` test execution to the Edge project:
+
+```bash
+yarn test:smoke
+yarn test:performance
+yarn test:functional:chrome
+yarn test:functional:edge
+yarn test:functional:firefox
+yarn test:functional:webkit
+```
+
+Functional and accessibility tests create temporary data through the Data API testing-support endpoints.
 Set `DATA_API_URL` to the target data-api host if it is not running on `http://localhost:8989`.
+Set `TEST_URL` if the frontend is not running on `https://localhost:3344`. See `.env.example` for options.
 
 The suites rely on these endpoints:
 
@@ -91,13 +106,7 @@ The suites rely on these endpoints:
 - `DELETE /testing-support/service-centres/name-prefix/{serviceCentreNamePrefix}`
 - `GET /testing-support/regions`
 
-Running accessibility tests:
-
-```bash
-yarn test:a11y
-```
-
-Make sure all the paths in your application are covered by accessibility tests (see [a11y.ts](src/test/a11y/a11y.ts)).
+Accessibility tests run as part of the functional suite.
 
 ### Security
 
