@@ -21,7 +21,8 @@ export default class PostcodeSearchController {
   public async continue(req: FactRequest, res: Response): Promise<void> {
     const noServiceSearch: boolean = req.params?.service === undefined;
     const postcode = req.body?.postcode;
-    if (isValidPostcode(postcode)) {
+    const serviceArea = req.params?.serviceArea as string | undefined;
+    if (isValidPostcode(postcode, serviceArea)) {
       if (noServiceSearch) {
         return postcodeResultsRedirect(res, postcode);
       }
@@ -29,15 +30,14 @@ export default class PostcodeSearchController {
         // if any of these fail to resolve, then the slugs in the
         // URL are invalid, and we should return a 404
         const service = req.params.service as string;
-        const serviceArea = req.params.serviceArea as string;
         const action = req.params.action as string;
-        return servicePostcodeResultsRedirect(res, service, serviceArea, action, postcode);
+        return servicePostcodeResultsRedirect(res, service, serviceArea as string, action, postcode);
       } catch {
         return res.status(404).render('not-found', req.i18n.getDataByLanguage(req.lng)['not-found']);
       }
     }
     // postcode is invalid
-    return this.renderPostcodeSearchPage(req, res, checkPostcode(postcode));
+    return this.renderPostcodeSearchPage(req, res, checkPostcode(postcode, serviceArea));
   }
 
   private async renderPostcodeSearchPage(
