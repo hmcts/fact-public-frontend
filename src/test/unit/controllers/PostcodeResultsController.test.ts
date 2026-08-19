@@ -231,4 +231,39 @@ describe('PostcodeResultsController', () => {
       })
     );
   });
+
+  test('GET: redirects to childcare-specific Scottish error for childcare service area', async () => {
+    req.query = { postcode: 'G2 8GT' };
+    req.params = {
+      service: 'service',
+      serviceArea: 'childcare-arrangements-if-you-separate-from-your-partner',
+      action: 'nearest',
+    };
+
+    await controller.get(req as FactRequest, res);
+
+    expect(res.redirect).toHaveBeenCalledWith(
+      '/services/service/childcare-arrangements-if-you-separate-from-your-partner/nearest/search-by-postcode?error=scottishChildrenPostcode'
+    );
+    expect(mockPerformPostcodeSearch).not.toHaveBeenCalled();
+  });
+
+  test('GET: accepts Scottish postcode for benefits service area and performs search', async () => {
+    req.query = { postcode: 'PH2 0RJ' };
+    req.params = { service: 'service', serviceArea: 'benefits', action: 'nearest' };
+    calculateServiceNameFromSlugMock.mockResolvedValue('service');
+    calculateServiceAreaFromSlugMock.mockResolvedValue({
+      name: 'Benefits',
+      nameCy: 'Budd-daliadau',
+      slug: 'benefits',
+      onlineText: null,
+      onlineUrl: null,
+    } as ServiceArea);
+    mockPerformPostcodeSearch.mockResolvedValue([]);
+
+    await controller.get(req as FactRequest, res);
+
+    expect(mockPerformPostcodeSearch).toHaveBeenCalledWith('PH2 0RJ', 'Benefits', 'nearest');
+    expect(res.redirect).toHaveBeenCalledWith('/services/service/benefits/nearest/search-by-postcode?noResults=true');
+  });
 });
