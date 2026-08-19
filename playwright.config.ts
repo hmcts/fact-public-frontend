@@ -169,7 +169,13 @@ function resolveProjects() {
     dependencies: ['setup'],
   };
   // standard projects run everything except performance tests
-  const standardProjects = [ProjectsConfig.chrome, ProjectsConfig.firefox, ProjectsConfig.webkit].map(project => ({
+  const standardProjects = [
+    ProjectsConfig.chrome,
+    ProjectsConfig.firefox,
+    ProjectsConfig.webkit,
+    ProjectsConfig.tabletChrome,
+    ProjectsConfig.tabletWebkit,
+  ].map(project => ({
     ...project,
     dependencies: ['setup'],
     grepInvert: /@performance/,
