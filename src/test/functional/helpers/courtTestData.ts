@@ -17,7 +17,9 @@ type CourtData = {
   body: Court;
 };
 
-export const FUNCTIONAL_TEST_RUN_PREFIX = `FaCTPublicTest${generateUppercaseRandomString(4)}`;
+export const FUNCTIONAL_TEST_RUN_PREFIX = `FaCTPublicTest${
+  process.env.PLAYWRIGHT_TEST_RUN_SUFFIX?.toUpperCase() ?? generateUppercaseRandomString(4)
+}`;
 
 export type CourtTestData = {
   apiContext: APIRequestContext;

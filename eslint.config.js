@@ -138,5 +138,10 @@ module.exports = defineConfig([
     '**/*.mjs',
     '**/.pnp.*',
     '.yarn/*',
+    // playwright additions
+    'playwright.config.ts',
+    'playwright-report/**',
+    'test-results/**',
+    'functional-output/**',
   ]),
 ]);

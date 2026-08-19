@@ -1,6 +1,7 @@
 import { APIRequestContext, expect } from '@playwright/test';
 
 import { Court } from '../../../main/schemas/courtSchema';
+import { config } from '../utils';
 
 export type PlaywrightLike = {
   request: {
@@ -47,7 +48,7 @@ export type Region = {
 
 export async function createTestingSupportContext(playwright: PlaywrightLike): Promise<APIRequestContext> {
   return playwright.request.newContext({
-    baseURL: process.env.DATA_API_URL ?? 'http://localhost:8989',
+    baseURL: config.urls.dataApiUrl,
     extraHTTPHeaders: {
       Accept: 'application/json',
     },
