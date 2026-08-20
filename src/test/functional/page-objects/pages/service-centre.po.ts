@@ -118,4 +118,14 @@ export class ServiceCentrePage extends Base {
       await expect(link).toHaveAttribute(name, value);
     }
   }
+
+  async expectAccordionSectionNotToExist(sectionName: string): Promise<void> {
+    await expect(this.accordion.getByRole('button', { name: new RegExp(`^${sectionName}$`) })).toHaveCount(0);
+  }
+
+  async expectUsefulInformationHeadingNotToExist(headingText: string): Promise<void> {
+    await expect(
+      this.usefulInformationSection.getByRole('heading', { level: 3, name: new RegExp(`^${headingText}$`) })
+    ).toHaveCount(0);
+  }
 }

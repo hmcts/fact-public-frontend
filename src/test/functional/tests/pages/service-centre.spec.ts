@@ -39,16 +39,17 @@ test.describe('Service Centre Page', () => {
       'service-centre-details-accordion',
     ]);
 
-    for (const excludedContent of [
-      'Opening hours',
-      'Coming to court',
-      'Hearings at this court',
+    for (const excludedAccordions of [
       'Translation and interpretation',
       'Accessibility',
       'Building facilities',
       'Information for professionals',
     ]) {
-      await serviceCentrePage.expectMainContentNotToContainText(excludedContent);
+      await serviceCentrePage.expectAccordionSectionNotToExist(excludedAccordions);
+    }
+
+    for (const excludedHeading of ['Opening hours', 'Coming to court', 'Hearings at this court']) {
+      await serviceCentrePage.expectUsefulInformationHeadingNotToExist(excludedHeading);
     }
   });
 
@@ -70,7 +71,9 @@ test.describe('Service Centre Page', () => {
 
     await serviceCentrePage.expandAccordionSection('Achosion a wrandawyd');
     await serviceCentrePage.expectCasesHeardToBePopulated();
-    await serviceCentrePage.expectFirstCaseLinkToOpenInNewTab();
+
+    // FACT-2960 - disabling as we can't guarantee case links for randomised service areas
+    // await serviceCentrePage.expectFirstCaseLinkToOpenInNewTab();
   });
 
   test('renders conditional warning notices', async ({ serviceCentrePage }) => {
