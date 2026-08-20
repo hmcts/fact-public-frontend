@@ -26,7 +26,7 @@ describe('validationUtils', () => {
   test('accepts Scottish postcode for allowed service areas', () => {
     expect(checkPostcode('PH2 0RJ', 'benefits')).toBeUndefined();
     expect(isValidPostcode('PH2 0RJ', 'claims-against-employers')).toBe(true);
-    expect(isValidPostcode('PH2 0RJ', 'immigration')).toBe(true);
+    expect(isValidPostcode('PH2 0RJ', 'immigration-and-asylum')).toBe(true);
   });
 
   test('returns scotlandPostcode for Scottish postcode outside allowed service areas', () => {

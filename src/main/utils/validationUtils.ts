@@ -12,7 +12,7 @@ const JURISDICTION_ERROR_REGEXES = {
   isleOfManPostcode: /^(IM)/i,
 };
 
-const SCOTTISH_ALLOWED_SERVICE_AREAS = new Set(['immigration', 'benefits', 'claims-against-employers']);
+const SCOTTISH_ALLOWED_SERVICE_AREAS = new Set(['immigration-and-asylum', 'benefits', 'claims-against-employers']);
 const SCOTTISH_CHILDCARE_SERVICE_AREAS = new Set([
   'childcare-arrangements-if-you-separate-from-your-partner',
   'childcare-arrangements',
@@ -51,11 +51,11 @@ export const checkPostcode = (postcode: string, serviceArea?: string): string | 
   const normalisedServiceArea = serviceArea?.trim().toLowerCase();
 
   if (SCOTLAND_POSTCODE_REGEX.test(trimmedPostcode)) {
-    if (normalisedServiceArea && SCOTTISH_ALLOWED_SERVICE_AREAS.has(normalisedServiceArea)) {
-      return undefined;
-    }
     if (normalisedServiceArea && SCOTTISH_CHILDCARE_SERVICE_AREAS.has(normalisedServiceArea)) {
       return 'scottishChildrenPostcode';
+    }
+    if (normalisedServiceArea && SCOTTISH_ALLOWED_SERVICE_AREAS.has(normalisedServiceArea)) {
+      return undefined;
     }
     return 'scotlandPostcode';
   }
