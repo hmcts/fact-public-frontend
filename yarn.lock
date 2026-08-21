@@ -8280,18 +8280,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-playwright@npm:2.10.5":
-  version: 2.10.5
-  resolution: "eslint-plugin-playwright@npm:2.10.5"
-  dependencies:
-    globals: "npm:^17.3.0"
-  peerDependencies:
-    eslint: ">=8.40.0"
-  checksum: 10/c6b35fa3d004930ad62e11636f98fb195599177f537b558f695e12378283339bf2b7f6544effd532c63759ca1b4cd13bb32a55a92ef307958ad432fad99a7516
-  languageName: node
-  linkType: hard
-
-"eslint-plugin-playwright@npm:^2.5.1":
+"eslint-plugin-playwright@npm:2.11.0, eslint-plugin-playwright@npm:^2.5.1":
   version: 2.11.0
   resolution: "eslint-plugin-playwright@npm:2.11.0"
   dependencies:
@@ -8794,13 +8783,13 @@ __metadata:
     eslint-config-prettier: "npm:10.1.8"
     eslint-plugin-import: "npm:2.32.0"
     eslint-plugin-jest: "npm:29.16.1"
-    eslint-plugin-playwright: "npm:2.10.5"
+    eslint-plugin-playwright: "npm:2.11.0"
     express: "npm:5.2.1"
     express-rate-limit: "npm:8.6.2"
     express-session: "npm:1.19.0"
     get-port: "npm:^7.2.0"
     glob: "npm:13.0.6"
-    globals: "npm:17.7.0"
+    globals: "npm:17.11.0"
     govuk-frontend: "npm:5.14.0"
     helmet: "npm:8.3.0"
     html-webpack-plugin: "npm:5.6.8"
@@ -9482,10 +9471,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"globals@npm:17.7.0":
-  version: 17.7.0
-  resolution: "globals@npm:17.7.0"
-  checksum: 10/79304ccc4d2ca167ea15bdb25da346aa34ce3847b18fbd6c3cad182e152505305db3c9722fd5e292c62f6db97a8fa06e0c110a1e7703d7325498e5351d08cab4
+"globals@npm:17.11.0":
+  version: 17.11.0
+  resolution: "globals@npm:17.11.0"
+  checksum: 10/9cff5b8099b585862ab0d31e8b93dc1c3e7b59239dc58b59447a38709715751df8794ee0d28f434f8e421b01aee3cc10051e2455b5c967d960e79f882e68aa0f
   languageName: node
   linkType: hard
 
