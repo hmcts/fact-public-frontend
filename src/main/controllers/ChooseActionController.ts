@@ -4,11 +4,13 @@ import { Response } from 'express';
 import { FactRequest } from '../interfaces/FactRequest';
 import { isValidAction } from '../utils/validationUtils';
 
+import BaseController from './BaseController';
+
 @route('/service-choose-action')
-export default class ChooseActionController {
+export default class ChooseActionController extends BaseController {
   @GET()
   public render(req: FactRequest, res: Response): void {
-    res.render('choose-action', req.i18n.getDataByLanguage(req.lng)['choose-action']);
+    this.renderView(req, res, 'choose-action', 'choose-action');
   }
 
   @POST()
@@ -16,10 +18,7 @@ export default class ChooseActionController {
     if (isValidAction(req.body?.action)) {
       res.redirect(`/services/${req.body.action}`);
     } else {
-      res.render('choose-action', {
-        ...req.i18n.getDataByLanguage(req.lng)['choose-action'],
-        errors: true,
-      });
+      this.renderView(req, res, 'choose-action', 'choose-action', { errors: true });
     }
   }
 }
