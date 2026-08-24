@@ -2,19 +2,15 @@ import { HttpStatusCode } from 'axios';
 import { Response } from 'express';
 import { mock } from 'sinon';
 
-const mockGetCourtsByPrefix = jest.fn();
-
-jest.mock('../../../main/requests/DataApiRequests', () => ({
-  DataApiRequests: jest.fn().mockImplementation(() => ({
-    getCourtsByPrefix: mockGetCourtsByPrefix,
-  })),
-}));
-
 import AZPrefixSearchController from '../../../main/controllers/AZPrefixSearchController';
+import { DataApiRequests } from '../../../main/requests/DataApiRequests';
 import { mockRequest } from '../mocks/mockRequest';
 
+const mockGetCourtsByPrefix = jest.fn();
+const dataApiRequests = { getCourtsByPrefix: mockGetCourtsByPrefix } as unknown as DataApiRequests;
+
 describe('AZPrefixSearchController', () => {
-  const controller = new AZPrefixSearchController();
+  const controller = new AZPrefixSearchController(dataApiRequests);
   const mockPageData = {
     title: 'Search by prefix',
     error: {

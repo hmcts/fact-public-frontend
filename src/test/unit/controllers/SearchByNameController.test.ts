@@ -2,17 +2,13 @@
 import { Response } from 'express';
 import { mock } from 'sinon';
 
-const mockGetByName = jest.fn();
-
-jest.mock('../../../main/requests/DataApiRequests', () => ({
-  DataApiRequests: jest.fn().mockImplementation(() => ({
-    getByName: mockGetByName,
-  })),
-}));
-
 import SearchByLocationController from '../../../main/controllers/SearchByLocationController';
 import { FactRequest } from '../../../main/interfaces/FactRequest';
+import { DataApiRequests } from '../../../main/requests/DataApiRequests';
 import { mockRequest } from '../mocks/mockRequest';
+
+const mockGetByName = jest.fn();
+const dataApiRequests = { getByName: mockGetByName } as unknown as DataApiRequests;
 
 describe('SearchByLocationController', () => {
   beforeEach(() => {
@@ -20,7 +16,7 @@ describe('SearchByLocationController', () => {
   });
 
   test('renders the search by location view', async () => {
-    const controller = new SearchByLocationController();
+    const controller = new SearchByLocationController(dataApiRequests);
     const response = {
       render: () => '',
     } as unknown as Response;
@@ -34,7 +30,7 @@ describe('SearchByLocationController', () => {
   });
 
   test('renders validation error for too-short search query on get', async () => {
-    const controller = new SearchByLocationController();
+    const controller = new SearchByLocationController(dataApiRequests);
     const response = {
       render: () => '',
     } as unknown as Response;
@@ -52,7 +48,7 @@ describe('SearchByLocationController', () => {
   });
 
   test('renders results when valid search query is on get', async () => {
-    const controller = new SearchByLocationController();
+    const controller = new SearchByLocationController(dataApiRequests);
     const response = {
       render: () => '',
     } as unknown as Response;
@@ -73,7 +69,7 @@ describe('SearchByLocationController', () => {
   });
 
   test('renders service error page when API lookup fails on get', async () => {
-    const controller = new SearchByLocationController();
+    const controller = new SearchByLocationController(dataApiRequests);
     const response = {
       status: () => response,
       render: () => '',
@@ -91,7 +87,7 @@ describe('SearchByLocationController', () => {
   });
 
   test('renders validation error for blank search on post', () => {
-    const controller = new SearchByLocationController();
+    const controller = new SearchByLocationController(dataApiRequests);
     const response = {
       render: () => '',
     } as unknown as Response;
@@ -109,7 +105,7 @@ describe('SearchByLocationController', () => {
   });
 
   test('renders validation error for too-short search on post', () => {
-    const controller = new SearchByLocationController();
+    const controller = new SearchByLocationController(dataApiRequests);
     const response = {
       render: () => '',
     } as unknown as Response;
@@ -127,7 +123,7 @@ describe('SearchByLocationController', () => {
   });
 
   test('redirects to GET search page with query on valid post', () => {
-    const controller = new SearchByLocationController();
+    const controller = new SearchByLocationController(dataApiRequests);
     const response = {
       redirect: () => '',
     } as unknown as Response;

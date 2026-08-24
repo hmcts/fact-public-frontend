@@ -4,8 +4,15 @@ import { Response } from 'express';
 
 import { ChooseServiceAreaController } from '../../../main/controllers/ChooseServiceAreaController';
 import { FactRequest } from '../../../main/interfaces/FactRequest';
+import { DataApiRequests } from '../../../main/requests/DataApiRequests';
 import { CATCHMENT_METHOD, SERVICE_AREA_TYPE, ServiceArea } from '../../../main/schemas/ServiceAreaSchema';
 import { Service } from '../../../main/schemas/ServiceSchema';
+import { calculateServiceAreaFromSlug, calculateServiceNameFromSlug } from '../../../main/utils/SchemaUtils';
+
+jest.mock('../../../main/utils/SchemaUtils', () => ({
+  calculateServiceAreaFromSlug: jest.fn(),
+  calculateServiceNameFromSlug: jest.fn(),
+}));
 
 const mockGetAllServices: jest.MockedFunction<() => Promise<Service[] | HttpStatusCode>> = jest.fn();
 const mockGetServiceAreas: jest.MockedFunction<() => Promise<ServiceArea[] | HttpStatusCode>> = jest.fn();
@@ -83,18 +90,21 @@ const mockServiceArea3: ServiceArea = {
   hasRegional: false,
 };
 
-jest.mock('../../../main/requests/DataApiRequests', () => {
-  return {
-    DataApiRequests: jest.fn().mockImplementation(() => ({
-      getAllServices: () => mockGetAllServices(),
-      getServiceAreas: () => mockGetServiceAreas(),
-    })),
-  };
-});
+const dataApiRequests = {
+  getAllServices: mockGetAllServices,
+  getServiceAreas: mockGetServiceAreas,
+} as unknown as DataApiRequests;
+const calculateServiceNameFromSlugMock = calculateServiceNameFromSlug as jest.MockedFunction<
+  typeof calculateServiceNameFromSlug
+>;
+const calculateServiceAreaFromSlugMock = calculateServiceAreaFromSlug as jest.MockedFunction<
+  typeof calculateServiceAreaFromSlug
+>;
 
 describe('ChooseServiceAreaController', () => {
   let req: Partial<FactRequest>;
   let res: Response;
+  let controller: ChooseServiceAreaController;
 
   beforeEach(() => {
     req = {
@@ -115,12 +125,23 @@ describe('ChooseServiceAreaController', () => {
     } as unknown as Response;
     mockGetAllServices.mockReset();
     mockGetServiceAreas.mockReset();
+    calculateServiceNameFromSlugMock.mockResolvedValue(mockService.name);
+    calculateServiceAreaFromSlugMock.mockImplementation(async (_service, area) => {
+      const serviceArea = [mockServiceArea, mockServiceArea2, mockServiceArea3].find(
+        candidate => candidate.slug === area
+      );
+      if (!serviceArea) {
+        throw new Error('Service area not found');
+      }
+      return serviceArea;
+    });
+    controller = new ChooseServiceAreaController(dataApiRequests);
   });
 
   test('renders choose-service-area page with multiple areas', async () => {
     mockGetAllServices.mockResolvedValue([mockService]);
     mockGetServiceAreas.mockResolvedValue([mockServiceArea, mockServiceArea2, mockServiceArea3]);
-    await new ChooseServiceAreaController().render(req as FactRequest, res);
+    await controller.render(req as FactRequest, res);
     expect(res.render).toHaveBeenCalledWith(
       'choose-service-area',
       expect.objectContaining({ title: 'Choose Service Area' })
@@ -131,7 +152,7 @@ describe('ChooseServiceAreaController', () => {
     mockGetAllServices.mockResolvedValue([mockService]);
     mockGetServiceAreas.mockResolvedValue([mockServiceArea]);
     req.params = { action: 'nearest', service: 'test-service' };
-    await new ChooseServiceAreaController().render(req as FactRequest, res);
+    await controller.render(req as FactRequest, res);
     expect(res.redirect).toHaveBeenCalledWith('/services/test-service/area-1-slug/search-results');
   });
 
@@ -139,7 +160,7 @@ describe('ChooseServiceAreaController', () => {
     mockGetAllServices.mockResolvedValue([mockService]);
     mockGetServiceAreas.mockResolvedValue([mockServiceArea2]);
     req.params = { action: 'nearest', service: 'test-service' };
-    await new ChooseServiceAreaController().render(req as FactRequest, res);
+    await controller.render(req as FactRequest, res);
     expect(res.redirect).toHaveBeenCalledWith(
       `/services/test-service/${mockServiceArea2.slug}/nearest/search-by-postcode`
     );
@@ -149,7 +170,7 @@ describe('ChooseServiceAreaController', () => {
     mockGetAllServices.mockResolvedValue([mockService]);
     mockGetServiceAreas.mockResolvedValue([mockServiceArea]);
     req.params = { action: 'documents', service: 'test-service' };
-    await new ChooseServiceAreaController().render(req as FactRequest, res);
+    await controller.render(req as FactRequest, res);
     expect(res.redirect).toHaveBeenCalledWith(`/services/${req.params.service}/${mockServiceArea.slug}/search-results`);
   });
 
@@ -157,7 +178,7 @@ describe('ChooseServiceAreaController', () => {
     mockGetAllServices.mockResolvedValue([mockService]);
     mockGetServiceAreas.mockResolvedValue([mockServiceArea3]);
     req.params = { action: 'documents', service: 'test-service' };
-    await new ChooseServiceAreaController().render(req as FactRequest, res);
+    await controller.render(req as FactRequest, res);
     expect(res.redirect).toHaveBeenCalledWith(
       `/services/${req.params.service}/${mockServiceArea3.slug}/${req.params.action}/search-by-postcode`
     );
@@ -168,7 +189,7 @@ describe('ChooseServiceAreaController', () => {
     mockGetServiceAreas.mockResolvedValue([mockServiceArea, mockServiceArea2]);
     req.params = { action: 'nearest', service: 'test-service' };
     req.body = { area: mockServiceArea2.slug };
-    await new ChooseServiceAreaController().continue(req as FactRequest, res);
+    await controller.continue(req as FactRequest, res);
     expect(res.redirect).toHaveBeenCalledWith(
       `/services/${req.params.service}/${mockServiceArea2.slug}/${req.params.action}/search-by-postcode`
     );
@@ -179,7 +200,7 @@ describe('ChooseServiceAreaController', () => {
     mockGetServiceAreas.mockResolvedValue([mockServiceArea, mockServiceArea3]);
     req.params = { action: 'documents', service: 'test-service' };
     req.body = { area: mockServiceArea.slug };
-    await new ChooseServiceAreaController().continue(req as FactRequest, res);
+    await controller.continue(req as FactRequest, res);
     expect(res.redirect).toHaveBeenCalledWith(`/services/${req.params.service}/${mockServiceArea.slug}/search-results`);
   });
 
@@ -188,7 +209,7 @@ describe('ChooseServiceAreaController', () => {
     mockGetServiceAreas.mockResolvedValue([mockServiceArea, mockServiceArea2]);
     req.params = { action: 'documents', service: 'test-service' };
     req.body = { area: mockServiceArea.slug };
-    await new ChooseServiceAreaController().continue(req as FactRequest, res);
+    await controller.continue(req as FactRequest, res);
     expect(res.redirect).toHaveBeenCalledWith(`/services/${req.params.service}/${mockServiceArea.slug}/search-results`);
   });
 
@@ -197,7 +218,7 @@ describe('ChooseServiceAreaController', () => {
     mockGetServiceAreas.mockResolvedValue([mockServiceArea, mockServiceArea3]);
     req.params = { action: 'documents', service: 'test-service' };
     req.body = { area: mockServiceArea3.slug };
-    await new ChooseServiceAreaController().continue(req as FactRequest, res);
+    await controller.continue(req as FactRequest, res);
     expect(res.redirect).toHaveBeenCalledWith(
       `/services/${req.params.service}/${mockServiceArea3.slug}/${req.params.action}/search-by-postcode`
     );
@@ -205,14 +226,14 @@ describe('ChooseServiceAreaController', () => {
 
   test('renders not-found if action is invalid', async () => {
     req.params = { action: 'invalid', service: 'test-service' };
-    await new ChooseServiceAreaController().render(req as FactRequest, res);
+    await controller.render(req as FactRequest, res);
     expect(res.status).toHaveBeenCalledWith(404);
     expect(res.render).toHaveBeenCalledWith('not-found', expect.objectContaining({ title: 'Not Found' }));
   });
 
   test('renders not-found if action is invalid (POST)', async () => {
     req.params = { action: 'invalid', service: 'test-service' };
-    await new ChooseServiceAreaController().continue(req as FactRequest, res);
+    await controller.continue(req as FactRequest, res);
     expect(res.status).toHaveBeenCalledWith(404);
     expect(res.render).toHaveBeenCalledWith('not-found', expect.objectContaining({ title: 'Not Found' }));
   });
@@ -220,7 +241,7 @@ describe('ChooseServiceAreaController', () => {
   test('redirects back to service selection if area is not-listed', async () => {
     req.body = { area: 'not-listed' };
     req.params = { action: 'nearest', service: 'test-service' };
-    await new ChooseServiceAreaController().continue(req as FactRequest, res);
+    await controller.continue(req as FactRequest, res);
     expect(res.redirect).toHaveBeenCalledWith(`/services/${req.params.action}`);
   });
 
@@ -228,7 +249,7 @@ describe('ChooseServiceAreaController', () => {
     req.body = { area: 'area-unknown' };
     mockGetAllServices.mockResolvedValue([mockService]);
     mockGetServiceAreas.mockResolvedValue([mockServiceArea]);
-    await new ChooseServiceAreaController().continue(req as FactRequest, res);
+    await controller.continue(req as FactRequest, res);
     expect(res.status).toHaveBeenCalledWith(404);
     expect(res.render).toHaveBeenCalledWith('not-found', expect.objectContaining({ title: 'Not Found' }));
   });
@@ -237,13 +258,13 @@ describe('ChooseServiceAreaController', () => {
     mockGetAllServices.mockResolvedValue([mockService]);
     mockGetServiceAreas.mockResolvedValue([mockServiceArea, mockServiceArea2, mockServiceArea3]);
     req.body = {};
-    await new ChooseServiceAreaController().continue(req as FactRequest, res);
+    await controller.continue(req as FactRequest, res);
     expect(res.render).toHaveBeenCalledWith('choose-service-area', expect.objectContaining({ errors: true }));
   });
 
   test('renders not-found if service is not found', async () => {
     mockGetAllServices.mockResolvedValue([]);
-    await new ChooseServiceAreaController().render(req as FactRequest, res);
+    await controller.render(req as FactRequest, res);
     expect(res.status).toHaveBeenCalledWith(404);
     expect(res.render).toHaveBeenCalledWith('not-found', expect.objectContaining({ title: 'Not Found' }));
   });

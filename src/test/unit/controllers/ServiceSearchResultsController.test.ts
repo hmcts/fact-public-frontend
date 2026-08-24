@@ -3,6 +3,7 @@ import { Response } from 'express';
 
 import ServiceSearchResultsController from '../../../main/controllers/ServiceSearchResultsController';
 import { FactRequest } from '../../../main/interfaces/FactRequest';
+import { DataApiRequests } from '../../../main/requests/DataApiRequests';
 import { SERVICE_AREA_TYPE, ServiceArea } from '../../../main/schemas/ServiceAreaSchema';
 import { CATCHMENT_TYPES, ServiceAreaSearchResult } from '../../../main/schemas/courtServiceAreas';
 import { SEARCH_RESULT_TYPES } from '../../../main/schemas/searchResult';
@@ -15,13 +16,6 @@ const mockCalculateServiceAreaFromSlug: jest.MockedFunction<
   (serviceName: string, area: string) => Promise<ServiceArea>
 > = jest.fn();
 
-jest.mock('../../../main/requests/DataApiRequests', () => {
-  return {
-    DataApiRequests: jest.fn().mockImplementation(() => ({
-      getServiceAreaSearchResults: (serviceAreaName: string) => mockGetServiceAreaSearchResults(serviceAreaName),
-    })),
-  };
-});
 jest.mock('../../../main/utils/SchemaUtils', () => {
   return {
     calculateServiceNameFromSlug: (service: string) => mockCalculateServiceNameFromSlug(service),
@@ -29,6 +23,10 @@ jest.mock('../../../main/utils/SchemaUtils', () => {
       mockCalculateServiceAreaFromSlug(serviceName, area),
   };
 });
+
+const dataApiRequests = {
+  getServiceAreaSearchResults: mockGetServiceAreaSearchResults,
+} as unknown as DataApiRequests;
 
 // Common base ServiceArea mock for tests
 const BASE_SERVICE_AREA: ServiceArea = {
@@ -108,7 +106,7 @@ describe('ServiceSearchResultsController', () => {
       { ...BASE_NATIONAL_SERVICE_CENTRE_RESULT },
       { ...BASE_LOCAL_SERVICE_CENTRE_RESULT },
     ]);
-    await new ServiceSearchResultsController().render(req as FactRequest, res);
+    await new ServiceSearchResultsController(dataApiRequests).render(req as FactRequest, res);
     expect(res.render).toHaveBeenCalledWith(
       'service-results',
       expect.objectContaining({
@@ -131,7 +129,7 @@ describe('ServiceSearchResultsController', () => {
       textCy: 'Awgrym Cymraeg',
     });
     mockGetServiceAreaSearchResults.mockResolvedValue([{ ...BASE_NATIONAL_SERVICE_CENTRE_RESULT }]);
-    await new ServiceSearchResultsController().render(req as FactRequest, res);
+    await new ServiceSearchResultsController(dataApiRequests).render(req as FactRequest, res);
     expect(res.render).toHaveBeenCalledWith(
       'service-results',
       expect.objectContaining({
@@ -155,7 +153,7 @@ describe('ServiceSearchResultsController', () => {
       'service-results': { hint: 'Find a court for {serviceArea}' },
       'not-found': { title: 'Not Found' },
     });
-    await new ServiceSearchResultsController().render(req as FactRequest, res);
+    await new ServiceSearchResultsController(dataApiRequests).render(req as FactRequest, res);
     expect(res.render).toHaveBeenCalledWith(
       'service-results',
       expect.objectContaining({
@@ -166,7 +164,7 @@ describe('ServiceSearchResultsController', () => {
 
   test('renders not-found if error is thrown', async () => {
     mockCalculateServiceNameFromSlug.mockRejectedValue(new Error('fail'));
-    await new ServiceSearchResultsController().render(req as FactRequest, res);
+    await new ServiceSearchResultsController(dataApiRequests).render(req as FactRequest, res);
     expect(res.status).toHaveBeenCalledWith(404);
     expect(res.render).toHaveBeenCalledWith('not-found', expect.anything());
   });
@@ -179,7 +177,7 @@ describe('ServiceSearchResultsController', () => {
       ...BASE_SERVICE_AREA,
     });
     mockGetServiceAreaSearchResults.mockResolvedValue(undefined);
-    await new ServiceSearchResultsController().render(req as FactRequest, res);
+    await new ServiceSearchResultsController(dataApiRequests).render(req as FactRequest, res);
     expect(res.render).toHaveBeenCalledWith(
       'service-results',
       expect.objectContaining({
@@ -194,7 +192,7 @@ describe('ServiceSearchResultsController', () => {
       ...BASE_SERVICE_AREA,
     });
     mockGetServiceAreaSearchResults.mockResolvedValue([{ ...BASE_LOCAL_SERVICE_CENTRE_RESULT }]);
-    await new ServiceSearchResultsController().render(req as FactRequest, res);
+    await new ServiceSearchResultsController(dataApiRequests).render(req as FactRequest, res);
     expect(res.render).toHaveBeenCalledWith(
       'service-results',
       expect.objectContaining({

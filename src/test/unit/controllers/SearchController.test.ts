@@ -1,18 +1,14 @@
 import { Response } from 'express';
 
-const mockGetAll = jest.fn();
-
-jest.mock('../../../main/requests/DataApiRequests', () => ({
-  DataApiRequests: jest.fn().mockImplementation(() => ({
-    getAll: mockGetAll,
-  })),
-}));
-
 import SearchController from '../../../main/controllers/SearchController';
 import { FactRequest } from '../../../main/interfaces/FactRequest';
+import { DataApiRequests } from '../../../main/requests/DataApiRequests';
+
+const mockGetAll = jest.fn();
+const dataApiRequests = { getAll: mockGetAll } as unknown as DataApiRequests;
 
 describe('CourtController', () => {
-  const controller = new SearchController();
+  const controller = new SearchController(dataApiRequests);
 
   describe('getAllJson', () => {
     test('should return all location data as JSON', async () => {

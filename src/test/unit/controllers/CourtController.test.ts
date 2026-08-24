@@ -3,42 +3,26 @@ import { Response } from 'express';
 
 import CourtController from '../../../main/controllers/CourtController';
 import { FactRequest } from '../../../main/interfaces/FactRequest';
+import { DataApiRequests } from '../../../main/requests/DataApiRequests';
 import { Court } from '../../../main/schemas/courtSchema';
-import { CourtViewModel } from '../../../main/services/CourtService';
+import { CourtService, CourtViewModel } from '../../../main/services/CourtService';
 import { mockRequest } from '../mocks/mockRequest';
 
-jest.mock('../../../main/requests/DataApiRequests', () => {
-  const dataApiMock = {
-    getCourtDetails: jest.fn(),
-  };
-  return {
-    __dataApiMock: dataApiMock,
-    DataApiRequests: jest.fn().mockImplementation(() => dataApiMock),
-  };
-});
-
-jest.mock('../../../main/services/CourtService', () => {
-  const courtServiceMock = {
-    formatData: jest.fn(),
-  };
-  return {
-    __courtServiceMock: courtServiceMock,
-    CourtService: jest.fn().mockImplementation(() => courtServiceMock),
-  };
-});
+const injectedDataApiMock = { getCourtDetails: jest.fn() };
+const injectedCourtServiceMock = { formatData: jest.fn() };
 
 const getMocks = () => {
-  const dataApiModule = require('../../../main/requests/DataApiRequests') as {
-    __dataApiMock: { getCourtDetails: jest.Mock };
-  };
-  const courtServiceModule = require('../../../main/services/CourtService') as {
-    __courtServiceMock: { formatData: jest.Mock };
-  };
   return {
-    dataApiMock: dataApiModule.__dataApiMock,
-    courtServiceMock: courtServiceModule.__courtServiceMock,
+    dataApiMock: injectedDataApiMock,
+    courtServiceMock: injectedCourtServiceMock,
   };
 };
+
+const buildController = () =>
+  new CourtController(
+    injectedDataApiMock as unknown as DataApiRequests,
+    injectedCourtServiceMock as unknown as CourtService
+  );
 
 const buildCourt = (overrides: Partial<Court> = {}): Court => ({
   id: '1',
@@ -76,7 +60,7 @@ describe('CourtController', () => {
 
   describe('get', () => {
     test('renders not-found on 404', async () => {
-      const controller = new CourtController();
+      const controller = buildController();
       const req = mockRequest({ 'not-found': { heading: 'Not found' } });
       req.params.slug = 'missing-court';
       const res = {
@@ -95,7 +79,7 @@ describe('CourtController', () => {
     });
 
     test('renders the error page without formatting a non-404 API failure as a court', async () => {
-      const controller = new CourtController();
+      const controller = buildController();
       const req = mockRequest({ error: { h1: 'Something went wrong' } });
       req.params.slug = 'errored-court';
       const res = {
@@ -114,7 +98,7 @@ describe('CourtController', () => {
     });
 
     test('renders court-closed with interpolated title when court is closed', async () => {
-      const controller = new CourtController();
+      const controller = buildController();
       const req = mockRequest({
         'court-closed': { title: '{name} - Find a Court or Tribunal - GOV.UK', p1: 'Closed' },
       });
@@ -143,7 +127,7 @@ describe('CourtController', () => {
     });
 
     test('renders court page when court is open', async () => {
-      const controller = new CourtController();
+      const controller = buildController();
       const req = mockRequest({
         court: { pageTitleSuffix: 'Find a Court or Tribunal - GOV.UK' },
       });
@@ -174,7 +158,7 @@ describe('CourtController', () => {
 
   describe('getJson', () => {
     test('returns court JSON when successful', async () => {
-      const controller = new CourtController();
+      const controller = buildController();
       const req = {
         params: { slug: 'test-court' },
       } as unknown as FactRequest;
@@ -193,7 +177,7 @@ describe('CourtController', () => {
     });
 
     test('renders not-found on JSON route when court is not found', async () => {
-      const controller = new CourtController();
+      const controller = buildController();
       const req = {
         params: { slug: 'unknown-court' },
         lng: 'en',
@@ -218,7 +202,7 @@ describe('CourtController', () => {
     });
 
     test('returns raw non-404 API status on JSON route', async () => {
-      const controller = new CourtController();
+      const controller = buildController();
       const req = {
         params: { slug: 'errored-court' },
       } as unknown as FactRequest;

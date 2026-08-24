@@ -2,38 +2,26 @@ import { HttpStatusCode } from 'axios';
 import { Response } from 'express';
 
 import ServiceCentreController from '../../../main/controllers/ServiceCentreController';
+import { DataApiRequests } from '../../../main/requests/DataApiRequests';
 import { ServiceCentreDetails } from '../../../main/schemas/allLocationDetails';
-import { ServiceCentreViewModel } from '../../../main/services/ServiceCentreService';
+import { ServiceCentreService, ServiceCentreViewModel } from '../../../main/services/ServiceCentreService';
 import { mockRequest } from '../mocks/mockRequest';
 
-jest.mock('../../../main/requests/DataApiRequests', () => {
-  const dataApiMock = { getServiceCentreDetails: jest.fn() };
-  return {
-    __dataApiMock: dataApiMock,
-    DataApiRequests: jest.fn().mockImplementation(() => dataApiMock),
-  };
-});
-
-jest.mock('../../../main/services/ServiceCentreService', () => {
-  const serviceCentreServiceMock = { formatData: jest.fn() };
-  return {
-    __serviceCentreServiceMock: serviceCentreServiceMock,
-    ServiceCentreService: jest.fn().mockImplementation(() => serviceCentreServiceMock),
-  };
-});
+const injectedDataApiMock = { getServiceCentreDetails: jest.fn() };
+const injectedServiceCentreServiceMock = { formatData: jest.fn() };
 
 const getMocks = () => {
-  const dataApiModule = require('../../../main/requests/DataApiRequests') as {
-    __dataApiMock: { getServiceCentreDetails: jest.Mock };
-  };
-  const serviceModule = require('../../../main/services/ServiceCentreService') as {
-    __serviceCentreServiceMock: { formatData: jest.Mock };
-  };
   return {
-    dataApiMock: dataApiModule.__dataApiMock,
-    serviceCentreServiceMock: serviceModule.__serviceCentreServiceMock,
+    dataApiMock: injectedDataApiMock,
+    serviceCentreServiceMock: injectedServiceCentreServiceMock,
   };
 };
+
+const buildController = () =>
+  new ServiceCentreController(
+    injectedDataApiMock as unknown as DataApiRequests,
+    injectedServiceCentreServiceMock as unknown as ServiceCentreService
+  );
 
 const buildServiceCentre = (overrides: Partial<ServiceCentreDetails> = {}): ServiceCentreDetails => ({
   id: 'service-centre-id',
@@ -65,7 +53,7 @@ describe('ServiceCentreController', () => {
     const res = { status: jest.fn().mockReturnThis(), render: jest.fn() } as unknown as Response;
     getMocks().dataApiMock.getServiceCentreDetails.mockResolvedValue(HttpStatusCode.NotFound);
 
-    await new ServiceCentreController().get(req, res);
+    await buildController().get(req, res);
 
     expect(getMocks().dataApiMock.getServiceCentreDetails).toHaveBeenCalledWith('missing-service-centre');
     expect(res.status).toHaveBeenCalledWith(HttpStatusCode.NotFound);
@@ -78,7 +66,7 @@ describe('ServiceCentreController', () => {
     const res = { status: jest.fn().mockReturnThis(), render: jest.fn() } as unknown as Response;
     getMocks().dataApiMock.getServiceCentreDetails.mockResolvedValue(HttpStatusCode.BadGateway);
 
-    await new ServiceCentreController().get(req, res);
+    await buildController().get(req, res);
 
     expect(res.status).toHaveBeenCalledWith(HttpStatusCode.BadGateway);
     expect(res.render).toHaveBeenCalledWith('error', { h1: 'Something went wrong' });
@@ -103,7 +91,7 @@ describe('ServiceCentreController', () => {
     });
     getMocks().dataApiMock.getServiceCentreDetails.mockResolvedValue(serviceCentre);
 
-    await new ServiceCentreController().get(req, res);
+    await buildController().get(req, res);
 
     expect(getMocks().serviceCentreServiceMock.formatData).not.toHaveBeenCalled();
     expect(res.render).toHaveBeenCalledWith('court-closed', {
@@ -131,7 +119,7 @@ describe('ServiceCentreController', () => {
     dataApiMock.getServiceCentreDetails.mockResolvedValue(serviceCentre);
     serviceCentreServiceMock.formatData.mockReturnValue(viewModel);
 
-    await new ServiceCentreController().get(req, res);
+    await buildController().get(req, res);
 
     expect(serviceCentreServiceMock.formatData).toHaveBeenCalledWith(serviceCentre, 'en');
     expect(res.render).toHaveBeenCalledWith('service-centre', {
