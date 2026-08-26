@@ -4,6 +4,7 @@ import { Response } from 'express';
 
 import PostcodeResultsController from '../../../main/controllers/PostcodeResultsController';
 import { FactRequest } from '../../../main/interfaces/FactRequest';
+import { DataApiRequests } from '../../../main/requests/DataApiRequests';
 import { ServiceArea } from '../../../main/schemas/ServiceAreaSchema';
 import { CourtWithDistance } from '../../../main/schemas/courtWithDistance';
 import { SEARCH_RESULT_TYPES, SearchResult } from '../../../main/schemas/searchResult';
@@ -21,15 +22,10 @@ const mockPerformPostcodeOnlySearch: jest.MockedFunction<
   (postcode: string) => Promise<CourtWithDistance[] | HttpStatusCode>
 > = jest.fn();
 
-jest.mock('../../../main/requests/DataApiRequests', () => {
-  return {
-    DataApiRequests: jest.fn().mockImplementation(() => ({
-      performPostcodeSearch: (postcode: string, serviceArea: string, action: string) =>
-        mockPerformPostcodeSearch(postcode, serviceArea, action),
-      performPostcodeOnlySearch: (postcode: string) => mockPerformPostcodeOnlySearch(postcode),
-    })),
-  };
-});
+const dataApiRequests = {
+  performPostcodeSearch: mockPerformPostcodeSearch,
+  performPostcodeOnlySearch: mockPerformPostcodeOnlySearch,
+} as unknown as DataApiRequests;
 
 const calculateServiceNameFromSlugMock = calculateServiceNameFromSlug as jest.MockedFunction<
   typeof calculateServiceNameFromSlug
@@ -63,7 +59,7 @@ describe('PostcodeResultsController', () => {
     } as unknown as Response;
     mockPerformPostcodeSearch.mockReset();
     mockPerformPostcodeOnlySearch.mockReset();
-    controller = new PostcodeResultsController();
+    controller = new PostcodeResultsController(dataApiRequests);
     jest.clearAllMocks();
   });
 

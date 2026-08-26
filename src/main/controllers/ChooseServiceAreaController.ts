@@ -1,6 +1,5 @@
 import { GET, POST, route } from 'awilix-express';
 import { Response } from 'express';
-import { cloneDeep } from 'lodash';
 
 import { FactRequest } from '../interfaces/FactRequest';
 import { DataApiRequests } from '../requests/DataApiRequests';
@@ -10,17 +9,14 @@ import { servicePostcodeSearchRedirect } from '../utils/RedirectUtils';
 import { calculateServiceAreaFromSlug, calculateServiceNameFromSlug } from '../utils/SchemaUtils';
 import { isValidAction } from '../utils/validationUtils';
 
-interface LocalisedServiceArea {
-  id: string;
-  text: string;
-  description: string | null;
-  value: string;
-}
-
-const dataApiRequests = new DataApiRequests();
+import BaseController from './BaseController';
 
 @route('/services/:service/service-areas/:action')
-export class ChooseServiceAreaController {
+export class ChooseServiceAreaController extends BaseController {
+  public constructor(private readonly dataApiRequests: DataApiRequests = new DataApiRequests()) {
+    super();
+  }
+
   @GET()
   public async render(req: FactRequest, res: Response): Promise<void> {
     await this.renderChooseServiceAreaPage(req, res);
@@ -39,7 +35,7 @@ export class ChooseServiceAreaController {
       }
 
       if (!isValidAction(action)) {
-        return res.status(404).render('not-found', req.i18n.getDataByLanguage(req.lng)['not-found']);
+        return this.renderNotFound(req, res);
       }
 
       try {
@@ -48,7 +44,7 @@ export class ChooseServiceAreaController {
         // redirect to the appropriate search page (local or national)
         return this.redirectToSearch(service, serviceArea, action, res);
       } catch {
-        return res.status(404).render('not-found', req.i18n.getDataByLanguage(req.lng)['not-found']);
+        return this.renderNotFound(req, res);
       }
     } else {
       // set the error state to true and re-render the page
@@ -111,10 +107,10 @@ export class ChooseServiceAreaController {
   private async renderChooseServiceAreaPage(req: FactRequest, res: Response, err: boolean = false): Promise<void> {
     const action = req.params.action as string;
     const service = req.params.service as string;
-    const services = await dataApiRequests.getAllServices();
+    const services = await this.dataApiRequests.getAllServices();
 
     if (!isValidAction(action)) {
-      return res.status(404).render('not-found', req.i18n.getDataByLanguage(req.lng)['not-found']);
+      return this.renderNotFound(req, res);
     }
 
     if (Array.isArray(services)) {
@@ -129,13 +125,14 @@ export class ChooseServiceAreaController {
       const serviceName = serviceInstance?.name;
       // Localise the service name here, to prevent the template from
       // having to include logic to determine which name to use.
-      const serviceNameLocalised = req.lng === 'cy' ? serviceInstance?.nameCy : serviceInstance?.name;
+      const serviceNameLocalised = serviceInstance
+        ? this.localise(req, serviceInstance.name, serviceInstance.nameCy)
+        : undefined;
       if (serviceName) {
-        const result = await dataApiRequests.getServiceAreas(serviceName);
+        const result = await this.dataApiRequests.getServiceAreas(serviceName);
         if (Array.isArray(result) && result.length > 1) {
-          return res.render('choose-service-area', {
-            ...cloneDeep(req.i18n.getDataByLanguage(req.lng)['choose-service-area']),
-            areas: this.localiseResult(result, req.lng),
+          return this.renderView(req, res, 'choose-service-area', 'choose-service-area', {
+            areas: this.localiseOptions(req, result),
             serviceNameLocalised,
             errors: err,
           });
@@ -146,27 +143,6 @@ export class ChooseServiceAreaController {
         }
       }
     }
-    return res.status(404).render('not-found', req.i18n.getDataByLanguage(req.lng)['not-found']);
-  }
-
-  /**
-   * Applies the currently selected language to the retrieved service area list, normalising on
-   * Welsh if the language code is "cy", and English in all other cases.
-   *
-   * @param areas the retrieved Service Area array
-   * @param lng the language associated with the request, if any
-   * @private
-   */
-  private localiseResult(areas: ServiceArea[], lng: string | undefined): LocalisedServiceArea[] {
-    const result: LocalisedServiceArea[] = [];
-    for (const area of areas) {
-      result.push({
-        id: area.id,
-        text: lng === 'cy' ? area.nameCy : area.name,
-        description: lng === 'cy' ? area.descriptionCy : area.description,
-        value: area.slug,
-      });
-    }
-    return result;
+    return this.renderNotFound(req, res);
   }
 }

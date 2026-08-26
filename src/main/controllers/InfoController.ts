@@ -7,10 +7,14 @@ import { NextFunction, Request, Response } from 'express';
 import { DataApiRequests } from '../requests/DataApiRequests';
 import { dataApiUrl } from '../requests/utils/axiosConfig';
 
-const dataApiRequests = new DataApiRequests();
+import BaseController from './BaseController';
 
 @route('/info')
-export default class InfoController {
+export default class InfoController extends BaseController {
+  public constructor(private readonly dataApiRequests: DataApiRequests = new DataApiRequests()) {
+    super();
+  }
+
   @GET()
   public async get(req: Request, res: Response, next: NextFunction): Promise<void> {
     infoRequestHandler({
@@ -18,7 +22,7 @@ export default class InfoController {
         host: os.hostname(),
         name: 'FaCT Public Frontend',
         uptime: process.uptime(),
-        dataApiUp: await dataApiRequests.checkHealth(),
+        dataApiUp: await this.dataApiRequests.checkHealth(),
       },
       info: {
         DataApi: new InfoContributor(dataApiUrl + '/info'),

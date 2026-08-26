@@ -3,10 +3,12 @@ import { Response } from 'express';
 
 import { FactRequest } from '../interfaces/FactRequest';
 
+import BaseController from './BaseController';
+
 @route('/service-not-found')
-export class UnknownServiceController {
+export class UnknownServiceController extends BaseController {
   @GET()
   public async render(req: FactRequest, res: Response): Promise<void> {
-    return res.render('unknown-service', req.i18n.getDataByLanguage(req.lng)['unknown-service']);
+    return this.renderView(req, res, 'unknown-service', 'unknown-service');
   }
 }

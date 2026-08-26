@@ -3,12 +3,14 @@ import { Request, Response } from 'express';
 
 import { app as myApp } from '../app';
 
+import BaseController from './BaseController';
+
 const healthcheck = require('@hmcts/nodejs-healthcheck');
 const outputs = require('@hmcts/nodejs-healthcheck/healthcheck/outputs');
 const healthRoutes = require('@hmcts/nodejs-healthcheck/healthcheck/routes');
 
 @route('/health')
-export default class HealthController {
+export default class HealthController extends BaseController {
   private readonly healthCheckConfig = {
     checks: {
       // TODO: replace this sample check with proper checks for your application

@@ -3,11 +3,12 @@ import { Response } from 'express';
 
 import { FactRequest } from '../interfaces/FactRequest';
 
+import BaseController from './BaseController';
+
 @route('/accessibility-statement')
-export default class AccessibilityStatementController {
+export default class AccessibilityStatementController extends BaseController {
   @GET()
   public get(req: FactRequest, res: Response): void {
-    const data = req.i18n?.getDataByLanguage(req.lng)?.accessibilityStatement;
-    res.render('accessibility-statement', data);
+    this.renderView(req, res, 'accessibility-statement', 'accessibilityStatement');
   }
 }

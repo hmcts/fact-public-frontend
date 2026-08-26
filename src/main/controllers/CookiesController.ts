@@ -3,11 +3,12 @@ import { Response } from 'express';
 
 import { FactRequest } from '../interfaces/FactRequest';
 
+import BaseController from './BaseController';
+
 @route('/cookies')
-export default class CookiesController {
+export default class CookiesController extends BaseController {
   @GET()
   public get(req: FactRequest, res: Response): void {
-    const data = req.i18n?.getDataByLanguage(req.lng)?.cookies;
-    res.render('cookies', data);
+    this.renderView(req, res, 'cookies', 'cookies');
   }
 }
