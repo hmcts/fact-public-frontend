@@ -4,20 +4,13 @@ import { assert, match, mock, stub } from 'sinon';
 import type { SinonStub } from 'sinon';
 
 import InfoController from '../../../main/controllers/InfoController';
+import { DataApiRequests } from '../../../main/requests/DataApiRequests';
 
 jest.mock('@hmcts/info-provider', () => {
   const sinonLib = require('sinon');
   return {
     infoRequestHandler: sinonLib.stub(),
     InfoContributor: jest.fn().mockImplementation(() => ({})),
-  };
-});
-
-jest.mock('../../../main/requests/DataApiRequests', () => {
-  return {
-    DataApiRequests: jest.fn().mockImplementation(() => ({
-      checkHealth: jest.fn().mockResolvedValue(true),
-    })),
   };
 });
 
@@ -28,7 +21,8 @@ describe('InfoController', () => {
     const handler = stub();
     infoRequestHandlerStub.returns(handler);
 
-    const controller = new InfoController();
+    const dataApiRequests = { checkHealth: jest.fn().mockResolvedValue(true) } as unknown as DataApiRequests;
+    const controller = new InfoController(dataApiRequests);
     const request = {} as never;
     const response = {
       end: () => '',

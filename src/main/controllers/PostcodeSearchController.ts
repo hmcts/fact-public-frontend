@@ -2,16 +2,17 @@ import { GET, POST, route } from 'awilix-express';
 import { Response } from 'express';
 
 import { FactRequest } from '../interfaces/FactRequest';
-import { ServiceArea } from '../schemas/ServiceAreaSchema';
 import { postcodeResultsRedirect, servicePostcodeResultsRedirect } from '../utils/RedirectUtils';
 import { calculateServiceAreaFromSlug, calculateServiceNameFromSlug } from '../utils/SchemaUtils';
 import { checkPostcode, isValidPostcode } from '../utils/validationUtils';
+
+import BaseController from './BaseController';
 
 const CHILDCARE_SERVICE_AREA_LIST = new Set(['childcare-arrangements-if-you-separate-from-your-partner']);
 
 @route('/services/:service/:serviceArea/:action/search-by-postcode')
 @route('/search-by-postcode')
-export default class PostcodeSearchController {
+export default class PostcodeSearchController extends BaseController {
   @GET()
   public async render(req: FactRequest, res: Response): Promise<void> {
     return this.renderPostcodeSearchPage(req, res, req.query?.error as string, req.query?.noResults !== undefined);
@@ -33,7 +34,7 @@ export default class PostcodeSearchController {
         const action = req.params.action as string;
         return servicePostcodeResultsRedirect(res, service, serviceArea as string, action, postcode);
       } catch {
-        return res.status(404).render('not-found', req.i18n.getDataByLanguage(req.lng)['not-found']);
+        return this.renderNotFound(req, res);
       }
     }
     // postcode is invalid
@@ -55,13 +56,12 @@ export default class PostcodeSearchController {
         // template to render correctly.
         const service = await calculateServiceNameFromSlug(req.params.service as string);
         const serviceArea = await calculateServiceAreaFromSlug(service, req.params.serviceArea as string);
-        serviceAreaLocalised = this.localiseServiceAreaName(serviceArea, req);
+        serviceAreaLocalised = this.localise(req, serviceArea.name, serviceArea.nameCy);
       } catch {
-        return res.status(404).render('not-found', req.i18n.getDataByLanguage(req.lng)['not-found']);
+        return this.renderNotFound(req, res);
       }
     }
-    return res.render('postcode-search', {
-      ...req.i18n.getDataByLanguage(req.lng)['postcode-search'],
+    return this.renderView(req, res, 'postcode-search', 'postcode-search', {
       serviceAreaLocalised,
       serviceAreaIsChildcare: CHILDCARE_SERVICE_AREA_LIST.has(req.params?.serviceArea as string),
       errorType: errorType || null,
@@ -69,9 +69,5 @@ export default class PostcodeSearchController {
       hasNoResults,
       noServiceSearch,
     });
-  }
-
-  private localiseServiceAreaName(serviceArea: ServiceArea, req: FactRequest): string {
-    return req.lng === 'cy' ? serviceArea.nameCy : serviceArea.name;
   }
 }

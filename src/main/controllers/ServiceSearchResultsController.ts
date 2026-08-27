@@ -1,27 +1,35 @@
 import { GET, route } from 'awilix-express';
 import { Response } from 'express';
-import { cloneDeep } from 'lodash';
 
 import { FactRequest } from '../interfaces/FactRequest';
 import { DataApiRequests } from '../requests/DataApiRequests';
-import { ServiceArea } from '../schemas/ServiceAreaSchema';
 import { CATCHMENT_TYPES } from '../schemas/courtServiceAreas';
 import { calculateServiceAreaFromSlug, calculateServiceNameFromSlug } from '../utils/SchemaUtils';
 
-const dataApiRequests = new DataApiRequests();
+import BaseController from './BaseController';
 
 @route('/services/:service/:serviceArea/search-results')
-export default class ServiceSearchResultsController {
+export default class ServiceSearchResultsController extends BaseController {
+  public constructor(private readonly dataApiRequests: DataApiRequests = new DataApiRequests()) {
+    super();
+  }
+
   @GET()
   public async render(req: FactRequest, res: Response): Promise<void> {
     try {
       const service = await calculateServiceNameFromSlug(req.params.service as string);
       const serviceArea = await calculateServiceAreaFromSlug(service, req.params.serviceArea as string);
-      const results = await dataApiRequests.getServiceAreaSearchResults(serviceArea.name);
+      const results = await this.dataApiRequests.getServiceAreaSearchResults(serviceArea.name);
+      const localeData = this.getLocaleData<{ hint: string }>(req, 'service-results');
       const data = {
-        ...cloneDeep(req.i18n.getDataByLanguage(req.lng)['service-results']),
         results: {},
-        onlineText: this.localiseOnlineText(serviceArea, req),
+        hint:
+          this.localise(req, serviceArea.text, serviceArea.textCy) ??
+          localeData.hint.replace(
+            '{serviceArea}',
+            this.localise(req, serviceArea.name, serviceArea.nameCy).toLowerCase()
+          ),
+        onlineText: this.localiseWithEnglishFallback(req, serviceArea.onlineText, serviceArea.onlineTextCy),
         onlineUrl: serviceArea.onlineUrl,
       };
 
@@ -34,19 +42,9 @@ export default class ServiceSearchResultsController {
         }
       }
 
-      if (req.lng === 'cy') {
-        data.hint = serviceArea.textCy ?? data.hint.replace('{serviceArea}', serviceArea.nameCy.toLowerCase());
-      } else {
-        data.hint = serviceArea.text ?? data.hint.replace('{serviceArea}', serviceArea.name.toLowerCase());
-      }
-
-      return res.render('service-results', data);
+      return this.renderView(req, res, 'service-results', 'service-results', data);
     } catch {
-      return res.status(404).render('not-found', req.i18n.getDataByLanguage(req.lng)['not-found']);
+      return this.renderNotFound(req, res);
     }
-  }
-
-  private localiseOnlineText(serviceArea: ServiceArea, req: FactRequest): string | null {
-    return req.lng === 'cy' && serviceArea.onlineTextCy ? serviceArea.onlineTextCy : serviceArea.onlineText;
   }
 }
