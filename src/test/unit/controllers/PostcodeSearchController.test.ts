@@ -134,4 +134,33 @@ describe('PostcodeSearchController', () => {
       expect.objectContaining({ serviceAreaLocalised: 'Ardal', errorType: 'invalidPostcode', error: true })
     );
   });
+
+  test('POST: renders childcare-specific Scottish error for childcare service area', async () => {
+    calculateServiceNameFromSlugMock.mockResolvedValue('service');
+    calculateServiceAreaFromSlugMock.mockResolvedValue({ name: 'Area', nameCy: 'Ardal' } as ServiceArea);
+    req.params = {
+      service: 'service',
+      serviceArea: 'childcare-arrangements-if-you-separate-from-your-partner',
+      action: 'nearest',
+    };
+    req.body = { postcode: 'G2 8GT' };
+
+    await controller.continue(req as FactRequest, res);
+
+    expect(res.render).toHaveBeenCalledWith(
+      'postcode-search',
+      expect.objectContaining({ errorType: 'scottishChildrenPostcode', error: true })
+    );
+  });
+
+  test('POST: allows Scottish postcode for benefits service area and redirects to results', async () => {
+    req.params = { service: 'service', serviceArea: 'benefits', action: 'nearest' };
+    req.body = { postcode: 'PH2 0RJ' };
+
+    await controller.continue(req as FactRequest, res);
+
+    expect(res.redirect).toHaveBeenCalledWith(
+      '/services/service/benefits/nearest/search-by-postcode/courts/near?postcode=PH2 0RJ'
+    );
+  });
 });

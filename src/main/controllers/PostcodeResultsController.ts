@@ -21,8 +21,9 @@ export default class PostcodeSearchController extends BaseController {
   @GET()
   public async get(req: FactRequest, res: Response): Promise<void> {
     const noServiceSearch: boolean = req.params?.service === undefined;
-    if (isValidPostcode(req.query?.postcode as string)) {
-      const postcode = req.query.postcode as string;
+    const postcode = req.query.postcode as string;
+    const serviceArea = req.params?.serviceArea as string | undefined;
+    if (isValidPostcode(postcode, serviceArea)) {
       // perform the appropriate search based on the @route used to get here
       if (noServiceSearch) {
         return this.performPostcodeOnlySearch(req, res, postcode);
@@ -30,7 +31,7 @@ export default class PostcodeSearchController extends BaseController {
         return this.performServiceAreaPostcodeSearch(req, res, postcode);
       }
     }
-    const errorType = checkPostcode(req.query?.postcode as string);
+    const errorType = checkPostcode(postcode, serviceArea);
     // postcode is invalid, so redirect to the appropriate search page with and error message
     if (noServiceSearch) {
       return postcodeSearchRedirect(res, errorType);
@@ -39,9 +40,9 @@ export default class PostcodeSearchController extends BaseController {
       // if any of these fail to resolve, then the slugs in the URL
       // are invalid, and we should return a 404
       const service = req.params.service as string;
-      const serviceArea = req.params.serviceArea as string;
+      const serviceAreaAsString = req.params.serviceArea as string;
       const action = req.params.action as string;
-      return servicePostcodeSearchRedirect(res, service, serviceArea, action, errorType);
+      return servicePostcodeSearchRedirect(res, service, serviceAreaAsString, action, errorType);
     } catch {
       return this.renderNotFound(req, res);
     }
