@@ -144,14 +144,15 @@
     "form-data": "4.0.6",
     "joi": "18.2.5",
     "ip-address": "10.5.0",
-    "js-yaml": "4.3.1",
+    "js-yaml": "4.3.2",
     "protobufjs": "7.6.5",
     "uuid": "14.0.2",
     "fast-uri": "3.1.7",
     "qs": "6.16.0",
     "nanoid": "3.3.18",
     "postcss": "8.5.26",
-    "@opentelemetry/propagator-jaeger": "2.9.0"
+    "@opentelemetry/propagator-jaeger": "2.9.0",
+    "colord": "2.9.4"
   },
   "packageManager": "yarn@4.17.1"
 }
