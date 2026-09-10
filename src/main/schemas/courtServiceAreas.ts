@@ -21,4 +21,3 @@ export const serviceAreaSearchResultSchema = z.object({
 export const courtServiceAreasSchema = serviceAreaSearchResultSchema;
 
 export type ServiceAreaSearchResult = z.infer<typeof serviceAreaSearchResultSchema>;
-export type CourtServiceAreas = ServiceAreaSearchResult;

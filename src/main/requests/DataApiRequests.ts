@@ -11,11 +11,7 @@ import {
 } from '../schemas/allLocationDetails';
 import { CourtBasic } from '../schemas/courtBasicSchema';
 import { Court, CourtSearchResult, courtSchema, courtSearchResultSchema } from '../schemas/courtSchema';
-import {
-  CourtServiceAreas,
-  ServiceAreaSearchResult,
-  serviceAreaSearchResultSchema,
-} from '../schemas/courtServiceAreas';
+import { ServiceAreaSearchResult, serviceAreaSearchResultSchema } from '../schemas/courtServiceAreas';
 import { CourtWithDistance, courtWithDistanceSchema } from '../schemas/courtWithDistance';
 import { SearchResult, searchResultSchema } from '../schemas/searchResult';
 
@@ -174,7 +170,7 @@ export class DataApiRequests {
   /**
    * Backward-compatible wrapper for older callers still using the previous method name.
    */
-  public async getCourtServiceAreas(serviceAreaName: string): Promise<CourtServiceAreas[] | HttpStatusCode> {
+  public async getCourtServiceAreas(serviceAreaName: string): Promise<ServiceAreaSearchResult[] | HttpStatusCode> {
     return this.getServiceAreaSearchResults(serviceAreaName);
   }
 

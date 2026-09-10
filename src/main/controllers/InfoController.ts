@@ -1,4 +1,4 @@
-import * as os from 'os';
+import * as os from 'node:os';
 
 import { InfoContributor, infoRequestHandler } from '@hmcts/info-provider';
 import { GET, route } from 'awilix-express';
@@ -25,7 +25,7 @@ export default class InfoController extends BaseController {
         dataApiUp: await this.dataApiRequests.checkHealth(),
       },
       info: {
-        DataApi: new InfoContributor(dataApiUrl + '/info'),
+        DataApi: new InfoContributor(dataApiUrl + '/health'),
       },
     })(req, res, next);
   }
