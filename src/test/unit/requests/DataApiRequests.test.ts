@@ -535,6 +535,196 @@ describe('DataApiRequests', () => {
         HttpStatusCode.BadRequest
       );
     });
+
+    it('returns internal server error when postcode search fails with an axios error that has no status', async () => {
+      sandbox
+        .stub(dataApi, 'get')
+        .withArgs('/search/locations/v1/postcode', {
+          params: {
+            postcode: 'SW1A 1AA',
+            serviceArea: 'Divorce',
+            action: 'NEAREST',
+          },
+        })
+        .rejects({
+          isAxiosError: true,
+          response: {},
+        });
+
+      await expect(requests.performPostcodeSearch('SW1A 1AA', 'Divorce', 'nearest')).resolves.toBe(
+        HttpStatusCode.InternalServerError
+      );
+    });
+
+    it('returns internal server error when postcode search fails with a non-axios error', async () => {
+      sandbox
+        .stub(dataApi, 'get')
+        .withArgs('/search/locations/v1/postcode', {
+          params: {
+            postcode: 'SW1A 1AA',
+            serviceArea: 'Divorce',
+            action: 'NEAREST',
+          },
+        })
+        .rejects(new Error('boom'));
+
+      await expect(requests.performPostcodeSearch('SW1A 1AA', 'Divorce', 'nearest')).resolves.toBe(
+        HttpStatusCode.InternalServerError
+      );
+    });
+  });
+
+  describe('performPostcodeOnlySearch', () => {
+    it('calls postcode-only endpoint and parses results', async () => {
+      const payload = [
+        {
+          courtName: 'Court A',
+          courtSlug: 'court-a',
+          courtId: 'court-a-id',
+          distance: 1.1,
+        },
+      ];
+
+      sandbox
+        .stub(dataApi, 'get')
+        .withArgs('/search/courts/v1/postcode', {
+          params: {
+            postcode: 'SW1A 1AA',
+          },
+        })
+        .resolves({ data: payload });
+
+      await expect(requests.performPostcodeOnlySearch('SW1A 1AA')).resolves.toEqual(payload);
+    });
+
+    it('returns API status code for postcode-only axios errors with response status', async () => {
+      sandbox
+        .stub(dataApi, 'get')
+        .withArgs('/search/courts/v1/postcode', {
+          params: {
+            postcode: 'SW1A 1AA',
+          },
+        })
+        .rejects({
+          isAxiosError: true,
+          response: { status: HttpStatusCode.BadGateway },
+        });
+
+      await expect(requests.performPostcodeOnlySearch('SW1A 1AA')).resolves.toBe(HttpStatusCode.BadGateway);
+    });
+
+    it('returns internal server error for postcode-only non-axios failures', async () => {
+      sandbox
+        .stub(dataApi, 'get')
+        .withArgs('/search/courts/v1/postcode', {
+          params: {
+            postcode: 'SW1A 1AA',
+          },
+        })
+        .rejects(new Error('boom'));
+
+      await expect(requests.performPostcodeOnlySearch('SW1A 1AA')).resolves.toBe(HttpStatusCode.InternalServerError);
+    });
+  });
+
+  describe('getAllServices', () => {
+    it('returns parsed services on success', async () => {
+      const payload = [
+        {
+          id: 'service-id',
+          name: 'Adoption',
+          nameCy: 'Mabwysiadu',
+          description: null,
+          descriptionCy: null,
+          serviceAreas: ['area-a'],
+        },
+      ];
+
+      sandbox.stub(dataApi, 'get').withArgs('/search/services/v1').resolves({ data: payload });
+
+      await expect(requests.getAllServices()).resolves.toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            id: 'service-id',
+            name: 'Adoption',
+            slug: 'adoption',
+          }),
+        ])
+      );
+    });
+
+    it('returns API status code for axios errors with response status', async () => {
+      sandbox
+        .stub(dataApi, 'get')
+        .withArgs('/search/services/v1')
+        .rejects({
+          isAxiosError: true,
+          response: { status: HttpStatusCode.BadRequest },
+        });
+
+      await expect(requests.getAllServices()).resolves.toBe(HttpStatusCode.BadRequest);
+    });
+
+    it('returns internal server error for non-axios failures', async () => {
+      sandbox.stub(dataApi, 'get').withArgs('/search/services/v1').rejects(new Error('boom'));
+
+      await expect(requests.getAllServices()).resolves.toBe(HttpStatusCode.InternalServerError);
+    });
+  });
+
+  describe('getServiceAreas', () => {
+    it('returns parsed service areas on success', async () => {
+      const payload = [
+        {
+          id: 'area-id',
+          name: 'Children, Family Law',
+          nameCy: 'Cyfraith Teulu',
+          description: null,
+          descriptionCy: null,
+          onlineUrl: null,
+          onlineText: null,
+          onlineTextCy: null,
+          text: null,
+          textCy: null,
+          catchmentMethod: 'POSTCODE',
+          areaOfLawId: 'law-id',
+          type: 'FAMILY',
+          sortOrder: 1,
+          hasLocal: true,
+          hasNational: false,
+          hasRegional: false,
+        },
+      ];
+
+      sandbox.stub(dataApi, 'get').withArgs('/search/services/v1/Adoption/service-areas').resolves({ data: payload });
+
+      await expect(requests.getServiceAreas('Adoption')).resolves.toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            id: 'area-id',
+            slug: 'children-family-law',
+          }),
+        ])
+      );
+    });
+
+    it('returns API status code for service-area axios errors with response status', async () => {
+      sandbox
+        .stub(dataApi, 'get')
+        .withArgs('/search/services/v1/Adoption/service-areas')
+        .rejects({
+          isAxiosError: true,
+          response: { status: HttpStatusCode.NotFound },
+        });
+
+      await expect(requests.getServiceAreas('Adoption')).resolves.toBe(HttpStatusCode.NotFound);
+    });
+
+    it('returns internal server error for service-area non-axios failures', async () => {
+      sandbox.stub(dataApi, 'get').withArgs('/search/services/v1/Adoption/service-areas').rejects(new Error('boom'));
+
+      await expect(requests.getServiceAreas('Adoption')).resolves.toBe(HttpStatusCode.InternalServerError);
+    });
   });
 
   describe('getServiceAreaSearchResults', () => {
@@ -572,6 +762,24 @@ describe('DataApiRequests', () => {
       sandbox.stub(dataApi, 'get').withArgs('/search/service-area/v1/Divorce').resolves({ data: payload });
 
       await expect(requests.getServiceAreaSearchResults('Divorce')).resolves.toEqual(payload);
+    });
+
+    it('returns API status code when service-area lookup fails with axios status', async () => {
+      sandbox
+        .stub(dataApi, 'get')
+        .withArgs('/search/service-area/v1/Divorce')
+        .rejects({
+          isAxiosError: true,
+          response: { status: HttpStatusCode.BadGateway },
+        });
+
+      await expect(requests.getServiceAreaSearchResults('Divorce')).resolves.toBe(HttpStatusCode.BadGateway);
+    });
+
+    it('returns internal server error when service-area lookup fails with non-axios error', async () => {
+      sandbox.stub(dataApi, 'get').withArgs('/search/service-area/v1/Divorce').rejects(new Error('boom'));
+
+      await expect(requests.getServiceAreaSearchResults('Divorce')).resolves.toBe(HttpStatusCode.InternalServerError);
     });
   });
 

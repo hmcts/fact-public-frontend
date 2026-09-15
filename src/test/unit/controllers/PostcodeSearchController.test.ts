@@ -52,6 +52,20 @@ describe('PostcodeSearchController', () => {
     expect(res.render).toHaveBeenCalledWith('postcode-search', expect.objectContaining({ title: 'Postcode Search' }));
   });
 
+  test('GET: renders postcode-search page for postcode-only journey', async () => {
+    req.params = {};
+
+    await controller.render(req as FactRequest, res);
+
+    expect(res.render).toHaveBeenCalledWith(
+      'postcode-search',
+      expect.objectContaining({
+        noServiceSearch: true,
+        serviceAreaLocalised: undefined,
+      })
+    );
+  });
+
   test('GET: renders postcode-search page with error and noResults', async () => {
     calculateServiceNameFromSlugMock.mockResolvedValue('service');
     calculateServiceAreaFromSlugMock.mockResolvedValue({ name: 'Area', nameCy: 'Ardal' } as ServiceArea);
@@ -121,6 +135,15 @@ describe('PostcodeSearchController', () => {
       'postcode-search',
       expect.objectContaining({ serviceAreaLocalised: 'Ardal' })
     );
+  });
+
+  test('GET: renders not-found when service area lookup fails', async () => {
+    calculateServiceNameFromSlugMock.mockRejectedValue(new Error('bad slug'));
+
+    await controller.render(req as FactRequest, res);
+
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.render).toHaveBeenCalledWith('not-found', expect.objectContaining({ title: 'Not Found' }));
   });
 
   test('POST: renders postcode-search page with serviceAreaLocalised in Welsh on invalid postcode', async () => {
