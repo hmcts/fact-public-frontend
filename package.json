@@ -152,7 +152,8 @@
     "qs": "6.16.0",
     "nanoid": "3.3.18",
     "postcss": "8.5.26",
-    "@opentelemetry/propagator-jaeger": "2.9.0"
+    "@opentelemetry/propagator-jaeger": "2.9.0",
+    "colord": "2.9.4"
   },
   "packageManager": "yarn@4.17.1"
 }
