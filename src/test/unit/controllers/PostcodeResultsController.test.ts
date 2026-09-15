@@ -86,6 +86,18 @@ describe('PostcodeResultsController', () => {
     );
   });
 
+  test('GET: renders not-found when service error redirect throws', async () => {
+    req.query = { postcode: 'bad' };
+    (res.redirect as jest.Mock).mockImplementation(() => {
+      throw new Error('redirect failed');
+    });
+
+    await controller.get(req as FactRequest, res);
+
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.render).toHaveBeenCalledWith('not-found', expect.objectContaining({ title: 'Not Found' }));
+  });
+
   test('GET: performs postcode only search and renders results', async () => {
     req.query = { postcode: 'SW1A 1AA' };
     req.params = {};

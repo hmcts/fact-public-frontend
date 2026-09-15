@@ -104,6 +104,24 @@ describe('SearchByLocationController', () => {
     responseMock.verify();
   });
 
+  test('renders validation error when search field is missing on post', () => {
+    const controller = new SearchByLocationController(dataApiRequests);
+    const response = {
+      render: () => '',
+    } as unknown as Response;
+    const data = { errorBlank: { text: 'Enter a court name, address, town or city' } };
+    const request = mockRequest({ search: { location: data } });
+    request.body = {};
+    const responseMock = mock(response);
+
+    responseMock
+      .expects('render')
+      .once()
+      .withArgs('search/location', { ...data, errorType: 'blank' });
+    controller.post(request, response);
+    responseMock.verify();
+  });
+
   test('renders validation error for too-short search on post', () => {
     const controller = new SearchByLocationController(dataApiRequests);
     const response = {

@@ -57,6 +57,58 @@ describe('Logger', () => {
     );
   });
 
+  test('writes every log level with the expected telemetry severity', () => {
+    const logger = Logger.getLogger('levels');
+
+    logger.silly('silly message');
+    logger.debug('debug message');
+    logger.verbose('verbose message');
+    logger.info('info message');
+    logger.warn('warn message');
+
+    expect(delegateLogger.silly).toHaveBeenCalledWith('silly message');
+    expect(delegateLogger.debug).toHaveBeenCalledWith('debug message');
+    expect(delegateLogger.verbose).toHaveBeenCalledWith('verbose message');
+    expect(delegateLogger.info).toHaveBeenCalledWith('info message');
+    expect(delegateLogger.warn).toHaveBeenCalledWith('warn message');
+
+    const severities = trackTrace.mock.calls.map(call => call[0].severity);
+    expect(severities).toEqual(['Verbose', 'Verbose', 'Verbose', 'Information', 'Warning']);
+  });
+
+  test('formats dates, arrays and circular objects safely in telemetry messages', () => {
+    const logger = Logger.getLogger('formatting');
+    const when = new Date('2024-01-01T00:00:00.000Z');
+    const circular: { label: string; self?: unknown } = { label: 'node' };
+    circular.self = circular;
+
+    logger.info('value', when, [1, 'two'], circular);
+
+    const message = trackTrace.mock.calls[0][0].message;
+    expect(message).toContain('2024-01-01T00:00:00.000Z');
+    expect(message).toContain('[1, two]');
+    expect(message).toContain('self=[Circular]');
+  });
+
+  test('uses stack traces for Error arguments when available', () => {
+    const logger = Logger.getLogger('stacked-error');
+    const error = new Error('Stacked failure');
+
+    logger.error(error);
+
+    expect(trackTrace.mock.calls[0][0].message).toContain('Stacked failure');
+  });
+
+  test('falls back to Error name and message when stack is unavailable', () => {
+    const logger = Logger.getLogger('fallback-error');
+    const error = new Error('No stack error');
+    error.stack = '';
+
+    logger.error(error);
+
+    expect(trackTrace.mock.calls[0][0].message).toContain('Error: No stack error');
+  });
+
   test('does not interrupt console logging if telemetry throws', () => {
     trackTrace.mockImplementationOnce(() => {
       throw new Error('telemetry unavailable');
