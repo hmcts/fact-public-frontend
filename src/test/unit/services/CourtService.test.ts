@@ -357,6 +357,54 @@ describe('CourtService', () => {
     ]);
   });
 
+  test('sets appointmentContactIsPhone to true for phone-like contact values', () => {
+    const service = new CourtService();
+    const court: Court = {
+      ...baseCourt,
+      courtCounterServiceOpeningHours: [
+        {
+          counterService: true,
+          assistWithForms: true,
+          assistWithDocuments: false,
+          assistWithSupport: false,
+          appointmentNeeded: true,
+          appointmentContact: '0207 123 4567',
+          openingTimesDetails: [],
+          courtTypes: null,
+        },
+      ],
+    };
+
+    const viewModel = service.formatData(court, 'en');
+
+    expect(viewModel.counterServices[0].appointmentContact).toBe('0207 123 4567');
+    expect(viewModel.counterServices[0].appointmentContactIsPhone).toBe(true);
+  });
+
+  test('sets appointmentContactIsPhone to false for non-phone contact values', () => {
+    const service = new CourtService();
+    const court: Court = {
+      ...baseCourt,
+      courtCounterServiceOpeningHours: [
+        {
+          counterService: true,
+          assistWithForms: true,
+          assistWithDocuments: false,
+          assistWithSupport: false,
+          appointmentNeeded: true,
+          appointmentContact: 'Email form ref 123A',
+          openingTimesDetails: [],
+          courtTypes: null,
+        },
+      ],
+    };
+
+    const viewModel = service.formatData(court, 'en');
+
+    expect(viewModel.counterServices[0].appointmentContact).toBe('Email form ref 123A');
+    expect(viewModel.counterServices[0].appointmentContactIsPhone).toBe(false);
+  });
+
   test('formatData enriches addresses with display fields', () => {
     const service = new CourtService();
     const court: Court = {

@@ -90,6 +90,27 @@ const mockServiceArea3: ServiceArea = {
   hasRegional: false,
 };
 
+const mockServiceAreaNoAssociations: ServiceArea = {
+  id: 'area-4',
+  name: 'Area 4',
+  slug: 'area-4-slug',
+  nameCy: 'Ardal 4',
+  description: 'Area 4 desc',
+  descriptionCy: 'Ardal 4 desc',
+  onlineUrl: 'https://example.com/area-4',
+  onlineText: 'Area 4 Online',
+  onlineTextCy: 'Ardal 4 Ar-lein',
+  text: 'Area 4 info',
+  textCy: 'Ardal 4 info',
+  catchmentMethod: CATCHMENT_METHOD.POSTCODE,
+  areaOfLawId: 'law-4',
+  type: SERVICE_AREA_TYPE.OTHER,
+  sortOrder: 4,
+  hasLocal: false,
+  hasNational: false,
+  hasRegional: false,
+};
+
 const dataApiRequests = {
   getAllServices: mockGetAllServices,
   getServiceAreas: mockGetServiceAreas,
@@ -127,7 +148,7 @@ describe('ChooseServiceAreaController', () => {
     mockGetServiceAreas.mockReset();
     calculateServiceNameFromSlugMock.mockResolvedValue(mockService.name);
     calculateServiceAreaFromSlugMock.mockImplementation(async (_service, area) => {
-      const serviceArea = [mockServiceArea, mockServiceArea2, mockServiceArea3].find(
+      const serviceArea = [mockServiceArea, mockServiceArea2, mockServiceArea3, mockServiceAreaNoAssociations].find(
         candidate => candidate.slug === area
       );
       if (!serviceArea) {
@@ -238,6 +259,16 @@ describe('ChooseServiceAreaController', () => {
     expect(res.render).toHaveBeenCalledWith('not-found', expect.objectContaining({ title: 'Not Found' }));
   });
 
+  test('renders not-found if action is invalid when area is selected', async () => {
+    req.params = { action: 'invalid', service: 'test-service' };
+    req.body = { area: mockServiceArea.slug };
+
+    await controller.continue(req as FactRequest, res);
+
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.render).toHaveBeenCalledWith('not-found', expect.objectContaining({ title: 'Not Found' }));
+  });
+
   test('redirects back to service selection if area is not-listed', async () => {
     req.body = { area: 'not-listed' };
     req.params = { action: 'nearest', service: 'test-service' };
@@ -262,9 +293,57 @@ describe('ChooseServiceAreaController', () => {
     expect(res.render).toHaveBeenCalledWith('choose-service-area', expect.objectContaining({ errors: true }));
   });
 
+  test('redirects to postcode page when service area has no associations', async () => {
+    mockGetAllServices.mockResolvedValue([mockService]);
+    mockGetServiceAreas.mockResolvedValue([mockServiceAreaNoAssociations]);
+    req.params = { action: 'update', service: 'test-service' };
+
+    await controller.render(req as FactRequest, res);
+
+    expect(res.redirect).toHaveBeenCalledWith('/services/test-service/area-4-slug/update/search-by-postcode');
+  });
+
+  test('redirects to search-results for default action when national associations exist', async () => {
+    mockGetAllServices.mockResolvedValue([mockService]);
+    mockGetServiceAreas.mockResolvedValue([mockServiceArea]);
+    req.params = { action: 'update', service: 'test-service' };
+
+    await controller.render(req as FactRequest, res);
+
+    expect(res.redirect).toHaveBeenCalledWith('/services/test-service/area-1-slug/search-results');
+  });
+
+  test('redirects to postcode for default action when national associations are absent', async () => {
+    mockGetAllServices.mockResolvedValue([mockService]);
+    mockGetServiceAreas.mockResolvedValue([mockServiceArea3]);
+    req.params = { action: 'update', service: 'test-service' };
+
+    await controller.render(req as FactRequest, res);
+
+    expect(res.redirect).toHaveBeenCalledWith('/services/test-service/area-3-slug/update/search-by-postcode');
+  });
+
+  test('redirects to service-not-found if service areas do not return an array', async () => {
+    mockGetAllServices.mockResolvedValue([mockService]);
+    mockGetServiceAreas.mockResolvedValue(HttpStatusCode.BadGateway);
+
+    await controller.render(req as FactRequest, res);
+
+    expect(res.redirect).toHaveBeenCalledWith('/service-not-found');
+  });
+
   test('renders not-found if service is not found', async () => {
     mockGetAllServices.mockResolvedValue([]);
     await controller.render(req as FactRequest, res);
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.render).toHaveBeenCalledWith('not-found', expect.objectContaining({ title: 'Not Found' }));
+  });
+
+  test('renders not-found if getAllServices does not return an array', async () => {
+    mockGetAllServices.mockResolvedValue(HttpStatusCode.BadGateway as unknown as Service[]);
+
+    await controller.render(req as FactRequest, res);
+
     expect(res.status).toHaveBeenCalledWith(404);
     expect(res.render).toHaveBeenCalledWith('not-found', expect.objectContaining({ title: 'Not Found' }));
   });

@@ -3,6 +3,11 @@ import { describe, expect, test } from '@jest/globals';
 import { checkPostcode, isValidPostcode } from '../../../main/utils/validationUtils';
 
 describe('validationUtils', () => {
+  test('returns blankPostcode when postcode is missing or whitespace only', () => {
+    expect(checkPostcode('')).toBe('blankPostcode');
+    expect(checkPostcode('   ')).toBe('blankPostcode');
+  });
+
   test('returns missingPostcodeSpace when postcode is valid except for the required space', () => {
     expect(checkPostcode('SW1A1AA')).toBe('missingPostcodeSpace');
     expect(isValidPostcode('SW1A1AA')).toBe(false);
@@ -31,5 +36,12 @@ describe('validationUtils', () => {
 
   test('returns scotlandPostcode for Scottish postcode outside allowed service areas', () => {
     expect(checkPostcode('PH2 0RJ', 'tax')).toBe('scotlandPostcode');
+  });
+
+  test('returns jurisdiction-specific errors for unsupported regions', () => {
+    expect(checkPostcode('BT1 1AA')).toBe('northernIrelandPostcode');
+    expect(checkPostcode('GY1 1AA')).toBe('guernseyPostcode');
+    expect(checkPostcode('JE1 1AA')).toBe('jerseyPostcode');
+    expect(checkPostcode('IM1 1AA')).toBe('isleOfManPostcode');
   });
 });

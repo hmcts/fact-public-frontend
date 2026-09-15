@@ -98,6 +98,25 @@ describe('toSafeErrorDetails', () => {
     });
   });
 
+  it('falls back to query/hash stripping when URL parsing fails', () => {
+    const details = toSafeErrorDetails({
+      name: 'AxiosError',
+      message: 'bad url',
+      isAxiosError: true,
+      config: {
+        method: 'get',
+        url: 'http://%',
+      },
+    });
+
+    expect(details).toEqual({
+      name: 'AxiosError',
+      message: 'bad url',
+      method: 'GET',
+      requestPath: 'http://%',
+    });
+  });
+
   it('summarises and bounds Zod validation issues', () => {
     const validation = z.array(z.string()).safeParse(Array.from({ length: 12 }, (_, index) => index));
     expect(validation.success).toBe(false);
@@ -124,6 +143,16 @@ describe('toSafeErrorDetails', () => {
     expect(toSafeErrorDetails(error)).toEqual({
       name: 'Error',
       message: 'Unexpected failure',
+    });
+  });
+
+  it('falls back to default generic Error values when name and message are blank', () => {
+    const error = new Error('');
+    error.name = '';
+
+    expect(toSafeErrorDetails(error)).toEqual({
+      name: 'Error',
+      message: 'An error occurred',
     });
   });
 

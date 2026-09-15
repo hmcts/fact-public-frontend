@@ -87,6 +87,24 @@ describe('cookie-preferences bundle', () => {
     ).toBe(0);
   });
 
+  test('PreferenceFormSubmitted still resets scroll when message element is missing', () => {
+    const manager = setupModule();
+    const handler = getHandler(manager, 'PreferenceFormSubmitted');
+
+    (global as { document: unknown }).document = {
+      querySelector: jest.fn().mockReturnValue(null),
+      body: { scrollTop: 100 },
+      documentElement: { scrollTop: 200 },
+    };
+
+    handler();
+
+    expect((global as { document: { body: { scrollTop: number } } }).document.body.scrollTop).toBe(0);
+    expect(
+      (global as { document: { documentElement: { scrollTop: number } } }).document.documentElement.scrollTop
+    ).toBe(0);
+  });
+
   test('UserPreferencesLoaded pushes preferences into the data layer', () => {
     const manager = setupModule();
     const handler = getHandler(manager, 'UserPreferencesLoaded');
@@ -102,6 +120,15 @@ describe('cookie-preferences bundle', () => {
         cookiePreferences: { analytics: 'on', apm: 'off' },
       },
     ]);
+  });
+
+  test('UserPreferencesLoaded does not throw when dataLayer is missing', () => {
+    const manager = setupModule();
+    const handler = getHandler(manager, 'UserPreferencesLoaded');
+
+    (global as { window: unknown }).window = {};
+
+    expect(() => handler({ analytics: 'on' })).not.toThrow();
   });
 
   test('UserPreferencesSaved enables Dynatrace when apm is on', () => {
@@ -156,5 +183,39 @@ describe('cookie-preferences bundle', () => {
     expect(dtrum.disableSessionReplay).toHaveBeenCalled();
     expect(dtrum.enable).not.toHaveBeenCalled();
     expect(dtrum.enableSessionReplay).not.toHaveBeenCalled();
+  });
+
+  test('UserPreferencesSaved still pushes preferences when dtrum is missing', () => {
+    const manager = setupModule();
+    const handler = getHandler(manager, 'UserPreferencesSaved');
+    const dataLayer: { event: string; cookiePreferences: Record<string, string> }[] = [];
+
+    (global as { window: unknown }).window = { dataLayer };
+
+    handler({ apm: 'on' });
+
+    expect(dataLayer).toEqual([
+      {
+        event: 'Cookie Preferences',
+        cookiePreferences: { apm: 'on' },
+      },
+    ]);
+  });
+
+  test('UserPreferencesSaved does not throw when dataLayer is missing and still toggles dtrum', () => {
+    const manager = setupModule();
+    const handler = getHandler(manager, 'UserPreferencesSaved');
+    const dtrum = {
+      enable: jest.fn(),
+      enableSessionReplay: jest.fn(),
+      disable: jest.fn(),
+      disableSessionReplay: jest.fn(),
+    };
+
+    (global as { window: unknown }).window = { dtrum };
+
+    expect(() => handler({ apm: 'off' })).not.toThrow();
+    expect(dtrum.disable).toHaveBeenCalled();
+    expect(dtrum.disableSessionReplay).toHaveBeenCalled();
   });
 });

@@ -151,3 +151,35 @@ describe('courtSchema - liftSupportPhoneNumber', () => {
     );
   });
 });
+
+describe('courtSchema - court photo links', () => {
+  it('adds a cache-busting query parameter to valid photo URLs', () => {
+    const parsed = courtSchema.parse({
+      ...baseCourt,
+      courtAccessibilityOptions: [],
+      courtPhotos: [
+        {
+          fileLink: 'https://example.org/image.png',
+          lastUpdatedAt: '2026-09-15T00:00:00.000Z',
+        },
+      ],
+    });
+
+    expect(parsed.courtPhotos[0].fileLink).toMatch(/^https:\/\/example.org\/image.png\?cacheBust=/);
+  });
+
+  it('returns undefined photo link when an empty string is provided', () => {
+    const parsed = courtSchema.parse({
+      ...baseCourt,
+      courtAccessibilityOptions: [],
+      courtPhotos: [
+        {
+          fileLink: '',
+          lastUpdatedAt: '2026-09-15T00:00:00.000Z',
+        },
+      ],
+    });
+
+    expect(parsed.courtPhotos[0].fileLink).toBeUndefined();
+  });
+});
