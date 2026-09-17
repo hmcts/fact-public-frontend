@@ -1,4 +1,6 @@
-# fact-public-frontend
+# Fact Public Frontend
+
+Public frontend for the Find a Court or Tribunal (FaCT) service.
 
 ## Getting Started
 
@@ -6,33 +8,65 @@
 
 Running the application requires the following tools to be installed in your environment:
 
-- [Node.js](https://nodejs.org/) v12.0.0 or later
-- [yarn](https://yarnpkg.com/)
-- [Docker](https://www.docker.com)
+- [Node.js](https://nodejs.org/) v22.21.1 or later
+- [Corepack](https://nodejs.org/api/corepack.html) (bundled with Node.js, used to manage Yarn)
+- [Docker](https://www.docker.com) (optional)
+- `openssl` (for local HTTPS certificate generation)
 
-### Running the application
-
-Install dependencies by executing the following command:
+Enable Corepack and install dependencies:
 
 ```bash
+corepack enable
 yarn install
 ```
 
-Bundle:
+### Running the application
+
+#### Local development (recommended)
+
+This mode runs over HTTPS, generates local SSL certs automatically, and restarts when source files change.
 
 ```bash
-yarn webpack
+yarn start:dev
 ```
 
-Run:
+The application's home page will be available at https://localhost:3344
+
+#### Production-like local run
+
+Build static assets and run the production server:
 
 ```bash
+yarn build
 yarn start
 ```
 
-The application's home page will be available at http://localhost:3344
+The application will be available at http://localhost:3344
 
-### Running with Docker
+## Session Management
+
+We use `express-session` to manage user sessions. This is configured in [`src/main/app.ts`](src/main/app.ts).
+
+- `SESSION_SECRET` controls the session signing secret (falls back to config default for local development).
+- `SESSION_COOKIE_SAME_SITE` can be set to `strict`, `lax` (default), or `none`.
+- Session cookies are configured as `secure`, so HTTPS is required in local development (`yarn start:dev`) or TLS termination must be in front of the app.
+
+## Environment Variables
+
+Common variables for local development and test execution:
+
+- `DATA_API_URL` (default: `http://localhost:8989`)
+- `SESSION_SECRET`
+- `SESSION_COOKIE_SAME_SITE`
+- `AZURE_TENANT_ID`
+- `API_APP_REG_ID`
+- `FRONTEND_APP_REG_ID`
+- `FRONTEND_APP_REG_SECRET`
+- `DYNATRACE_JSTAG_KEY`
+
+For functional tests, copy `.env.example` to `.env` and adjust values as needed.
+
+## Running with Docker
 
 Create docker image:
 
@@ -46,57 +80,84 @@ Run the application by executing the following command:
 docker-compose up
 ```
 
-This will start the frontend container exposing the application's port
-(set to `3344` in this template app).
-
-In order to test if the application is up, you can visit https://localhost:3344 in your browser.
-You should get a very basic home page (no styles, etc.).
+This will start the frontend container exposing port `3344`.
 
 ## Developing
 
 ### Code style
 
-We use [ESLint](https://github.com/typescript-eslint/typescript-eslint)
-alongside [sass-lint](https://github.com/sasstools/sass-lint)
+We use [ESLint](https://github.com/typescript-eslint/typescript-eslint),
+[Stylelint](https://stylelint.io/) and [Prettier](https://prettier.io/).
 
-Running the linting with auto fix:
+Run lint checks:
 
 ```bash
-yarn lint --fix
+yarn lint
+```
+
+Running linting with auto fix:
+
+```bash
+yarn lint:fix
 ```
 
 ### Running the tests
 
-This template app uses [Jest](https://jestjs.io//) as the test engine. You can run unit tests by executing
-the following command:
+This project uses [Jest](https://jestjs.io/) for unit and route tests, and [Playwright](https://playwright.dev/) for browser tests.
+
+Run unit tests:
 
 ```bash
 yarn test
+# or
+yarn test:unit
 ```
 
-Here's how to run functional tests:
+Run route tests:
+
+```bash
+yarn test:routes
+```
+
+Run coverage:
+
+```bash
+yarn test:coverage
+```
+
+Run functional tests:
 
 ```bash
 yarn test:functional
 ```
 
-The default project matrix is Chrome, Edge, Firefox and WebKit. Preview builds (`ENV=preview`) run Edge only.
-Smoke, accessibility and performance tests use the `@smoke`, `@a11y` and `@performance` tags. The functional
-test command runs the functional suite while excluding tests tagged `@smoke`. Playwright configuration
-restricts `@performance` test execution to the Edge project:
+Project-specific functional runs:
 
 ```bash
-yarn test:smoke
-yarn test:performance
 yarn test:functional:chrome
 yarn test:functional:edge
 yarn test:functional:firefox
 yarn test:functional:webkit
 ```
 
+Run smoke and performance suites:
+
+```bash
+yarn test:smoke
+yarn test:performance
+```
+
+Accessibility checks run as part of the functional suite:
+
+```bash
+yarn test:a11y
+```
+
+The default project matrix is Chrome, Edge, Firefox and WebKit. Preview builds (`ENV=preview`) run Edge only.
+
 Functional and accessibility tests create temporary data through the Data API testing-support endpoints.
 Set `DATA_API_URL` to the target data-api host if it is not running on `http://localhost:8989`.
-Set `TEST_URL` if the frontend is not running on `https://localhost:3344`. See `.env.example` for options.
+Set `TEST_URL` if the frontend is not running on `https://localhost:3344`.
 
 The suites rely on these endpoints:
 
@@ -106,57 +167,46 @@ The suites rely on these endpoints:
 - `DELETE /testing-support/service-centres/name-prefix/{serviceCentreNamePrefix}`
 - `GET /testing-support/regions`
 
-Accessibility tests run as part of the functional suite.
-
 ### Security
 
-#### CSRF prevention
+#### CSRF
 
-[Cross-Site Request Forgery](https://github.com/pillarjs/understanding-csrf) prevention has already been
-set up in this template, at the application level. However, you need to make sure that CSRF token
-is present in every HTML form that requires it. For that purpose you can use the `csrfProtection` macro,
-included in this template app. Your njk file would look like this:
+A reusable CSRF macro is available in [`src/main/views/macros/csrf.njk`](src/main/views/macros/csrf.njk):
 
-```
+```njk
 {% from "macros/csrf.njk" import csrfProtection %}
 ...
 <form ...>
   ...
-    {{ csrfProtection(csrfToken) }}
+  {{ csrfProtection(csrfToken) }}
   ...
 </form>
 ...
 ```
 
+If you introduce or enable CSRF middleware, make sure every state-changing form includes the token.
+
 #### Helmet
 
-This application uses [Helmet](https://helmetjs.github.io/), which adds various security-related HTTP headers
-to the responses. Apart from default Helmet functions, following headers are set:
+This application uses [Helmet](https://helmetjs.github.io/), which adds security-related HTTP headers.
+Configuration is defined in [`src/main/modules/helmet/index.ts`](src/main/modules/helmet/index.ts).
 
-- [Referrer-Policy](https://helmetjs.github.io/docs/referrer-policy/)
+Alongside default Helmet behaviour, the application sets:
+
+- [Strict-Transport-Security](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security)
 - [Content-Security-Policy](https://helmetjs.github.io/docs/csp/)
-
-There is a configuration section related with those headers, where you can specify:
-
-- `referrerPolicy` - value of the `Referrer-Policy` header
-
-Here's an example setup:
-
-```json
-    "security": {
-      "referrerPolicy": "origin",
-    }
-```
-
-Make sure you have those values set correctly for your application.
+- [Referrer-Policy](https://helmetjs.github.io/docs/referrer-policy/)
+- [Permissions-Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Permissions-Policy)
 
 ### Healthcheck
 
-The application exposes a health endpoint (https://localhost:3344/health), created with the use of
-[Nodejs Healthcheck](https://github.com/hmcts/nodejs-healthcheck) library. This endpoint is defined
-in [health.ts](src/main/routes/health.ts) file. Make sure you adjust it correctly in your application.
-In particular, remember to replace the sample check with checks specific to your frontend app,
-e.g. the ones verifying the state of each service it depends on.
+The application exposes health endpoints using
+[@hmcts/nodejs-healthcheck](https://github.com/hmcts/nodejs-healthcheck).
+These endpoints are defined in [`src/main/controllers/HealthController.ts`](src/main/controllers/HealthController.ts):
+
+- `/health`
+- `/health/liveness`
+- `/health/readiness`
 
 ## License
 
