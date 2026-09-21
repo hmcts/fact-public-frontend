@@ -1,12 +1,15 @@
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
+import { HttpStatusCode } from 'axios';
 import { Response } from 'express';
 
 import { ChooseServiceController } from '../../../main/controllers/ChooseServiceController';
 import { FactRequest } from '../../../main/interfaces/FactRequest';
+import { DataApiError } from '../../../main/requests/DataApiError';
 import { DataApiRequests } from '../../../main/requests/DataApiRequests';
 import { Service } from '../../../main/schemas/ServiceSchema';
+import { unavailableDataApiError } from '../mocks/dataApiError';
 
-const mockGetAllServices: jest.MockedFunction<() => Promise<Service[]>> = jest.fn();
+const mockGetAllServices: jest.MockedFunction<() => Promise<Service[] | DataApiError>> = jest.fn();
 
 const mockService: Service = {
   id: 'service-1',
@@ -31,6 +34,7 @@ describe('ChooseServiceController', () => {
         getDataByLanguage: jest.fn().mockReturnValue({
           'choose-service': { title: 'Choose Service' },
           'not-found': { title: 'Not Found' },
+          error: { title: 'Error' },
         }),
       } as unknown as FactRequest['i18n'],
       lng: 'en',
@@ -57,6 +61,16 @@ describe('ChooseServiceController', () => {
     await controller.render(req as FactRequest, res);
     expect(res.status).toHaveBeenCalledWith(404);
     expect(res.render).toHaveBeenCalledWith('not-found', expect.objectContaining({ title: 'Not Found' }));
+    expect(mockGetAllServices).not.toHaveBeenCalled();
+  });
+
+  test('renders a controlled dependency error when services cannot be loaded', async () => {
+    mockGetAllServices.mockResolvedValue(unavailableDataApiError);
+
+    await controller.render(req as FactRequest, res);
+
+    expect(res.status).toHaveBeenCalledWith(HttpStatusCode.ServiceUnavailable);
+    expect(res.render).toHaveBeenCalledWith('error', expect.objectContaining({ title: 'Error' }));
   });
 
   test('redirects to /service-not-found for not-listed service', async () => {

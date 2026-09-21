@@ -3,6 +3,7 @@ import { Response } from 'express';
 import { cloneDeep, get } from 'lodash';
 
 import { FactRequest } from '../interfaces/FactRequest';
+import { DataApiError, toDataApiErrorEnvelope } from '../requests/DataApiError';
 
 type ViewData = Record<string, unknown>;
 
@@ -46,6 +47,17 @@ export default abstract class BaseController {
 
   protected renderError(req: FactRequest, res: Response, status: HttpStatusCode): void {
     res.status(status).render('error', this.getLocaleData<ViewData>(req, 'error'));
+  }
+
+  protected renderDataApiError(req: FactRequest, res: Response, error: DataApiError): void {
+    if (error.status === HttpStatusCode.NotFound) {
+      return this.renderNotFound(req, res);
+    }
+    return this.renderError(req, res, error.status);
+  }
+
+  protected sendDataApiJsonError(res: Response, error: DataApiError): void {
+    res.status(error.status).json(toDataApiErrorEnvelope(error));
   }
 
   protected localise<T>(req: FactRequest, englishValue: T, welshValue: T): T {

@@ -2,6 +2,11 @@ import { expect } from 'chai';
 import request from 'supertest';
 
 const mockGetByName = jest.fn();
+const unavailableDataApiError = {
+  code: 'DATA_API_UNAVAILABLE',
+  message: 'The Data API is temporarily unavailable',
+  status: 503,
+};
 
 jest.mock('../../main/requests/DataApiRequests', () => ({
   DataApiRequests: jest.fn().mockImplementation(() => ({
@@ -123,7 +128,7 @@ describe('Search by name page', () => {
     });
 
     test('should render service error page when search API fails', async () => {
-      mockGetByName.mockResolvedValueOnce(500);
+      mockGetByName.mockResolvedValueOnce(unavailableDataApiError);
       await request(app)
         .get('/search-by-name?search=Blackburn')
         .expect(res => {

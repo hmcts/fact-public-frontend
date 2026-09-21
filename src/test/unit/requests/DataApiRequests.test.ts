@@ -96,7 +96,9 @@ describe('DataApiRequests', () => {
           },
         });
 
-      await expect(requests.getCourtDetails('test-slug')).resolves.toBe(HttpStatusCode.ServiceUnavailable);
+      await expect(requests.getCourtDetails('test-slug')).resolves.toMatchObject({
+        status: HttpStatusCode.ServiceUnavailable,
+      });
 
       expect(mockDataApiLogger.error).toHaveBeenCalledWith(
         'Error fetching court details for slug test-slug:',
@@ -153,22 +155,36 @@ describe('DataApiRequests', () => {
           response: { status: HttpStatusCode.BadGateway },
         });
 
-      await expect(requests.getCourtDetails('test-slug')).resolves.toBe(HttpStatusCode.BadGateway);
+      await expect(requests.getCourtDetails('test-slug')).resolves.toMatchObject({ status: HttpStatusCode.BadGateway });
     });
 
-    it('returns internal server error for non-axios errors', async () => {
+    it.each([HttpStatusCode.BadRequest, HttpStatusCode.NotFound])(
+      'preserves contractual public status %s',
+      async status => {
+        sandbox
+          .stub(dataApi, 'get')
+          .withArgs('/courts/slug/test-slug/v1')
+          .rejects({ isAxiosError: true, response: { status } });
+
+        await expect(requests.getCourtDetails('test-slug')).resolves.toMatchObject({ status });
+      }
+    );
+
+    it('maps parsing or other local failures to bad gateway', async () => {
       sandbox.stub(dataApi, 'get').withArgs('/courts/slug/test-slug/v1').rejects(new Error('boom'));
 
-      await expect(requests.getCourtDetails('test-slug')).resolves.toBe(HttpStatusCode.InternalServerError);
+      await expect(requests.getCourtDetails('test-slug')).resolves.toMatchObject({ status: HttpStatusCode.BadGateway });
     });
 
-    it('returns internal server error for axios errors with no status', async () => {
+    it('maps axios errors with no response status to service unavailable', async () => {
       sandbox.stub(dataApi, 'get').withArgs('/courts/slug/test-slug/v1').rejects({
         isAxiosError: true,
         response: {},
       });
 
-      await expect(requests.getCourtDetails('test-slug')).resolves.toBe(HttpStatusCode.InternalServerError);
+      await expect(requests.getCourtDetails('test-slug')).resolves.toMatchObject({
+        status: HttpStatusCode.ServiceUnavailable,
+      });
     });
   });
 
@@ -207,22 +223,39 @@ describe('DataApiRequests', () => {
           response: { status: HttpStatusCode.NotFound },
         });
 
-      await expect(requests.getServiceCentreDetails('test-slug')).resolves.toBe(HttpStatusCode.NotFound);
+      await expect(requests.getServiceCentreDetails('test-slug')).resolves.toMatchObject({
+        status: HttpStatusCode.NotFound,
+      });
     });
 
-    it('returns internal server error for parsing or non-axios failures', async () => {
+    it('preserves a contractual bad request response', async () => {
+      sandbox
+        .stub(dataApi, 'get')
+        .withArgs('/service-centres/slug/test-slug/v1')
+        .rejects({ isAxiosError: true, response: { status: HttpStatusCode.BadRequest } });
+
+      await expect(requests.getServiceCentreDetails('test-slug')).resolves.toMatchObject({
+        status: HttpStatusCode.BadRequest,
+      });
+    });
+
+    it('maps parsing or non-axios failures to bad gateway', async () => {
       sandbox.stub(dataApi, 'get').withArgs('/service-centres/slug/test-slug/v1').rejects(new Error('boom'));
 
-      await expect(requests.getServiceCentreDetails('test-slug')).resolves.toBe(HttpStatusCode.InternalServerError);
+      await expect(requests.getServiceCentreDetails('test-slug')).resolves.toMatchObject({
+        status: HttpStatusCode.BadGateway,
+      });
     });
 
-    it('returns internal server error for axios errors without a status', async () => {
+    it('maps axios errors without a response status to service unavailable', async () => {
       sandbox.stub(dataApi, 'get').withArgs('/service-centres/slug/test-slug/v1').rejects({
         isAxiosError: true,
         response: {},
       });
 
-      await expect(requests.getServiceCentreDetails('test-slug')).resolves.toBe(HttpStatusCode.InternalServerError);
+      await expect(requests.getServiceCentreDetails('test-slug')).resolves.toMatchObject({
+        status: HttpStatusCode.ServiceUnavailable,
+      });
     });
   });
 
@@ -357,13 +390,13 @@ describe('DataApiRequests', () => {
           response: { status: HttpStatusCode.BadRequest },
         });
 
-      await expect(requests.getAll()).resolves.toBe(HttpStatusCode.BadRequest);
+      await expect(requests.getAll()).resolves.toMatchObject({ status: HttpStatusCode.BadGateway });
     });
 
     it('returns internal server error for non-axios errors', async () => {
       sandbox.stub(dataApi, 'get').withArgs('/all/details.json').rejects(new Error('boom'));
 
-      await expect(requests.getAll()).resolves.toBe(HttpStatusCode.InternalServerError);
+      await expect(requests.getAll()).resolves.toMatchObject({ status: HttpStatusCode.BadGateway });
     });
 
     it('returns internal server error for axios errors with no status', async () => {
@@ -371,7 +404,7 @@ describe('DataApiRequests', () => {
         isAxiosError: true,
       });
 
-      await expect(requests.getAll()).resolves.toBe(HttpStatusCode.InternalServerError);
+      await expect(requests.getAll()).resolves.toMatchObject({ status: HttpStatusCode.ServiceUnavailable });
     });
   });
 
@@ -411,7 +444,7 @@ describe('DataApiRequests', () => {
           response: { status: HttpStatusCode.BadGateway },
         });
 
-      await expect(requests.getByName(query)).resolves.toBe(HttpStatusCode.BadGateway);
+      await expect(requests.getByName(query)).resolves.toMatchObject({ status: HttpStatusCode.BadGateway });
     });
 
     it('returns internal server error for non-axios errors', async () => {
@@ -421,7 +454,7 @@ describe('DataApiRequests', () => {
         .withArgs('search/courts/v1/name', { params: { q: query } })
         .rejects(new Error('boom'));
 
-      await expect(requests.getByName(query)).resolves.toBe(HttpStatusCode.InternalServerError);
+      await expect(requests.getByName(query)).resolves.toMatchObject({ status: HttpStatusCode.BadGateway });
     });
 
     it('returns internal server error for axios errors with no status', async () => {
@@ -433,13 +466,28 @@ describe('DataApiRequests', () => {
           isAxiosError: true,
         });
 
-      await expect(requests.getByName(query)).resolves.toBe(HttpStatusCode.InternalServerError);
+      await expect(requests.getByName(query)).resolves.toMatchObject({ status: HttpStatusCode.ServiceUnavailable });
     });
   });
 
   describe('getCourtsByPrefix', () => {
-    it('returns parsed courts array on success', async () => {
-      const payload = [{ raw: 'court-a' }, { raw: 'court-b' }];
+    it('parses the real AllLocation response shape on success', async () => {
+      const payload = [
+        {
+          id: 'court-a-id',
+          name: 'Court A',
+          slug: 'court-a',
+          open: true,
+          warningNotice: null,
+          warningNoticeCy: null,
+          lastUpdatedAt: '2026-09-21',
+          openOnCath: null,
+          mrdId: null,
+          regionId: 'london-region-id',
+          locationType: 'COURT',
+          serviceCentre: false,
+        },
+      ];
       const prefix = 'c';
 
       sandbox
@@ -447,7 +495,26 @@ describe('DataApiRequests', () => {
         .withArgs('/search/courts/v1/prefix', { params: { prefix } })
         .resolves({ data: payload });
 
-      await expect(requests.getCourtsByPrefix(prefix)).resolves.toBe(payload);
+      await expect(requests.getCourtsByPrefix(prefix)).resolves.toEqual([
+        {
+          name: 'Court A',
+          slug: 'court-a',
+          locationType: 'COURT',
+          serviceCentre: false,
+        },
+      ]);
+    });
+
+    it('maps an invalid prefix-search response to bad gateway', async () => {
+      const prefix = 'c';
+      sandbox
+        .stub(dataApi, 'get')
+        .withArgs('/search/courts/v1/prefix', { params: { prefix } })
+        .resolves({ data: [{ raw: 'invalid' }] });
+
+      await expect(requests.getCourtsByPrefix(prefix)).resolves.toMatchObject({
+        status: HttpStatusCode.BadGateway,
+      });
     });
 
     it('returns API status code for axios errors with response status', async () => {
@@ -460,7 +527,7 @@ describe('DataApiRequests', () => {
           response: { status: HttpStatusCode.NotFound },
         });
 
-      await expect(requests.getCourtsByPrefix(prefix)).resolves.toBe(HttpStatusCode.NotFound);
+      await expect(requests.getCourtsByPrefix(prefix)).resolves.toMatchObject({ status: HttpStatusCode.BadGateway });
     });
 
     it('returns internal server error for non-axios errors', async () => {
@@ -470,7 +537,7 @@ describe('DataApiRequests', () => {
         .withArgs('/search/courts/v1/prefix', { params: { prefix } })
         .rejects(new Error('boom'));
 
-      await expect(requests.getCourtsByPrefix(prefix)).resolves.toBe(HttpStatusCode.InternalServerError);
+      await expect(requests.getCourtsByPrefix(prefix)).resolves.toMatchObject({ status: HttpStatusCode.BadGateway });
     });
 
     it('returns internal server error for axios errors with no status', async () => {
@@ -479,7 +546,9 @@ describe('DataApiRequests', () => {
         isAxiosError: true,
       });
 
-      await expect(requests.getCourtsByPrefix(prefix)).resolves.toBe(HttpStatusCode.InternalServerError);
+      await expect(requests.getCourtsByPrefix(prefix)).resolves.toMatchObject({
+        status: HttpStatusCode.ServiceUnavailable,
+      });
     });
   });
 
@@ -531,12 +600,29 @@ describe('DataApiRequests', () => {
           response: { status: HttpStatusCode.BadRequest },
         });
 
-      await expect(requests.performPostcodeSearch('SW1A 1AA', 'Divorce', 'nearest')).resolves.toBe(
-        HttpStatusCode.BadRequest
-      );
+      await expect(requests.performPostcodeSearch('SW1A 1AA', 'Divorce', 'nearest')).resolves.toMatchObject({
+        status: HttpStatusCode.BadRequest,
+      });
     });
 
-    it('returns internal server error when postcode search fails with an axios error that has no status', async () => {
+    it('preserves a genuine missing service-area response', async () => {
+      sandbox
+        .stub(dataApi, 'get')
+        .withArgs('/search/locations/v1/postcode', {
+          params: {
+            postcode: 'SW1A 1AA',
+            serviceArea: 'Missing area',
+            action: 'NEAREST',
+          },
+        })
+        .rejects({ isAxiosError: true, response: { status: HttpStatusCode.NotFound } });
+
+      await expect(requests.performPostcodeSearch('SW1A 1AA', 'Missing area', 'nearest')).resolves.toMatchObject({
+        status: HttpStatusCode.NotFound,
+      });
+    });
+
+    it('returns service unavailable when postcode search receives no upstream response', async () => {
       sandbox
         .stub(dataApi, 'get')
         .withArgs('/search/locations/v1/postcode', {
@@ -551,12 +637,12 @@ describe('DataApiRequests', () => {
           response: {},
         });
 
-      await expect(requests.performPostcodeSearch('SW1A 1AA', 'Divorce', 'nearest')).resolves.toBe(
-        HttpStatusCode.InternalServerError
-      );
+      await expect(requests.performPostcodeSearch('SW1A 1AA', 'Divorce', 'nearest')).resolves.toMatchObject({
+        status: HttpStatusCode.ServiceUnavailable,
+      });
     });
 
-    it('returns internal server error when postcode search fails with a non-axios error', async () => {
+    it('returns bad gateway when postcode response parsing fails', async () => {
       sandbox
         .stub(dataApi, 'get')
         .withArgs('/search/locations/v1/postcode', {
@@ -568,9 +654,9 @@ describe('DataApiRequests', () => {
         })
         .rejects(new Error('boom'));
 
-      await expect(requests.performPostcodeSearch('SW1A 1AA', 'Divorce', 'nearest')).resolves.toBe(
-        HttpStatusCode.InternalServerError
-      );
+      await expect(requests.performPostcodeSearch('SW1A 1AA', 'Divorce', 'nearest')).resolves.toMatchObject({
+        status: HttpStatusCode.BadGateway,
+      });
     });
   });
 
@@ -610,7 +696,9 @@ describe('DataApiRequests', () => {
           response: { status: HttpStatusCode.BadGateway },
         });
 
-      await expect(requests.performPostcodeOnlySearch('SW1A 1AA')).resolves.toBe(HttpStatusCode.BadGateway);
+      await expect(requests.performPostcodeOnlySearch('SW1A 1AA')).resolves.toMatchObject({
+        status: HttpStatusCode.BadGateway,
+      });
     });
 
     it('returns internal server error for postcode-only non-axios failures', async () => {
@@ -623,7 +711,9 @@ describe('DataApiRequests', () => {
         })
         .rejects(new Error('boom'));
 
-      await expect(requests.performPostcodeOnlySearch('SW1A 1AA')).resolves.toBe(HttpStatusCode.InternalServerError);
+      await expect(requests.performPostcodeOnlySearch('SW1A 1AA')).resolves.toMatchObject({
+        status: HttpStatusCode.BadGateway,
+      });
     });
   });
 
@@ -662,13 +752,13 @@ describe('DataApiRequests', () => {
           response: { status: HttpStatusCode.BadRequest },
         });
 
-      await expect(requests.getAllServices()).resolves.toBe(HttpStatusCode.BadRequest);
+      await expect(requests.getAllServices()).resolves.toMatchObject({ status: HttpStatusCode.BadGateway });
     });
 
     it('returns internal server error for non-axios failures', async () => {
       sandbox.stub(dataApi, 'get').withArgs('/search/services/v1').rejects(new Error('boom'));
 
-      await expect(requests.getAllServices()).resolves.toBe(HttpStatusCode.InternalServerError);
+      await expect(requests.getAllServices()).resolves.toMatchObject({ status: HttpStatusCode.BadGateway });
     });
   });
 
@@ -717,13 +807,24 @@ describe('DataApiRequests', () => {
           response: { status: HttpStatusCode.NotFound },
         });
 
-      await expect(requests.getServiceAreas('Adoption')).resolves.toBe(HttpStatusCode.NotFound);
+      await expect(requests.getServiceAreas('Adoption')).resolves.toMatchObject({ status: HttpStatusCode.NotFound });
+    });
+
+    it('preserves a contractual bad request response', async () => {
+      sandbox
+        .stub(dataApi, 'get')
+        .withArgs('/search/services/v1/Adoption/service-areas')
+        .rejects({ isAxiosError: true, response: { status: HttpStatusCode.BadRequest } });
+
+      await expect(requests.getServiceAreas('Adoption')).resolves.toMatchObject({
+        status: HttpStatusCode.BadRequest,
+      });
     });
 
     it('returns internal server error for service-area non-axios failures', async () => {
       sandbox.stub(dataApi, 'get').withArgs('/search/services/v1/Adoption/service-areas').rejects(new Error('boom'));
 
-      await expect(requests.getServiceAreas('Adoption')).resolves.toBe(HttpStatusCode.InternalServerError);
+      await expect(requests.getServiceAreas('Adoption')).resolves.toMatchObject({ status: HttpStatusCode.BadGateway });
     });
   });
 
@@ -773,13 +874,29 @@ describe('DataApiRequests', () => {
           response: { status: HttpStatusCode.BadGateway },
         });
 
-      await expect(requests.getServiceAreaSearchResults('Divorce')).resolves.toBe(HttpStatusCode.BadGateway);
+      await expect(requests.getServiceAreaSearchResults('Divorce')).resolves.toMatchObject({
+        status: HttpStatusCode.BadGateway,
+      });
     });
+
+    it.each([HttpStatusCode.BadRequest, HttpStatusCode.NotFound])(
+      'preserves contractual public status %s',
+      async status => {
+        sandbox
+          .stub(dataApi, 'get')
+          .withArgs('/search/service-area/v1/Divorce')
+          .rejects({ isAxiosError: true, response: { status } });
+
+        await expect(requests.getServiceAreaSearchResults('Divorce')).resolves.toMatchObject({ status });
+      }
+    );
 
     it('returns internal server error when service-area lookup fails with non-axios error', async () => {
       sandbox.stub(dataApi, 'get').withArgs('/search/service-area/v1/Divorce').rejects(new Error('boom'));
 
-      await expect(requests.getServiceAreaSearchResults('Divorce')).resolves.toBe(HttpStatusCode.InternalServerError);
+      await expect(requests.getServiceAreaSearchResults('Divorce')).resolves.toMatchObject({
+        status: HttpStatusCode.BadGateway,
+      });
     });
   });
 

@@ -1,8 +1,8 @@
 import { GET, POST, route } from 'awilix-express';
-import { HttpStatusCode } from 'axios';
 import { Response } from 'express';
 
 import { FactRequest } from '../interfaces/FactRequest';
+import { isDataApiError } from '../requests/DataApiError';
 import { DataApiRequests } from '../requests/DataApiRequests';
 
 import BaseController from './BaseController';
@@ -26,9 +26,8 @@ export default class SearchByLocationController extends BaseController {
     }
 
     const courts = await this.dataApiRequests.getByName(searchQuery);
-    // If lookup fails, `getByName` returns a status code rather than results, so render the standard error page.
-    if (!Array.isArray(courts)) {
-      return this.renderError(req, res, HttpStatusCode.ServiceUnavailable);
+    if (isDataApiError(courts)) {
+      return this.renderDataApiError(req, res, courts);
     }
 
     return this.renderView(req, res, 'search/location', 'search.location', {

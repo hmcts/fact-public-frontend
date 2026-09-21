@@ -4,18 +4,20 @@ import { Response } from 'express';
 
 import { ChooseServiceAreaController } from '../../../main/controllers/ChooseServiceAreaController';
 import { FactRequest } from '../../../main/interfaces/FactRequest';
+import { DataApiError } from '../../../main/requests/DataApiError';
 import { DataApiRequests } from '../../../main/requests/DataApiRequests';
 import { CATCHMENT_METHOD, SERVICE_AREA_TYPE, ServiceArea } from '../../../main/schemas/ServiceAreaSchema';
 import { Service } from '../../../main/schemas/ServiceSchema';
 import { calculateServiceAreaFromSlug, calculateServiceNameFromSlug } from '../../../main/utils/SchemaUtils';
+import { badResponseDataApiError } from '../mocks/dataApiError';
 
 jest.mock('../../../main/utils/SchemaUtils', () => ({
   calculateServiceAreaFromSlug: jest.fn(),
   calculateServiceNameFromSlug: jest.fn(),
 }));
 
-const mockGetAllServices: jest.MockedFunction<() => Promise<Service[] | HttpStatusCode>> = jest.fn();
-const mockGetServiceAreas: jest.MockedFunction<() => Promise<ServiceArea[] | HttpStatusCode>> = jest.fn();
+const mockGetAllServices: jest.MockedFunction<() => Promise<Service[] | DataApiError>> = jest.fn();
+const mockGetServiceAreas: jest.MockedFunction<() => Promise<ServiceArea[] | DataApiError>> = jest.fn();
 
 const mockService: Service = {
   id: 'service-1',
@@ -285,6 +287,16 @@ describe('ChooseServiceAreaController', () => {
     expect(res.render).toHaveBeenCalledWith('not-found', expect.objectContaining({ title: 'Not Found' }));
   });
 
+  test('renders a dependency error if service-area resolution fails', async () => {
+    req.body = { area: mockServiceArea.slug };
+    calculateServiceAreaFromSlugMock.mockRejectedValue(badResponseDataApiError);
+
+    await controller.continue(req as FactRequest, res);
+
+    expect(res.status).toHaveBeenCalledWith(HttpStatusCode.BadGateway);
+    expect(res.render).toHaveBeenCalledWith('error', undefined);
+  });
+
   test('renders choose-service-area page with errors when area is missing', async () => {
     mockGetAllServices.mockResolvedValue([mockService]);
     mockGetServiceAreas.mockResolvedValue([mockServiceArea, mockServiceArea2, mockServiceArea3]);
@@ -323,13 +335,14 @@ describe('ChooseServiceAreaController', () => {
     expect(res.redirect).toHaveBeenCalledWith('/services/test-service/area-3-slug/update/search-by-postcode');
   });
 
-  test('redirects to service-not-found if service areas do not return an array', async () => {
+  test('renders a dependency error if service-area loading fails', async () => {
     mockGetAllServices.mockResolvedValue([mockService]);
-    mockGetServiceAreas.mockResolvedValue(HttpStatusCode.BadGateway);
+    mockGetServiceAreas.mockResolvedValue(badResponseDataApiError);
 
     await controller.render(req as FactRequest, res);
 
-    expect(res.redirect).toHaveBeenCalledWith('/service-not-found');
+    expect(res.status).toHaveBeenCalledWith(HttpStatusCode.BadGateway);
+    expect(res.render).toHaveBeenCalledWith('error', undefined);
   });
 
   test('renders not-found if service is not found', async () => {
@@ -339,12 +352,12 @@ describe('ChooseServiceAreaController', () => {
     expect(res.render).toHaveBeenCalledWith('not-found', expect.objectContaining({ title: 'Not Found' }));
   });
 
-  test('renders not-found if getAllServices does not return an array', async () => {
-    mockGetAllServices.mockResolvedValue(HttpStatusCode.BadGateway as unknown as Service[]);
+  test('renders a dependency error if service loading fails', async () => {
+    mockGetAllServices.mockResolvedValue(badResponseDataApiError);
 
     await controller.render(req as FactRequest, res);
 
-    expect(res.status).toHaveBeenCalledWith(404);
-    expect(res.render).toHaveBeenCalledWith('not-found', expect.objectContaining({ title: 'Not Found' }));
+    expect(res.status).toHaveBeenCalledWith(HttpStatusCode.BadGateway);
+    expect(res.render).toHaveBeenCalledWith('error', undefined);
   });
 });

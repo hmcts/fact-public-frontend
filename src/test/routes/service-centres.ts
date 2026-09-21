@@ -1,6 +1,8 @@
 import { expect } from 'chai';
 import request from 'supertest';
 
+import { notFoundDataApiError } from '../unit/mocks/dataApiError';
+
 jest.mock('../../main/requests/DataApiRequests', () => {
   const dataApiMock = { getServiceCentreDetails: jest.fn() };
   return {
@@ -107,7 +109,7 @@ describe('Service centre routes', () => {
   });
 
   test('GET /service-centres/:slug renders not-found on 404', async () => {
-    getMocks().getServiceCentreDetails.mockResolvedValue(404);
+    getMocks().getServiceCentreDetails.mockResolvedValue(notFoundDataApiError);
 
     await request(app)
       .get('/service-centres/missing-service-centre')

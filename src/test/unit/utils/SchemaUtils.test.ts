@@ -1,7 +1,6 @@
-import { HttpStatusCode } from 'axios';
-
 import { ServiceArea } from '../../../main/schemas/ServiceAreaSchema';
 import { Service } from '../../../main/schemas/ServiceSchema';
+import { badResponseDataApiError } from '../mocks/dataApiError';
 
 const mockGetServiceAreas = jest.fn();
 const mockGetAllServices = jest.fn();
@@ -56,10 +55,10 @@ describe('SchemaUtils', () => {
     await expect(calculateServiceAreaFromSlug('Any Service', 'missing')).rejects.toThrow('Service area not found');
   });
 
-  test('throws when service area response is not an array', async () => {
-    mockGetServiceAreas.mockResolvedValue(HttpStatusCode.BadGateway);
+  test('propagates a service area dependency error', async () => {
+    mockGetServiceAreas.mockResolvedValue(badResponseDataApiError);
 
-    await expect(calculateServiceAreaFromSlug('Any Service', 'family-law')).rejects.toThrow('Service area not found');
+    await expect(calculateServiceAreaFromSlug('Any Service', 'family-law')).rejects.toBe(badResponseDataApiError);
   });
 
   test('returns the service name for a matching service slug', async () => {
@@ -85,9 +84,9 @@ describe('SchemaUtils', () => {
     await expect(calculateServiceNameFromSlug('missing')).rejects.toThrow('Service not found');
   });
 
-  test('throws when services response is not an array', async () => {
-    mockGetAllServices.mockResolvedValue(HttpStatusCode.BadGateway);
+  test('propagates a services dependency error', async () => {
+    mockGetAllServices.mockResolvedValue(badResponseDataApiError);
 
-    await expect(calculateServiceNameFromSlug('money-claims')).rejects.toThrow('Service not found');
+    await expect(calculateServiceNameFromSlug('money-claims')).rejects.toBe(badResponseDataApiError);
   });
 });

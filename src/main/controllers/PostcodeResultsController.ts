@@ -2,6 +2,7 @@ import { GET, route } from 'awilix-express';
 import { Response } from 'express';
 
 import { FactRequest } from '../interfaces/FactRequest';
+import { isDataApiError } from '../requests/DataApiError';
 import { DataApiRequests } from '../requests/DataApiRequests';
 import { postcodeSearchRedirect, servicePostcodeSearchRedirect } from '../utils/RedirectUtils';
 import { calculateServiceAreaFromSlug, calculateServiceNameFromSlug } from '../utils/SchemaUtils';
@@ -54,7 +55,10 @@ export default class PostcodeSearchController extends BaseController {
       const serviceArea = await calculateServiceAreaFromSlug(service, req.params.serviceArea as string);
       const action = req.params.action as string;
       const results = await this.dataApiRequests.performPostcodeSearch(postcode, serviceArea.name, action);
-      if (!Array.isArray(results) || (Array.isArray(results) && results.length === 0)) {
+      if (isDataApiError(results)) {
+        return this.renderDataApiError(req, res, results);
+      }
+      if (results.length === 0) {
         return servicePostcodeSearchRedirect(res, req.params.service as string, serviceArea.slug, action, null, true);
       }
       return this.renderView(req, res, 'postcode-results', 'postcode-results', {
@@ -68,14 +72,20 @@ export default class PostcodeSearchController extends BaseController {
         onlineText: this.localiseWithEnglishFallback(req, serviceArea.onlineText, serviceArea.onlineTextCy),
         onlineUrl: serviceArea.onlineUrl,
       });
-    } catch {
+    } catch (error: unknown) {
+      if (isDataApiError(error)) {
+        return this.renderDataApiError(req, res, error);
+      }
       return this.renderNotFound(req, res);
     }
   }
 
   private async performPostcodeOnlySearch(req: FactRequest, res: Response, postcode: string) {
     const results = await this.dataApiRequests.performPostcodeOnlySearch(postcode);
-    if (!Array.isArray(results) || (Array.isArray(results) && results.length === 0)) {
+    if (isDataApiError(results)) {
+      return this.renderDataApiError(req, res, results);
+    }
+    if (results.length === 0) {
       return postcodeSearchRedirect(res, null, true);
     } else {
       return this.renderView(req, res, 'postcode-results', 'postcode-results', {

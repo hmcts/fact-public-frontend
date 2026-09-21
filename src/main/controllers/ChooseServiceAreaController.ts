@@ -2,6 +2,7 @@ import { GET, POST, route } from 'awilix-express';
 import { Response } from 'express';
 
 import { FactRequest } from '../interfaces/FactRequest';
+import { isDataApiError } from '../requests/DataApiError';
 import { DataApiRequests } from '../requests/DataApiRequests';
 import { ServiceArea } from '../schemas/ServiceAreaSchema';
 import { Service } from '../schemas/ServiceSchema';
@@ -43,7 +44,10 @@ export class ChooseServiceAreaController extends BaseController {
         const serviceArea = await calculateServiceAreaFromSlug(serviceName, area);
         // redirect to the appropriate search page (local or national)
         return this.redirectToSearch(service, serviceArea, action, res);
-      } catch {
+      } catch (error: unknown) {
+        if (isDataApiError(error)) {
+          return this.renderDataApiError(req, res, error);
+        }
         return this.renderNotFound(req, res);
       }
     } else {
@@ -107,10 +111,14 @@ export class ChooseServiceAreaController extends BaseController {
   private async renderChooseServiceAreaPage(req: FactRequest, res: Response, err: boolean = false): Promise<void> {
     const action = req.params.action as string;
     const service = req.params.service as string;
-    const services = await this.dataApiRequests.getAllServices();
 
     if (!isValidAction(action)) {
       return this.renderNotFound(req, res);
+    }
+
+    const services = await this.dataApiRequests.getAllServices();
+    if (isDataApiError(services)) {
+      return this.renderDataApiError(req, res, services);
     }
 
     if (Array.isArray(services)) {
@@ -130,6 +138,9 @@ export class ChooseServiceAreaController extends BaseController {
         : undefined;
       if (serviceName) {
         const result = await this.dataApiRequests.getServiceAreas(serviceName);
+        if (isDataApiError(result)) {
+          return this.renderDataApiError(req, res, result);
+        }
         if (Array.isArray(result) && result.length > 1) {
           return this.renderView(req, res, 'choose-service-area', 'choose-service-area', {
             areas: this.localiseOptions(req, result),
