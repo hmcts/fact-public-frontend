@@ -144,6 +144,17 @@ describe('PostcodeResultsController', () => {
     expect(res.redirect).toHaveBeenCalledWith(expect.stringContaining('/search-by-postcode?noResults=true'));
   });
 
+  test('GET: treats a postcode rejected by the Data API as no results', async () => {
+    req.query = { postcode: 'PL22 2XX' };
+    req.params = {};
+    mockPerformPostcodeOnlySearch.mockResolvedValue(badRequestDataApiError);
+
+    await controller.get(req as FactRequest, res);
+
+    expect(res.redirect).toHaveBeenCalledWith('/search-by-postcode?noResults=true');
+    expect(res.render).not.toHaveBeenCalled();
+  });
+
   test('GET: renders service unavailable when postcode-only search cannot reach the Data API', async () => {
     req.query = { postcode: 'SW1A 1AA' };
     req.params = {};
@@ -212,8 +223,34 @@ describe('PostcodeResultsController', () => {
     );
   });
 
+  test('GET: treats a service-area postcode rejected by the Data API as no results', async () => {
+    req.query = { postcode: 'PL22 2XX' };
+    calculateServiceNameFromSlugMock.mockResolvedValue('service');
+    calculateServiceAreaFromSlugMock.mockResolvedValue({
+      name: 'Area',
+      nameCy: 'Ardal',
+      slug: 'area',
+    } as ServiceArea);
+    mockPerformPostcodeSearch.mockResolvedValue(badRequestDataApiError);
+
+    await controller.get(req as FactRequest, res);
+
+    expect(res.redirect).toHaveBeenCalledWith('/services/service/area/nearest/search-by-postcode?noResults=true');
+    expect(res.render).not.toHaveBeenCalled();
+  });
+
+  test('GET: rejects an invalid service action before calling dependencies', async () => {
+    req.query = { postcode: 'SW1A 1AA' };
+    req.params = { service: 'service', serviceArea: 'area', action: 'invalid' };
+
+    await controller.get(req as FactRequest, res);
+
+    expect(res.status).toHaveBeenCalledWith(HttpStatusCode.NotFound);
+    expect(calculateServiceNameFromSlugMock).not.toHaveBeenCalled();
+    expect(mockPerformPostcodeSearch).not.toHaveBeenCalled();
+  });
+
   test.each([
-    [badRequestDataApiError, HttpStatusCode.BadRequest, 'error'],
     [notFoundDataApiError, HttpStatusCode.NotFound, 'not-found'],
     [badResponseDataApiError, HttpStatusCode.BadGateway, 'error'],
   ] as const)('GET: renders mapped status %s for a service-area search error', async (apiError, status, view) => {
