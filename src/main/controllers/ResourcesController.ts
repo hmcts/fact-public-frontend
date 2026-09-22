@@ -2,6 +2,7 @@ import { GET, route } from 'awilix-express';
 import { Response } from 'express';
 
 import { FactRequest } from '../interfaces/FactRequest';
+import { type DataApiErrorMapping, isDataApiError } from '../requests/DataApiError';
 import { DataApiRequests } from '../requests/DataApiRequests';
 
 import BaseController from './BaseController';
@@ -22,20 +23,20 @@ export default class ResourcesController extends BaseController {
       return;
     }
 
-    return this.serveFileStream(`/resources/v1/court-photo/${courtId}`, res);
+    return this.serveFileStream(`/resources/v1/court-photo/${courtId}`, res, { notFound: true });
   }
 
   @route('/csv')
   @GET()
   public async csv(req: FactRequest, res: Response): Promise<void> {
-    return this.serveFileStream('/resources/v1/csv', res);
+    return this.serveFileStream('/resources/v1/csv', res, { notFound: true });
   }
 
-  private async serveFileStream(url: string, res: Response): Promise<void> {
-    const result = await this.dataApiRequests.getFileStream(url);
+  private async serveFileStream(url: string, res: Response, mapping?: DataApiErrorMapping): Promise<void> {
+    const result = await this.dataApiRequests.getFileStream(url, mapping);
 
-    if (typeof result === 'number') {
-      res.sendStatus(result);
+    if (isDataApiError(result)) {
+      res.sendStatus(result.status);
       return;
     }
 

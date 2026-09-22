@@ -3,6 +3,7 @@ import { match, restore, stub } from 'sinon';
 
 import ResourcesController from '../../../main/controllers/ResourcesController';
 import { DataApiRequests } from '../../../main/requests/DataApiRequests';
+import { notFoundDataApiError, unavailableDataApiError } from '../mocks/dataApiError';
 import { mockRequest } from '../mocks/mockRequest';
 
 describe('ResourcesController', () => {
@@ -60,13 +61,15 @@ describe('ResourcesController', () => {
     expect(setHeader).toHaveBeenCalledWith('Content-Disposition', 'inline; filename="court.jpg"');
     expect(setHeader).toHaveBeenCalledWith('Content-Length', '1234');
     expect(
-      getFileStreamStub.calledOnceWithExactly('/resources/v1/court-photo/11111111-1111-4111-8111-111111111111')
+      getFileStreamStub.calledOnceWithExactly('/resources/v1/court-photo/11111111-1111-4111-8111-111111111111', {
+        notFound: true,
+      })
     ).toBe(true);
     expect(stream.on.calledOnceWithExactly('error', match.func)).toBe(true);
     expect(stream.pipe.calledOnceWithExactly(response)).toBe(true);
   });
 
-  test('returns upstream status code for csv request when stream cannot be fetched', async () => {
+  test('returns controlled dependency status for csv request when stream cannot be fetched', async () => {
     const dataApiRequests = new DataApiRequests();
     const controller = new ResourcesController(dataApiRequests);
     const sendStatus = jest.fn();
@@ -74,13 +77,51 @@ describe('ResourcesController', () => {
       sendStatus,
     } as unknown as Response;
 
-    const getFileStreamStub = stub(dataApiRequests, 'getFileStream').resolves(503);
+    const getFileStreamStub = stub(dataApiRequests, 'getFileStream').resolves(unavailableDataApiError);
 
     await controller.csv(mockRequest({}), response);
 
     expect(sendStatus).toHaveBeenCalledTimes(1);
     expect(sendStatus).toHaveBeenCalledWith(503);
-    expect(getFileStreamStub.calledOnceWithExactly('/resources/v1/csv')).toBe(true);
+    expect(getFileStreamStub.calledOnceWithExactly('/resources/v1/csv', { notFound: true })).toBe(true);
+  });
+
+  test('returns not found when the CSV does not exist', async () => {
+    const dataApiRequests = new DataApiRequests();
+    const controller = new ResourcesController(dataApiRequests);
+    const sendStatus = jest.fn();
+    const response = {
+      sendStatus,
+    } as unknown as Response;
+
+    const getFileStreamStub = stub(dataApiRequests, 'getFileStream').resolves(notFoundDataApiError);
+
+    await controller.csv(mockRequest({}), response);
+
+    expect(sendStatus).toHaveBeenCalledWith(404);
+    expect(getFileStreamStub.calledOnceWithExactly('/resources/v1/csv', { notFound: true })).toBe(true);
+  });
+
+  test('returns not found when a valid court image does not exist', async () => {
+    const dataApiRequests = new DataApiRequests();
+    const controller = new ResourcesController(dataApiRequests);
+    const sendStatus = jest.fn();
+    const response = {
+      sendStatus,
+    } as unknown as Response;
+    const request = mockRequest({});
+    request.params = { courtId: '11111111-1111-4111-8111-111111111111' };
+
+    const getFileStreamStub = stub(dataApiRequests, 'getFileStream').resolves(notFoundDataApiError);
+
+    await controller.img(request, response);
+
+    expect(sendStatus).toHaveBeenCalledWith(404);
+    expect(
+      getFileStreamStub.calledOnceWithExactly('/resources/v1/court-photo/11111111-1111-4111-8111-111111111111', {
+        notFound: true,
+      })
+    ).toBe(true);
   });
 
   test('streams csv without setting headers when upstream headers are absent', async () => {
@@ -104,7 +145,7 @@ describe('ResourcesController', () => {
     await controller.csv(mockRequest({}), response);
 
     expect(setHeader).not.toHaveBeenCalled();
-    expect(getFileStreamStub.calledOnceWithExactly('/resources/v1/csv')).toBe(true);
+    expect(getFileStreamStub.calledOnceWithExactly('/resources/v1/csv', { notFound: true })).toBe(true);
     expect(stream.pipe.calledOnceWithExactly(response)).toBe(true);
   });
 

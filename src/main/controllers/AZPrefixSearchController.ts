@@ -1,10 +1,10 @@
 import { GET, route } from 'awilix-express';
-import { HttpStatusCode } from 'axios';
 import { Response } from 'express';
 
 import { FactRequest } from '../interfaces/FactRequest';
+import { isDataApiError } from '../requests/DataApiError';
 import { DataApiRequests } from '../requests/DataApiRequests';
-import { CourtBasic } from '../schemas/courtBasicSchema';
+import { CourtSearchResult } from '../schemas/courtSchema';
 import { isValidPrefix } from '../utils/validationUtils';
 
 import BaseController from './BaseController';
@@ -42,12 +42,8 @@ export default class AZPrefixSearchController extends BaseController {
     const prefix = prefixQuery.toUpperCase();
     const result = await this.dataApiRequests.getCourtsByPrefix(prefix);
 
-    if (result === HttpStatusCode.NotFound) {
-      return this.renderNotFound(req, res);
-    }
-
-    if (Object.values(HttpStatusCode).includes(result as HttpStatusCode)) {
-      return res.render('prefix-search', {
+    if (isDataApiError(result)) {
+      return res.status(result.status).render('prefix-search', {
         ...data,
         errors: true,
         errorMessage: data.error.api,
@@ -55,7 +51,7 @@ export default class AZPrefixSearchController extends BaseController {
       });
     }
 
-    const courts = result as CourtBasic[];
+    const courts = result as CourtSearchResult[];
 
     return res.render('prefix-search', {
       ...data,

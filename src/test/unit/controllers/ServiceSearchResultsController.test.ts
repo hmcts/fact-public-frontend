@@ -3,13 +3,15 @@ import { Response } from 'express';
 
 import ServiceSearchResultsController from '../../../main/controllers/ServiceSearchResultsController';
 import { FactRequest } from '../../../main/interfaces/FactRequest';
+import { DataApiError } from '../../../main/requests/DataApiError';
 import { DataApiRequests } from '../../../main/requests/DataApiRequests';
 import { SERVICE_AREA_TYPE, ServiceArea } from '../../../main/schemas/ServiceAreaSchema';
 import { CATCHMENT_TYPES, ServiceAreaSearchResult } from '../../../main/schemas/courtServiceAreas';
 import { SEARCH_RESULT_TYPES } from '../../../main/schemas/searchResult';
+import { unavailableDataApiError } from '../mocks/dataApiError';
 
 const mockGetServiceAreaSearchResults: jest.MockedFunction<
-  (serviceAreaName: string) => Promise<ServiceAreaSearchResult[] | undefined>
+  (serviceAreaName: string) => Promise<ServiceAreaSearchResult[] | DataApiError | undefined>
 > = jest.fn();
 const mockCalculateServiceNameFromSlug: jest.MockedFunction<(service: string) => Promise<string>> = jest.fn();
 const mockCalculateServiceAreaFromSlug: jest.MockedFunction<
@@ -167,6 +169,17 @@ describe('ServiceSearchResultsController', () => {
     await new ServiceSearchResultsController(dataApiRequests).render(req as FactRequest, res);
     expect(res.status).toHaveBeenCalledWith(404);
     expect(res.render).toHaveBeenCalledWith('not-found', expect.anything());
+  });
+
+  test('renders a dependency error if service-area results are unavailable', async () => {
+    mockCalculateServiceNameFromSlug.mockResolvedValue('Test Service');
+    mockCalculateServiceAreaFromSlug.mockResolvedValue({ ...BASE_SERVICE_AREA });
+    mockGetServiceAreaSearchResults.mockResolvedValue(unavailableDataApiError);
+
+    await new ServiceSearchResultsController(dataApiRequests).render(req as FactRequest, res);
+
+    expect(res.status).toHaveBeenCalledWith(503);
+    expect(res.render).toHaveBeenCalledWith('error', undefined);
   });
 
   test('renders service-results with empty results if getServiceAreaSearchResults returns non-array', async () => {

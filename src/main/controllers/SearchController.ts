@@ -2,6 +2,7 @@ import { GET, route } from 'awilix-express';
 import { Response } from 'express';
 
 import { FactRequest } from '../interfaces/FactRequest';
+import { isDataApiError } from '../requests/DataApiError';
 import { DataApiRequests } from '../requests/DataApiRequests';
 
 import BaseController from './BaseController';
@@ -16,6 +17,9 @@ export default class SearchController extends BaseController {
   @GET()
   public async getAllJson(req: FactRequest, res: Response): Promise<void> {
     const result = await this.dataApiRequests.getAll();
+    if (isDataApiError(result)) {
+      return this.sendDataApiJsonError(res, result);
+    }
     res.json(result);
   }
 }

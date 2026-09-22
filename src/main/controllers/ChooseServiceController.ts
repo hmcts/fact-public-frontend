@@ -2,6 +2,7 @@ import { GET, POST, route } from 'awilix-express';
 import { Response } from 'express';
 
 import { FactRequest } from '../interfaces/FactRequest';
+import { isDataApiError } from '../requests/DataApiError';
 import { DataApiRequests } from '../requests/DataApiRequests';
 import { isValidAction } from '../utils/validationUtils';
 
@@ -37,6 +38,9 @@ export class ChooseServiceController extends BaseController {
     const action = req.params.action as string;
     if (isValidAction(action)) {
       const result = await this.dataApiRequests.getAllServices();
+      if (isDataApiError(result)) {
+        return this.renderDataApiError(req, res, result);
+      }
       if (Array.isArray(result)) {
         return this.renderView(req, res, 'choose-service', 'choose-service', {
           services: this.localiseOptions(req, result),

@@ -4,11 +4,18 @@ import { Response } from 'express';
 
 import PostcodeResultsController from '../../../main/controllers/PostcodeResultsController';
 import { FactRequest } from '../../../main/interfaces/FactRequest';
+import { DataApiError } from '../../../main/requests/DataApiError';
 import { DataApiRequests } from '../../../main/requests/DataApiRequests';
 import { ServiceArea } from '../../../main/schemas/ServiceAreaSchema';
 import { CourtWithDistance } from '../../../main/schemas/courtWithDistance';
 import { SEARCH_RESULT_TYPES, SearchResult } from '../../../main/schemas/searchResult';
 import { calculateServiceAreaFromSlug, calculateServiceNameFromSlug } from '../../../main/utils/SchemaUtils';
+import {
+  badRequestDataApiError,
+  badResponseDataApiError,
+  notFoundDataApiError,
+  unavailableDataApiError,
+} from '../mocks/dataApiError';
 
 jest.mock('../../../main/utils/SchemaUtils', () => ({
   calculateServiceAreaFromSlug: jest.fn(),
@@ -16,10 +23,10 @@ jest.mock('../../../main/utils/SchemaUtils', () => ({
 }));
 
 const mockPerformPostcodeSearch: jest.MockedFunction<
-  (postcode: string, serviceArea: string, action: string) => Promise<SearchResult[] | HttpStatusCode>
+  (postcode: string, serviceArea: string, action: string) => Promise<SearchResult[] | DataApiError>
 > = jest.fn();
 const mockPerformPostcodeOnlySearch: jest.MockedFunction<
-  (postcode: string) => Promise<CourtWithDistance[] | HttpStatusCode>
+  (postcode: string) => Promise<CourtWithDistance[] | DataApiError>
 > = jest.fn();
 
 const dataApiRequests = {
@@ -45,6 +52,7 @@ describe('PostcodeResultsController', () => {
         getDataByLanguage: jest.fn().mockReturnValue({
           'postcode-results': { title: 'Postcode Results' },
           'not-found': { title: 'Not Found' },
+          error: { title: 'Error' },
         }),
       } as unknown as FactRequest['i18n'],
       lng: 'en',
@@ -136,6 +144,29 @@ describe('PostcodeResultsController', () => {
     expect(res.redirect).toHaveBeenCalledWith(expect.stringContaining('/search-by-postcode?noResults=true'));
   });
 
+  test('GET: treats a postcode rejected by the Data API as no results', async () => {
+    req.query = { postcode: 'PL22 2XX' };
+    req.params = {};
+    mockPerformPostcodeOnlySearch.mockResolvedValue(badRequestDataApiError);
+
+    await controller.get(req as FactRequest, res);
+
+    expect(res.redirect).toHaveBeenCalledWith('/search-by-postcode?noResults=true');
+    expect(res.render).not.toHaveBeenCalled();
+  });
+
+  test('GET: renders service unavailable when postcode-only search cannot reach the Data API', async () => {
+    req.query = { postcode: 'SW1A 1AA' };
+    req.params = {};
+    mockPerformPostcodeOnlySearch.mockResolvedValue(unavailableDataApiError);
+
+    await controller.get(req as FactRequest, res);
+
+    expect(res.status).toHaveBeenCalledWith(HttpStatusCode.ServiceUnavailable);
+    expect(res.render).toHaveBeenCalledWith('error', expect.objectContaining({ title: 'Error' }));
+    expect(res.redirect).not.toHaveBeenCalled();
+  });
+
   test('GET: performs service area postcode search and renders results', async () => {
     req.query = { postcode: 'SW1A 1AA' };
     calculateServiceNameFromSlugMock.mockResolvedValue('service');
@@ -190,6 +221,63 @@ describe('PostcodeResultsController', () => {
     expect(res.redirect).toHaveBeenCalledWith(
       expect.stringContaining('/services/service/area/nearest/search-by-postcode?noResults=true')
     );
+  });
+
+  test('GET: treats a service-area postcode rejected by the Data API as no results', async () => {
+    req.query = { postcode: 'PL22 2XX' };
+    calculateServiceNameFromSlugMock.mockResolvedValue('service');
+    calculateServiceAreaFromSlugMock.mockResolvedValue({
+      name: 'Area',
+      nameCy: 'Ardal',
+      slug: 'area',
+    } as ServiceArea);
+    mockPerformPostcodeSearch.mockResolvedValue(badRequestDataApiError);
+
+    await controller.get(req as FactRequest, res);
+
+    expect(res.redirect).toHaveBeenCalledWith('/services/service/area/nearest/search-by-postcode?noResults=true');
+    expect(res.render).not.toHaveBeenCalled();
+  });
+
+  test('GET: rejects an invalid service action before calling dependencies', async () => {
+    req.query = { postcode: 'SW1A 1AA' };
+    req.params = { service: 'service', serviceArea: 'area', action: 'invalid' };
+
+    await controller.get(req as FactRequest, res);
+
+    expect(res.status).toHaveBeenCalledWith(HttpStatusCode.NotFound);
+    expect(calculateServiceNameFromSlugMock).not.toHaveBeenCalled();
+    expect(mockPerformPostcodeSearch).not.toHaveBeenCalled();
+  });
+
+  test.each([
+    [notFoundDataApiError, HttpStatusCode.NotFound, 'not-found'],
+    [badResponseDataApiError, HttpStatusCode.BadGateway, 'error'],
+  ] as const)('GET: renders mapped status %s for a service-area search error', async (apiError, status, view) => {
+    req.query = { postcode: 'SW1A 1AA' };
+    calculateServiceNameFromSlugMock.mockResolvedValue('service');
+    calculateServiceAreaFromSlugMock.mockResolvedValue({
+      name: 'Area',
+      nameCy: 'Ardal',
+      slug: 'area',
+    } as ServiceArea);
+    mockPerformPostcodeSearch.mockResolvedValue(apiError);
+
+    await controller.get(req as FactRequest, res);
+
+    expect(res.status).toHaveBeenCalledWith(status);
+    expect(res.render).toHaveBeenCalledWith(view, expect.anything());
+    expect(res.redirect).not.toHaveBeenCalled();
+  });
+
+  test('GET: preserves a structured Data API error raised while resolving slugs', async () => {
+    req.query = { postcode: 'SW1A 1AA' };
+    calculateServiceNameFromSlugMock.mockRejectedValue(badResponseDataApiError);
+
+    await controller.get(req as FactRequest, res);
+
+    expect(res.status).toHaveBeenCalledWith(HttpStatusCode.BadGateway);
+    expect(res.render).toHaveBeenCalledWith('error', expect.objectContaining({ title: 'Error' }));
   });
 
   test('GET: renders not-found if error thrown in service area postcode search', async () => {

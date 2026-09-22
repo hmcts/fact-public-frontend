@@ -2,6 +2,7 @@ import { GET, route } from 'awilix-express';
 import { Response } from 'express';
 
 import { FactRequest } from '../interfaces/FactRequest';
+import { isDataApiError } from '../requests/DataApiError';
 import { DataApiRequests } from '../requests/DataApiRequests';
 import { CATCHMENT_TYPES } from '../schemas/courtServiceAreas';
 import { calculateServiceAreaFromSlug, calculateServiceNameFromSlug } from '../utils/SchemaUtils';
@@ -20,6 +21,9 @@ export default class ServiceSearchResultsController extends BaseController {
       const service = await calculateServiceNameFromSlug(req.params.service as string);
       const serviceArea = await calculateServiceAreaFromSlug(service, req.params.serviceArea as string);
       const results = await this.dataApiRequests.getServiceAreaSearchResults(serviceArea.name);
+      if (isDataApiError(results)) {
+        return this.renderDataApiError(req, res, results);
+      }
       const localeData = this.getLocaleData<{ hint: string }>(req, 'service-results');
       const data = {
         results: {},
@@ -43,7 +47,10 @@ export default class ServiceSearchResultsController extends BaseController {
       }
 
       return this.renderView(req, res, 'service-results', 'service-results', data);
-    } catch {
+    } catch (error: unknown) {
+      if (isDataApiError(error)) {
+        return this.renderDataApiError(req, res, error);
+      }
       return this.renderNotFound(req, res);
     }
   }
