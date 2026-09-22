@@ -18,6 +18,8 @@ const SCOTTISH_CHILDCARE_SERVICE_AREAS = new Set([
   'childcare-arrangements',
 ]);
 
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
 export const isValidAction = (value: string): boolean => !!value && ACTIONS.has(value);
 
 export const isValidPrefix = (value: unknown): value is string =>
@@ -70,3 +72,10 @@ export const checkPostcode = (postcode: string, serviceArea?: string): string | 
   // no obvious issues with the postcode
   return undefined;
 };
+
+/**
+ * Checks whether a value is a UUID in the format expected by the API.
+ */
+export function isUuid(value: string): boolean {
+  return UUID_REGEX.test(value);
+}
