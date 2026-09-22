@@ -1,3 +1,5 @@
+import { Readable } from 'node:stream';
+
 import { AxiosRequestConfig, HttpStatusCode, isAxiosError } from 'axios';
 
 import { Logger } from '../modules/logging';
@@ -19,6 +21,15 @@ import { dataApi } from './utils/axiosConfig';
 import { toSafeErrorDetails } from './utils/safeErrorDetails';
 
 const logger = Logger.getLogger('app');
+
+export type FileStreamResult = {
+  stream: Readable;
+  headers: {
+    contentType?: string;
+    contentDisposition?: string;
+    contentLength?: string;
+  };
+};
 
 export class DataApiRequests {
   /**
@@ -223,6 +234,26 @@ export class DataApiRequests {
       return isAxiosError(error) && error.response?.status
         ? (error.response.status as HttpStatusCode)
         : HttpStatusCode.InternalServerError;
+    }
+  }
+
+  public async getFileStream(location: string): Promise<FileStreamResult | HttpStatusCode> {
+    try {
+      const response = await dataApi.get(location, {
+        responseType: 'stream',
+      });
+
+      return {
+        stream: response.data as Readable,
+        headers: {
+          contentType: response.headers['content-type'] as string,
+          contentDisposition: response.headers['content-disposition'],
+          contentLength: response.headers['content-length'] as string,
+        },
+      };
+    } catch (error: unknown) {
+      logger.error('Error fetching download stream:', toSafeErrorDetails(error));
+      return isAxiosError(error) && error.response?.status ? error.response.status : HttpStatusCode.InternalServerError;
     }
   }
 }
