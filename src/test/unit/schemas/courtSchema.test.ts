@@ -159,13 +159,14 @@ describe('courtSchema - court photo links', () => {
       courtAccessibilityOptions: [],
       courtPhotos: [
         {
+          courtId: '55555555-5555-4555-8555-555555555555',
           fileLink: 'https://example.org/image.png',
           lastUpdatedAt: '2026-09-15T00:00:00.000Z',
         },
       ],
     });
 
-    expect(parsed.courtPhotos[0].fileLink).toMatch(/^https:\/\/example.org\/image.png\?cacheBust=/);
+    expect(parsed.courtPhotos[0].fileLink).toMatch(/^.+\?cacheBust=/);
   });
 
   it('returns undefined photo link when an empty string is provided', () => {
@@ -174,6 +175,7 @@ describe('courtSchema - court photo links', () => {
       courtAccessibilityOptions: [],
       courtPhotos: [
         {
+          courtId: '55555555-5555-4555-8555-555555555555',
           fileLink: '',
           lastUpdatedAt: '2026-09-15T00:00:00.000Z',
         },

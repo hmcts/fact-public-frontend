@@ -104,7 +104,10 @@ test.describe('Court Page Core', () => {
     await courtPage.goto(courtData.defaultCourt.slug);
     const photo = courtData.defaultCourt.body.courtPhotos[0];
     if (photo?.fileLink) {
-      await courtPage.expectCourtPhotoToBeVisible(photo.fileLink, courtData.defaultCourt.name);
+      await courtPage.expectCourtPhotoToBeVisible(
+        `/res/img/${courtData.defaultCourt.body.id}`,
+        courtData.defaultCourt.name
+      );
     }
   });
 

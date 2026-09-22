@@ -4,6 +4,7 @@ import { cloneDeep, get } from 'lodash';
 
 import { FactRequest } from '../interfaces/FactRequest';
 import { DataApiError, toDataApiErrorEnvelope } from '../requests/DataApiError';
+import { isUuid } from '../utils/validationUtils';
 
 type ViewData = Record<string, unknown>;
 
@@ -75,5 +76,11 @@ export default abstract class BaseController {
       description: this.localise(req, option.description, option.descriptionCy),
       value: option.slug,
     }));
+  }
+
+  protected getUuidRouteParam(req: FactRequest, paramName: string): string | undefined {
+    const value = req.params?.[paramName];
+    const param = Array.isArray(value) ? value[0] : value;
+    return param && isUuid(param) ? param : undefined;
   }
 }

@@ -1,3 +1,5 @@
+import { Readable } from 'node:stream';
+
 import { AxiosRequestConfig } from 'axios';
 
 import { Logger } from '../modules/logging';
@@ -19,6 +21,15 @@ import { dataApi } from './utils/axiosConfig';
 import { toSafeErrorDetails } from './utils/safeErrorDetails';
 
 const logger = Logger.getLogger('app');
+
+export type FileStreamResult = {
+  stream: Readable;
+  headers: {
+    contentType?: string;
+    contentDisposition?: string;
+    contentLength?: string;
+  };
+};
 
 export class DataApiRequests {
   private handleError(error: unknown, message: string, mapping?: DataApiErrorMapping): DataApiError {
@@ -209,6 +220,28 @@ export class DataApiRequests {
       return courtWithDistanceSchema.array().parse(response.data);
     } catch (error: unknown) {
       return this.handleError(error, 'Error fetching postcode search results:', { badRequest: true });
+    }
+  }
+
+  public async getFileStream(
+    location: string,
+    mapping?: DataApiErrorMapping
+  ): Promise<FileStreamResult | DataApiError> {
+    try {
+      const response = await dataApi.get(location, {
+        responseType: 'stream',
+      });
+
+      return {
+        stream: response.data as Readable,
+        headers: {
+          contentType: response.headers['content-type'] as string,
+          contentDisposition: response.headers['content-disposition'],
+          contentLength: response.headers['content-length'] as string,
+        },
+      };
+    } catch (error: unknown) {
+      return this.handleError(error, 'Error fetching download stream:', mapping);
     }
   }
 }

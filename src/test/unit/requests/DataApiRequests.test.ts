@@ -919,4 +919,75 @@ describe('DataApiRequests', () => {
       await expect(requests.getCourtServiceAreas('Divorce')).resolves.toEqual(payload);
     });
   });
+
+  describe('getFileStream', () => {
+    const location = '/resources/v1/court-photo/11111111-1111-4111-8111-111111111111';
+    const requestConfig = { responseType: 'stream' as const };
+
+    it('returns the stream and supported response headers', async () => {
+      const stream = { pipe: jest.fn() };
+      sandbox
+        .stub(dataApi, 'get')
+        .withArgs(location, requestConfig)
+        .resolves({
+          data: stream,
+          headers: {
+            'content-type': 'image/jpeg',
+            'content-disposition': 'inline; filename="court.jpg"',
+            'content-length': '1234',
+          },
+        });
+
+      await expect(requests.getFileStream(location, { notFound: true })).resolves.toEqual({
+        stream,
+        headers: {
+          contentType: 'image/jpeg',
+          contentDisposition: 'inline; filename="court.jpg"',
+          contentLength: '1234',
+        },
+      });
+    });
+
+    it('maps a missing court image to not found when the endpoint opts into that contract', async () => {
+      sandbox
+        .stub(dataApi, 'get')
+        .withArgs(location, requestConfig)
+        .rejects({ isAxiosError: true, response: { status: HttpStatusCode.NotFound } });
+
+      await expect(requests.getFileStream(location, { notFound: true })).resolves.toMatchObject({
+        status: HttpStatusCode.NotFound,
+      });
+    });
+
+    it('maps a missing CSV to not found when the endpoint opts into that contract', async () => {
+      const csvLocation = '/resources/v1/csv';
+      sandbox
+        .stub(dataApi, 'get')
+        .withArgs(csvLocation, requestConfig)
+        .rejects({ isAxiosError: true, response: { status: HttpStatusCode.NotFound } });
+
+      await expect(requests.getFileStream(csvLocation, { notFound: true })).resolves.toMatchObject({
+        status: HttpStatusCode.NotFound,
+      });
+    });
+
+    it('maps a transport failure to service unavailable', async () => {
+      sandbox.stub(dataApi, 'get').withArgs(location, requestConfig).rejects({ isAxiosError: true });
+
+      await expect(requests.getFileStream(location)).resolves.toMatchObject({
+        status: HttpStatusCode.ServiceUnavailable,
+      });
+    });
+
+    it('does not expose an upstream authentication failure', async () => {
+      sandbox
+        .stub(dataApi, 'get')
+        .withArgs(location, requestConfig)
+        .rejects({ isAxiosError: true, response: { status: HttpStatusCode.Unauthorized } });
+
+      await expect(requests.getFileStream(location)).resolves.toMatchObject({
+        status: HttpStatusCode.BadGateway,
+      });
+    });
+  });
 });
