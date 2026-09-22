@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 
-import { env } from '../helpers/nunjucksEnv';
+import { env, escapeHtml } from '../helpers/nunjucksEnv';
 
 describe('ChooseService View', () => {
   const i18n = require('../../../../main/locales/en/choose-service.json');
@@ -20,7 +20,7 @@ describe('ChooseService View', () => {
     expect(html).toContain('<title>');
     expect(html).toContain(i18n.title);
     expect(html).toContain(i18n.question);
-    expect(html).toContain(i18n.answers.a1);
+    expect(html).toContain(escapeHtml(i18n.answers.a1));
     expect(html).toContain(i18n.button);
     expect(html).toContain('govuk-radios');
     expect(html).toContain('govuk-button');
@@ -36,7 +36,7 @@ describe('ChooseService View', () => {
     expect(html).toContain('<title>');
     expect(html).toContain(welshI18n.title);
     expect(html).toContain(welshI18n.question);
-    expect(html).toContain(welshI18n.answers.a1);
+    expect(html).toContain(escapeHtml(welshI18n.answers.a1));
     expect(html).toContain(welshI18n.button);
     expect(html).toContain('govuk-radios');
     expect(html).toContain('govuk-button');

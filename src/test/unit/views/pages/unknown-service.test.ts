@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 
-import { env } from '../helpers/nunjucksEnv';
+import { env, escapeHtml } from '../helpers/nunjucksEnv';
 
 describe('UnknownService View', () => {
   const i18n = require('../../../../main/locales/en/unknown-service.json');
@@ -9,7 +9,7 @@ describe('UnknownService View', () => {
   test('renders the unknown-service page with correct content', () => {
     const html = env.render('unknown-service.njk', i18n);
     expect(html).toContain(i18n.title);
-    expect(html).toContain(i18n.h1);
+    expect(html).toContain(escapeHtml(i18n.h1));
     expect(html).toContain(i18n.p_1);
     expect(html).toContain(i18n.h2_1);
     expect(html).toContain(i18n.a_1);
@@ -30,21 +30,21 @@ describe('UnknownService View', () => {
 
   test('renders the unknown-service page with correct content (Welsh)', () => {
     const html = env.render('unknown-service.njk', welshI18n);
-    expect(html).toContain(welshI18n.title);
-    expect(html).toContain(welshI18n.h1);
-    expect(html).toContain(welshI18n.p_1);
-    expect(html).toContain(welshI18n.h2_1);
-    expect(html).toContain(welshI18n.a_1);
-    expect(html).toContain(welshI18n.h2_5);
-    expect(html).toContain(welshI18n.a_5);
-    expect(html).toContain(welshI18n.h2_2);
-    expect(html).toContain(welshI18n.a_2);
-    expect(html).toContain(welshI18n.h2_3);
-    expect(html).toContain(welshI18n.a_3_1);
-    expect(html).toContain(welshI18n.a_3_2);
-    expect(html).toContain(welshI18n.a_3_3);
-    expect(html).toContain(welshI18n.h2_4);
-    expect(html).toContain(welshI18n.a_4);
+    expect(html).toContain(escapeHtml(welshI18n.title));
+    expect(html).toContain(escapeHtml(welshI18n.h1));
+    expect(html).toContain(escapeHtml(welshI18n.p_1));
+    expect(html).toContain(escapeHtml(welshI18n.h2_1));
+    expect(html).toContain(escapeHtml(welshI18n.a_1));
+    expect(html).toContain(escapeHtml(welshI18n.h2_5));
+    expect(html).toContain(escapeHtml(welshI18n.a_5));
+    expect(html).toContain(escapeHtml(welshI18n.h2_2));
+    expect(html).toContain(escapeHtml(welshI18n.a_2));
+    expect(html).toContain(escapeHtml(welshI18n.h2_3));
+    expect(html).toContain(escapeHtml(welshI18n.a_3_1));
+    expect(html).toContain(escapeHtml(welshI18n.a_3_2));
+    expect(html).toContain(escapeHtml(welshI18n.a_3_3));
+    expect(html).toContain(escapeHtml(welshI18n.h2_4));
+    expect(html).toContain(escapeHtml(welshI18n.a_4));
     expect(html).toContain('govuk-heading-l');
     expect(html).toContain('govuk-heading-m');
     expect(html).toContain('govuk-body');
