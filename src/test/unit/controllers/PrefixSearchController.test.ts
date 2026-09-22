@@ -1,9 +1,9 @@
-import { HttpStatusCode } from 'axios';
 import { Response } from 'express';
 import { mock } from 'sinon';
 
 import AZPrefixSearchController from '../../../main/controllers/AZPrefixSearchController';
 import { DataApiRequests } from '../../../main/requests/DataApiRequests';
+import { badResponseDataApiError } from '../mocks/dataApiError';
 import { mockRequest } from '../mocks/mockRequest';
 
 const mockGetCourtsByPrefix = jest.fn();
@@ -117,27 +117,27 @@ describe('AZPrefixSearchController', () => {
     expect(mockGetCourtsByPrefix).toHaveBeenCalledWith('A');
   });
 
-  test('renders the not-found view when API returns 404', async () => {
+  test('renders an inline API error when an upstream 404 is mapped as a dependency failure', async () => {
     const request = mockRequest(mockData);
     const prefix = 'Z';
     request.query = { prefix };
-    mockGetCourtsByPrefix.mockResolvedValue(HttpStatusCode.NotFound);
+    mockGetCourtsByPrefix.mockResolvedValue(badResponseDataApiError);
 
-    const response = {
-      status: () => '',
-    } as unknown as Response;
+    const response = { status: () => response, render: () => '' } as unknown as Response;
     const responseMock = mock(response);
-    const statusObj = {
-      render: () => '',
-    };
-    const statusMock = mock(statusObj);
-
-    responseMock.expects('status').once().withArgs(404).returns(statusObj);
-    statusMock.expects('render').once().withArgs('not-found', mockNotFoundData);
+    responseMock.expects('status').once().withArgs(502).returns(response);
+    responseMock
+      .expects('render')
+      .once()
+      .withArgs('prefix-search', {
+        ...mockPageData,
+        errors: true,
+        errorMessage: mockPageData.error.api,
+        prefix,
+      });
 
     await controller.get(request, response);
     responseMock.verify();
-    statusMock.verify();
     expect(mockGetCourtsByPrefix).toHaveBeenCalled();
   });
 
@@ -145,12 +145,14 @@ describe('AZPrefixSearchController', () => {
     const request = mockRequest(mockData);
     const prefix = 'A';
     request.query = { prefix };
-    mockGetCourtsByPrefix.mockResolvedValue(HttpStatusCode.InternalServerError);
+    mockGetCourtsByPrefix.mockResolvedValue(badResponseDataApiError);
 
     const response = {
+      status: () => response,
       render: () => '',
     } as unknown as Response;
     const responseMock = mock(response);
+    responseMock.expects('status').once().withArgs(502).returns(response);
 
     responseMock
       .expects('render')

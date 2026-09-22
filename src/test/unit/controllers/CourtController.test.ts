@@ -6,6 +6,7 @@ import { FactRequest } from '../../../main/interfaces/FactRequest';
 import { DataApiRequests } from '../../../main/requests/DataApiRequests';
 import { Court } from '../../../main/schemas/courtSchema';
 import { CourtService, CourtViewModel } from '../../../main/services/CourtService';
+import { badResponseDataApiError, notFoundDataApiError } from '../mocks/dataApiError';
 import { mockRequest } from '../mocks/mockRequest';
 
 const injectedDataApiMock = { getCourtDetails: jest.fn() };
@@ -69,7 +70,7 @@ describe('CourtController', () => {
       } as unknown as Response;
 
       const { dataApiMock } = getMocks();
-      dataApiMock.getCourtDetails.mockResolvedValue(HttpStatusCode.NotFound);
+      dataApiMock.getCourtDetails.mockResolvedValue(notFoundDataApiError);
 
       await controller.get(req, res);
 
@@ -88,11 +89,11 @@ describe('CourtController', () => {
       } as unknown as Response;
 
       const { dataApiMock, courtServiceMock } = getMocks();
-      dataApiMock.getCourtDetails.mockResolvedValue(HttpStatusCode.InternalServerError);
+      dataApiMock.getCourtDetails.mockResolvedValue(badResponseDataApiError);
 
       await controller.get(req, res);
 
-      expect(res.status).toHaveBeenCalledWith(HttpStatusCode.InternalServerError);
+      expect(res.status).toHaveBeenCalledWith(HttpStatusCode.BadGateway);
       expect(res.render).toHaveBeenCalledWith('error', { h1: 'Something went wrong' });
       expect(courtServiceMock.formatData).not.toHaveBeenCalled();
     });
@@ -176,7 +177,7 @@ describe('CourtController', () => {
       expect(res.json).toHaveBeenCalledWith(court);
     });
 
-    test('renders not-found on JSON route when court is not found', async () => {
+    test('returns the stable not-found envelope on the JSON route', async () => {
       const controller = buildController();
       const req = {
         params: { slug: 'unknown-court' },
@@ -187,35 +188,46 @@ describe('CourtController', () => {
       } as unknown as FactRequest;
       const res = {
         status: jest.fn().mockReturnThis(),
-        render: jest.fn(),
+        json: jest.fn(),
       } as unknown as Response;
 
       const { dataApiMock } = getMocks();
-      dataApiMock.getCourtDetails.mockResolvedValue(HttpStatusCode.NotFound);
+      dataApiMock.getCourtDetails.mockResolvedValue(notFoundDataApiError);
 
       await controller.getJson(req, res);
 
       expect(dataApiMock.getCourtDetails).toHaveBeenCalledWith('unknown-court');
-      expect(req.i18n.getDataByLanguage).toHaveBeenCalledWith('en');
       expect(res.status).toHaveBeenCalledWith(404);
-      expect(res.render).toHaveBeenCalledWith('not-found', { heading: 'Not found JSON' });
+      expect(res.json).toHaveBeenCalledWith({
+        error: {
+          code: 'NOT_FOUND',
+          message: 'The requested resource was not found',
+        },
+      });
     });
 
-    test('returns raw non-404 API status on JSON route', async () => {
+    test('returns the stable dependency-failure envelope on the JSON route', async () => {
       const controller = buildController();
       const req = {
         params: { slug: 'errored-court' },
       } as unknown as FactRequest;
       const res = {
+        status: jest.fn().mockReturnThis(),
         json: jest.fn(),
       } as unknown as Response;
 
       const { dataApiMock } = getMocks();
-      dataApiMock.getCourtDetails.mockResolvedValue(HttpStatusCode.BadGateway);
+      dataApiMock.getCourtDetails.mockResolvedValue(badResponseDataApiError);
 
       await controller.getJson(req, res);
 
-      expect(res.json).toHaveBeenCalledWith(HttpStatusCode.BadGateway);
+      expect(res.status).toHaveBeenCalledWith(HttpStatusCode.BadGateway);
+      expect(res.json).toHaveBeenCalledWith({
+        error: {
+          code: 'DATA_API_BAD_RESPONSE',
+          message: 'The Data API returned an invalid response',
+        },
+      });
     });
   });
 });

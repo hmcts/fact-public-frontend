@@ -5,6 +5,7 @@ import { mock } from 'sinon';
 import SearchByLocationController from '../../../main/controllers/SearchByLocationController';
 import { FactRequest } from '../../../main/interfaces/FactRequest';
 import { DataApiRequests } from '../../../main/requests/DataApiRequests';
+import { unavailableDataApiError } from '../mocks/dataApiError';
 import { mockRequest } from '../mocks/mockRequest';
 
 const mockGetByName = jest.fn();
@@ -77,7 +78,7 @@ describe('SearchByLocationController', () => {
     const data = { title: 'Search by name or address' };
     const request = mockRequest({ search: { location: data }, error: { h1: 'Something went wrong' } });
     request.query = { search: 'Blackburn' } as FactRequest['query'];
-    mockGetByName.mockResolvedValueOnce(500);
+    mockGetByName.mockResolvedValueOnce(unavailableDataApiError);
     const responseMock = mock(response);
 
     responseMock.expects('status').once().withArgs(503).returns(response);
