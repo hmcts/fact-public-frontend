@@ -7,7 +7,7 @@ export class HeaderComponent {
   private readonly waitUtils = new WaitUtils();
 
   constructor(page: Page) {
-    this.header = page.locator('header');
+    this.header = page.locator('.govuk-header');
     this.navigationLinks = page.locator('.govuk-service-navigation__link');
   }
 

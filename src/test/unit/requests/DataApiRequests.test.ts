@@ -14,8 +14,6 @@ jest.mock('@hmcts/nodejs-logging', () => ({
 
 import { DataApiRequests } from '../../../main/requests/DataApiRequests';
 import { dataApi } from '../../../main/requests/utils/axiosConfig';
-import { serviceCentreDetailsSchema } from '../../../main/schemas/allLocationDetails';
-import { courtSchema } from '../../../main/schemas/courtSchema';
 import { CATCHMENT_TYPES } from '../../../main/schemas/courtServiceAreas';
 import { SEARCH_RESULT_TYPES } from '../../../main/schemas/searchResult';
 
@@ -135,15 +133,10 @@ describe('DataApiRequests', () => {
 
   describe('getCourtDetails', () => {
     it('returns parsed court details on success', async () => {
-      const payload = { raw: 'court' };
-      const parsedCourt = { id: '1' };
+      const payload = validCourt;
       sandbox.stub(dataApi, 'get').withArgs('/courts/slug/test-slug/v1').resolves({ data: payload });
-      sandbox
-        .stub(courtSchema, 'parse')
-        .withArgs(payload)
-        .returns(parsedCourt as never);
 
-      await expect(requests.getCourtDetails('test-slug')).resolves.toBe(parsedCourt);
+      await expect(requests.getCourtDetails('test-slug')).resolves.toEqual(payload);
     });
 
     it('returns API status code for axios errors with a response status', async () => {
@@ -190,15 +183,17 @@ describe('DataApiRequests', () => {
 
   describe('getServiceCentreDetails', () => {
     it('calls the slug endpoint and returns parsed service-centre details', async () => {
-      const payload = { raw: 'service-centre' };
-      const parsedServiceCentre = { id: 'service-centre-id' };
+      const payload = {
+        id: 'service-centre-id',
+        name: 'Service Centre A',
+        slug: 'service-centre-a',
+        open: true,
+        warningNotice: null,
+        warningNoticeCy: null,
+      };
       sandbox.stub(dataApi, 'get').withArgs('/service-centres/slug/test-slug/v1').resolves({ data: payload });
-      sandbox
-        .stub(serviceCentreDetailsSchema, 'parse')
-        .withArgs(payload)
-        .returns(parsedServiceCentre as never);
 
-      await expect(requests.getServiceCentreDetails('test-slug')).resolves.toBe(parsedServiceCentre);
+      await expect(requests.getServiceCentreDetails('test-slug')).resolves.toEqual(payload);
     });
 
     it('parses the Welsh warning notice returned by the slug endpoint', async () => {
