@@ -1,8 +1,8 @@
 import { GET, route } from 'awilix-express';
-import { HttpStatusCode } from 'axios';
 import { Response } from 'express';
 
 import { FactRequest } from '../interfaces/FactRequest';
+import { isDataApiError } from '../requests/DataApiError';
 import { DataApiRequests } from '../requests/DataApiRequests';
 import { Court } from '../schemas/courtSchema';
 import { CourtService, CourtViewModel } from '../services/CourtService';
@@ -27,8 +27,8 @@ export default class CourtController extends BaseController {
   public async getJson(req: FactRequest, res: Response): Promise<void> {
     const result = await this.dataApiRequests.getCourtDetails(req.params.slug as string);
 
-    if (result === HttpStatusCode.NotFound) {
-      return this.renderNotFound(req, res);
+    if (isDataApiError(result)) {
+      return this.sendDataApiJsonError(res, result);
     }
 
     res.json(result);
@@ -39,12 +39,8 @@ export default class CourtController extends BaseController {
   public async get(req: FactRequest, res: Response): Promise<void> {
     const result = await this.dataApiRequests.getCourtDetails(req.params.slug as string);
 
-    if (result === HttpStatusCode.NotFound) {
-      return this.renderNotFound(req, res);
-    }
-
-    if (typeof result === 'number') {
-      return this.renderError(req, res, result);
+    if (isDataApiError(result)) {
+      return this.renderDataApiError(req, res, result);
     }
 
     const court = result as Court;

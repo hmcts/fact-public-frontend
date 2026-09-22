@@ -1,6 +1,8 @@
 import { expect } from 'chai';
 import request from 'supertest';
 
+import { notFoundDataApiError, unavailableDataApiError } from '../unit/mocks/dataApiError';
+
 jest.mock('../../main/requests/DataApiRequests', () => {
   const dataApiMock = { getCourtDetails: jest.fn() };
   return {
@@ -74,7 +76,7 @@ describe('Court routes', () => {
 
   test('GET /courts/:slug renders not-found on 404', async () => {
     const dataApiMock = getMocks();
-    dataApiMock.getCourtDetails.mockResolvedValue(404);
+    dataApiMock.getCourtDetails.mockResolvedValue(notFoundDataApiError);
 
     await request(app)
       .get('/courts/missing-court')
@@ -82,5 +84,19 @@ describe('Court routes', () => {
         expect(res.status).to.equal(404);
         expect(res.text).to.include('Page Not Found');
       });
+  });
+
+  test('GET /courts/:slug.json returns the stable JSON error envelope', async () => {
+    const dataApiMock = getMocks();
+    dataApiMock.getCourtDetails.mockResolvedValue(unavailableDataApiError);
+
+    const response = await request(app).get('/courts/test-court.json').expect('Content-Type', /json/).expect(503);
+
+    expect(response.body).to.deep.equal({
+      error: {
+        code: 'DATA_API_UNAVAILABLE',
+        message: 'The Data API is temporarily unavailable',
+      },
+    });
   });
 });

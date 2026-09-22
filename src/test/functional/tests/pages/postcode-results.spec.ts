@@ -49,9 +49,19 @@ test.describe('Postcode Results Page', () => {
     await postcodeResultsPage.expectVisibleElements();
   });
 
-  test('should show no results if postcode does not match any court', async ({ page, postcodeResultsPage }) => {
-    await postcodeResultsPage.goto({ postcode: 'ZZ99 9ZZ', lng: 'en' });
-    // Should redirect to search page with noResults param
+  test('should show no results if postcode has no OS match', async ({ page, postcodeResultsPage }) => {
+    await postcodeResultsPage.goto({ postcode: 'PL22 2XX', lng: 'en' });
     await expect(page).toHaveURL(/search-by-postcode\?noResults=true/);
+  });
+
+  test('should show no results if service-area postcode has no OS match', async ({ page, postcodeResultsPage }) => {
+    await postcodeResultsPage.goto({
+      postcode: 'PL22 2XX',
+      service: 'money',
+      serviceArea: 'money-claims',
+      action: 'documents',
+      lng: 'en',
+    });
+    await expect(page).toHaveURL(/services\/money\/money-claims\/documents\/search-by-postcode\?noResults=true/);
   });
 });

@@ -3,6 +3,7 @@ import { Response } from 'express';
 import SearchController from '../../../main/controllers/SearchController';
 import { FactRequest } from '../../../main/interfaces/FactRequest';
 import { DataApiRequests } from '../../../main/requests/DataApiRequests';
+import { unavailableDataApiError } from '../mocks/dataApiError';
 
 const mockGetAll = jest.fn();
 const dataApiRequests = { getAll: mockGetAll } as unknown as DataApiRequests;
@@ -37,6 +38,25 @@ describe('CourtController', () => {
 
       expect(mockGetAll).toHaveBeenCalled();
       expect(res.json).toHaveBeenCalledWith(mockLocations);
+    });
+
+    test('returns a stable JSON error envelope when the Data API is unavailable', async () => {
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      } as unknown as Response;
+      const req = {} as unknown as FactRequest;
+      mockGetAll.mockResolvedValue(unavailableDataApiError);
+
+      await controller.getAllJson(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(503);
+      expect(res.json).toHaveBeenCalledWith({
+        error: {
+          code: 'DATA_API_UNAVAILABLE',
+          message: 'The Data API is temporarily unavailable',
+        },
+      });
     });
   });
 });

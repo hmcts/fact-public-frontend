@@ -5,6 +5,7 @@ import ServiceCentreController from '../../../main/controllers/ServiceCentreCont
 import { DataApiRequests } from '../../../main/requests/DataApiRequests';
 import { ServiceCentreDetails } from '../../../main/schemas/allLocationDetails';
 import { ServiceCentreService, ServiceCentreViewModel } from '../../../main/services/ServiceCentreService';
+import { badResponseDataApiError, notFoundDataApiError } from '../mocks/dataApiError';
 import { mockRequest } from '../mocks/mockRequest';
 
 const injectedDataApiMock = { getServiceCentreDetails: jest.fn() };
@@ -51,7 +52,7 @@ describe('ServiceCentreController', () => {
     const req = mockRequest({ 'not-found': { heading: 'Not found' } });
     req.params.slug = 'missing-service-centre';
     const res = { status: jest.fn().mockReturnThis(), render: jest.fn() } as unknown as Response;
-    getMocks().dataApiMock.getServiceCentreDetails.mockResolvedValue(HttpStatusCode.NotFound);
+    getMocks().dataApiMock.getServiceCentreDetails.mockResolvedValue(notFoundDataApiError);
 
     await buildController().get(req, res);
 
@@ -64,7 +65,7 @@ describe('ServiceCentreController', () => {
     const req = mockRequest({ error: { h1: 'Something went wrong' } });
     req.params.slug = 'failed-service-centre';
     const res = { status: jest.fn().mockReturnThis(), render: jest.fn() } as unknown as Response;
-    getMocks().dataApiMock.getServiceCentreDetails.mockResolvedValue(HttpStatusCode.BadGateway);
+    getMocks().dataApiMock.getServiceCentreDetails.mockResolvedValue(badResponseDataApiError);
 
     await buildController().get(req, res);
 
