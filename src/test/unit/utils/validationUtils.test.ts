@@ -8,6 +8,13 @@ describe('validationUtils', () => {
     expect(checkPostcode('   ')).toBe('blankPostcode');
   });
 
+  test('returns blankPostcode for non-string boundary input', () => {
+    expect(checkPostcode(undefined)).toBe('blankPostcode');
+    expect(checkPostcode(null)).toBe('blankPostcode');
+    expect(checkPostcode(['SW1A 1AA'])).toBe('blankPostcode');
+    expect(checkPostcode({ postcode: 'SW1A 1AA' })).toBe('blankPostcode');
+  });
+
   test('returns missingPostcodeSpace when postcode is valid except for the required space', () => {
     expect(checkPostcode('SW1A1AA')).toBe('missingPostcodeSpace');
   });
@@ -16,8 +23,17 @@ describe('validationUtils', () => {
     expect(checkPostcode('SW1A 1AA')).toBeUndefined();
   });
 
+  test('accepts postcode with surrounding whitespace and mixed case (normalization)', () => {
+    expect(checkPostcode(' sw1a 1aa ')).toBeUndefined();
+  });
+
   test('returns invalidPostcode when postcode is not structurally valid', () => {
     expect(checkPostcode('not-a-postcode')).toBe('invalidPostcode');
+  });
+
+  test('returns invalidPostcode for bounded-length failures', () => {
+    expect(checkPostcode('A1 1')).toBe('invalidPostcode'); // too short
+    expect(checkPostcode('SW1A 1AA XX')).toBe('invalidPostcode'); // too long
   });
 
   test('returns scottishChildrenPostcode for Scottish postcode in childcare service area', () => {
