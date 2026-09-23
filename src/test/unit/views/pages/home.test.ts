@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 
-import { env } from '../helpers/nunjucksEnv';
+import { env, escapeHtml } from '../helpers/nunjucksEnv';
 
 const welshI18n = require('../../../../main/locales/cy/home.json');
 const i18n = require('../../../../main/locales/en/home.json');
@@ -16,6 +16,6 @@ describe('Home page', () => {
   test('renders the Welsh list introduction', () => {
     const html = env.render('home.njk', welshI18n);
 
-    expect(html).toContain(welshI18n.main.list_intro);
+    expect(html).toContain(escapeHtml(welshI18n.main.list_intro));
   });
 });

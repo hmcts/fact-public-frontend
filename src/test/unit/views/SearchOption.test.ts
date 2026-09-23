@@ -2,11 +2,13 @@ import * as path from 'path';
 
 import * as nunjucks from 'nunjucks';
 
+import { escapeHtml } from './helpers/nunjucksEnv';
+
 const govukTemplates = path.dirname(require.resolve('govuk-frontend/package.json')) + '/dist';
 const viewsPath = path.resolve(__dirname, '../../../main/views');
 
 const env = nunjucks.configure([govukTemplates, viewsPath], {
-  autoescape: false,
+  autoescape: true,
 });
 
 describe('Search Option View', () => {
@@ -35,11 +37,11 @@ describe('Search Option View', () => {
   test('renders the search option page with Welsh content', () => {
     const html = env.render('search/option.njk', welshI18n);
 
-    expect(html).toContain(welshI18n.title);
-    expect(html).toContain(welshI18n.question);
-    expect(html).toContain(welshI18n.hint);
-    expect(html).toContain(welshI18n.answers.a1);
-    expect(html).toContain(welshI18n.answers.a2);
+    expect(html).toContain(escapeHtml(welshI18n.title));
+    expect(html).toContain(escapeHtml(welshI18n.question));
+    expect(html).toContain(escapeHtml(welshI18n.hint));
+    expect(html).toContain(escapeHtml(welshI18n.answers.a1));
+    expect(html).toContain(escapeHtml(welshI18n.answers.a2));
     expect(html).toContain(welshI18n.button);
   });
 });

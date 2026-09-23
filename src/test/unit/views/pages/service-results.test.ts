@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 
-import { env } from '../helpers/nunjucksEnv';
+import { env, escapeHtml } from '../helpers/nunjucksEnv';
 
 describe('ServiceResults View', () => {
   const i18n = require('../../../../main/locales/en/service-results.json');
@@ -45,7 +45,7 @@ describe('ServiceResults View', () => {
     expect(html).toContain('Gwnewch gais ar-lein');
     expect(html).toContain('https://apply.example.com');
     expect(html).toContain(welshI18n.applyOnlineHeading);
-    expect(html).toContain(welshI18n.regionStatement);
+    expect(html).toContain(escapeHtml(welshI18n.regionStatement));
     expect(html).toContain('ysgariad');
   });
 
