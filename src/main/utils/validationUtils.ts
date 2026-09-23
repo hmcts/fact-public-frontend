@@ -8,7 +8,7 @@ const POSTCODE_WITHOUT_SPACE_REGEX = /^[A-Z]{1,2}\d{1,2}[A-Z]?\d[A-Z]{2}$/i;
 // A complete UK postcode contains between 5 and 7 characters (excluding the space),
 // or 6 to 8 characters including the mandatory middle space.
 const POSTCODE_MIN_LEN = 5;
-const POSTCODE_MAX_LEN = 8; //possibly 8 is fine just to be in safer side kept 10
+const POSTCODE_MAX_LEN = 8;
 
 const SCOTLAND_POSTCODE_REGEX = /^(ZE|KW|IV|HS|PH|AB|DD|PA|FK|G\d|KY|KA|DG|TD|EH|ML)/i;
 const JURISDICTION_ERROR_REGEXES = {
