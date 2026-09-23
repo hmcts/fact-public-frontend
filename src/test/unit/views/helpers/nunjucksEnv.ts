@@ -1,4 +1,4 @@
-import * as path from 'path';
+import * as path from 'node:path';
 
 import * as nunjucks from 'nunjucks';
 
@@ -6,5 +6,7 @@ const govukTemplates = path.dirname(require.resolve('govuk-frontend/package.json
 const viewsPath = path.resolve(__dirname, '../../../../main/views');
 
 export const env = nunjucks.configure([govukTemplates, viewsPath], {
-  autoescape: false,
+  autoescape: true,
 });
+
+export const escapeHtml = (value: string): string => env.renderString('{{ value }}', { value });

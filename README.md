@@ -51,6 +51,20 @@ We use `express-session` to manage user sessions. This is configured in [`src/ma
 - `SESSION_COOKIE_SAME_SITE` can be set to `strict`, `lax` (default), or `none`.
 - Session cookies are configured as `secure`, so HTTPS is required in local development (`yarn start:dev`) or TLS termination must be in front of the app.
 
+## GTM and Dynatrace consent configuration
+
+The public [cookies page](src/main/views/cookies.njk) describes the cookies and choices shown to users. The application uses those choices as follows:
+
+- GTM container `GTM-N7NMJDR` loads only when `analytics` is `on`. Google consent defaults to denied, with only `analytics_storage` set as granted. `ad_storage`, `ad_user_data` and `ad_personalization` remain denied.
+- The Dynatrace RUM script selected by `dynatrace.jstagKey` in [`config/default.json`](config/default.json) (overridden by `DYNATRACE_JSTAG_KEY` for env deployments) loads only when `apm` is `on`. The application enables RUM and session replay for that choice and calls the Dynatrace disable methods when it is withdrawn.
+
+When making changes to either account, ensure that the GTM container and Dynatrace RUM script are configured to respect the user's consent choices.
+
+- The GTM container must make every analytics tag, including custom tags and triggers, respect `analytics_storage` and subsequent consent updates. It must not use the `Cookie Preferences` data-layer event to fire a tag when its required consent is denied.
+- The Dynatrace account must not inject a RUM agent independently of this application or collect RUM/session replay data before `apm` consent.
+
+When changing either account, check the browser's network requests with no saved preference, with each category enabled separately, and after withdrawing consent. Confirm that requests and cookies match the [cookies page](src/main/views/cookies.njk), and update that page if the account configuration changes the cookies or data collected.
+
 ## Environment Variables
 
 Common variables for local development and test execution:

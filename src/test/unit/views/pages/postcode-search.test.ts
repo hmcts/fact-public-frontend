@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 
-import { env } from '../helpers/nunjucksEnv';
+import { env, escapeHtml } from '../helpers/nunjucksEnv';
 
 describe('PostcodeSearch View', () => {
   const i18n = require('../../../../main/locales/en/postcode-search.json');
@@ -26,7 +26,9 @@ describe('PostcodeSearch View', () => {
     expect(html).toContain('govuk-input');
     expect(html).toContain('govuk-button');
     expect(html).toContain('autocomplete="postal-code"');
-    expect(html).toContain(welshI18n.hints.default.replace('{serviceArea}', serviceAreaLocalised.toLowerCase()));
+    expect(html).toContain(
+      escapeHtml(welshI18n.hints.default.replace('{serviceArea}', serviceAreaLocalised.toLowerCase()))
+    );
   });
 
   test('renders error summary when error is present (English)', () => {
@@ -94,7 +96,7 @@ describe('PostcodeSearch View', () => {
       error: true,
       errorType: 'missingPostcodeSpace',
     });
-    expect(html).toContain(welshI18n.errorText.missingPostcodeSpace);
+    expect(html).toContain(escapeHtml(welshI18n.errorText.missingPostcodeSpace));
   });
 
   test('renders childcare hint when serviceAreaIsChildcare is true (English)', () => {
