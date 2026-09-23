@@ -36,12 +36,14 @@ const applyPreferences = (preferences: Record<string, string>) => {
   });
 
   if (analyticsAllowed && !gtmInserted) {
-    gtmInserted = true;
     // Queue GTM's start event after the consent update.
     window.dataLayer.push({ 'gtm.start': Date.now(), event: 'gtm.js' });
     const script = document.createElement('script');
     script.async = true;
     script.src = 'https://www.googletagmanager.com/gtm.js?id=GTM-N7NMJDR';
+    script.onload = () => {
+      gtmInserted = true;
+    };
     document.head.appendChild(script);
   }
 

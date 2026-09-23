@@ -173,6 +173,7 @@ describe('cookie-preferences bundle', () => {
 
     loaded({ analytics: 'on', apm: 'on' });
     expect(browser.insertedScripts).toHaveLength(2);
+    browser.insertedScripts[0].onload?.();
     saved({ analytics: 'on', apm: 'on' });
     expect(browser.insertedScripts).toHaveLength(2);
 
