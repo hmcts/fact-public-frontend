@@ -4,6 +4,12 @@ const SINGLE_LETTER_PREFIX = /^[a-z]$/i;
 const VALID_POSTCODE_REGEX = /^[A-Z]{1,2}\d{1,2}[A-Z]? ?\d[A-Z]{2}$/i;
 const POSTCODE_WITHOUT_SPACE_REGEX = /^[A-Z]{1,2}\d{1,2}[A-Z]?\d[A-Z]{2}$/i;
 
+// Bounded length guard before regex/downstream calls.
+// A complete UK postcode contains between 5 and 7 characters (excluding the space),
+// or 6 to 8 characters including the mandatory middle space.
+const POSTCODE_MIN_LEN = 5;
+const POSTCODE_MAX_LEN = 10; //possibly 8 is fine just to be in safer side kept 10
+
 const SCOTLAND_POSTCODE_REGEX = /^(ZE|KW|IV|HS|PH|AB|DD|PA|FK|G\d|KY|KA|DG|TD|EH|ML)/i;
 const JURISDICTION_ERROR_REGEXES = {
   northernIrelandPostcode: /^(BT)/i,
@@ -25,25 +31,26 @@ export const isValidAction = (value: string): boolean => !!value && ACTIONS.has(
 export const isValidPrefix = (value: unknown): value is string =>
   typeof value === 'string' && SINGLE_LETTER_PREFIX.test(value);
 
-export const isValidPostcode = (value: string, serviceArea?: string): boolean =>
-  checkPostcode(value, serviceArea) === undefined;
-
 /**
  * Checks the postcode and returns an appropriate error type if there are any issues with the postcode.
  * If there are no issues, returns undefined.
- * @param postcode
+ * @param postcode unknown boundary input
  * @param serviceArea optional service-area slug used for context-aware jurisdiction rules
  */
-export const checkPostcode = (postcode: string, serviceArea?: string): string | undefined => {
-  // might be missing
-  if (!postcode) {
+export const checkPostcode = (postcode: unknown, serviceArea?: string): string | undefined => {
+  // must be exactly one string at boundary
+  if (typeof postcode !== 'string') {
     return 'blankPostcode';
   }
 
-  // might be structurally invalid
-  const trimmedPostcode = postcode.trim();
+  const trimmedPostcode = postcode.trim().toUpperCase();
+
   if (trimmedPostcode.length === 0) {
     return 'blankPostcode';
+  }
+  // Cheap bounds first.
+  else if (trimmedPostcode.length < POSTCODE_MIN_LEN || trimmedPostcode.length > POSTCODE_MAX_LEN) {
+    return 'invalidPostcode';
   } else if (!VALID_POSTCODE_REGEX.test(trimmedPostcode)) {
     return 'invalidPostcode';
   } else if (POSTCODE_WITHOUT_SPACE_REGEX.test(trimmedPostcode)) {
@@ -62,7 +69,6 @@ export const checkPostcode = (postcode: string, serviceArea?: string): string | 
     return 'scotlandPostcode';
   }
 
-  // might be in an unhandled jurisdiction
   for (const [key, regex] of Object.entries(JURISDICTION_ERROR_REGEXES)) {
     if (regex.test(trimmedPostcode)) {
       return key;
