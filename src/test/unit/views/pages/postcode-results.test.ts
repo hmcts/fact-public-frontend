@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 
-import { env } from '../helpers/nunjucksEnv';
+import { env, escapeHtml } from '../helpers/nunjucksEnv';
 
 describe('PostcodeResults View', () => {
   const i18n = require('../../../../main/locales/en/postcode-results.json');
@@ -64,7 +64,7 @@ describe('PostcodeResults View', () => {
       isDivorceOrCivil: true,
     });
     expect(html).toContain(i18n.divorceHint);
-    expect(html).toContain(i18n.secondHint.replace('{postcode}', 'AB1 2CD'));
+    expect(html).toContain(escapeHtml(i18n.secondHint.replace('{postcode}', 'AB1 2CD')));
     expect(html).toContain(i18n.thirdHint);
     expect(html).toContain('Court 1');
   });
@@ -78,7 +78,7 @@ describe('PostcodeResults View', () => {
       isDivorceOrCivil: true,
     });
     expect(html).toContain(welshI18n.civilHint);
-    expect(html).toContain(welshI18n.secondHint.replace('{postcode}', 'AB1 2CD'));
+    expect(html).toContain(escapeHtml(welshI18n.secondHint.replace('{postcode}', 'AB1 2CD')));
     expect(html).toContain(welshI18n.thirdHint);
     expect(html).toContain('Court 1');
   });
@@ -92,10 +92,12 @@ describe('PostcodeResults View', () => {
       isDivorceOrCivil: false,
     });
     expect(html).toContain(
-      i18n.singleResultsHint
-        .replace('{postcode}', 'AB1 2CD')
-        .replace('{serviceArea}', 'probate')
-        .replace('{total}', '1')
+      escapeHtml(
+        i18n.singleResultsHint
+          .replace('{postcode}', 'AB1 2CD')
+          .replace('{serviceArea}', 'probate')
+          .replace('{total}', '1')
+      )
     );
   });
 
@@ -108,10 +110,12 @@ describe('PostcodeResults View', () => {
       isDivorceOrCivil: false,
     });
     expect(html).toContain(
-      i18n.multipleResultsHint
-        .replace('{postcode}', 'AB1 2CD')
-        .replace('{serviceArea}', 'probate')
-        .replace('{total}', '2')
+      escapeHtml(
+        i18n.multipleResultsHint
+          .replace('{postcode}', 'AB1 2CD')
+          .replace('{serviceArea}', 'probate')
+          .replace('{total}', '2')
+      )
     );
   });
 
@@ -146,10 +150,12 @@ describe('PostcodeResults View', () => {
     expect(html).toContain('/service-centres/service-centre-1');
     expect(html).toContain('Service Centre 1');
     expect(html).toContain(
-      i18n.multipleResultsHint
-        .replace('{postcode}', 'AB1 2CD')
-        .replace('{serviceArea}', 'probate')
-        .replace('{total}', '2')
+      escapeHtml(
+        i18n.multipleResultsHint
+          .replace('{postcode}', 'AB1 2CD')
+          .replace('{serviceArea}', 'probate')
+          .replace('{total}', '2')
+      )
     );
   });
 
@@ -160,7 +166,9 @@ describe('PostcodeResults View', () => {
       postcode: 'AB1 2CD',
       postcodeOnlySearch: true,
     });
-    expect(html).toContain(i18n.postcodeSearchResultsHint.replace('{postcode}', 'AB1 2CD').replace('{total}', '2'));
+    expect(html).toContain(
+      escapeHtml(i18n.postcodeSearchResultsHint.replace('{postcode}', 'AB1 2CD').replace('{total}', '2'))
+    );
   });
 
   test('renders correctly with no onlineText or onlineUrl', () => {

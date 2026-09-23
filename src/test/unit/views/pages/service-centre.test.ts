@@ -81,6 +81,7 @@ describe('Service centre page', () => {
     expect(indexes.every(index => index >= 0)).toBe(true);
     expect(indexes).toEqual([...indexes].sort((first, second) => first - second));
     expect(html).toContain('Send documents to');
+    expect(html).toContain('1 Service Street<br>London<br>SW1A 1AA');
     expect(html).toContain(en.usefulInformation.scammers);
     expect(html).not.toContain('Coming to court');
     expect(html).not.toContain('Hearings at this court');

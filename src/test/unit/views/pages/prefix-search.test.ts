@@ -1,5 +1,5 @@
 import { CourtBasic } from '../../../../main/schemas/courtBasicSchema';
-import { env } from '../helpers/nunjucksEnv';
+import { env, escapeHtml } from '../helpers/nunjucksEnv';
 
 const welshI18n = require('../../../../main/locales/cy/prefix-search.json');
 const i18n = require('../../../../main/locales/en/prefix-search.json');
@@ -11,7 +11,7 @@ describe('Prefix search page', () => {
     });
     expect(html).toContain(i18n.title);
     expect(html).toContain(i18n.heading);
-    expect(html).toContain(i18n.summary);
+    expect(html).toContain(escapeHtml(i18n.summary));
     expect(html).toContain('alphabet-buttons');
     expect(html).toContain('A');
     expect(html).toContain('Z');
