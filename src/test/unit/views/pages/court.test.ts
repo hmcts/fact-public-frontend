@@ -50,6 +50,7 @@ describe('Court page', () => {
     });
 
     expect(html).toContain('Test Court');
+    expect(html).toContain('Line 1<br>Town<br>AB1 2CD');
     expect(html).toContain(i18n.accordion.contactDetailsHeading);
     expect(html).toContain(i18n.accordion.casesHeardHeading);
     expect(html).toContain(i18n.accordion.showAllSections);

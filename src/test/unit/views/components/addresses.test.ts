@@ -56,4 +56,27 @@ describe('Addresses macro', () => {
     expect(html).toContain('Tag B');
     expect(html).not.toContain(i18n.addresses.getDirectionsLink);
   });
+
+  test('escapes address lines and tags while retaining literal line breaks', () => {
+    const template = `
+      {% from "components/addresses.njk" import addresses %}
+      {{ addresses(locationAddresses, addressesText) }}
+    `;
+    const html = env.renderString(template, {
+      addressesText: i18n.addresses,
+      locationAddresses: [
+        {
+          addressType: 'VISIT_US',
+          formattedAddressLines: ['1 <img src=x onerror=alert(1)> Street', 'Town & County', 'AB1 2CD'],
+          formattedAddressTags: ['<script>alert(1)</script>'],
+          directionsUrl: null,
+        },
+      ],
+    });
+
+    expect(html).toContain('1 &lt;img src=x onerror=alert(1)&gt; Street<br>Town &amp; County<br>AB1 2CD');
+    expect(html).toContain('&lt;script&gt;alert(1)&lt;/script&gt;');
+    expect(html).not.toContain('<img src=x onerror=alert(1)>');
+    expect(html).not.toContain('<script>alert(1)</script>');
+  });
 });
