@@ -30,13 +30,14 @@ describe('Cache headers', () => {
     const publicDirectory = path.join(__dirname, '../../main/public');
     const fingerprintedAsset = readdirSync(publicDirectory).find(fileName => /^main\.[a-f0-9]+\.js$/i.test(fileName));
 
-    expect(fingerprintedAsset).not.to.equal(undefined);
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    expect(fingerprintedAsset).to.not.be.undefined;
 
     await request(app)
       .get(`/${fingerprintedAsset}`)
       .expect(200)
       .expect('Cache-Control', 'public, max-age=31536000, immutable')
-      .expect(res => expect(res.headers.vary).to.equal(undefined));
+      .expect(res => expect(res.headers.vary).to.be.undefined);
   });
 
   test('requires stable static assets to revalidate', async () => {
@@ -46,7 +47,8 @@ describe('Cache headers', () => {
       .expect('Cache-Control', 'public, max-age=0, must-revalidate')
       .expect(res => {
         expect(res.headers['cache-control']).not.to.contain('no-store');
-        expect(res.headers.vary).to.equal(undefined);
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+        expect(res.headers.vary).to.be.undefined;
       });
   });
 });
