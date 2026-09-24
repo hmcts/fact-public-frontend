@@ -1,5 +1,5 @@
 export type SupportedLanguage = 'en' | 'cy';
-
+// noResults has not kept in retain param for obvious reason
 const RETAIN_PARAMS = new Set(['search', 'postcode', 'prefix', 'lng']);
 
 // just for defense in depth
