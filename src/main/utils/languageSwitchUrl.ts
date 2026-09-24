@@ -1,6 +1,6 @@
 export type SupportedLanguage = 'en' | 'cy';
 
-const RETAIN_PARAMS = new Set(['search', 'postcode', 'prefix', 'lng', 'noResults']);
+const RETAIN_PARAMS = new Set(['search', 'postcode', 'prefix', 'lng']);
 
 // just for defense in depth
 const DROP_PARAMS = new Set([
