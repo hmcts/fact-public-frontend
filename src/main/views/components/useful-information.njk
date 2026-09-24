@@ -1,4 +1,4 @@
-{% macro usefulInformation(text, includeCourtSpecificSections=true) %}
+{% macro usefulInformation(text, includeCourtSpecificSections=true, serviceCentreSlug=null) %}
   <section id="useful-information">
     <h2 class="govuk-heading-m">{{ text.mainHeading }}</h2>
 
@@ -25,5 +25,9 @@
          class="govuk-link govuk-link--no-visited-state"
          rel="noreferrer noopener" target="_blank">{{ text.scammersUrlText }} {{ text.opensInNewTab }}</a>.
     </p>
+
+    {% if serviceCentreSlug == "bury-st-edmunds-regional-divorce-centre" and text.buryStEdmundsAdditionalMessage %}
+      <p class="govuk-body">{{ text.buryStEdmundsAdditionalMessage | replace('\n', '<br>') | safe }}</p>
+    {% endif %}
   </section>
 {% endmacro %}
