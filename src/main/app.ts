@@ -1,4 +1,4 @@
-import * as path from 'path';
+import * as path from 'node:path';
 
 import { loadControllers, scopePerRequest } from 'awilix-express';
 import * as bodyParser from 'body-parser';
@@ -32,6 +32,8 @@ app.locals.ENV = env;
 
 const logger = Logger.getLogger('app');
 
+const FINGERPRINT_REGEX = /(?:^|[.-])[a-f0-9]{8,}(?=[.-])/i;
+
 new PropertiesVolume().enableFor(app);
 new AppInsights().enable();
 new Nunjucks(config.get('dynatrace'), developmentMode).enableFor(app);
@@ -42,6 +44,19 @@ new Container().enableFor(app);
 app.get('/favicon.ico', limiter, (req, res) => {
   res.sendFile(path.join(__dirname, '/public/assets/rebrand/images/favicon.ico'));
 });
+
+setupDev(app, developmentMode);
+app.use(
+  express.static(path.join(__dirname, 'public'), {
+    setHeaders: (res, filePath) => {
+      const fingerprintedAsset = FINGERPRINT_REGEX.test(path.basename(filePath));
+      res.setHeader(
+        'Cache-Control',
+        fingerprintedAsset ? 'public, max-age=31536000, immutable' : 'public, max-age=0, must-revalidate'
+      );
+    },
+  })
+);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -61,15 +76,13 @@ app.use(cookieParser(sessionSecret as string));
 new I18next().enableFor(app);
 
 app.use(scopePerRequest(app.locals.container));
-app.use(loadControllers('controllers/**/*.+(ts|js)', { cwd: __dirname }));
-
-app.use(express.static(path.join(__dirname, 'public')));
 app.use((req, res, next) => {
-  res.setHeader('Cache-Control', 'no-cache, max-age=0, must-revalidate, no-store');
+  res.setHeader('Cache-Control', 'no-store');
+  res.vary('Cookie');
   next();
 });
+app.use(loadControllers('controllers/**/*.+(ts|js)', { cwd: __dirname }));
 
-setupDev(app, developmentMode);
 // returning "not found" for requests with paths not resolved by the router
 app.use((req: express.Request, res: express.Response) => {
   const factReq = req as FactRequest;
