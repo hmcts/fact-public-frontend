@@ -25,5 +25,11 @@ describe('Base template', () => {
 
     expect(html).toContain(i18n.serviceName);
     expect(html).toContain(i18n.languageToggle);
+    expect(html).toContain("window.gtag('consent', 'default'");
+    expect(html).toContain("analytics_storage: 'denied'");
+    expect(html).toContain('name="dynatrace-jstag" content="/jstag.js"');
+    expect(html).not.toContain('<script src="/jstag.js"');
+    expect(html).not.toContain('https://www.googletagmanager.com/gtm.js');
+    expect(html.indexOf("window.gtag('consent', 'default'")).toBeLessThan(html.indexOf('/main-'));
   });
 });

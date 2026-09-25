@@ -13,7 +13,7 @@
           <p class="govuk-body govuk-!-margin-bottom-4"><strong>{{ address.formattedAddressTags | join(', ') }}</strong></p>
         {% endif %}
 
-        <p class="govuk-body">{{ address.formattedAddressLines | join('<br>') | safe }}</p>
+        <p class="govuk-body">{% for line in address.formattedAddressLines %}{{ line }}{% if not loop.last %}<br>{% endif %}{% endfor %}</p>
 
         {% if address.directionsUrl %}
           <p class="govuk-body govuk-!-margin-top-2">
