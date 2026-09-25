@@ -11,7 +11,6 @@ describe('Base template', () => {
       serviceName: i18n.serviceName,
       footerLinks: i18n.footerLinks,
       feedback: '',
-      languageToggle: i18n.languageToggle,
       cookieBannerP1: 'Cookies',
       cookieBannerP2: 'More cookies',
       cookieBannerH1: 'Cookies',
@@ -24,7 +23,6 @@ describe('Base template', () => {
     });
 
     expect(html).toContain(i18n.serviceName);
-    expect(html).toContain(i18n.languageToggle);
     expect(html).toContain("window.gtag('consent', 'default'");
     expect(html).toContain("analytics_storage: 'denied'");
     expect(html).toContain('name="dynatrace-jstag" content="/jstag.js"');
