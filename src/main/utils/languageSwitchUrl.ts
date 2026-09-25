@@ -1,5 +1,8 @@
 export type SupportedLanguage = 'en' | 'cy';
-// noResults has not kept in retain param for obvious reason
+
+// `noResults` is intentionally excluded: it is a transient page-state flag
+// (used to render a "no results" message), not user-entered search criteria.
+// We preserve only user intent inputs across language switches.
 const RETAIN_PARAMS = new Set(['search', 'postcode', 'prefix', 'lng']);
 
 // just for defense in depth
