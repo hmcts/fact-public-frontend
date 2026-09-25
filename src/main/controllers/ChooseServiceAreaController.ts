@@ -141,17 +141,20 @@ export class ChooseServiceAreaController extends BaseController {
         if (isDataApiError(result)) {
           return this.renderDataApiError(req, res, result);
         }
-        if (Array.isArray(result) && result.length > 1) {
-          return this.renderView(req, res, 'choose-service-area', 'choose-service-area', {
-            areas: this.localiseOptions(req, result),
-            serviceNameLocalised,
-            errors: err,
-          });
-        } else if (Array.isArray(result) && result.length === 1) {
-          return this.redirectToSearch(service, result[0], action, res);
-        } else {
-          res.redirect('/service-not-found');
+
+        if (result.length === 0) {
+          return res.redirect('/service-not-found');
         }
+
+        if (result.length === 1) {
+          return this.redirectToSearch(service, result[0], action, res);
+        }
+
+        return this.renderView(req, res, 'choose-service-area', 'choose-service-area', {
+          areas: this.localiseOptions(req, result),
+          serviceNameLocalised,
+          errors: err,
+        });
       }
     }
     return this.renderNotFound(req, res);

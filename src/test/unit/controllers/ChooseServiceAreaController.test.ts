@@ -130,6 +130,15 @@ describe('ChooseServiceAreaController', () => {
   let controller: ChooseServiceAreaController;
 
   beforeEach(() => {
+    let responseFinished = false;
+    const finishResponse = () => {
+      if (responseFinished) {
+        throw new Error('Attempted to send more than one terminal response');
+      }
+      responseFinished = true;
+      return res;
+    };
+
     req = {
       i18n: {
         getDataByLanguage: jest.fn().mockReturnValue({
@@ -142,8 +151,8 @@ describe('ChooseServiceAreaController', () => {
       body: {},
     };
     res = {
-      render: jest.fn(),
-      redirect: jest.fn(),
+      render: jest.fn(finishResponse),
+      redirect: jest.fn(finishResponse),
       status: jest.fn().mockReturnThis(),
     } as unknown as Response;
     mockGetAllServices.mockReset();
@@ -177,6 +186,17 @@ describe('ChooseServiceAreaController', () => {
     req.params = { action: 'nearest', service: 'test-service' };
     await controller.render(req as FactRequest, res);
     expect(res.redirect).toHaveBeenCalledWith('/services/test-service/area-1-slug/search-results');
+  });
+
+  test('redirects to service-not-found if no service areas are available', async () => {
+    mockGetAllServices.mockResolvedValue([mockService]);
+    mockGetServiceAreas.mockResolvedValue([]);
+
+    await controller.render(req as FactRequest, res);
+
+    expect(res.redirect).toHaveBeenCalledTimes(1);
+    expect(res.redirect).toHaveBeenCalledWith('/service-not-found');
+    expect(res.render).not.toHaveBeenCalled();
   });
 
   test('redirects to postcode page if only one area, action is nearest and local results are available', async () => {
