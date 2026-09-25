@@ -6,7 +6,7 @@ import { DATA_API_ERROR_CODES, isDataApiError } from '../requests/DataApiError';
 import { DataApiRequests } from '../requests/DataApiRequests';
 import { postcodeSearchRedirect, servicePostcodeSearchRedirect } from '../utils/RedirectUtils';
 import { calculateServiceAreaFromSlug, calculateServiceNameFromSlug } from '../utils/SchemaUtils';
-import { checkPostcode, isValidAction, isValidPostcode } from '../utils/validationUtils';
+import { checkPostcode, isValidAction } from '../utils/validationUtils';
 
 import BaseController from './BaseController';
 
@@ -22,31 +22,32 @@ export default class PostcodeSearchController extends BaseController {
   @GET()
   public async get(req: FactRequest, res: Response): Promise<void> {
     const noServiceSearch: boolean = req.params?.service === undefined;
-    const postcode = req.query.postcode as string;
     const serviceArea = req.params?.serviceArea as string | undefined;
-    if (isValidPostcode(postcode, serviceArea)) {
-      // perform the appropriate search based on the @route used to get here
+    const postcodeInput = req.query?.postcode;
+
+    const errorType = checkPostcode(postcodeInput, serviceArea);
+    if (errorType !== undefined) {
       if (noServiceSearch) {
-        return this.performPostcodeOnlySearch(req, res, postcode);
-      } else {
-        return this.performServiceAreaPostcodeSearch(req, res, postcode);
+        return postcodeSearchRedirect(res, errorType);
+      }
+      try {
+        const service = req.params.service as string;
+        const serviceAreaAsString = req.params.serviceArea as string;
+        const action = req.params.action as string;
+        return servicePostcodeSearchRedirect(res, service, serviceAreaAsString, action, errorType);
+      } catch {
+        return this.renderNotFound(req, res);
       }
     }
-    const errorType = checkPostcode(postcode, serviceArea);
-    // postcode is invalid, so redirect to the appropriate search page with and error message
+
+    // Safe due to checkPostcode success: one string, normalized once here.
+    const postcode = (postcodeInput as string).trim().toUpperCase();
+
     if (noServiceSearch) {
-      return postcodeSearchRedirect(res, errorType);
+      return this.performPostcodeOnlySearch(req, res, postcode);
     }
-    try {
-      // if any of these fail to resolve, then the slugs in the URL
-      // are invalid, and we should return a 404
-      const service = req.params.service as string;
-      const serviceAreaAsString = req.params.serviceArea as string;
-      const action = req.params.action as string;
-      return servicePostcodeSearchRedirect(res, service, serviceAreaAsString, action, errorType);
-    } catch {
-      return this.renderNotFound(req, res);
-    }
+
+    return this.performServiceAreaPostcodeSearch(req, res, postcode);
   }
 
   private async performServiceAreaPostcodeSearch(req: FactRequest, res: Response, postcode: string) {
