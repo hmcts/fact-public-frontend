@@ -34,7 +34,8 @@
     "scammersBodyPrefix": "Some scammers are pretending to be from HMCTS or enforcement.",
     "scammersUrl": "https://www.gov.uk/government/news/scammers-using-hmcts-telephone-numbers",
     "scammersUrlText": "Find out what to do if you are asked for money and are unsure whether it's genuine",
-    "opensInNewTab": "(opens in a new tab)"
+    "opensInNewTab": "(opens in a new tab)",
+    "buryStEdmundsAdditionalMessage": "This location services all of England and Wales for civil partnership, divorce before 6th April 2022 and paper cases only case numbers will start with BV, LV, EZ, BD. Please see financial remedy contact pages for information on where to send your financial documents. We do not provide an in-person service.\nIf you have completed a divorce application after 6th April 2022 or your case number started with ZZ then contact CTSC Stoke Courts and Tribunals Service Centre HMCTS Divorce and Dissolution Service, PO Box 13226, Harlow, CM20 9UG"
   },
   "closed": {
     "title": "{name} - Find a Court or Tribunal - GOV.UK",
