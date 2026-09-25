@@ -1,7 +1,6 @@
-import * as path from 'path';
+import * as path from 'node:path';
 
 import { loadControllers, scopePerRequest } from 'awilix-express';
-import * as bodyParser from 'body-parser';
 import config = require('config');
 import cookieParser from 'cookie-parser';
 import express from 'express';
@@ -43,8 +42,8 @@ app.get('/favicon.ico', limiter, (req, res) => {
   res.sendFile(path.join(__dirname, '/public/assets/rebrand/images/favicon.ico'));
 });
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 const sessionSecret = process.env.SESSION_SECRET || config.get('secrets.fact-kv.SESSION_SECRET');
 app.set('trust proxy', 1);
