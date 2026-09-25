@@ -32,6 +32,8 @@ app.locals.ENV = env;
 
 const logger = Logger.getLogger('app');
 
+const FINGERPRINT_REGEX = /(?:^|[.-])[a-f0-9]{8,}(?=[.-])/i;
+
 new PropertiesVolume().enableFor(app);
 new AppInsights().enable();
 new Nunjucks(config.get('dynatrace'), developmentMode).enableFor(app);
@@ -47,7 +49,7 @@ setupDev(app, developmentMode);
 app.use(
   express.static(path.join(__dirname, 'public'), {
     setHeaders: (res, filePath) => {
-      const fingerprintedAsset = /(?:^|[.-])[a-f0-9]{8,}(?=[.-])/i.test(path.basename(filePath));
+      const fingerprintedAsset = FINGERPRINT_REGEX.test(path.basename(filePath));
       res.setHeader(
         'Cache-Control',
         fingerprintedAsset ? 'public, max-age=31536000, immutable' : 'public, max-age=0, must-revalidate'
