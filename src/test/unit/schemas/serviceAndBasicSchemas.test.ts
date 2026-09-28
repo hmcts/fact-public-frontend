@@ -50,10 +50,11 @@ describe('service-related schemas', () => {
       open: true,
       warningNotice: null,
       warningNoticeCy: null,
+      createdAt: '2026-09-15T00:00:00.000Z',
       lastUpdatedAt: '2026-09-15T12:00:00.000Z',
       openOnCath: null,
       mrdId: null,
-      region: 'London',
+      regionId: '55555555-5555-4555-8555-555555555555',
       serviceCentre: true,
       locationType: 'SERVICE_CENTRE',
     });

@@ -407,14 +407,32 @@ describe('DataApiRequests', () => {
     it('returns parsed search results on success', async () => {
       const payload = [
         {
+          id: 'court-1',
           name: 'Blackburn Family Court',
           slug: 'blackburn-family-court',
+          open: true,
+          warningNotice: null,
+          warningNoticeCy: null,
+          createdAt: '2026-09-28T15:27:30.908Z',
+          lastUpdatedAt: '2026-09-28T15:27:30.908Z',
+          openOnCath: true,
+          mrdId: null,
+          regionId: 'region-1',
           locationType: 'COURT',
           serviceCentre: false,
         },
         {
+          id: 'sc-1',
           name: 'Blackburn Service Centre',
           slug: 'blackburn-service-centre',
+          open: true,
+          warningNotice: null,
+          warningNoticeCy: null,
+          createdAt: '2026-09-28T15:27:30.908Z',
+          lastUpdatedAt: '2026-09-28T15:27:30.908Z',
+          openOnCath: true,
+          mrdId: null,
+          regionId: 'region-1',
           locationType: 'SERVICE_CENTRE',
           serviceCentre: true,
         },
@@ -490,14 +508,18 @@ describe('DataApiRequests', () => {
         .withArgs('/search/courts/v1/prefix', { params: { prefix } })
         .resolves({ data: payload });
 
-      await expect(requests.getCourtsByPrefix(prefix)).resolves.toEqual([
-        {
-          name: 'Court A',
-          slug: 'court-a',
-          locationType: 'COURT',
-          serviceCentre: false,
-        },
-      ]);
+      await expect(requests.getCourtsByPrefix(prefix)).resolves.toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            id: 'court-a-id',
+            name: 'Court A',
+            slug: 'court-a',
+            regionId: 'london-region-id',
+            locationType: 'COURT',
+            serviceCentre: false,
+            }),
+        ])
+      );
     });
 
     it('maps an invalid prefix-search response to bad gateway', async () => {
