@@ -12,6 +12,8 @@ const mockExpress = Object.assign(
       (_root: string, _options: { setHeaders: (response: { setHeader: jest.Mock }, filePath: string) => void }) =>
         mockStaticMiddleware
     ),
+    json: jest.fn(() => mockJsonParser),
+    urlencoded: jest.fn(() => mockUrlencodedParser),
   }
 );
 const mockLimiter = jest.fn();
