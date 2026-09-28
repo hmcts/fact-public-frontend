@@ -2,7 +2,7 @@ import { GET, route } from 'awilix-express';
 import { Request, Response } from 'express';
 
 import { app as myApp } from '../app';
-import { DataApiRequests } from '../requests/DataApiRequests';
+import { DataApiHealthService, dataApiHealthCheck } from '../services/DataApiHealthService';
 
 import BaseController from './BaseController';
 
@@ -12,14 +12,20 @@ const healthRoutes = require('@hmcts/nodejs-healthcheck/healthcheck/routes');
 
 @route('/health')
 export default class HealthController extends BaseController {
-  private readonly dataApiRequests = new DataApiRequests();
+  public constructor(private readonly healthCheck: DataApiHealthService = dataApiHealthCheck) {
+    super();
+  }
 
   private readonly healthCheckConfig = {
     checks: {
       dataApiCheck: healthcheck.raw(async () => {
-        return (await this.dataApiRequests.checkHealth())
-          ? healthcheck.up()
-          : healthcheck.down({ message: 'Data API health check failed' });
+        const result = await this.healthCheck.check();
+        if (result.healthy) {
+          return result.consecutiveFailures > 0
+            ? healthcheck.up({ message: 'Data API protected check temporarily failed' })
+            : healthcheck.up();
+        }
+        return healthcheck.down({ message: 'Data API protected check failed' });
       }),
     },
     readinessChecks: {
