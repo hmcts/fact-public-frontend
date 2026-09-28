@@ -11,7 +11,8 @@ import {
   allLocationDetailsSchema,
   serviceCentreDetailsSchema,
 } from '../schemas/allLocationDetails';
-import { Court, CourtSearchResult, courtSchema, courtSearchResultSchema } from '../schemas/courtSchema';
+import { CourtBasic, courtBasicSchema } from '../schemas/courtBasicSchema';
+import { Court, courtSchema } from '../schemas/courtSchema';
 import { ServiceAreaSearchResult, serviceAreaSearchResultSchema } from '../schemas/courtServiceAreas';
 import { CourtWithDistance, courtWithDistanceSchema } from '../schemas/courtWithDistance';
 import { SearchResult, searchResultSchema } from '../schemas/searchResult';
@@ -101,10 +102,10 @@ export class DataApiRequests {
    * Request courts by name/address query prefix from the API
    * @param query The search query
    */
-  public async getByName(query: string): Promise<CourtSearchResult[] | DataApiError> {
+  public async getByName(query: string): Promise<CourtBasic[] | DataApiError> {
     try {
       const response = await dataApi.get('search/courts/v1/name', { params: { q: query } });
-      return courtSearchResultSchema.array().parse(response.data);
+      return courtBasicSchema.array().parse(response.data);
     } catch (error: unknown) {
       return this.handleError(error, `Error fetching courts for query ${query}:`, { badRequest: true });
     }
@@ -141,10 +142,10 @@ export class DataApiRequests {
    *
    * @param prefix the alphabetic prefix to search for
    */
-  public async getCourtsByPrefix(prefix: string): Promise<CourtSearchResult[] | DataApiError> {
+  public async getCourtsByPrefix(prefix: string): Promise<CourtBasic[] | DataApiError> {
     try {
       const response = await dataApi.get('/search/courts/v1/prefix', { params: { prefix } });
-      return courtSearchResultSchema.array().parse(response.data);
+      return courtBasicSchema.array().parse(response.data);
     } catch (error: unknown) {
       return this.handleError(error, `Error fetching court details for prefix ${prefix}:`, { badRequest: true });
     }
