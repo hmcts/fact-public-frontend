@@ -9061,6 +9061,7 @@ __metadata:
     playwright-core: "npm:1.63.0"
     playwright-lighthouse: "npm:^4.0.0"
     prettier: "npm:3.9.7"
+    require-directory: "npm:2.1.1"
     sass: "npm:1.104.1"
     sass-loader: "npm:17.0.1"
     sinon: "npm:22.1.0"
@@ -13662,7 +13663,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"require-directory@npm:^2.1.1":
+"require-directory@npm:2.1.1, require-directory@npm:^2.1.1":
   version: 2.1.1
   resolution: "require-directory@npm:2.1.1"
   checksum: 10/a72468e2589270d91f06c7d36ec97a88db53ae5d6fe3787fadc943f0b0276b10347f89b363b2a82285f650bdcc135ad4a257c61bdd4d00d6df1fa24875b0ddaf
