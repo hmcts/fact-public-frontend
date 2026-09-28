@@ -6942,13 +6942,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"brace-expansion@npm:brace-expansion@1.1.18":
-  version: 1.1.18
-  resolution: "brace-expansion@npm:1.1.18"
+"brace-expansion@npm:brace-expansion@1.1.21":
+  version: 1.1.21
+  resolution: "brace-expansion@npm:1.1.21"
   dependencies:
     balanced-match: "npm:^1.0.0"
     concat-map: "npm:0.0.1"
-  checksum: 10/b55a3c03239b8d2127c7cbb3408c9ad3a556a8c303bf3064df78bfb7c093160fc8f6e0a32e42a850a78eba12f29ccf6ef997690b9acf945d242c56c61c4aa977
+  checksum: 10/6c0ed34107cb3bd3f44c01d90ec8c01baa3ed75b7755617e2e5797b5908bbf20b313edf575612b200a783b84c7d1826aec2f7a2f03de9905bbfae5dc3dea6a95
   languageName: node
   linkType: hard
 
@@ -9061,6 +9061,7 @@ __metadata:
     playwright-core: "npm:1.63.0"
     playwright-lighthouse: "npm:^4.0.0"
     prettier: "npm:3.9.7"
+    require-directory: "npm:2.1.1"
     sass: "npm:1.104.1"
     sass-loader: "npm:17.0.1"
     sinon: "npm:22.1.0"
@@ -13662,7 +13663,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"require-directory@npm:^2.1.1":
+"require-directory@npm:2.1.1, require-directory@npm:^2.1.1":
   version: 2.1.1
   resolution: "require-directory@npm:2.1.1"
   checksum: 10/a72468e2589270d91f06c7d36ec97a88db53ae5d6fe3787fadc943f0b0276b10347f89b363b2a82285f650bdcc135ad4a257c61bdd4d00d6df1fa24875b0ddaf
