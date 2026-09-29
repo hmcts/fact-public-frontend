@@ -1,4 +1,5 @@
 import { HttpStatusCode } from 'axios';
+import appConfig from 'config';
 import { type SinonSandbox, createSandbox, match } from 'sinon';
 
 const mockDataApiLogger = {
@@ -112,6 +113,87 @@ describe('DataApiRequests', () => {
         'Error fetching court details for slug test-slug:',
         expectedAxiosError(HttpStatusCode.ServiceUnavailable, 'GET', '/courts/slug/test-slug/v1')
       );
+    });
+  });
+
+  describe('response caching', () => {
+    const searchPayload = [
+      {
+        name: 'Blackburn Family Court',
+        slug: 'blackburn-family-court',
+        locationType: 'COURT',
+        serviceCentre: false,
+      },
+    ];
+    const servicesPayload = [
+      {
+        id: 'service-id',
+        name: 'Adoption',
+        nameCy: 'Mabwysiadu',
+        description: null,
+        descriptionCy: null,
+        serviceAreas: ['area-a'],
+      },
+    ];
+
+    it('reuses an admin response until its TTL expires', async () => {
+      jest.useFakeTimers();
+      const getStub = sandbox.stub(dataApi, 'get').resolves({ data: searchPayload });
+
+      await expect(requests.getByName('Blackburn')).resolves.toEqual(searchPayload);
+      await expect(requests.getByName('Blackburn')).resolves.toEqual(searchPayload);
+      expect(getStub.calledOnce).toBe(true);
+
+      await jest.advanceTimersByTimeAsync(Number(appConfig.get('dataApiCache.adminTtlMs')));
+
+      await expect(requests.getByName('Blackburn')).resolves.toEqual(searchPayload);
+      expect(getStub.callCount).toBe(2);
+    });
+
+    it('applies the longer reference TTL independently', async () => {
+      jest.useFakeTimers();
+      const adminTtlMs = Number(appConfig.get('dataApiCache.adminTtlMs'));
+      const referenceTtlMs = Number(appConfig.get('dataApiCache.referenceTtlMs'));
+      const getStub = sandbox.stub(dataApi, 'get').resolves({ data: servicesPayload });
+
+      await expect(requests.getAllServices()).resolves.toEqual(
+        expect.arrayContaining([expect.objectContaining({ id: 'service-id', slug: 'adoption' })])
+      );
+
+      await jest.advanceTimersByTimeAsync(adminTtlMs);
+      await requests.getAllServices();
+      expect(getStub.calledOnce).toBe(true);
+
+      await jest.advanceTimersByTimeAsync(referenceTtlMs - adminTtlMs);
+      await requests.getAllServices();
+      expect(getStub.callCount).toBe(2);
+    });
+
+    it('coalesces concurrent requests for the same resource', async () => {
+      let resolveRequest: ((value: { data: typeof searchPayload }) => void) | undefined;
+      const pendingResponse = new Promise<{ data: typeof searchPayload }>(resolve => {
+        resolveRequest = resolve;
+      });
+      const getStub = sandbox.stub(dataApi, 'get').returns(pendingResponse);
+
+      const firstRequest = requests.getByName('Blackburn');
+      const secondRequest = requests.getByName('Blackburn');
+
+      expect(getStub.calledOnce).toBe(true);
+      resolveRequest?.({ data: searchPayload });
+
+      await expect(Promise.all([firstRequest, secondRequest])).resolves.toEqual([searchPayload, searchPayload]);
+    });
+
+    it('does not retain failed requests', async () => {
+      const getStub = sandbox.stub(dataApi, 'get');
+      getStub.onFirstCall().rejects(new Error('temporary failure'));
+      getStub.onSecondCall().resolves({ data: searchPayload });
+
+      await expect(requests.getByName('Blackburn')).resolves.toMatchObject({ status: HttpStatusCode.BadGateway });
+      await expect(requests.getByName('Blackburn')).resolves.toEqual(searchPayload);
+
+      expect(getStub.callCount).toBe(2);
     });
   });
 

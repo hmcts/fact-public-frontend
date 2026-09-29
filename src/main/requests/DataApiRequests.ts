@@ -1,6 +1,7 @@
 import { Readable } from 'node:stream';
 
 import { AxiosRequestConfig, AxiosResponse } from 'axios';
+import appConfig from 'config';
 
 import { Logger } from '../modules/logging';
 import { ServiceArea, serviceAreaSchema } from '../schemas/ServiceAreaSchema';
@@ -24,6 +25,14 @@ const logger = Logger.getLogger('app');
 
 const DEFAULT_REQUEST_TIMEOUT_MS = 10_000;
 const PROTECTED_HEALTH_TIMEOUT_MS = 2_000;
+const MAX_CACHE_ENTRIES = 1_000;
+
+type CachePolicy = 'reference' | 'admin';
+
+type CacheEntry = {
+  expiresAt: number;
+  response: Promise<AxiosResponse<unknown>>;
+};
 
 export type FileStreamResult = {
   stream: Readable;
@@ -35,11 +44,54 @@ export type FileStreamResult = {
 };
 
 export class DataApiRequests {
+  private readonly cache = new Map<string, CacheEntry>();
+  private readonly cacheTtlMs: Record<CachePolicy, number> = {
+    reference: Number(appConfig.get('dataApiCache.referenceTtlMs')),
+    admin: Number(appConfig.get('dataApiCache.adminTtlMs')),
+  };
+
   private async get<T>(
     url: string,
     config: AxiosRequestConfig = {},
-    timeoutMs = DEFAULT_REQUEST_TIMEOUT_MS
+    options: {
+      timeoutMs?: number;
+      cachePolicy?: CachePolicy;
+    } = {}
   ): Promise<AxiosResponse<T>> {
+    const { timeoutMs = DEFAULT_REQUEST_TIMEOUT_MS, cachePolicy } = options;
+    if (!cachePolicy || this.cacheTtlMs[cachePolicy] <= 0) {
+      return this.executeGet<T>(url, config, timeoutMs);
+    }
+
+    const cacheKey = this.createCacheKey(cachePolicy, url, config);
+    const cached = this.cache.get(cacheKey);
+    if (cached && Date.now() < cached.expiresAt) {
+      return cached.response as Promise<AxiosResponse<T>>;
+    }
+    if (cached) {
+      this.cache.delete(cacheKey);
+    }
+
+    const response = this.executeGet<T>(url, config, timeoutMs);
+    const entry: CacheEntry = {
+      expiresAt: Date.now() + this.cacheTtlMs[cachePolicy],
+      response,
+    };
+
+    this.evictOldestEntryIfFull();
+    this.cache.set(cacheKey, entry);
+
+    try {
+      return await response;
+    } catch (error) {
+      if (this.cache.get(cacheKey) === entry) {
+        this.cache.delete(cacheKey);
+      }
+      throw error;
+    }
+  }
+
+  private async executeGet<T>(url: string, config: AxiosRequestConfig, timeoutMs: number): Promise<AxiosResponse<T>> {
     const abortController = new AbortController();
     let timeout: NodeJS.Timeout | undefined;
     const timeoutPromise = new Promise<never>((_resolve, reject) => {
@@ -62,6 +114,25 @@ export class DataApiRequests {
       if (timeout) {
         clearTimeout(timeout);
       }
+    }
+  }
+
+  private createCacheKey(cachePolicy: CachePolicy, url: string, config: AxiosRequestConfig): string {
+    const params = config.params as Record<string, unknown> | undefined;
+    const sortedParams = params
+      ? Object.fromEntries(Object.entries(params).sort(([left], [right]) => left.localeCompare(right)))
+      : {};
+    return `${cachePolicy}:${url}:${JSON.stringify(sortedParams)}`;
+  }
+
+  private evictOldestEntryIfFull(): void {
+    if (this.cache.size < MAX_CACHE_ENTRIES) {
+      return;
+    }
+
+    const oldestKey = this.cache.keys().next().value;
+    if (oldestKey !== undefined) {
+      this.cache.delete(oldestKey);
     }
   }
 
@@ -89,7 +160,7 @@ export class DataApiRequests {
    */
   public async checkProtectedHealth(): Promise<boolean> {
     try {
-      await this.get('/search/services/v1', {}, PROTECTED_HEALTH_TIMEOUT_MS);
+      await this.get('/search/services/v1', {}, { timeoutMs: PROTECTED_HEALTH_TIMEOUT_MS });
       return true;
     } catch (error) {
       logger.warn('Protected Data API health check failed:', toSafeErrorDetails(error));
@@ -104,7 +175,7 @@ export class DataApiRequests {
    */
   public async getCourtDetails(slug: string): Promise<Court | DataApiError> {
     try {
-      const response = await this.get(`/courts/slug/${slug}/v1`);
+      const response = await this.get(`/courts/slug/${slug}/v1`, {}, { cachePolicy: 'admin' });
       return courtSchema.parse(response.data);
     } catch (error: unknown) {
       return this.handleError(error, `Error fetching court details for slug ${slug}:`, {
@@ -121,7 +192,7 @@ export class DataApiRequests {
    */
   public async getServiceCentreDetails(slug: string): Promise<ServiceCentreDetails | DataApiError> {
     try {
-      const response = await this.get(`/service-centres/slug/${slug}/v1`);
+      const response = await this.get(`/service-centres/slug/${slug}/v1`, {}, { cachePolicy: 'admin' });
       return serviceCentreDetailsSchema.parse(response.data);
     } catch (error: unknown) {
       return this.handleError(error, `Error fetching service-centre details for slug ${slug}:`, {
@@ -136,7 +207,7 @@ export class DataApiRequests {
    */
   public async getAll(): Promise<AllLocationDetails[] | DataApiError> {
     try {
-      const response = await this.get('/all/details.json');
+      const response = await this.get('/all/details.json', {}, { cachePolicy: 'admin' });
       return allLocationDetailsSchema.array().parse(response.data);
     } catch (error: unknown) {
       return this.handleError(error, 'Error fetching location details:');
@@ -149,7 +220,7 @@ export class DataApiRequests {
    */
   public async getByName(query: string): Promise<CourtSearchResult[] | DataApiError> {
     try {
-      const response = await this.get('search/courts/v1/name', { params: { q: query } });
+      const response = await this.get('search/courts/v1/name', { params: { q: query } }, { cachePolicy: 'admin' });
       return courtSearchResultSchema.array().parse(response.data);
     } catch (error: unknown) {
       return this.handleError(error, `Error fetching courts for query ${query}:`, { badRequest: true });
@@ -161,7 +232,7 @@ export class DataApiRequests {
    */
   public async getAllServices(): Promise<Service[] | DataApiError> {
     try {
-      const response = await this.get('/search/services/v1');
+      const response = await this.get('/search/services/v1', {}, { cachePolicy: 'reference' });
       return serviceSchema.array().parse(response.data);
     } catch (error: unknown) {
       return this.handleError(error, 'Error fetching service details:');
@@ -175,7 +246,13 @@ export class DataApiRequests {
    */
   public async getServiceAreas(serviceName: string): Promise<ServiceArea[] | DataApiError> {
     try {
-      const response = await this.get('/search/services/v1/' + serviceName + '/service-areas');
+      const response = await this.get(
+        '/search/services/v1/' + serviceName + '/service-areas',
+        {},
+        {
+          cachePolicy: 'reference',
+        }
+      );
       return serviceAreaSchema.array().parse(response.data);
     } catch (error: unknown) {
       return this.handleError(error, 'Error fetching service area details:', { badRequest: true, notFound: true });
@@ -189,7 +266,7 @@ export class DataApiRequests {
    */
   public async getCourtsByPrefix(prefix: string): Promise<CourtSearchResult[] | DataApiError> {
     try {
-      const response = await this.get('/search/courts/v1/prefix', { params: { prefix } });
+      const response = await this.get('/search/courts/v1/prefix', { params: { prefix } }, { cachePolicy: 'admin' });
       return courtSearchResultSchema.array().parse(response.data);
     } catch (error: unknown) {
       return this.handleError(error, `Error fetching court details for prefix ${prefix}:`, { badRequest: true });
@@ -203,7 +280,7 @@ export class DataApiRequests {
    */
   public async getServiceAreaSearchResults(serviceAreaName: string): Promise<ServiceAreaSearchResult[] | DataApiError> {
     try {
-      const response = await this.get(`/search/service-area/v1/${serviceAreaName}`);
+      const response = await this.get(`/search/service-area/v1/${serviceAreaName}`, {}, { cachePolicy: 'admin' });
       return serviceAreaSearchResultSchema.array().parse(response.data);
     } catch (error: unknown) {
       return this.handleError(error, 'Error fetching court service area details:', {
@@ -240,7 +317,7 @@ export class DataApiRequests {
           action: action.toUpperCase(),
         },
       };
-      const response = await this.get('/search/locations/v1/postcode', config);
+      const response = await this.get('/search/locations/v1/postcode', config, { cachePolicy: 'admin' });
       return searchResultSchema.array().parse(response.data);
     } catch (error: unknown) {
       return this.handleError(error, 'Error fetching postcode search results:', {
@@ -262,7 +339,7 @@ export class DataApiRequests {
           postcode,
         },
       };
-      const response = await this.get('/search/courts/v1/postcode', config);
+      const response = await this.get('/search/courts/v1/postcode', config, { cachePolicy: 'admin' });
       return courtWithDistanceSchema.array().parse(response.data);
     } catch (error: unknown) {
       return this.handleError(error, 'Error fetching postcode search results:', { badRequest: true });
