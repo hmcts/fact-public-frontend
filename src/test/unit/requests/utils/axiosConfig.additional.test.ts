@@ -86,4 +86,20 @@ describe('axiosConfig additional coverage', () => {
 
     expect(processed.headers?.Authorization).toBeUndefined();
   });
+
+  test('passes the request abort signal to credential acquisition', async () => {
+    const { module, getToken } = await loadAxiosConfigWithMockedCredential({
+      token: 'abortable-token',
+      expiresOnTimestamp: Date.now() + 60_000,
+      refreshAfterTimestamp: Date.now() + 30_000,
+    });
+    const abortController = new AbortController();
+
+    await module.processRequest({
+      url: '/protected',
+      signal: abortController.signal,
+    } as unknown as InternalAxiosRequestConfig);
+
+    expect(getToken).toHaveBeenCalledWith(expect.any(String), { abortSignal: abortController.signal });
+  });
 });

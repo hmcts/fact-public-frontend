@@ -22,12 +22,18 @@ export const dataApi = create({
 let cachedTokenRefreshTS: number = 0;
 let cachedToken: string | null = null;
 
-function getToken(): Promise<string> {
+// if an abort signal is provided, it will be passed to both the token acquisition and
+// the axios request, so if either takes too long, the whole operation will be aborted.
+function getToken(abortSignal?: AbortSignal): Promise<string> {
   return tokenMutex.runExclusive(async () => {
+    if (abortSignal?.aborted) {
+      throw new Error('Token request aborted');
+    }
+
     if (!cachedToken || Date.now() > cachedTokenRefreshTS) {
       const cred = new ClientSecretCredential(tenantId, clientAppRegId, clientSecret);
 
-      const at = await cred.getToken(`api://${apiAppRegId}/.default`);
+      const at = await cred.getToken(`api://${apiAppRegId}/.default`, { abortSignal });
 
       // if a refresh TS has been specified, use it, otherwise
       // set it to midway between now and the expiry
@@ -47,7 +53,7 @@ export async function processRequest(cfg: InternalAxiosRequestConfig): Promise<I
   const url = cfg.url ?? '';
   // don't add a bearer token for open paths
   if (!OPEN_URLS.has(url)) {
-    const token = await getToken();
+    const token = await getToken(cfg.signal as AbortSignal | undefined);
     if (token) {
       cfg.headers = cfg.headers ?? {};
       cfg.headers.Authorization = `Bearer ${token}`;
