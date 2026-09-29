@@ -1,5 +1,5 @@
 import { HttpStatusCode } from 'axios';
-import { type SinonSandbox, createSandbox } from 'sinon';
+import { type SinonSandbox, createSandbox, match } from 'sinon';
 
 const mockDataApiLogger = {
   error: jest.fn(),
@@ -55,6 +55,14 @@ function expectedAxiosError(status: HttpStatusCode, method: string, path: string
     message: `Request failed with status code ${status}`,
     status,
   };
+}
+
+function expectedRequestConfig(config: object) {
+  return match({
+    ...config,
+    signal: match.instanceOf(AbortSignal),
+    timeout: 10_000,
+  });
 }
 
 describe('DataApiRequests', () => {
@@ -130,6 +138,21 @@ describe('DataApiRequests', () => {
       sandbox.stub(dataApi, 'get').withArgs('/health').rejects(new Error('network issue'));
 
       await expect(requests.checkHealth()).resolves.toBe(false);
+    });
+
+    it('aborts and returns false when the default ten-second deadline is exceeded', async () => {
+      jest.useFakeTimers();
+      const getStub = sandbox.stub(dataApi, 'get').returns(new Promise(() => undefined));
+
+      const result = requests.checkHealth();
+      const signal = getStub.firstCall.args[1]?.signal as AbortSignal;
+
+      await jest.advanceTimersByTimeAsync(9_999);
+      expect(signal.aborted).toBe(false);
+
+      await jest.advanceTimersByTimeAsync(1);
+      await expect(result).resolves.toBe(false);
+      expect(signal.aborted).toBe(true);
     });
   });
 
@@ -460,7 +483,7 @@ describe('DataApiRequests', () => {
 
       sandbox
         .stub(dataApi, 'get')
-        .withArgs('search/courts/v1/name', { params: { q: query } })
+        .withArgs('search/courts/v1/name', expectedRequestConfig({ params: { q: query } }))
         .resolves({ data: payload });
 
       await expect(requests.getByName(query)).resolves.toEqual(payload);
@@ -470,7 +493,7 @@ describe('DataApiRequests', () => {
       const query = 'Blackburn';
       sandbox
         .stub(dataApi, 'get')
-        .withArgs('search/courts/v1/name', { params: { q: query } })
+        .withArgs('search/courts/v1/name', expectedRequestConfig({ params: { q: query } }))
         .rejects({
           isAxiosError: true,
           response: { status: HttpStatusCode.BadGateway },
@@ -483,7 +506,7 @@ describe('DataApiRequests', () => {
       const query = 'Blackburn';
       sandbox
         .stub(dataApi, 'get')
-        .withArgs('search/courts/v1/name', { params: { q: query } })
+        .withArgs('search/courts/v1/name', expectedRequestConfig({ params: { q: query } }))
         .rejects(new Error('boom'));
 
       await expect(requests.getByName(query)).resolves.toMatchObject({ status: HttpStatusCode.BadGateway });
@@ -493,7 +516,7 @@ describe('DataApiRequests', () => {
       const query = 'Blackburn';
       sandbox
         .stub(dataApi, 'get')
-        .withArgs('search/courts/v1/name', { params: { q: query } })
+        .withArgs('search/courts/v1/name', expectedRequestConfig({ params: { q: query } }))
         .rejects({
           isAxiosError: true,
         });
@@ -524,7 +547,7 @@ describe('DataApiRequests', () => {
 
       sandbox
         .stub(dataApi, 'get')
-        .withArgs('/search/courts/v1/prefix', { params: { prefix } })
+        .withArgs('/search/courts/v1/prefix', expectedRequestConfig({ params: { prefix } }))
         .resolves({ data: payload });
 
       await expect(requests.getCourtsByPrefix(prefix)).resolves.toEqual([
@@ -541,7 +564,7 @@ describe('DataApiRequests', () => {
       const prefix = 'c';
       sandbox
         .stub(dataApi, 'get')
-        .withArgs('/search/courts/v1/prefix', { params: { prefix } })
+        .withArgs('/search/courts/v1/prefix', expectedRequestConfig({ params: { prefix } }))
         .resolves({ data: [{ raw: 'invalid' }] });
 
       await expect(requests.getCourtsByPrefix(prefix)).resolves.toMatchObject({
@@ -553,7 +576,7 @@ describe('DataApiRequests', () => {
       const prefix = 'c';
       sandbox
         .stub(dataApi, 'get')
-        .withArgs('/search/courts/v1/prefix', { params: { prefix } })
+        .withArgs('/search/courts/v1/prefix', expectedRequestConfig({ params: { prefix } }))
         .rejects({
           isAxiosError: true,
           response: { status: HttpStatusCode.NotFound },
@@ -566,7 +589,7 @@ describe('DataApiRequests', () => {
       const prefix = 'test';
       sandbox
         .stub(dataApi, 'get')
-        .withArgs('/search/courts/v1/prefix', { params: { prefix } })
+        .withArgs('/search/courts/v1/prefix', expectedRequestConfig({ params: { prefix } }))
         .rejects(new Error('boom'));
 
       await expect(requests.getCourtsByPrefix(prefix)).resolves.toMatchObject({ status: HttpStatusCode.BadGateway });
@@ -574,9 +597,12 @@ describe('DataApiRequests', () => {
 
     it('returns internal server error for axios errors with no status', async () => {
       const prefix = 'test';
-      sandbox.stub(dataApi, 'get').withArgs('/search/courts/v1/prefix', { params: { prefix } }).rejects({
-        isAxiosError: true,
-      });
+      sandbox
+        .stub(dataApi, 'get')
+        .withArgs('/search/courts/v1/prefix', expectedRequestConfig({ params: { prefix } }))
+        .rejects({
+          isAxiosError: true,
+        });
 
       await expect(requests.getCourtsByPrefix(prefix)).resolves.toMatchObject({
         status: HttpStatusCode.ServiceUnavailable,
@@ -605,13 +631,16 @@ describe('DataApiRequests', () => {
 
       sandbox
         .stub(dataApi, 'get')
-        .withArgs('/search/locations/v1/postcode', {
-          params: {
-            postcode: 'SW1A 1AA',
-            serviceArea: 'Divorce',
-            action: 'NEAREST',
-          },
-        })
+        .withArgs(
+          '/search/locations/v1/postcode',
+          expectedRequestConfig({
+            params: {
+              postcode: 'SW1A 1AA',
+              serviceArea: 'Divorce',
+              action: 'NEAREST',
+            },
+          })
+        )
         .resolves({ data: payload });
 
       await expect(requests.performPostcodeSearch('SW1A 1AA', 'Divorce', 'nearest')).resolves.toEqual(payload);
@@ -620,13 +649,16 @@ describe('DataApiRequests', () => {
     it('returns API status code when postcode search request fails with axios status', async () => {
       sandbox
         .stub(dataApi, 'get')
-        .withArgs('/search/locations/v1/postcode', {
-          params: {
-            postcode: 'SW1A 1AA',
-            serviceArea: 'Divorce',
-            action: 'NEAREST',
-          },
-        })
+        .withArgs(
+          '/search/locations/v1/postcode',
+          expectedRequestConfig({
+            params: {
+              postcode: 'SW1A 1AA',
+              serviceArea: 'Divorce',
+              action: 'NEAREST',
+            },
+          })
+        )
         .rejects({
           isAxiosError: true,
           response: { status: HttpStatusCode.BadRequest },
@@ -640,13 +672,16 @@ describe('DataApiRequests', () => {
     it('preserves a genuine missing service-area response', async () => {
       sandbox
         .stub(dataApi, 'get')
-        .withArgs('/search/locations/v1/postcode', {
-          params: {
-            postcode: 'SW1A 1AA',
-            serviceArea: 'Missing area',
-            action: 'NEAREST',
-          },
-        })
+        .withArgs(
+          '/search/locations/v1/postcode',
+          expectedRequestConfig({
+            params: {
+              postcode: 'SW1A 1AA',
+              serviceArea: 'Missing area',
+              action: 'NEAREST',
+            },
+          })
+        )
         .rejects({ isAxiosError: true, response: { status: HttpStatusCode.NotFound } });
 
       await expect(requests.performPostcodeSearch('SW1A 1AA', 'Missing area', 'nearest')).resolves.toMatchObject({
@@ -657,13 +692,16 @@ describe('DataApiRequests', () => {
     it('returns service unavailable when postcode search receives no upstream response', async () => {
       sandbox
         .stub(dataApi, 'get')
-        .withArgs('/search/locations/v1/postcode', {
-          params: {
-            postcode: 'SW1A 1AA',
-            serviceArea: 'Divorce',
-            action: 'NEAREST',
-          },
-        })
+        .withArgs(
+          '/search/locations/v1/postcode',
+          expectedRequestConfig({
+            params: {
+              postcode: 'SW1A 1AA',
+              serviceArea: 'Divorce',
+              action: 'NEAREST',
+            },
+          })
+        )
         .rejects({
           isAxiosError: true,
           response: {},
@@ -677,13 +715,16 @@ describe('DataApiRequests', () => {
     it('returns bad gateway when postcode response parsing fails', async () => {
       sandbox
         .stub(dataApi, 'get')
-        .withArgs('/search/locations/v1/postcode', {
-          params: {
-            postcode: 'SW1A 1AA',
-            serviceArea: 'Divorce',
-            action: 'NEAREST',
-          },
-        })
+        .withArgs(
+          '/search/locations/v1/postcode',
+          expectedRequestConfig({
+            params: {
+              postcode: 'SW1A 1AA',
+              serviceArea: 'Divorce',
+              action: 'NEAREST',
+            },
+          })
+        )
         .rejects(new Error('boom'));
 
       await expect(requests.performPostcodeSearch('SW1A 1AA', 'Divorce', 'nearest')).resolves.toMatchObject({
@@ -705,11 +746,14 @@ describe('DataApiRequests', () => {
 
       sandbox
         .stub(dataApi, 'get')
-        .withArgs('/search/courts/v1/postcode', {
-          params: {
-            postcode: 'SW1A 1AA',
-          },
-        })
+        .withArgs(
+          '/search/courts/v1/postcode',
+          expectedRequestConfig({
+            params: {
+              postcode: 'SW1A 1AA',
+            },
+          })
+        )
         .resolves({ data: payload });
 
       await expect(requests.performPostcodeOnlySearch('SW1A 1AA')).resolves.toEqual(payload);
@@ -718,11 +762,14 @@ describe('DataApiRequests', () => {
     it('returns API status code for postcode-only axios errors with response status', async () => {
       sandbox
         .stub(dataApi, 'get')
-        .withArgs('/search/courts/v1/postcode', {
-          params: {
-            postcode: 'SW1A 1AA',
-          },
-        })
+        .withArgs(
+          '/search/courts/v1/postcode',
+          expectedRequestConfig({
+            params: {
+              postcode: 'SW1A 1AA',
+            },
+          })
+        )
         .rejects({
           isAxiosError: true,
           response: { status: HttpStatusCode.BadGateway },
@@ -736,11 +783,14 @@ describe('DataApiRequests', () => {
     it('returns internal server error for postcode-only non-axios failures', async () => {
       sandbox
         .stub(dataApi, 'get')
-        .withArgs('/search/courts/v1/postcode', {
-          params: {
-            postcode: 'SW1A 1AA',
-          },
-        })
+        .withArgs(
+          '/search/courts/v1/postcode',
+          expectedRequestConfig({
+            params: {
+              postcode: 'SW1A 1AA',
+            },
+          })
+        )
         .rejects(new Error('boom'));
 
       await expect(requests.performPostcodeOnlySearch('SW1A 1AA')).resolves.toMatchObject({
@@ -960,7 +1010,7 @@ describe('DataApiRequests', () => {
       const stream = { pipe: jest.fn() };
       sandbox
         .stub(dataApi, 'get')
-        .withArgs(location, requestConfig)
+        .withArgs(location, expectedRequestConfig(requestConfig))
         .resolves({
           data: stream,
           headers: {
@@ -983,7 +1033,7 @@ describe('DataApiRequests', () => {
     it('maps a missing court image to not found when the endpoint opts into that contract', async () => {
       sandbox
         .stub(dataApi, 'get')
-        .withArgs(location, requestConfig)
+        .withArgs(location, expectedRequestConfig(requestConfig))
         .rejects({ isAxiosError: true, response: { status: HttpStatusCode.NotFound } });
 
       await expect(requests.getFileStream(location, { notFound: true })).resolves.toMatchObject({
@@ -995,7 +1045,7 @@ describe('DataApiRequests', () => {
       const csvLocation = '/resources/v1/csv';
       sandbox
         .stub(dataApi, 'get')
-        .withArgs(csvLocation, requestConfig)
+        .withArgs(csvLocation, expectedRequestConfig(requestConfig))
         .rejects({ isAxiosError: true, response: { status: HttpStatusCode.NotFound } });
 
       await expect(requests.getFileStream(csvLocation, { notFound: true })).resolves.toMatchObject({
@@ -1004,7 +1054,10 @@ describe('DataApiRequests', () => {
     });
 
     it('maps a transport failure to service unavailable', async () => {
-      sandbox.stub(dataApi, 'get').withArgs(location, requestConfig).rejects({ isAxiosError: true });
+      sandbox
+        .stub(dataApi, 'get')
+        .withArgs(location, expectedRequestConfig(requestConfig))
+        .rejects({ isAxiosError: true });
 
       await expect(requests.getFileStream(location)).resolves.toMatchObject({
         status: HttpStatusCode.ServiceUnavailable,
@@ -1014,7 +1067,7 @@ describe('DataApiRequests', () => {
     it('does not expose an upstream authentication failure', async () => {
       sandbox
         .stub(dataApi, 'get')
-        .withArgs(location, requestConfig)
+        .withArgs(location, expectedRequestConfig(requestConfig))
         .rejects({ isAxiosError: true, response: { status: HttpStatusCode.Unauthorized } });
 
       await expect(requests.getFileStream(location)).resolves.toMatchObject({
