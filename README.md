@@ -32,6 +32,38 @@ yarn start:dev
 
 The application's home page will be available at https://localhost:3344
 
+#### IntelliJ Dev Container
+
+The repository includes a [Dev Container](https://containers.dev/) configuration for IntelliJ IDEA. Docker must be running before opening the project in the container.
+
+To start the Dev Container from an existing local checkout:
+
+1. Open the repository in IntelliJ IDEA.
+2. Open `.devcontainer/devcontainer.json`.
+3. Click the Dev Container gutter action next to the configuration and select **Create Dev Container and Mount Sources**.
+4. Wait for `yarn install` and IntelliJ indexing to finish.
+5. Run the application from the container terminal:
+
+```bash
+yarn start:dev
+```
+
+Alternatively, select **Remote Development** from the IntelliJ IDEA welcome screen, choose **Dev Containers**, and select this repository's `.devcontainer/devcontainer.json`.
+
+The application is forwarded to https://localhost:3344. The development certificate is self-signed, so the browser may require you to accept it.
+
+The container uses `http://host.docker.internal:8989` for `DATA_API_URL`, allowing it to connect to a Data API running on the host. Override `DATA_API_URL` in the container if the API is running elsewhere.
+
+The Node base image is pinned by digest in `.devcontainer/Dockerfile`, and Dev Container Feature versions and integrity hashes are recorded in `.devcontainer/devcontainer-lock.json`. Update both pins deliberately when upgrading the development environment.
+
+GitHub Copilot CLI is installed in the container and can be started from the container terminal:
+
+```bash
+copilot
+```
+
+Use `/login` when prompted to authenticate. Copilot configuration and authentication are stored in the `fact-public-frontend-copilot` Docker volume so they persist when the Dev Container is rebuilt.
+
 #### Production-like local run
 
 Build static assets and run the production server:
