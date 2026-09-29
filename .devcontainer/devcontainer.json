@@ -1,0 +1,36 @@
+{
+  "name": "FaCT Public Frontend",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": false,
+      "username": "node"
+    }
+  },
+  "remoteUser": "node",
+  "updateRemoteUserUID": true,
+  "containerEnv": {
+    "DATA_API_URL": "http://host.docker.internal:8989"
+  },
+  "forwardPorts": [3344],
+  "portsAttributes": {
+    "3344": {
+      "label": "FaCT Public Frontend",
+      "protocol": "https",
+      "onAutoForward": "notify"
+    }
+  },
+  "mounts": [
+    "source=fact-public-frontend-node-modules,target=${containerWorkspaceFolder}/node_modules,type=volume",
+    "source=fact-public-frontend-copilot,target=/home/node/.copilot,type=volume"
+  ],
+  "postCreateCommand": "sudo chown node:node node_modules /home/node/.copilot && yarn install",
+  "customizations": {
+    "jetbrains": {
+      "backend": "IntelliJ"
+    }
+  }
+}
