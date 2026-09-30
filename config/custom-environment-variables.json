@@ -1,8 +1,4 @@
 {
-  "dataApiCache": {
-    "referenceTtlMs": "DATA_API_REFERENCE_CACHE_TTL_MS",
-    "adminTtlMs": "DATA_API_ADMIN_CACHE_TTL_MS"
-  },
   "secrets": {
     "fact-kv": {
       "API_APP_REG_ID": "API_APP_REG_ID",

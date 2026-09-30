@@ -1,9 +1,5 @@
 {
   "useCSRFProtection": true,
-  "dataApiCache": {
-    "referenceTtlMs": 86400000,
-    "adminTtlMs": 60000
-  },
   "security": {
     "referrerPolicy": "same-origin",
     "hsts": {
