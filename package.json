@@ -28,7 +28,8 @@
     "test:a11y": "echo 'a11y tests run as part of test:functional' && exit 0",
     "test:functional:headed": "playwright test --headed",
     "test:functional:ui": "playwright test --ui",
-    "test:functional:debug": "playwright test --debug"
+    "test:functional:debug": "playwright test --debug",
+    "playwright:report": "yarn playwright show-report test-results/odhin-report --host 0.0.0.0"
   },
   "dependencies": {
     "@azure/identity": "4.13.3",
