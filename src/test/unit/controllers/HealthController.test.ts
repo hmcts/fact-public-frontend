@@ -25,7 +25,7 @@ jest.mock('@hmcts/nodejs-healthcheck/healthcheck/outputs', () => outputs);
 jest.mock('../../../main/app', () => ({ app: { locals: { shutdown: false } } }));
 
 import HealthController from '../../../main/controllers/HealthController';
-import { DataApiRequests } from '../../../main/requests/DataApiRequests';
+import { DataApiHealthService } from '../../../main/services/DataApiHealthService';
 
 const appModule = require('../../../main/app') as { app: { locals: { shutdown: boolean } } };
 
@@ -104,8 +104,8 @@ describe('HealthController', () => {
   });
 
   test('dataApiCheck reports UP when Data API is healthy', async () => {
-    const checkHealthSpy = jest.spyOn(DataApiRequests.prototype, 'checkHealth').mockResolvedValue(true);
-    const controller = new HealthController();
+    const check = jest.fn().mockResolvedValue({ healthy: true, consecutiveFailures: 0 });
+    const controller = new HealthController({ check } as unknown as DataApiHealthService);
 
     const dataApiCheck = (
       controller as unknown as {
@@ -118,14 +118,12 @@ describe('HealthController', () => {
     ).healthCheckConfig.checks.dataApiCheck;
 
     await expect(dataApiCheck()).resolves.toEqual({ status: 'UP' });
-    expect(checkHealthSpy).toHaveBeenCalledTimes(1);
-
-    checkHealthSpy.mockRestore();
+    expect(check).toHaveBeenCalledTimes(1);
   });
 
   test('dataApiCheck reports DOWN when Data API is unhealthy', async () => {
-    const checkHealthSpy = jest.spyOn(DataApiRequests.prototype, 'checkHealth').mockResolvedValue(false);
-    const controller = new HealthController();
+    const check = jest.fn().mockResolvedValue({ healthy: false, consecutiveFailures: 3 });
+    const controller = new HealthController({ check } as unknown as DataApiHealthService);
 
     const dataApiCheck = (
       controller as unknown as {
@@ -138,9 +136,26 @@ describe('HealthController', () => {
     ).healthCheckConfig.checks.dataApiCheck;
 
     await expect(dataApiCheck()).resolves.toEqual({ status: 'DOWN' });
-    expect(checkHealthSpy).toHaveBeenCalledTimes(1);
+    expect(check).toHaveBeenCalledTimes(1);
+    assert.calledWith(downMock, { message: 'Data API protected check failed' });
+  });
 
-    checkHealthSpy.mockRestore();
+  test('dataApiCheck reports transient protected-check failures as UP with degraded detail', async () => {
+    const check = jest.fn().mockResolvedValue({ healthy: true, consecutiveFailures: 2 });
+    const controller = new HealthController({ check } as unknown as DataApiHealthService);
+
+    const dataApiCheck = (
+      controller as unknown as {
+        healthCheckConfig: {
+          checks: {
+            dataApiCheck: () => Promise<{ status: string; message?: string }>;
+          };
+        };
+      }
+    ).healthCheckConfig.checks.dataApiCheck;
+
+    await expect(dataApiCheck()).resolves.toEqual({ status: 'UP' });
+    assert.calledWith(upMock, { message: 'Data API protected check temporarily failed' });
   });
 
   test('shutdown readiness check reports DOWN when shutdown is active', () => {

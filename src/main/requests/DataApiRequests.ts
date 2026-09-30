@@ -23,6 +23,8 @@ import { toSafeErrorDetails } from './utils/safeErrorDetails';
 
 const logger = Logger.getLogger('app');
 
+const PROTECTED_HEALTH_TIMEOUT_MS = 2_000;
+
 export type FileStreamResult = {
   stream: Readable;
   headers: {
@@ -50,6 +52,41 @@ export class DataApiRequests {
       logger.error('Error checking data API health:', toSafeErrorDetails(error));
     }
     return false;
+  }
+
+  /**
+   * Check a protected Data API route to verify both availability and credentials.
+   */
+  public async checkProtectedHealth(): Promise<boolean> {
+    const abortController = new AbortController();
+    let timeout: NodeJS.Timeout | undefined;
+    const timeoutPromise = new Promise<never>((_resolve, reject) => {
+      timeout = setTimeout(() => {
+        abortController.abort();
+        reject(new Error('Protected Data API health check timed out'));
+      }, PROTECTED_HEALTH_TIMEOUT_MS);
+    });
+
+    try {
+      // internally, the abort signal will be passed to both the axios request and the token acquisition,
+      // so if either takes too long, the whole operation will be aborted. The timeout being specified on
+      // the axios request is just belt-and-braces in case the abort signal is ignored.
+      await Promise.race([
+        dataApi.get('/search/services/v1', {
+          signal: abortController.signal,
+          timeout: PROTECTED_HEALTH_TIMEOUT_MS,
+        }),
+        timeoutPromise,
+      ]);
+      return true;
+    } catch (error) {
+      logger.warn('Protected Data API health check failed:', toSafeErrorDetails(error));
+      return false;
+    } finally {
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+    }
   }
 
   /**

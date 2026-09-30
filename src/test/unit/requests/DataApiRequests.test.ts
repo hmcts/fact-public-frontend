@@ -4,6 +4,7 @@ import { type SinonSandbox, createSandbox } from 'sinon';
 const mockDataApiLogger = {
   error: jest.fn(),
   info: jest.fn(),
+  warn: jest.fn(),
 };
 
 jest.mock('@hmcts/nodejs-logging', () => ({
@@ -67,6 +68,7 @@ describe('DataApiRequests', () => {
   });
 
   afterEach(() => {
+    jest.useRealTimers();
     sandbox.restore();
   });
 
@@ -128,6 +130,41 @@ describe('DataApiRequests', () => {
       sandbox.stub(dataApi, 'get').withArgs('/health').rejects(new Error('network issue'));
 
       await expect(requests.checkHealth()).resolves.toBe(false);
+    });
+  });
+
+  describe('checkProtectedHealth', () => {
+    it('returns true after calling the protected services route with a two-second deadline', async () => {
+      const getStub = sandbox.stub(dataApi, 'get').resolves({ data: [] });
+
+      await expect(requests.checkProtectedHealth()).resolves.toBe(true);
+
+      expect(getStub.calledOnce).toBe(true);
+      expect(getStub.firstCall.args[0]).toBe('/search/services/v1');
+      expect(getStub.firstCall.args[1]).toMatchObject({ timeout: 2_000 });
+      expect(getStub.firstCall.args[1]?.signal).toBeInstanceOf(AbortSignal);
+    });
+
+    it('returns false when the protected request fails', async () => {
+      sandbox.stub(dataApi, 'get').rejects(new Error('authentication failed'));
+
+      await expect(requests.checkProtectedHealth()).resolves.toBe(false);
+      expect(mockDataApiLogger.warn).toHaveBeenCalledWith(
+        'Protected Data API health check failed:',
+        expect.objectContaining({ message: 'authentication failed' })
+      );
+    });
+
+    it('aborts and returns false when the complete protected check exceeds two seconds', async () => {
+      jest.useFakeTimers();
+      const getStub = sandbox.stub(dataApi, 'get').returns(new Promise(() => undefined));
+
+      const result = requests.checkProtectedHealth();
+      await jest.advanceTimersByTimeAsync(2_000);
+
+      await expect(result).resolves.toBe(false);
+      const signal = getStub.firstCall.args[1]?.signal as AbortSignal;
+      expect(signal.aborted).toBe(true);
     });
   });
 

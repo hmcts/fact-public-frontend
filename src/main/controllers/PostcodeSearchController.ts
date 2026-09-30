@@ -4,7 +4,7 @@ import { Response } from 'express';
 import { FactRequest } from '../interfaces/FactRequest';
 import { postcodeResultsRedirect, servicePostcodeResultsRedirect } from '../utils/RedirectUtils';
 import { calculateServiceAreaFromSlug, calculateServiceNameFromSlug } from '../utils/SchemaUtils';
-import { checkPostcode, isValidPostcode } from '../utils/validationUtils';
+import { checkPostcode } from '../utils/validationUtils';
 
 import BaseController from './BaseController';
 
@@ -21,24 +21,28 @@ export default class PostcodeSearchController extends BaseController {
   @POST()
   public async continue(req: FactRequest, res: Response): Promise<void> {
     const noServiceSearch: boolean = req.params?.service === undefined;
-    const postcode = req.body?.postcode;
     const serviceArea = req.params?.serviceArea as string | undefined;
-    if (isValidPostcode(postcode, serviceArea)) {
-      if (noServiceSearch) {
-        return postcodeResultsRedirect(res, postcode);
-      }
-      try {
-        // if any of these fail to resolve, then the slugs in the
-        // URL are invalid, and we should return a 404
-        const service = req.params.service as string;
-        const action = req.params.action as string;
-        return servicePostcodeResultsRedirect(res, service, serviceArea as string, action, postcode);
-      } catch {
-        return this.renderNotFound(req, res);
-      }
+    const postcodeInput = req.body?.postcode;
+
+    const errorType = checkPostcode(postcodeInput, serviceArea);
+    if (errorType !== undefined) {
+      return this.renderPostcodeSearchPage(req, res, errorType);
     }
-    // postcode is invalid
-    return this.renderPostcodeSearchPage(req, res, checkPostcode(postcode, serviceArea));
+
+    // Safe due to checkPostcode success: one string, normalized once here.
+    const postcode = (postcodeInput as string).trim().toUpperCase();
+
+    if (noServiceSearch) {
+      return postcodeResultsRedirect(res, postcode);
+    }
+
+    try {
+      const service = req.params.service as string;
+      const action = req.params.action as string;
+      return servicePostcodeResultsRedirect(res, service, serviceArea as string, action, postcode);
+    } catch {
+      return this.renderNotFound(req, res);
+    }
   }
 
   private async renderPostcodeSearchPage(
