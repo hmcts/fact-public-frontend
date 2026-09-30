@@ -1,5 +1,4 @@
 import { HttpStatusCode } from 'axios';
-import appConfig from 'config';
 import { type SinonSandbox, createSandbox, match } from 'sinon';
 
 const mockDataApiLogger = {
@@ -144,7 +143,8 @@ describe('DataApiRequests', () => {
       await expect(requests.getByName('Blackburn')).resolves.toEqual(searchPayload);
       expect(getStub.calledOnce).toBe(true);
 
-      await jest.advanceTimersByTimeAsync(Number(appConfig.get('dataApiCache.adminTtlMs')));
+      //await jest.advanceTimersByTimeAsync(Number(appConfig.get('dataApiCache.adminTtlMs')));
+      await jest.advanceTimersByTimeAsync(60000);
 
       await expect(requests.getByName('Blackburn')).resolves.toEqual(searchPayload);
       expect(getStub.callCount).toBe(2);
@@ -152,8 +152,10 @@ describe('DataApiRequests', () => {
 
     it('applies the longer reference TTL independently', async () => {
       jest.useFakeTimers();
-      const adminTtlMs = Number(appConfig.get('dataApiCache.adminTtlMs'));
-      const referenceTtlMs = Number(appConfig.get('dataApiCache.referenceTtlMs'));
+      const adminTtlMs = 60000;
+      const referenceTtlMs = 86400000;
+      // const adminTtlMs = Number(appConfig.get('dataApiCache.adminTtlMs'));
+      // const referenceTtlMs = Number(appConfig.get('dataApiCache.referenceTtlMs'));
       const getStub = sandbox.stub(dataApi, 'get').resolves({ data: servicesPayload });
 
       await expect(requests.getAllServices()).resolves.toEqual(
