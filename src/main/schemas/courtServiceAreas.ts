@@ -18,6 +18,4 @@ export const serviceAreaSearchResultSchema = z.object({
   type: z.enum(SEARCH_RESULT_TYPES),
 });
 
-export const courtServiceAreasSchema = serviceAreaSearchResultSchema;
-
 export type ServiceAreaSearchResult = z.infer<typeof serviceAreaSearchResultSchema>;
