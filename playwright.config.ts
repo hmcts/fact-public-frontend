@@ -193,7 +193,7 @@ const config = defineConfig({
   ...CommonConfig.recommended,
   reporter: resolveReporters(),
   workers: resolveWorkerCount(),
-  timeout: 120_000,
+  timeout: 15_000,
   use: {
     baseURL: functionalConfig.urls.homePageUrl,
     ignoreHTTPSErrors: true,
