@@ -131,10 +131,24 @@ describe('app', () => {
     const response = { setHeader: jest.fn(), vary: jest.fn() };
     const next = jest.fn();
 
-    middleware({}, response, next);
+    middleware({ path: '/' }, response, next);
 
     expect(response.setHeader).toHaveBeenCalledWith('Cache-Control', 'no-store');
     expect(response.vary).toHaveBeenCalledWith('Cookie');
+    expect(next).toHaveBeenCalled();
+  });
+
+  test('caches court images for one day without varying by cookie', () => {
+    const middleware = mockApp.use.mock.calls.map(call => call[0]).find(handler => handler?.length === 3);
+    const response = { setHeader: jest.fn(), vary: jest.fn() };
+    const next = jest.fn();
+    const expectedLastModified = new Date();
+    expectedLastModified.setUTCHours(0, 0, 0, 0);
+
+    middleware({ path: '/res/img/11111111-1111-4111-8111-111111111111' }, response, next);
+
+    expect(response.setHeader).toHaveBeenCalledWith('Cache-Control', 'public, max-age=86400, immutable');
+    expect(response.vary).not.toHaveBeenCalled();
     expect(next).toHaveBeenCalled();
   });
 

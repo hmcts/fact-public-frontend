@@ -164,7 +164,7 @@ function replaceFileLink(fileLink: string | null | undefined, courtId: string | 
     return undefined;
   }
 
-  return `/res/img/${courtId}?cacheBust=${crypto.randomUUID()}`;
+  return `/res/img/${courtId}`;
 }
 
 export const courtSchema = z.object({

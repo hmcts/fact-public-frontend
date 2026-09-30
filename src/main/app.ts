@@ -32,6 +32,7 @@ app.locals.ENV = env;
 const logger = Logger.getLogger('app');
 
 const FINGERPRINT_REGEX = /(?:^|[.-])[a-f0-9]{8,}(?=[.-])/i;
+const COURT_IMAGE_PATH_REGEX = /^\/res\/img\/[^/]+$/;
 
 new PropertiesVolume().enableFor(app);
 new AppInsights().enable();
@@ -41,7 +42,7 @@ new Helmet(config.get('security'), developmentMode).enableFor(app);
 new Container().enableFor(app);
 
 app.get('/favicon.ico', limiter, (req, res) => {
-  res.sendFile(path.join(__dirname, '/public/assets/rebrand/images/favicon.ico'));
+  res.sendFile(path.join(__dirname, '/public/assets/images/favicon.ico'));
 });
 
 setupDev(app, developmentMode);
@@ -76,8 +77,12 @@ new I18next().enableFor(app);
 
 app.use(scopePerRequest(app.locals.container));
 app.use((req, res, next) => {
-  res.setHeader('Cache-Control', 'no-store');
-  res.vary('Cookie');
+  if (COURT_IMAGE_PATH_REGEX.test(req.path)) {
+    res.setHeader('Cache-Control', 'public, max-age=86400, immutable');
+  } else {
+    res.setHeader('Cache-Control', 'no-store');
+    res.vary('Cookie');
+  }
   next();
 });
 app.use(loadControllers('controllers/**/*.+(ts|js)', { cwd: __dirname }));
