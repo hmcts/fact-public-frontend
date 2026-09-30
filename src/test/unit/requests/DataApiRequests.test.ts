@@ -517,7 +517,7 @@ describe('DataApiRequests', () => {
             regionId: 'london-region-id',
             locationType: 'COURT',
             serviceCentre: false,
-            }),
+          }),
         ])
       );
     });
@@ -670,6 +670,33 @@ describe('DataApiRequests', () => {
           },
         })
         .rejects(new Error('boom'));
+
+      await expect(requests.performPostcodeSearch('SW1A 1AA', 'Divorce', 'nearest')).resolves.toMatchObject({
+        status: HttpStatusCode.BadGateway,
+      });
+    });
+
+    it('maps invalid discriminated-union payload to bad gateway', async () => {
+      sandbox
+        .stub(dataApi, 'get')
+        .withArgs('/search/locations/v1/postcode', {
+          params: {
+            postcode: 'SW1A 1AA',
+            serviceArea: 'Divorce',
+            action: 'NEAREST',
+          },
+        })
+        .resolves({
+          data: [
+            {
+              id: 'x',
+              name: 'Invalid Location',
+              slug: 'invalid-location',
+              distance: 1.2,
+              type: 'UNKNOWN',
+            },
+          ],
+        });
 
       await expect(requests.performPostcodeSearch('SW1A 1AA', 'Divorce', 'nearest')).resolves.toMatchObject({
         status: HttpStatusCode.BadGateway,

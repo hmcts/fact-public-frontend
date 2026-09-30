@@ -5,12 +5,24 @@ export enum SEARCH_RESULT_TYPES {
   SERVICE_CENTRE = 'SERVICE_CENTRE',
 }
 
-export const searchResultSchema = z.object({
+const baseSearchResultSchema = z.object({
   id: z.string(),
   name: z.string(),
   slug: z.string(),
   distance: z.float64(),
-  type: z.enum(SEARCH_RESULT_TYPES),
 });
+
+const courtSearchResultSchema = baseSearchResultSchema.extend({
+  type: z.literal(SEARCH_RESULT_TYPES.COURT),
+});
+
+const serviceCentreSearchResultSchema = baseSearchResultSchema.extend({
+  type: z.literal(SEARCH_RESULT_TYPES.SERVICE_CENTRE),
+});
+
+export const searchResultSchema = z.discriminatedUnion('type', [
+  courtSearchResultSchema,
+  serviceCentreSearchResultSchema,
+]);
 
 export type SearchResult = z.infer<typeof searchResultSchema>;
