@@ -137,6 +137,7 @@
   "resolutions": {
     "@opentelemetry/core": "npm:@opentelemetry/core@2.9.0",
     "@opentelemetry/propagator-jaeger": "2.9.0",
+    "brace-expansion@npm:^5.0.8": "npm:5.0.12",
     "uuid": "14.0.2"
   },
   "packageManager": "yarn@4.17.1"
