@@ -194,12 +194,3 @@ export const courtSchema = z.object({
 });
 
 export type Court = z.infer<typeof courtSchema>;
-
-export const courtSearchResultSchema = z.object({
-  name: z.string(),
-  slug: z.string(),
-  serviceCentre: z.boolean().optional(),
-  locationType: z.enum(['COURT', 'SERVICE_CENTRE']).optional(),
-});
-
-export type CourtSearchResult = z.infer<typeof courtSearchResultSchema>;
