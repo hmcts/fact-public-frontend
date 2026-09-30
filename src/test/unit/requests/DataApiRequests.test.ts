@@ -702,6 +702,30 @@ describe('DataApiRequests', () => {
         status: HttpStatusCode.BadGateway,
       });
     });
+
+    it('parses a SERVICE_CENTRE result', async () => {
+      const payload = [
+        {
+          id: 'sc-id',
+          name: 'Service Centre A',
+          slug: 'service-centre-a',
+          distance: 2.3,
+          type: SEARCH_RESULT_TYPES.SERVICE_CENTRE,
+        },
+      ];
+
+      sandbox
+        .stub(dataApi, 'get')
+        .withArgs('/search/locations/v1/postcode', {
+          params: {
+            postcode: 'SW1A 1AA',
+            serviceArea: 'Divorce',
+            action: 'NEAREST',
+          },
+        })
+        .resolves({ data: payload });
+      await expect(requests.performPostcodeSearch('SW1A 1AA', 'Divorce', 'nearest')).resolves.toEqual(payload);
+    });
   });
 
   describe('performPostcodeOnlySearch', () => {
