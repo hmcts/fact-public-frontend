@@ -196,6 +196,28 @@ describe('DataApiRequests', () => {
 
       expect(getStub.callCount).toBe(2);
     });
+
+    it('does not cache responses that fail schema parsing', async () => {
+      const getStub = sandbox.stub(dataApi, 'get');
+
+      getStub.onFirstCall().resolves({
+        data: [{ invalid: true }],
+      });
+      getStub.onSecondCall().resolves({
+        data: searchPayload,
+      });
+
+      await expect(requests.getByName('Blackburn')).resolves.toMatchObject({
+        status: HttpStatusCode.BadGateway,
+      });
+
+      await expect(requests.getByName('Blackburn')).resolves.toEqual(searchPayload);
+
+      // Successful response should now be cached.
+      await expect(requests.getByName('Blackburn')).resolves.toEqual(searchPayload);
+
+      expect(getStub.callCount).toBe(2);
+    });
   });
 
   describe('checkHealth', () => {
