@@ -14,6 +14,7 @@ jest.mock('@hmcts/nodejs-logging', () => ({
 }));
 
 import { DataApiRequests } from '../../../main/requests/DataApiRequests';
+import { requestCache } from '../../../main/requests/utils/RequestCache';
 import { dataApi } from '../../../main/requests/utils/axiosConfig';
 import { CATCHMENT_TYPES } from '../../../main/schemas/courtServiceAreas';
 import { SEARCH_RESULT_TYPES } from '../../../main/schemas/searchResult';
@@ -78,6 +79,7 @@ describe('DataApiRequests', () => {
   afterEach(() => {
     jest.useRealTimers();
     sandbox.restore();
+    requestCache.clear();
   });
 
   describe('safeLogging', () => {

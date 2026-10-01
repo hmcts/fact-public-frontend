@@ -18,6 +18,8 @@ import { CourtWithDistance, courtWithDistanceSchema } from '../schemas/courtWith
 import { SearchResult, searchResultSchema } from '../schemas/searchResult';
 
 import { DataApiError, DataApiErrorMapping, mapDataApiError } from './DataApiError';
+import { requestCache } from './utils/RequestCache';
+import type { CachePolicy } from './utils/RequestCache';
 import { dataApi } from './utils/axiosConfig';
 import { toSafeErrorDetails } from './utils/safeErrorDetails';
 
@@ -25,14 +27,6 @@ const logger = Logger.getLogger('app');
 
 const DEFAULT_REQUEST_TIMEOUT_MS = 10_000;
 const PROTECTED_HEALTH_TIMEOUT_MS = 2_000;
-const MAX_CACHE_ENTRIES = 1_000;
-
-type CachePolicy = 'reference' | 'admin';
-
-type CacheEntry = {
-  expiresAt: number;
-  response: Promise<AxiosResponse<unknown>>;
-};
 
 export type FileStreamResult = {
   stream: Readable;
@@ -44,11 +38,11 @@ export type FileStreamResult = {
 };
 
 export class DataApiRequests {
-  private readonly cache = new Map<string, CacheEntry>();
-  private readonly cacheTtlMs: Record<CachePolicy, number> = {
-    reference: Number(appConfig.get('dataApiCache.referenceTtlMs')),
-    admin: Number(appConfig.get('dataApiCache.adminTtlMs')),
-  };
+  constructor() {
+    // Initialize cache service TTL values from config
+    requestCache.setCacheTtl('reference', Number(appConfig.get('dataApiCache.referenceTtlMs')));
+    requestCache.setCacheTtl('admin', Number(appConfig.get('dataApiCache.adminTtlMs')));
+  }
 
   private async get<T>(
     url: string,
@@ -59,36 +53,29 @@ export class DataApiRequests {
     } = {}
   ): Promise<AxiosResponse<T>> {
     const { timeoutMs = DEFAULT_REQUEST_TIMEOUT_MS, cachePolicy } = options;
-    if (!cachePolicy || this.cacheTtlMs[cachePolicy] <= 0) {
-      return this.executeGet<T>(url, config, timeoutMs);
-    }
 
-    const cacheKey = this.createCacheKey(cachePolicy, url, config);
-    const cached = this.cache.get(cacheKey);
-    if (cached && Date.now() < cached.expiresAt) {
-      return cached.response as Promise<AxiosResponse<T>>;
-    }
-    if (cached) {
-      this.cache.delete(cacheKey);
+    // Check cache first
+    if (cachePolicy) {
+      const cached = requestCache.get<T>(url, config, cachePolicy);
+      if (cached.isValid && cached.cached !== undefined) {
+        return cached.cached;
+      }
     }
 
     const response = this.executeGet<T>(url, config, timeoutMs);
-    const entry: CacheEntry = {
-      expiresAt: Date.now() + this.cacheTtlMs[cachePolicy],
-      response,
-    };
 
-    this.evictOldestEntryIfFull();
-    this.cache.set(cacheKey, entry);
-
-    try {
-      return await response;
-    } catch (error) {
-      if (this.cache.get(cacheKey) === entry) {
-        this.cache.delete(cacheKey);
+    // Store in cache
+    if (cachePolicy) {
+      requestCache.set(url, config, cachePolicy, response);
+      try {
+        return await response;
+      } catch (error) {
+        requestCache.invalidate(url, config, cachePolicy, response);
+        throw error;
       }
-      throw error;
     }
+
+    return response;
   }
 
   private async executeGet<T>(url: string, config: AxiosRequestConfig, timeoutMs: number): Promise<AxiosResponse<T>> {
@@ -114,25 +101,6 @@ export class DataApiRequests {
       if (timeout) {
         clearTimeout(timeout);
       }
-    }
-  }
-
-  private createCacheKey(cachePolicy: CachePolicy, url: string, config: AxiosRequestConfig): string {
-    const params = config.params as Record<string, unknown> | undefined;
-    const sortedParams = params
-      ? Object.fromEntries(Object.entries(params).sort(([left], [right]) => left.localeCompare(right)))
-      : {};
-    return `${cachePolicy}:${url}:${JSON.stringify(sortedParams)}`;
-  }
-
-  private evictOldestEntryIfFull(): void {
-    if (this.cache.size < MAX_CACHE_ENTRIES) {
-      return;
-    }
-
-    const oldestKey = this.cache.keys().next().value;
-    if (oldestKey !== undefined) {
-      this.cache.delete(oldestKey);
     }
   }
 
