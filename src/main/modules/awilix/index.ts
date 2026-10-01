@@ -1,6 +1,7 @@
-import { InjectionMode, asValue, createContainer } from 'awilix';
+import { InjectionMode, asClass, asValue, createContainer } from 'awilix';
 import { Application } from 'express';
 
+import { DataApiRequests } from '../../requests/DataApiRequests';
 import { Logger } from '../logging';
 
 const logger = Logger.getLogger('app');
@@ -10,6 +11,10 @@ export class Container {
     app.locals.container = createContainer({
       injectionMode: InjectionMode.CLASSIC,
     }).register({
+      // As caching is now included in DataApiRequests we need to ensure
+      // that all controllers/services that are using it are being given
+      // the same instance.
+      dataApiRequests: asClass(DataApiRequests).singleton(),
       logger: asValue(logger),
     });
   }
