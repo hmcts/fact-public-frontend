@@ -1,6 +1,7 @@
 import { Readable } from 'node:stream';
 
 import { AxiosRequestConfig, AxiosResponse } from 'axios';
+import appConfig from 'config';
 
 import { Logger } from '../modules/logging';
 import { ServiceArea, serviceAreaSchema } from '../schemas/ServiceAreaSchema';
@@ -45,10 +46,8 @@ export type FileStreamResult = {
 export class DataApiRequests {
   private readonly cache = new Map<string, CacheEntry>();
   private readonly cacheTtlMs: Record<CachePolicy, number> = {
-    reference: 86400000, // 24 hours
-    admin: 60000, // 1 minute
-    // reference: Number(appConfig.get('dataApiCache.referenceTtlMs')),
-    // admin: Number(appConfig.get('dataApiCache.adminTtlMs')),
+    reference: Number(appConfig.get('dataApiCache.referenceTtlMs')),
+    admin: Number(appConfig.get('dataApiCache.adminTtlMs')),
   };
 
   private async get<T>(
