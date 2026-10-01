@@ -6,10 +6,10 @@ export enum SEARCH_RESULT_TYPES {
 }
 
 const baseSearchResultSchema = z.object({
-  id: z.string(),
+  id: z.uuid(),
   name: z.string(),
   slug: z.string(),
-  distance: z.float64(),
+  distance: z.float64().nonnegative(),
 });
 
 const courtSearchResultSchema = baseSearchResultSchema.extend({

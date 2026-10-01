@@ -168,7 +168,7 @@ function replaceFileLink(fileLink: string | null | undefined, courtId: string | 
 }
 
 export const courtSchema = z.object({
-  id: z.string(),
+  id: z.uuid(),
   name: z.string(),
   slug: z.string(),
   open: z.boolean(),

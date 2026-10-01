@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 const nullableStringSchema = z.string().nullable().optional();
 export const courtBasicSchema = z.object({
-  id: z.string(),
+  id: z.uuid(),
   name: z.string(),
   slug: z.string(),
   open: z.boolean(),
@@ -12,7 +12,7 @@ export const courtBasicSchema = z.object({
   lastUpdatedAt: z.string(),
   openOnCath: z.boolean().nullable(),
   mrdId: z.string().nullable(),
-  regionId: z.string(),
+  regionId: z.uuid(),
   serviceCentre: z.boolean().optional(),
   locationType: z.enum(['COURT', 'SERVICE_CENTRE']).optional(),
 });

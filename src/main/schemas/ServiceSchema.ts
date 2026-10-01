@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const serviceSchema = z
   .object({
-    id: z.string(),
+    id: z.uuid(),
     name: z.string(),
     slug: z.string().optional(),
     nameCy: z.string(),

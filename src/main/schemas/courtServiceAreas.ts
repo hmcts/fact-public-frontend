@@ -9,8 +9,8 @@ export enum CATCHMENT_TYPES {
 }
 
 export const serviceAreaSearchResultSchema = z.object({
-  id: z.string(),
-  serviceCentreId: z.string(),
+  id: z.uuid(),
+  serviceCentreId: z.uuid(),
   serviceCentreName: z.string(),
   serviceCentreSlug: z.string(),
   serviceAreaIds: z.array(z.string()),

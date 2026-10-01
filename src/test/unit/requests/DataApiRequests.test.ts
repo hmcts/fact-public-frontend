@@ -19,7 +19,7 @@ import { CATCHMENT_TYPES } from '../../../main/schemas/courtServiceAreas';
 import { SEARCH_RESULT_TYPES } from '../../../main/schemas/searchResult';
 
 const validCourt = {
-  id: 'a',
+  id: 'acde070d-8c4c-4f0d-9d8a-162843c10333',
   name: 'A Court',
   slug: 'a-court',
   open: true,
@@ -221,7 +221,7 @@ describe('DataApiRequests', () => {
   describe('getServiceCentreDetails', () => {
     it('calls the slug endpoint and returns parsed service-centre details', async () => {
       const payload = {
-        id: 'service-centre-id',
+        id: 'acde070d-8c4c-4f0d-9d8a-162843c10333',
         name: 'Service Centre A',
         slug: 'service-centre-a',
         open: true,
@@ -235,7 +235,7 @@ describe('DataApiRequests', () => {
 
     it('parses the Welsh warning notice returned by the slug endpoint', async () => {
       const payload = {
-        id: 'service-centre-id',
+        id: 'acde070d-8c4c-4f0d-9d8a-162843c10333',
         name: 'Test Service Centre',
         slug: 'test-service-centre',
         warningNotice: 'Important service update',
@@ -316,7 +316,7 @@ describe('DataApiRequests', () => {
             ],
             courtAreasOfLaw: [
               {
-                areasOfLaw: ['area-of-law-id'],
+                areasOfLaw: ['acde070d-8c4c-4fc4-6789-162843c10333'],
               },
             ],
           },
@@ -327,7 +327,7 @@ describe('DataApiRequests', () => {
           serviceCentre: true,
           court: null,
           serviceCentreDetails: {
-            id: 'service-centre-id',
+            id: 'acde070d-8c4c-4f0d-9d8a-162843c10333',
             name: 'Service Centre A',
             slug: 'service-centre-a',
             open: true,
@@ -335,10 +335,10 @@ describe('DataApiRequests', () => {
             warningNoticeCy: null,
             createdAt: '2026-06-01T10:00:00Z',
             lastUpdatedAt: '2026-06-02T10:00:00Z',
-            regionId: 'region-id',
+            regionId: 'acde070d-8c4c-4f0d-9d8a-162843c10331',
             serviceAreas: [
               {
-                id: 'service-area-id',
+                id: 'acde070d-8c4c-4f0d-9d8a-162843c103367',
                 name: 'Divorce',
                 nameCy: 'Ysgariad',
                 description: null,
@@ -349,7 +349,7 @@ describe('DataApiRequests', () => {
                 text: null,
                 textCy: null,
                 catchmentMethod: 'NATIONAL',
-                areaOfLawId: 'area-of-law-id',
+                areaOfLawId: 'acde070d-8c4c-4f0d-6d8a-162843c10333',
                 type: 'CIVIL',
                 sortOrder: 1,
                 hasLocal: false,
@@ -360,8 +360,8 @@ describe('DataApiRequests', () => {
             catchmentType: CATCHMENT_TYPES.NATIONAL,
             serviceCentreAddresses: [
               {
-                id: 'address-id',
-                serviceCentreId: 'service-centre-id',
+                id: 'acde070d-8c4c-4f0d-9d8a-162847c10333',
+                serviceCentreId: 'acde070d-8c4b-4f0d-9d8a-162843c10333',
                 addressLine1: '1 Service Street',
                 addressLine2: null,
                 townCity: 'London',
@@ -374,14 +374,14 @@ describe('DataApiRequests', () => {
             ],
             serviceCentreContactDetails: [
               {
-                id: 'contact-id',
-                serviceCentreId: 'service-centre-id',
+                id: 'acde070d-8c4c-4c0d-9d8a-162843c10333',
+                serviceCentreId: 'acde074d-8c4c-4f0d-9d8a-162843c10333',
                 explanation: 'General enquiries',
                 explanationCy: null,
                 email: 'service@example.com',
                 phoneNumber: '0300 123 4567',
                 serviceCentreContactDescription: {
-                  id: 'description-id',
+                  id: 'acde070d-8c4c-4f0d-9d8a-162743c10333',
                   name: 'Enquiries',
                   nameCy: 'Ymholiadau',
                 },
@@ -389,11 +389,11 @@ describe('DataApiRequests', () => {
             ],
             serviceCentreAreasOfLaw: [
               {
-                id: 'service-centre-area-of-law-id',
-                serviceCentreId: 'service-centre-id',
+                id: 'acde070d-8c6c-4f0d-9d8a-162843c10333',
+                serviceCentreId: 'acde074d-8c4c-4f0d-9d8a-162843c10333',
                 areasOfLaw: [
                   {
-                    id: 'area-of-law-id',
+                    id: 'acde075d-8c4c-4f0d-9d8a-162843c10333',
                     name: 'Family',
                     nameCy: 'Teulu',
                     externalLink: null,
@@ -444,7 +444,7 @@ describe('DataApiRequests', () => {
     it('returns parsed search results on success', async () => {
       const payload = [
         {
-          id: 'court-1',
+          id: 'acde570d-8c4c-4f0d-9d8a-162843c10333',
           name: 'Blackburn Family Court',
           slug: 'blackburn-family-court',
           open: true,
@@ -454,12 +454,12 @@ describe('DataApiRequests', () => {
           lastUpdatedAt: '2026-09-28T15:27:30.908Z',
           openOnCath: true,
           mrdId: null,
-          regionId: 'region-1',
+          regionId: 'acde770d-8c4c-4f0d-9d8a-162873c10333',
           locationType: 'COURT',
           serviceCentre: false,
         },
         {
-          id: 'sc-1',
+          id: 'acde075d-8c4c-4f0d-9b8a-162843c10333',
           name: 'Blackburn Service Centre',
           slug: 'blackburn-service-centre',
           open: true,
@@ -469,7 +469,7 @@ describe('DataApiRequests', () => {
           lastUpdatedAt: '2026-09-28T15:27:30.908Z',
           openOnCath: true,
           mrdId: null,
-          regionId: 'region-1',
+          regionId: 'acde075d-8c4c-4f0d-9d8a-162823c10333',
           locationType: 'SERVICE_CENTRE',
           serviceCentre: true,
         },
@@ -524,7 +524,7 @@ describe('DataApiRequests', () => {
     it('parses the real AllLocation response shape on success', async () => {
       const payload = [
         {
-          id: 'court-a-id',
+          id: 'acd207cd-8c4c-4f4d-9d8a-162843c10333',
           name: 'Court A',
           slug: 'court-a',
           open: true,
@@ -533,7 +533,7 @@ describe('DataApiRequests', () => {
           lastUpdatedAt: '2026-09-21',
           openOnCath: null,
           mrdId: null,
-          regionId: 'london-region-id',
+          regionId: 'acde079d-8c4c-4f0d-9d8a-163843c10333',
           locationType: 'COURT',
           serviceCentre: false,
         },
@@ -548,10 +548,10 @@ describe('DataApiRequests', () => {
       await expect(requests.getCourtsByPrefix(prefix)).resolves.toEqual(
         expect.arrayContaining([
           expect.objectContaining({
-            id: 'court-a-id',
+            id: 'acd207cd-8c4c-4f4d-9d8a-162843c10333',
             name: 'Court A',
             slug: 'court-a',
-            regionId: 'london-region-id',
+            regionId: 'acde079d-8c4c-4f0d-9d8a-163843c10333',
             locationType: 'COURT',
             serviceCentre: false,
           }),
@@ -610,14 +610,14 @@ describe('DataApiRequests', () => {
     it('calls the locations endpoint and parses mixed court/service-centre results', async () => {
       const payload = [
         {
-          id: 'court-id',
+          id: 'acde070d-8c4c-4f0d-9d8a-162843c10234',
           name: 'Court A',
           slug: 'court-a',
           distance: 1.2,
           type: SEARCH_RESULT_TYPES.COURT,
         },
         {
-          id: 'sc-id',
+          id: 'acde070d-8c4c-4f0d-9d3a-162843c10003',
           name: 'Service Centre A',
           slug: 'service-centre-a',
           distance: 2.3,
@@ -726,7 +726,7 @@ describe('DataApiRequests', () => {
         .resolves({
           data: [
             {
-              id: 'x',
+              id: 'acde570d-8c4c-4f0d-9d8a-162843c40333',
               name: 'Invalid Location',
               slug: 'invalid-location',
               distance: 1.2,
@@ -743,7 +743,7 @@ describe('DataApiRequests', () => {
     it('parses a SERVICE_CENTRE result', async () => {
       const payload = [
         {
-          id: 'sc-id',
+          id: 'acde070d-8c4c-4f0d-9d8a-162843c10333',
           name: 'Service Centre A',
           slug: 'service-centre-a',
           distance: 2.3,
@@ -771,7 +771,7 @@ describe('DataApiRequests', () => {
         {
           courtName: 'Court A',
           courtSlug: 'court-a',
-          courtId: 'court-a-id',
+          courtId: 'acde070d-1c4c-1f0d-9d8a-162843c10333',
           distance: 1.1,
         },
       ];
@@ -826,7 +826,7 @@ describe('DataApiRequests', () => {
     it('returns parsed services on success', async () => {
       const payload = [
         {
-          id: 'service-id',
+          id: 'acde070d-8c4c-4f0d-9d8a-162843c10111',
           name: 'Adoption',
           nameCy: 'Mabwysiadu',
           description: null,
@@ -840,7 +840,7 @@ describe('DataApiRequests', () => {
       await expect(requests.getAllServices()).resolves.toEqual(
         expect.arrayContaining([
           expect.objectContaining({
-            id: 'service-id',
+            id: 'acde070d-8c4c-4f0d-9d8a-162843c10222',
             name: 'Adoption',
             slug: 'adoption',
           }),
@@ -871,7 +871,7 @@ describe('DataApiRequests', () => {
     it('returns parsed service areas on success', async () => {
       const payload = [
         {
-          id: 'area-id',
+          id: 'acde072d-8c4c-4f0d-9d8a-332843c10333',
           name: 'Children, Family Law',
           nameCy: 'Cyfraith Teulu',
           description: null,
@@ -882,7 +882,7 @@ describe('DataApiRequests', () => {
           text: null,
           textCy: null,
           catchmentMethod: 'POSTCODE',
-          areaOfLawId: 'law-id',
+          areaOfLawId: 'acde070d-8c4c-4f0d-9d8a-162843c10666',
           type: 'FAMILY',
           sortOrder: 1,
           hasLocal: true,
@@ -937,11 +937,11 @@ describe('DataApiRequests', () => {
     it('returns parsed service-centre search results on success', async () => {
       const payload = [
         {
-          id: 'service-area-result-id',
-          serviceCentreId: 'sc-id',
+          id: 'acde220d-8c4c-4f0d-9d8a-162843c10333',
+          serviceCentreId: 'acde070d-8c4c-4f0d-9d8a-332843c10888',
           serviceCentreName: 'National Service Centre',
           serviceCentreSlug: 'national-service-centre',
-          serviceAreaIds: ['area-a'],
+          serviceAreaIds: ['acde070d-8c4c-4f0d-1111-162843c10333'],
           catchmentType: CATCHMENT_TYPES.NATIONAL,
           type: SEARCH_RESULT_TYPES.SERVICE_CENTRE,
         },
@@ -955,8 +955,8 @@ describe('DataApiRequests', () => {
     it('parses service-centre search results without a catchment type', async () => {
       const payload = [
         {
-          id: 'service-area-result-id',
-          serviceCentreId: 'sc-id',
+          id: 'acde070d-8c4c-4f0d-9d8a-162843c10777',
+          serviceCentreId: 'acde070d-8c4c-4f0d-777-162843c10999',
           serviceCentreName: 'Service Centre',
           serviceCentreSlug: 'service-centre',
           serviceAreaIds: [],
@@ -1009,11 +1009,11 @@ describe('DataApiRequests', () => {
     it('keeps backward compatibility by delegating to service area search results', async () => {
       const payload = [
         {
-          id: 'service-area-result-id',
-          serviceCentreId: 'sc-id',
+          id: 'acde070d-8c4c-4f0d-9d8a-162843c10638',
+          serviceCentreId: 'acde070d-8c4c-4f0d-9d8a-162843c10562',
           serviceCentreName: 'National Service Centre',
           serviceCentreSlug: 'national-service-centre',
-          serviceAreaIds: ['area-a'],
+          serviceAreaIds: ['acde070d-8c4c-4f0d-9d8a-162843c10734'],
           catchmentType: CATCHMENT_TYPES.NATIONAL,
           type: SEARCH_RESULT_TYPES.SERVICE_CENTRE,
         },
