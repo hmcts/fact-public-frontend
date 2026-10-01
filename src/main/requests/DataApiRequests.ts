@@ -145,7 +145,7 @@ export class DataApiRequests {
    */
   public async getCourtDetails(slug: string): Promise<Court | DataApiError> {
     try {
-      return await this.get<Court | DataApiError>(
+      return await this.get<Court>(
         `/courts/slug/${slug}/v1`,
         data => courtSchema.parse(data),
         {},
@@ -166,7 +166,7 @@ export class DataApiRequests {
    */
   public async getServiceCentreDetails(slug: string): Promise<ServiceCentreDetails | DataApiError> {
     try {
-      return await this.get<ServiceCentreDetails | DataApiError>(
+      return await this.get<ServiceCentreDetails>(
         `/service-centres/slug/${slug}/v1`,
         data => serviceCentreDetailsSchema.parse(data),
         {},
@@ -185,7 +185,7 @@ export class DataApiRequests {
    */
   public async getAll(): Promise<AllLocationDetails[] | DataApiError> {
     try {
-      return await this.get<AllLocationDetails[] | DataApiError>(
+      return await this.get<AllLocationDetails[]>(
         '/all/details.json',
         data => allLocationDetailsSchema.array().parse(data),
         {},
@@ -202,7 +202,7 @@ export class DataApiRequests {
    */
   public async getByName(query: string): Promise<CourtSearchResult[] | DataApiError> {
     try {
-      return await this.get<CourtSearchResult[] | DataApiError>(
+      return await this.get<CourtSearchResult[]>(
         'search/courts/v1/name',
         data => courtSearchResultSchema.array().parse(data),
         { params: { q: query } },
@@ -218,7 +218,7 @@ export class DataApiRequests {
    */
   public async getAllServices(): Promise<Service[] | DataApiError> {
     try {
-      return await this.get<Service[] | DataApiError>(
+      return await this.get<Service[]>(
         '/search/services/v1',
         data => serviceSchema.array().parse(data),
         {},
@@ -236,7 +236,7 @@ export class DataApiRequests {
    */
   public async getServiceAreas(serviceName: string): Promise<ServiceArea[] | DataApiError> {
     try {
-      return await this.get<ServiceArea[] | DataApiError>(
+      return await this.get<ServiceArea[]>(
         '/search/services/v1/' + serviceName + '/service-areas',
         data => serviceAreaSchema.array().parse(data),
         {},
@@ -256,7 +256,7 @@ export class DataApiRequests {
    */
   public async getCourtsByPrefix(prefix: string): Promise<CourtSearchResult[] | DataApiError> {
     try {
-      return await this.get<CourtSearchResult[] | DataApiError>(
+      return await this.get<CourtSearchResult[]>(
         '/search/courts/v1/prefix',
         data => courtSearchResultSchema.array().parse(data),
         { params: { prefix } },
@@ -274,7 +274,7 @@ export class DataApiRequests {
    */
   public async getServiceAreaSearchResults(serviceAreaName: string): Promise<ServiceAreaSearchResult[] | DataApiError> {
     try {
-      return await this.get<ServiceAreaSearchResult[] | DataApiError>(
+      return await this.get<ServiceAreaSearchResult[]>(
         `/search/service-area/v1/${serviceAreaName}`,
         data => serviceAreaSearchResultSchema.array().parse(data),
         {},
@@ -315,7 +315,7 @@ export class DataApiRequests {
           action: action.toUpperCase(),
         },
       };
-      return await this.get<SearchResult[] | DataApiError>(
+      return await this.get<SearchResult[]>(
         '/search/locations/v1/postcode',
         data => searchResultSchema.array().parse(data),
         config,
@@ -343,7 +343,7 @@ export class DataApiRequests {
           postcode,
         },
       };
-      return await this.get<CourtWithDistance[] | DataApiError>(
+      return await this.get<CourtWithDistance[]>(
         '/search/courts/v1/postcode',
         data => courtWithDistanceSchema.array().parse(data),
         config,
