@@ -1,10 +1,10 @@
-import { AxiosRequestConfig, AxiosResponse } from 'axios';
+import { AxiosRequestConfig } from 'axios';
 
 type CachePolicy = 'reference' | 'admin';
 
 type CacheEntry = {
   expiresAt: number;
-  response: Promise<AxiosResponse<unknown>>;
+  response: Promise<unknown>;
 };
 
 const MAX_CACHE_ENTRIES = 1_000;
@@ -25,7 +25,7 @@ class RequestCache {
     config: AxiosRequestConfig = {},
     cachePolicy?: CachePolicy
   ): {
-    cached?: Promise<AxiosResponse<T>>;
+    cached?: Promise<T>;
     isValid: boolean;
   } {
     if (!cachePolicy || this.cacheTtlMs[cachePolicy] <= 0) {
@@ -36,7 +36,7 @@ class RequestCache {
     const cached = this.cache.get(cacheKey);
 
     if (cached && Date.now() < cached.expiresAt) {
-      return { cached: cached.response as Promise<AxiosResponse<T>>, isValid: true };
+      return { cached: cached.response as Promise<T>, isValid: true };
     }
 
     if (cached) {
@@ -46,12 +46,7 @@ class RequestCache {
     return { isValid: false };
   }
 
-  set(
-    url: string,
-    config: AxiosRequestConfig,
-    cachePolicy: CachePolicy,
-    response: Promise<AxiosResponse<unknown>>
-  ): void {
+  set(url: string, config: AxiosRequestConfig, cachePolicy: CachePolicy, response: Promise<unknown>): void {
     if (this.cacheTtlMs[cachePolicy] <= 0) {
       return;
     }
@@ -66,12 +61,7 @@ class RequestCache {
     this.cache.set(cacheKey, entry);
   }
 
-  invalidate(
-    url: string,
-    config: AxiosRequestConfig,
-    cachePolicy: CachePolicy,
-    response?: Promise<AxiosResponse<unknown>>
-  ): void {
+  invalidate(url: string, config: AxiosRequestConfig, cachePolicy: CachePolicy, response?: Promise<unknown>): void {
     const cacheKey = this.createCacheKey(cachePolicy, url, config);
     if (response === undefined || this.cache.get(cacheKey)?.response === response) {
       this.cache.delete(cacheKey);
