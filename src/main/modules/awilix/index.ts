@@ -6,6 +6,13 @@ import { Logger } from '../logging';
 
 const logger = Logger.getLogger('app');
 
+try {
+  const test = asClass(DataApiRequests);
+  logger.info(test);
+} catch (error) {
+  logger.error('Error creating DataApiRequests class:', error);
+}
+
 export class Container {
   public enableFor(app: Application): void {
     app.locals.container = createContainer({
@@ -14,7 +21,7 @@ export class Container {
       // As caching is now included in DataApiRequests we need to ensure
       // that all controllers/services that are using it are being given
       // the same instance.
-      dataApiRequests: asClass(DataApiRequests).singleton(),
+      // dataApiRequests: asClass(DataApiRequests).singleton(),
       logger: asValue(logger),
     });
   }
