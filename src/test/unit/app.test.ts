@@ -138,7 +138,7 @@ describe('app', () => {
     expect(next).toHaveBeenCalled();
   });
 
-  test('caches court images for one day without varying by cookie', () => {
+  test('defaults court images to no-store without varying by cookie', () => {
     const middleware = mockApp.use.mock.calls.map(call => call[0]).find(handler => handler?.length === 3);
     const response = { setHeader: jest.fn(), vary: jest.fn() };
     const next = jest.fn();
