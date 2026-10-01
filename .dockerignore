@@ -7,12 +7,15 @@
 !package.json
 !yarn.lock
 !version
+!.yarn
 !.yarn/**
 !.yarnrc.yml
 !.pnp.cjs
 
 !tsconfig.json
 !webpack/**
+!src
 !src/main/**
+src/test
 !config/**
 !webpack.config.js
