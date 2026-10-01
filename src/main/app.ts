@@ -77,10 +77,8 @@ new I18next().enableFor(app);
 
 app.use(scopePerRequest(app.locals.container));
 app.use((req, res, next) => {
-  if (COURT_IMAGE_PATH_REGEX.test(req.path)) {
-    res.setHeader('Cache-Control', 'public, max-age=86400, immutable');
-  } else {
-    res.setHeader('Cache-Control', 'no-store');
+  res.setHeader('Cache-Control', 'no-store');
+  if (!COURT_IMAGE_PATH_REGEX.test(req.path)) {
     res.vary('Cookie');
   }
   next();

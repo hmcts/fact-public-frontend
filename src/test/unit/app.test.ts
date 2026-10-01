@@ -142,12 +142,10 @@ describe('app', () => {
     const middleware = mockApp.use.mock.calls.map(call => call[0]).find(handler => handler?.length === 3);
     const response = { setHeader: jest.fn(), vary: jest.fn() };
     const next = jest.fn();
-    const expectedLastModified = new Date();
-    expectedLastModified.setUTCHours(0, 0, 0, 0);
 
     middleware({ path: '/res/img/11111111-1111-4111-8111-111111111111' }, response, next);
 
-    expect(response.setHeader).toHaveBeenCalledWith('Cache-Control', 'public, max-age=86400, immutable');
+    expect(response.setHeader).toHaveBeenCalledWith('Cache-Control', 'no-store');
     expect(response.vary).not.toHaveBeenCalled();
     expect(next).toHaveBeenCalled();
   });
