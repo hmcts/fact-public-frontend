@@ -1,6 +1,6 @@
 import { HttpStatusCode } from 'axios';
-import { type SinonSandbox, createSandbox } from 'sinon';
-
+import appConfig from 'config';
+import { type SinonSandbox, createSandbox, match } from 'sinon';
 const mockDataApiLogger = {
   error: jest.fn(),
   info: jest.fn(),
@@ -14,6 +14,7 @@ jest.mock('@hmcts/nodejs-logging', () => ({
 }));
 
 import { DataApiRequests } from '../../../main/requests/DataApiRequests';
+import { requestCache } from '../../../main/requests/utils/RequestCache';
 import { dataApi } from '../../../main/requests/utils/axiosConfig';
 import { CATCHMENT_TYPES } from '../../../main/schemas/courtServiceAreas';
 import { SEARCH_RESULT_TYPES } from '../../../main/schemas/searchResult';
@@ -57,6 +58,14 @@ function expectedAxiosError(status: HttpStatusCode, method: string, path: string
   };
 }
 
+function expectedRequestConfig(config: object) {
+  return match({
+    ...config,
+    signal: match.instanceOf(AbortSignal),
+    timeout: 10_000,
+  });
+}
+
 describe('DataApiRequests', () => {
   let sandbox: SinonSandbox;
   let requests: DataApiRequests;
@@ -70,6 +79,7 @@ describe('DataApiRequests', () => {
   afterEach(() => {
     jest.useRealTimers();
     sandbox.restore();
+    requestCache.clear();
   });
 
   describe('safeLogging', () => {
@@ -107,6 +117,109 @@ describe('DataApiRequests', () => {
     });
   });
 
+  describe('response caching', () => {
+    const searchPayload = [
+      {
+        name: 'Blackburn Family Court',
+        slug: 'blackburn-family-court',
+        locationType: 'COURT',
+        serviceCentre: false,
+      },
+    ];
+    const servicesPayload = [
+      {
+        id: 'service-id',
+        name: 'Adoption',
+        nameCy: 'Mabwysiadu',
+        description: null,
+        descriptionCy: null,
+        serviceAreas: ['area-a'],
+      },
+    ];
+
+    it('reuses an admin response until its TTL expires', async () => {
+      jest.useFakeTimers();
+      const getStub = sandbox.stub(dataApi, 'get').resolves({ data: searchPayload });
+
+      await expect(requests.getByName('Blackburn')).resolves.toEqual(searchPayload);
+      await expect(requests.getByName('Blackburn')).resolves.toEqual(searchPayload);
+      expect(getStub.calledOnce).toBe(true);
+
+      await jest.advanceTimersByTimeAsync(Number(appConfig.get('dataApiCache.adminTtlMs')));
+
+      await expect(requests.getByName('Blackburn')).resolves.toEqual(searchPayload);
+      expect(getStub.callCount).toBe(2);
+    });
+
+    it('applies the longer reference TTL independently', async () => {
+      jest.useFakeTimers();
+      const adminTtlMs = Number(appConfig.get('dataApiCache.adminTtlMs'));
+      const referenceTtlMs = Number(appConfig.get('dataApiCache.referenceTtlMs'));
+      const getStub = sandbox.stub(dataApi, 'get').resolves({ data: servicesPayload });
+
+      await expect(requests.getAllServices()).resolves.toEqual(
+        expect.arrayContaining([expect.objectContaining({ id: 'service-id', slug: 'adoption' })])
+      );
+
+      await jest.advanceTimersByTimeAsync(adminTtlMs);
+      await requests.getAllServices();
+      expect(getStub.calledOnce).toBe(true);
+
+      await jest.advanceTimersByTimeAsync(referenceTtlMs - adminTtlMs);
+      await requests.getAllServices();
+      expect(getStub.callCount).toBe(2);
+    });
+
+    it('coalesces concurrent requests for the same resource', async () => {
+      let resolveRequest: ((value: { data: typeof searchPayload }) => void) | undefined;
+      const pendingResponse = new Promise<{ data: typeof searchPayload }>(resolve => {
+        resolveRequest = resolve;
+      });
+      const getStub = sandbox.stub(dataApi, 'get').returns(pendingResponse);
+
+      const firstRequest = requests.getByName('Blackburn');
+      const secondRequest = requests.getByName('Blackburn');
+
+      expect(getStub.calledOnce).toBe(true);
+      resolveRequest?.({ data: searchPayload });
+
+      await expect(Promise.all([firstRequest, secondRequest])).resolves.toEqual([searchPayload, searchPayload]);
+    });
+
+    it('does not retain failed requests', async () => {
+      const getStub = sandbox.stub(dataApi, 'get');
+      getStub.onFirstCall().rejects(new Error('temporary failure'));
+      getStub.onSecondCall().resolves({ data: searchPayload });
+
+      await expect(requests.getByName('Blackburn')).resolves.toMatchObject({ status: HttpStatusCode.BadGateway });
+      await expect(requests.getByName('Blackburn')).resolves.toEqual(searchPayload);
+
+      expect(getStub.callCount).toBe(2);
+    });
+
+    it('does not cache responses that fail schema parsing', async () => {
+      const getStub = sandbox.stub(dataApi, 'get');
+
+      getStub.onFirstCall().resolves({
+        data: [{ invalid: true }],
+      });
+      getStub.onSecondCall().resolves({
+        data: searchPayload,
+      });
+
+      await expect(requests.getByName('Blackburn')).resolves.toMatchObject({
+        status: HttpStatusCode.BadGateway,
+      });
+
+      await expect(requests.getByName('Blackburn')).resolves.toEqual(searchPayload);
+
+      // Successful response should now be cached.
+      await expect(requests.getByName('Blackburn')).resolves.toEqual(searchPayload);
+
+      expect(getStub.callCount).toBe(2);
+    });
+  });
+
   describe('checkHealth', () => {
     it('returns true when Data API status is UP', async () => {
       sandbox
@@ -130,6 +243,21 @@ describe('DataApiRequests', () => {
       sandbox.stub(dataApi, 'get').withArgs('/health').rejects(new Error('network issue'));
 
       await expect(requests.checkHealth()).resolves.toBe(false);
+    });
+
+    it('aborts and returns false when the default ten-second deadline is exceeded', async () => {
+      jest.useFakeTimers();
+      const getStub = sandbox.stub(dataApi, 'get').returns(new Promise(() => undefined));
+
+      const result = requests.checkHealth();
+      const signal = getStub.firstCall.args[1]?.signal as AbortSignal;
+
+      await jest.advanceTimersByTimeAsync(9_999);
+      expect(signal.aborted).toBe(false);
+
+      await jest.advanceTimersByTimeAsync(1);
+      await expect(result).resolves.toBe(false);
+      expect(signal.aborted).toBe(true);
     });
   });
 
@@ -460,7 +588,7 @@ describe('DataApiRequests', () => {
 
       sandbox
         .stub(dataApi, 'get')
-        .withArgs('search/courts/v1/name', { params: { q: query } })
+        .withArgs('search/courts/v1/name', expectedRequestConfig({ params: { q: query } }))
         .resolves({ data: payload });
 
       await expect(requests.getByName(query)).resolves.toEqual(payload);
@@ -470,7 +598,7 @@ describe('DataApiRequests', () => {
       const query = 'Blackburn';
       sandbox
         .stub(dataApi, 'get')
-        .withArgs('search/courts/v1/name', { params: { q: query } })
+        .withArgs('search/courts/v1/name', expectedRequestConfig({ params: { q: query } }))
         .rejects({
           isAxiosError: true,
           response: { status: HttpStatusCode.BadGateway },
@@ -483,7 +611,7 @@ describe('DataApiRequests', () => {
       const query = 'Blackburn';
       sandbox
         .stub(dataApi, 'get')
-        .withArgs('search/courts/v1/name', { params: { q: query } })
+        .withArgs('search/courts/v1/name', expectedRequestConfig({ params: { q: query } }))
         .rejects(new Error('boom'));
 
       await expect(requests.getByName(query)).resolves.toMatchObject({ status: HttpStatusCode.BadGateway });
@@ -493,7 +621,7 @@ describe('DataApiRequests', () => {
       const query = 'Blackburn';
       sandbox
         .stub(dataApi, 'get')
-        .withArgs('search/courts/v1/name', { params: { q: query } })
+        .withArgs('search/courts/v1/name', expectedRequestConfig({ params: { q: query } }))
         .rejects({
           isAxiosError: true,
         });
@@ -524,7 +652,7 @@ describe('DataApiRequests', () => {
 
       sandbox
         .stub(dataApi, 'get')
-        .withArgs('/search/courts/v1/prefix', { params: { prefix } })
+        .withArgs('/search/courts/v1/prefix', expectedRequestConfig({ params: { prefix } }))
         .resolves({ data: payload });
 
       await expect(requests.getCourtsByPrefix(prefix)).resolves.toEqual([
@@ -541,7 +669,7 @@ describe('DataApiRequests', () => {
       const prefix = 'c';
       sandbox
         .stub(dataApi, 'get')
-        .withArgs('/search/courts/v1/prefix', { params: { prefix } })
+        .withArgs('/search/courts/v1/prefix', expectedRequestConfig({ params: { prefix } }))
         .resolves({ data: [{ raw: 'invalid' }] });
 
       await expect(requests.getCourtsByPrefix(prefix)).resolves.toMatchObject({
@@ -553,7 +681,7 @@ describe('DataApiRequests', () => {
       const prefix = 'c';
       sandbox
         .stub(dataApi, 'get')
-        .withArgs('/search/courts/v1/prefix', { params: { prefix } })
+        .withArgs('/search/courts/v1/prefix', expectedRequestConfig({ params: { prefix } }))
         .rejects({
           isAxiosError: true,
           response: { status: HttpStatusCode.NotFound },
@@ -566,7 +694,7 @@ describe('DataApiRequests', () => {
       const prefix = 'test';
       sandbox
         .stub(dataApi, 'get')
-        .withArgs('/search/courts/v1/prefix', { params: { prefix } })
+        .withArgs('/search/courts/v1/prefix', expectedRequestConfig({ params: { prefix } }))
         .rejects(new Error('boom'));
 
       await expect(requests.getCourtsByPrefix(prefix)).resolves.toMatchObject({ status: HttpStatusCode.BadGateway });
@@ -574,9 +702,12 @@ describe('DataApiRequests', () => {
 
     it('returns internal server error for axios errors with no status', async () => {
       const prefix = 'test';
-      sandbox.stub(dataApi, 'get').withArgs('/search/courts/v1/prefix', { params: { prefix } }).rejects({
-        isAxiosError: true,
-      });
+      sandbox
+        .stub(dataApi, 'get')
+        .withArgs('/search/courts/v1/prefix', expectedRequestConfig({ params: { prefix } }))
+        .rejects({
+          isAxiosError: true,
+        });
 
       await expect(requests.getCourtsByPrefix(prefix)).resolves.toMatchObject({
         status: HttpStatusCode.ServiceUnavailable,
@@ -605,13 +736,16 @@ describe('DataApiRequests', () => {
 
       sandbox
         .stub(dataApi, 'get')
-        .withArgs('/search/locations/v1/postcode', {
-          params: {
-            postcode: 'SW1A 1AA',
-            serviceArea: 'Divorce',
-            action: 'NEAREST',
-          },
-        })
+        .withArgs(
+          '/search/locations/v1/postcode',
+          expectedRequestConfig({
+            params: {
+              postcode: 'SW1A 1AA',
+              serviceArea: 'Divorce',
+              action: 'NEAREST',
+            },
+          })
+        )
         .resolves({ data: payload });
 
       await expect(requests.performPostcodeSearch('SW1A 1AA', 'Divorce', 'nearest')).resolves.toEqual(payload);
@@ -620,13 +754,16 @@ describe('DataApiRequests', () => {
     it('returns API status code when postcode search request fails with axios status', async () => {
       sandbox
         .stub(dataApi, 'get')
-        .withArgs('/search/locations/v1/postcode', {
-          params: {
-            postcode: 'SW1A 1AA',
-            serviceArea: 'Divorce',
-            action: 'NEAREST',
-          },
-        })
+        .withArgs(
+          '/search/locations/v1/postcode',
+          expectedRequestConfig({
+            params: {
+              postcode: 'SW1A 1AA',
+              serviceArea: 'Divorce',
+              action: 'NEAREST',
+            },
+          })
+        )
         .rejects({
           isAxiosError: true,
           response: { status: HttpStatusCode.BadRequest },
@@ -640,13 +777,16 @@ describe('DataApiRequests', () => {
     it('preserves a genuine missing service-area response', async () => {
       sandbox
         .stub(dataApi, 'get')
-        .withArgs('/search/locations/v1/postcode', {
-          params: {
-            postcode: 'SW1A 1AA',
-            serviceArea: 'Missing area',
-            action: 'NEAREST',
-          },
-        })
+        .withArgs(
+          '/search/locations/v1/postcode',
+          expectedRequestConfig({
+            params: {
+              postcode: 'SW1A 1AA',
+              serviceArea: 'Missing area',
+              action: 'NEAREST',
+            },
+          })
+        )
         .rejects({ isAxiosError: true, response: { status: HttpStatusCode.NotFound } });
 
       await expect(requests.performPostcodeSearch('SW1A 1AA', 'Missing area', 'nearest')).resolves.toMatchObject({
@@ -657,13 +797,16 @@ describe('DataApiRequests', () => {
     it('returns service unavailable when postcode search receives no upstream response', async () => {
       sandbox
         .stub(dataApi, 'get')
-        .withArgs('/search/locations/v1/postcode', {
-          params: {
-            postcode: 'SW1A 1AA',
-            serviceArea: 'Divorce',
-            action: 'NEAREST',
-          },
-        })
+        .withArgs(
+          '/search/locations/v1/postcode',
+          expectedRequestConfig({
+            params: {
+              postcode: 'SW1A 1AA',
+              serviceArea: 'Divorce',
+              action: 'NEAREST',
+            },
+          })
+        )
         .rejects({
           isAxiosError: true,
           response: {},
@@ -677,13 +820,16 @@ describe('DataApiRequests', () => {
     it('returns bad gateway when postcode response parsing fails', async () => {
       sandbox
         .stub(dataApi, 'get')
-        .withArgs('/search/locations/v1/postcode', {
-          params: {
-            postcode: 'SW1A 1AA',
-            serviceArea: 'Divorce',
-            action: 'NEAREST',
-          },
-        })
+        .withArgs(
+          '/search/locations/v1/postcode',
+          expectedRequestConfig({
+            params: {
+              postcode: 'SW1A 1AA',
+              serviceArea: 'Divorce',
+              action: 'NEAREST',
+            },
+          })
+        )
         .rejects(new Error('boom'));
 
       await expect(requests.performPostcodeSearch('SW1A 1AA', 'Divorce', 'nearest')).resolves.toMatchObject({
@@ -705,11 +851,14 @@ describe('DataApiRequests', () => {
 
       sandbox
         .stub(dataApi, 'get')
-        .withArgs('/search/courts/v1/postcode', {
-          params: {
-            postcode: 'SW1A 1AA',
-          },
-        })
+        .withArgs(
+          '/search/courts/v1/postcode',
+          expectedRequestConfig({
+            params: {
+              postcode: 'SW1A 1AA',
+            },
+          })
+        )
         .resolves({ data: payload });
 
       await expect(requests.performPostcodeOnlySearch('SW1A 1AA')).resolves.toEqual(payload);
@@ -718,11 +867,14 @@ describe('DataApiRequests', () => {
     it('returns API status code for postcode-only axios errors with response status', async () => {
       sandbox
         .stub(dataApi, 'get')
-        .withArgs('/search/courts/v1/postcode', {
-          params: {
-            postcode: 'SW1A 1AA',
-          },
-        })
+        .withArgs(
+          '/search/courts/v1/postcode',
+          expectedRequestConfig({
+            params: {
+              postcode: 'SW1A 1AA',
+            },
+          })
+        )
         .rejects({
           isAxiosError: true,
           response: { status: HttpStatusCode.BadGateway },
@@ -736,11 +888,14 @@ describe('DataApiRequests', () => {
     it('returns internal server error for postcode-only non-axios failures', async () => {
       sandbox
         .stub(dataApi, 'get')
-        .withArgs('/search/courts/v1/postcode', {
-          params: {
-            postcode: 'SW1A 1AA',
-          },
-        })
+        .withArgs(
+          '/search/courts/v1/postcode',
+          expectedRequestConfig({
+            params: {
+              postcode: 'SW1A 1AA',
+            },
+          })
+        )
         .rejects(new Error('boom'));
 
       await expect(requests.performPostcodeOnlySearch('SW1A 1AA')).resolves.toMatchObject({
@@ -960,7 +1115,7 @@ describe('DataApiRequests', () => {
       const stream = { pipe: jest.fn() };
       sandbox
         .stub(dataApi, 'get')
-        .withArgs(location, requestConfig)
+        .withArgs(location, expectedRequestConfig(requestConfig))
         .resolves({
           data: stream,
           headers: {
@@ -983,7 +1138,7 @@ describe('DataApiRequests', () => {
     it('maps a missing court image to not found when the endpoint opts into that contract', async () => {
       sandbox
         .stub(dataApi, 'get')
-        .withArgs(location, requestConfig)
+        .withArgs(location, expectedRequestConfig(requestConfig))
         .rejects({ isAxiosError: true, response: { status: HttpStatusCode.NotFound } });
 
       await expect(requests.getFileStream(location, { notFound: true })).resolves.toMatchObject({
@@ -995,7 +1150,7 @@ describe('DataApiRequests', () => {
       const csvLocation = '/resources/v1/csv';
       sandbox
         .stub(dataApi, 'get')
-        .withArgs(csvLocation, requestConfig)
+        .withArgs(csvLocation, expectedRequestConfig(requestConfig))
         .rejects({ isAxiosError: true, response: { status: HttpStatusCode.NotFound } });
 
       await expect(requests.getFileStream(csvLocation, { notFound: true })).resolves.toMatchObject({
@@ -1004,7 +1159,10 @@ describe('DataApiRequests', () => {
     });
 
     it('maps a transport failure to service unavailable', async () => {
-      sandbox.stub(dataApi, 'get').withArgs(location, requestConfig).rejects({ isAxiosError: true });
+      sandbox
+        .stub(dataApi, 'get')
+        .withArgs(location, expectedRequestConfig(requestConfig))
+        .rejects({ isAxiosError: true });
 
       await expect(requests.getFileStream(location)).resolves.toMatchObject({
         status: HttpStatusCode.ServiceUnavailable,
@@ -1014,7 +1172,7 @@ describe('DataApiRequests', () => {
     it('does not expose an upstream authentication failure', async () => {
       sandbox
         .stub(dataApi, 'get')
-        .withArgs(location, requestConfig)
+        .withArgs(location, expectedRequestConfig(requestConfig))
         .rejects({ isAxiosError: true, response: { status: HttpStatusCode.Unauthorized } });
 
       await expect(requests.getFileStream(location)).resolves.toMatchObject({
