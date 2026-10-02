@@ -25,7 +25,7 @@ const validCourt = {
   open: true,
   warningNotice: null,
   warningNoticeCy: null,
-  lastUpdatedAt: '2026-05-15',
+  lastUpdatedAt: '2026-05-15T10:35:21.675Z',
   openOnCath: null,
   mrdId: null,
   region: {
@@ -316,7 +316,7 @@ describe('DataApiRequests', () => {
             ],
             courtAreasOfLaw: [
               {
-                areasOfLaw: ['acde070d-8c4c-4fc4-6789-162843c10333'],
+                areasOfLaw: ['acde570d-8c4c-4f0d-9d8a-162843c10333'],
               },
             ],
           },
@@ -327,7 +327,7 @@ describe('DataApiRequests', () => {
           serviceCentre: true,
           court: null,
           serviceCentreDetails: {
-            id: 'acde070d-8c4c-4f0d-9d8a-162843c10333',
+            id: 'acde570d-8c4c-4f0d-9d8a-162843c10333',
             name: 'Service Centre A',
             slug: 'service-centre-a',
             open: true,
@@ -335,10 +335,10 @@ describe('DataApiRequests', () => {
             warningNoticeCy: null,
             createdAt: '2026-06-01T10:00:00Z',
             lastUpdatedAt: '2026-06-02T10:00:00Z',
-            regionId: 'acde070d-8c4c-4f0d-9d8a-162843c10331',
+            regionId: 'acde570d-8c4c-4f0d-9d8a-162843c10333',
             serviceAreas: [
               {
-                id: 'acde070d-8c4c-4f0d-9d8a-162843c103367',
+                id: 'acde570d-8c4c-4f0d-9d8a-162843c10333',
                 name: 'Divorce',
                 nameCy: 'Ysgariad',
                 description: null,
@@ -349,7 +349,7 @@ describe('DataApiRequests', () => {
                 text: null,
                 textCy: null,
                 catchmentMethod: 'NATIONAL',
-                areaOfLawId: 'acde070d-8c4c-4f0d-6d8a-162843c10333',
+                areaOfLawId: 'acde570d-8c4c-4f0d-9d8a-162843c10333',
                 type: 'CIVIL',
                 sortOrder: 1,
                 hasLocal: false,
@@ -360,8 +360,8 @@ describe('DataApiRequests', () => {
             catchmentType: CATCHMENT_TYPES.NATIONAL,
             serviceCentreAddresses: [
               {
-                id: 'acde070d-8c4c-4f0d-9d8a-162847c10333',
-                serviceCentreId: 'acde070d-8c4b-4f0d-9d8a-162843c10333',
+                id: 'acde570d-8c4c-4f0d-9d8a-162843c10333',
+                serviceCentreId: 'acde570d-8c4c-4f0d-9d8a-162843c10333',
                 addressLine1: '1 Service Street',
                 addressLine2: null,
                 townCity: 'London',
@@ -374,14 +374,14 @@ describe('DataApiRequests', () => {
             ],
             serviceCentreContactDetails: [
               {
-                id: 'acde070d-8c4c-4c0d-9d8a-162843c10333',
-                serviceCentreId: 'acde074d-8c4c-4f0d-9d8a-162843c10333',
+                id: 'acde570d-8c4c-4f0d-9d8a-162843c10333',
+                serviceCentreId: 'acde570d-8c4c-4f0d-9d8a-162843c10333',
                 explanation: 'General enquiries',
                 explanationCy: null,
                 email: 'service@example.com',
                 phoneNumber: '0300 123 4567',
                 serviceCentreContactDescription: {
-                  id: 'acde070d-8c4c-4f0d-9d8a-162743c10333',
+                  id: 'acde570d-8c4c-4f0d-9d8a-162843c10333',
                   name: 'Enquiries',
                   nameCy: 'Ymholiadau',
                 },
@@ -389,11 +389,11 @@ describe('DataApiRequests', () => {
             ],
             serviceCentreAreasOfLaw: [
               {
-                id: 'acde070d-8c6c-4f0d-9d8a-162843c10333',
-                serviceCentreId: 'acde074d-8c4c-4f0d-9d8a-162843c10333',
+                id: 'acde570d-8c4c-4f0d-9d8a-162843c10333',
+                serviceCentreId: 'acde570d-8c4c-4f0d-9d8a-162843c10333',
                 areasOfLaw: [
                   {
-                    id: 'acde075d-8c4c-4f0d-9d8a-162843c10333',
+                    id: 'acde570d-8c4c-4f0d-9d8a-162843c10333',
                     name: 'Family',
                     nameCy: 'Teulu',
                     externalLink: null,
@@ -530,7 +530,7 @@ describe('DataApiRequests', () => {
           open: true,
           warningNotice: null,
           warningNoticeCy: null,
-          lastUpdatedAt: '2026-09-21',
+          lastUpdatedAt: '2026-09-21T10:35:21.675Z',
           openOnCath: null,
           mrdId: null,
           regionId: 'acde079d-8c4c-4f0d-9d8a-163843c10333',
@@ -840,7 +840,7 @@ describe('DataApiRequests', () => {
       await expect(requests.getAllServices()).resolves.toEqual(
         expect.arrayContaining([
           expect.objectContaining({
-            id: 'acde070d-8c4c-4f0d-9d8a-162843c10222',
+            id: 'acde070d-8c4c-4f0d-9d8a-162843c10111',
             name: 'Adoption',
             slug: 'adoption',
           }),
@@ -896,7 +896,7 @@ describe('DataApiRequests', () => {
       await expect(requests.getServiceAreas('Adoption')).resolves.toEqual(
         expect.arrayContaining([
           expect.objectContaining({
-            id: 'area-id',
+            id: 'acde072d-8c4c-4f0d-9d8a-332843c10333',
             slug: 'children-family-law',
           }),
         ])
@@ -937,11 +937,11 @@ describe('DataApiRequests', () => {
     it('returns parsed service-centre search results on success', async () => {
       const payload = [
         {
-          id: 'acde220d-8c4c-4f0d-9d8a-162843c10333',
-          serviceCentreId: 'acde070d-8c4c-4f0d-9d8a-332843c10888',
+          id: 'acde072d-8c4c-4f0d-9d8a-332843c10333',
+          serviceCentreId: 'acde072d-8c4c-4f0d-9d8a-332843c10333',
           serviceCentreName: 'National Service Centre',
           serviceCentreSlug: 'national-service-centre',
-          serviceAreaIds: ['acde070d-8c4c-4f0d-1111-162843c10333'],
+          serviceAreaIds: ['acde072d-8c4c-4f0d-9d8a-332843c10333'],
           catchmentType: CATCHMENT_TYPES.NATIONAL,
           type: SEARCH_RESULT_TYPES.SERVICE_CENTRE,
         },
@@ -955,8 +955,8 @@ describe('DataApiRequests', () => {
     it('parses service-centre search results without a catchment type', async () => {
       const payload = [
         {
-          id: 'acde070d-8c4c-4f0d-9d8a-162843c10777',
-          serviceCentreId: 'acde070d-8c4c-4f0d-777-162843c10999',
+          id: 'acde070d-8c4c-4c0d-89ab-162843c10333',
+          serviceCentreId: 'acbe070d-8c4c-4f0d-ab89-162843c10333',
           serviceCentreName: 'Service Centre',
           serviceCentreSlug: 'service-centre',
           serviceAreaIds: [],
