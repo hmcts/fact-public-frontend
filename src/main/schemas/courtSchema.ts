@@ -1,5 +1,20 @@
 import { z } from 'zod';
 
+const isoDateStringSchema = z.iso.datetime({ offset: true });
+
+export const DAYS_OF_THE_WEEK = [
+  'MONDAY',
+  'TUESDAY',
+  'WEDNESDAY',
+  'THURSDAY',
+  'FRIDAY',
+  'SATURDAY',
+  'SUNDAY',
+  'EVERYDAY',
+] as const;
+
+export const timeOfDaySchema = z.iso.time();
+
 const courtRegionSchema = z.object({
   name: z.string(),
   country: z.string(),
@@ -81,9 +96,9 @@ const courtContactDetailSchema = z.object({
 });
 
 const openingTimesDetailSchema = z.object({
-  dayOfWeek: z.string(),
-  openingTime: z.string(),
-  closingTime: z.string(),
+  dayOfWeek: z.enum(DAYS_OF_THE_WEEK),
+  openingTime: timeOfDaySchema,
+  closingTime: timeOfDaySchema,
 });
 
 const courtTypeSchema = z.object({
@@ -153,7 +168,7 @@ const courtPhotoSchema = z
   .object({
     courtId: z.uuid(),
     fileLink: z.string(),
-    lastUpdatedAt: z.string(),
+    lastUpdatedAt: isoDateStringSchema,
   })
   .transform(courtPhoto => ({
     fileLink: replaceFileLink(courtPhoto.fileLink, courtPhoto.courtId),
@@ -174,7 +189,7 @@ export const courtSchema = z.object({
   open: z.boolean(),
   warningNotice: z.string().nullable(),
   warningNoticeCy: z.string().nullable(),
-  lastUpdatedAt: z.string(),
+  lastUpdatedAt: isoDateStringSchema,
   openOnCath: z.boolean().nullable(),
   mrdId: z.string().nullable(),
   region: courtRegionSchema,

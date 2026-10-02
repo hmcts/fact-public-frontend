@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { courtSchema } from './courtSchema';
 import { CATCHMENT_TYPES } from './courtServiceAreas';
 
+const isoDateStringSchema = z.iso.datetime({ offset: true });
 const nullableStringSchema = z.string().nullable().optional();
 const nullableNumberSchema = z.number().nullable().optional();
 const allLocationCourtAreaOfLawSchema = z.object({
@@ -117,8 +118,8 @@ export const serviceCentreDetailsSchema = z.object({
   open: z.boolean().nullable().optional(),
   warningNotice: nullableStringSchema,
   warningNoticeCy: nullableStringSchema,
-  createdAt: nullableStringSchema,
-  lastUpdatedAt: nullableStringSchema,
+  createdAt: isoDateStringSchema.nullable().optional(),
+  lastUpdatedAt: isoDateStringSchema.nullable().optional(),
   regionId: z.uuid().nullable().optional(),
   serviceAreas: z
     .array(z.union([z.string(), serviceAreaSchema]))

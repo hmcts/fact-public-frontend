@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const nullableStringSchema = z.string().nullable().optional();
+const isoDateStringSchema = z.iso.datetime({ offset: true });
 export const courtBasicSchema = z.object({
   id: z.uuid(),
   name: z.string(),
@@ -8,8 +8,8 @@ export const courtBasicSchema = z.object({
   open: z.boolean(),
   warningNotice: z.string().nullable(),
   warningNoticeCy: z.string().nullable(),
-  createdAt: nullableStringSchema,
-  lastUpdatedAt: z.string(),
+  createdAt: isoDateStringSchema.nullable().optional(),
+  lastUpdatedAt: isoDateStringSchema,
   openOnCath: z.boolean().nullable(),
   mrdId: z.string().nullable(),
   regionId: z.uuid(),

@@ -3,13 +3,13 @@ import { describe, expect, it } from '@jest/globals';
 import { courtSchema } from '../../../main/schemas/courtSchema';
 
 const baseCourt = {
-  id: 'a',
+  id: 'acde070d-8c4c-4f0d-9d8a-162843c10333',
   name: 'A Court',
   slug: 'a-court',
   open: true,
   warningNotice: null,
   warningNoticeCy: null,
-  lastUpdatedAt: '2026-05-15',
+  lastUpdatedAt: '2026-05-15T10:35:21.675Z',
   openOnCath: null,
   mrdId: null,
   region: {
