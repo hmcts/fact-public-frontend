@@ -2,14 +2,14 @@ import { ServiceCentreDetails } from '../../../main/schemas/allLocationDetails';
 import { ServiceCentreService } from '../../../main/services/ServiceCentreService';
 
 const buildServiceCentre = (overrides: Partial<ServiceCentreDetails> = {}): ServiceCentreDetails => ({
-  id: 'service-centre-id',
+  id: 'acde070d-8c4c-4f0d-9d8a-162843c10333',
   name: 'Test Service Centre',
   slug: 'test-service-centre',
   open: true,
   warningNotice: null,
   createdAt: '2024-01-01T00:00:00.000Z',
   lastUpdatedAt: '2024-01-15T10:00:00.000Z',
-  regionId: 'region-id',
+  regionId: 'acde070d-8c4c-4f0d-9d8a-162843c10333',
   serviceAreas: [],
   catchmentType: null,
   serviceCentreAddresses: [],
