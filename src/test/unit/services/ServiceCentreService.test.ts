@@ -2,14 +2,14 @@ import { ServiceCentreDetails } from '../../../main/schemas/allLocationDetails';
 import { ServiceCentreService } from '../../../main/services/ServiceCentreService';
 
 const buildServiceCentre = (overrides: Partial<ServiceCentreDetails> = {}): ServiceCentreDetails => ({
-  id: 'acde070d-8c4c-4f0d-9d8a-162843c10333',
+  id: '11111111-1111-4111-8111-111111111111',
   name: 'Test Service Centre',
   slug: 'test-service-centre',
   open: true,
   warningNotice: null,
   createdAt: '2024-01-01T00:00:00.000Z',
   lastUpdatedAt: '2024-01-15T10:00:00.000Z',
-  regionId: 'acde070d-8c4c-4f0d-9d8a-162843c10333',
+  regionId: '11111111-1111-4111-8111-111111111111',
   serviceAreas: [],
   catchmentType: null,
   serviceCentreAddresses: [],
@@ -95,13 +95,23 @@ describe('ServiceCentreService', () => {
   test('normalizes missing nested areas of law', () => {
     const result = new ServiceCentreService().formatData(
       buildServiceCentre({
-        serviceCentreAreasOfLaw: [{ id: 'group-id', serviceCentreId: 'service-centre-id', areasOfLaw: null }],
+        serviceCentreAreasOfLaw: [
+          {
+            id: '11111111-1111-4111-8111-111111111111',
+            serviceCentreId: '22222222-2222-4222-8222-222222222222',
+            areasOfLaw: null,
+          },
+        ],
       }),
       'en'
     );
 
     expect(result.serviceCentreAreasOfLaw).toEqual([
-      { id: 'group-id', serviceCentreId: 'service-centre-id', areasOfLaw: [] },
+      {
+        id: '11111111-1111-4111-8111-111111111111',
+        serviceCentreId: '22222222-2222-4222-8222-222222222222',
+        areasOfLaw: [],
+      },
     ]);
   });
 });

@@ -5,7 +5,7 @@ import { courtBasicSchema } from '../../../main/schemas/courtBasicSchema';
 describe('service-related schemas', () => {
   test('serviceSchema derives slug from service name', () => {
     const parsed = serviceSchema.parse({
-      id: 'acde070d-8c4c-4f0d-9d8a-162843c10333',
+      id: '11111111-1111-4111-8111-111111111111',
       name: 'Adoption, Family Matters',
       slug: 'should-be-overwritten',
       nameCy: 'Mabwysiadu',
@@ -19,7 +19,7 @@ describe('service-related schemas', () => {
 
   test('serviceAreaSchema derives slug from area name', () => {
     const parsed = serviceAreaSchema.parse({
-      id: 'acde070d-8c4c-4f0d-9d8a-162843c10333',
+      id: '11111111-1111-4111-8111-111111111111',
       name: 'Children, Family Law',
       slug: 'ignored',
       nameCy: 'Plant',
@@ -31,7 +31,7 @@ describe('service-related schemas', () => {
       text: null,
       textCy: null,
       catchmentMethod: CATCHMENT_METHOD.POSTCODE,
-      areaOfLawId: 'acde070d-8c4c-4f0d-9d8a-162843c10333',
+      areaOfLawId: '22222222-2222-4222-8222-222222222222',
       type: SERVICE_AREA_TYPE.FAMILY,
       sortOrder: 1,
       hasLocal: true,
@@ -44,7 +44,7 @@ describe('service-related schemas', () => {
 
   test('courtBasicSchema accepts optional service centre metadata', () => {
     const parsed = courtBasicSchema.parse({
-      id: 'acde070d-8c4c-4f0d-9d8a-162843c10333',
+      id: '11111111-1111-4111-8111-111111111111',
       name: 'Test Court',
       slug: 'test-court',
       open: true,

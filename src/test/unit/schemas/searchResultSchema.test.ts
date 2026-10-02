@@ -4,7 +4,7 @@ import { searchResultSchema } from '../../../main/schemas/searchResult';
 
 describe('searchResultSchema', () => {
   const validResult = {
-    id: 'acde070d-8c4c-4f0d-9d8a-162843c10333',
+    id: '11111111-1111-4111-8111-111111111111',
     name: 'A Court',
     slug: 'a-court',
     distance: 1.5,

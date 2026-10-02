@@ -3,7 +3,7 @@ import { describe, expect, it } from '@jest/globals';
 import { courtSchema, isoDateTimeStringSchema, timeOfDaySchema } from '../../../main/schemas/courtSchema';
 
 const baseCourt = {
-  id: 'acde070d-8c4c-4f0d-9d8a-162843c10333',
+  id: '11111111-1111-4111-8111-111111111111',
   name: 'A Court',
   slug: 'a-court',
   open: true,
