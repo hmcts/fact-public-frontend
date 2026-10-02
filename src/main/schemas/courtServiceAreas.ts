@@ -13,9 +13,9 @@ export const serviceAreaSearchResultSchema = z.object({
   serviceCentreId: z.uuid(),
   serviceCentreName: z.string(),
   serviceCentreSlug: z.string(),
-  serviceAreaIds: z.array(z.string()),
+  serviceAreaIds: z.array(z.uuid()),
   catchmentType: z.enum(CATCHMENT_TYPES).nullable(),
-  type: z.enum(SEARCH_RESULT_TYPES),
+  type: z.literal(SEARCH_RESULT_TYPES.SERVICE_CENTRE),
 });
 
 export type ServiceAreaSearchResult = z.infer<typeof serviceAreaSearchResultSchema>;
