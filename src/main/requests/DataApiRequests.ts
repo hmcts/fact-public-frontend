@@ -91,6 +91,9 @@ export class DataApiRequests {
     });
 
     try {
+      // internally, the abort signal will be passed to both the axios request and the token acquisition,
+      // so if either takes too long, the whole operation will be aborted. The timeout being specified on
+      // the axios request is just belt-and-braces in case the abort signal is ignored.
       return await Promise.race([
         dataApi.get<T>(url, {
           ...config,
