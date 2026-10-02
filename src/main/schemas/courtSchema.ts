@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const isoDateStringSchema = z.iso.datetime({ offset: true });
+export const isoDateTimeStringSchema = z.iso.datetime({ offset: true });
 
 export const DAYS_OF_THE_WEEK = [
   'MONDAY',
@@ -168,7 +168,7 @@ const courtPhotoSchema = z
   .object({
     courtId: z.uuid(),
     fileLink: z.string(),
-    lastUpdatedAt: isoDateStringSchema,
+    lastUpdatedAt: isoDateTimeStringSchema,
   })
   .transform(courtPhoto => ({
     fileLink: replaceFileLink(courtPhoto.fileLink, courtPhoto.courtId),
@@ -189,7 +189,7 @@ export const courtSchema = z.object({
   open: z.boolean(),
   warningNotice: z.string().nullable(),
   warningNoticeCy: z.string().nullable(),
-  lastUpdatedAt: isoDateStringSchema,
+  lastUpdatedAt: isoDateTimeStringSchema,
   openOnCath: z.boolean().nullable(),
   mrdId: z.string().nullable(),
   region: courtRegionSchema,
