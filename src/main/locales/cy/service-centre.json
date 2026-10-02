@@ -34,7 +34,8 @@
     "scammersBodyPrefix": "Mae rhai sgamwyr yn cogio eu bod yn gweithio i GLlTEF neu'r adran orfodaeth.",
     "scammersUrl": "https://www.gov.uk/government/news/scammers-using-hmcts-telephone-numbers",
     "scammersUrlText": "Darganfyddwch beth i'w wneud os gofynnir i chi am arian ac nad ydych yn siŵr a yw'n ddilys",
-    "opensInNewTab": "(yn agor mewn tab newydd)"
+    "opensInNewTab": "(yn agor mewn tab newydd)",
+    "buryStEdmundsAdditionalMessage": "Mae'r lleoliad hwn yn gwasanaethu Cymru a Lloegr i gyd ar gyfer ceisiadau partneriaeth sifil ac ysgariad cyn 6 Ebrill 2022 ac achosion papur yn unig, bydd rhifau achos yn dechrau gyda BV, LV, EZ, BD. Gweler tudalennau cyswllt rhwymedi ariannol am wybodaeth ar ble i anfon eich dogfennau ariannol. Nid ydym yn darparu gwasanaeth wyneb yn wyneb.\n\nOs ydych wedi cwblhau cais am ysgariad ar ôl 6 Ebrill 2022 neu bod eich rhif achos wedi dechrau gyda ZZ yna cysylltwch gyda CTSC Canolfan Gwasanaethau Llysoedd a Thribiwnlysoedd Stoke, Gwasanaeth Ysgaru a Diddymu GLlTEF, Blwch Post 13226, Harlow CM20 9UG"
   },
   "closed": {
     "title": "{name} - Dod o hyd i lys neu dribiwnlys - GOV.UK",
