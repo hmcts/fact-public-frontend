@@ -37,7 +37,7 @@
 
       {% if warningNotice %}
         {{ govukWarningText({
-          text: warningNotice,
+          html: warningNotice | nl2br,
           iconFallbackText: warningFallbackText
         }) }}
       {% endif %}
