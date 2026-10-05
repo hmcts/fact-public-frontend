@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { courtSchema } from './courtSchema';
 import { CATCHMENT_TYPES } from './courtServiceAreas';
 
+const isoDateStringSchema = z.iso.datetime({ offset: true });
 const nullableStringSchema = z.string().nullable().optional();
 const nullableNumberSchema = z.number().nullable().optional();
 const allLocationCourtAreaOfLawSchema = z.object({
@@ -40,8 +41,8 @@ const allLocationCourtSchema = courtSchema.extend({
 });
 
 const serviceCentreAddressSchema = z.object({
-  id: z.string().optional(),
-  serviceCentreId: z.string().optional(),
+  id: z.uuid().optional(),
+  serviceCentreId: z.uuid().optional(),
   addressLine1: nullableStringSchema,
   addressLine2: nullableStringSchema,
   townCity: nullableStringSchema,
@@ -54,7 +55,7 @@ const serviceCentreAddressSchema = z.object({
 
 const serviceCentreContactDescriptionSchema = z
   .object({
-    id: z.string().optional(),
+    id: z.uuid().optional(),
     name: z.string(),
     nameCy: z.string(),
   })
@@ -62,8 +63,8 @@ const serviceCentreContactDescriptionSchema = z
   .optional();
 
 const serviceCentreContactDetailsSchema = z.object({
-  id: z.string().optional(),
-  serviceCentreId: z.string().optional(),
+  id: z.uuid().optional(),
+  serviceCentreId: z.uuid().optional(),
   explanation: nullableStringSchema,
   explanationCy: nullableStringSchema,
   email: nullableStringSchema,
@@ -72,7 +73,7 @@ const serviceCentreContactDetailsSchema = z.object({
 });
 
 const serviceAreaSchema = z.object({
-  id: z.string(),
+  id: z.uuid(),
   name: z.string(),
   nameCy: z.string(),
   description: nullableStringSchema,
@@ -92,7 +93,7 @@ const serviceAreaSchema = z.object({
 });
 
 const serviceCentreAreaOfLawSchema = z.object({
-  id: z.string().optional(),
+  id: z.uuid().optional(),
   name: z.string(),
   nameCy: z.string(),
   externalLink: nullableStringSchema,
@@ -102,8 +103,8 @@ const serviceCentreAreaOfLawSchema = z.object({
 });
 
 const serviceCentreAreasOfLawSchema = z.object({
-  id: z.string().optional(),
-  serviceCentreId: z.string().optional(),
+  id: z.uuid().optional(),
+  serviceCentreId: z.uuid().optional(),
   areasOfLaw: z
     .array(z.union([z.string(), serviceCentreAreaOfLawSchema]))
     .nullable()
@@ -111,15 +112,15 @@ const serviceCentreAreasOfLawSchema = z.object({
 });
 
 export const serviceCentreDetailsSchema = z.object({
-  id: z.string(),
+  id: z.uuid(),
   name: z.string(),
   slug: z.string(),
   open: z.boolean().nullable().optional(),
   warningNotice: nullableStringSchema,
   warningNoticeCy: nullableStringSchema,
-  createdAt: nullableStringSchema,
-  lastUpdatedAt: nullableStringSchema,
-  regionId: z.string().nullable().optional(),
+  createdAt: isoDateStringSchema.nullable().optional(),
+  lastUpdatedAt: isoDateStringSchema.nullable().optional(),
+  regionId: z.uuid().nullable().optional(),
   serviceAreas: z
     .array(z.union([z.string(), serviceAreaSchema]))
     .nullable()
