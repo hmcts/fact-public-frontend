@@ -1,16 +1,18 @@
 import { z } from 'zod';
 
+const isoDateStringSchema = z.iso.datetime({ offset: true });
 export const courtBasicSchema = z.object({
-  id: z.string(),
+  id: z.uuid(),
   name: z.string(),
   slug: z.string(),
   open: z.boolean(),
   warningNotice: z.string().nullable(),
   warningNoticeCy: z.string().nullable(),
-  lastUpdatedAt: z.string(),
+  createdAt: isoDateStringSchema.nullable().optional(),
+  lastUpdatedAt: isoDateStringSchema,
   openOnCath: z.boolean().nullable(),
   mrdId: z.string().nullable(),
-  region: z.string(),
+  regionId: z.uuid(),
   serviceCentre: z.boolean().optional(),
   locationType: z.enum(['COURT', 'SERVICE_CENTRE']).optional(),
 });

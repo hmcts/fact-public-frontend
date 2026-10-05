@@ -4,7 +4,6 @@ import { Response } from 'express';
 import { FactRequest } from '../interfaces/FactRequest';
 import { isDataApiError } from '../requests/DataApiError';
 import { DataApiRequests } from '../requests/DataApiRequests';
-import { CourtSearchResult } from '../schemas/courtSchema';
 import { isValidPrefix } from '../utils/validationUtils';
 
 import BaseController from './BaseController';
@@ -40,18 +39,16 @@ export default class AZPrefixSearchController extends BaseController {
     }
 
     const prefix = prefixQuery.toUpperCase();
-    const result = await this.dataApiRequests.getCourtsByPrefix(prefix);
+    const courts = await this.dataApiRequests.getCourtsByPrefix(prefix);
 
-    if (isDataApiError(result)) {
-      return res.status(result.status).render('prefix-search', {
+    if (isDataApiError(courts)) {
+      return res.status(courts.status).render('prefix-search', {
         ...data,
         errors: true,
         errorMessage: data.error.api,
         prefix,
       });
     }
-
-    const courts = result as CourtSearchResult[];
 
     return res.render('prefix-search', {
       ...data,

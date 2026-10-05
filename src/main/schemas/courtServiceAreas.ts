@@ -9,15 +9,13 @@ export enum CATCHMENT_TYPES {
 }
 
 export const serviceAreaSearchResultSchema = z.object({
-  id: z.string(),
-  serviceCentreId: z.string(),
+  id: z.uuid(),
+  serviceCentreId: z.uuid(),
   serviceCentreName: z.string(),
   serviceCentreSlug: z.string(),
-  serviceAreaIds: z.array(z.string()),
+  serviceAreaIds: z.array(z.uuid()),
   catchmentType: z.enum(CATCHMENT_TYPES).nullable(),
-  type: z.enum(SEARCH_RESULT_TYPES),
+  type: z.literal(SEARCH_RESULT_TYPES.SERVICE_CENTRE),
 });
-
-export const courtServiceAreasSchema = serviceAreaSearchResultSchema;
 
 export type ServiceAreaSearchResult = z.infer<typeof serviceAreaSearchResultSchema>;
