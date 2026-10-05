@@ -120,15 +120,23 @@ describe('DataApiRequests', () => {
   describe('response caching', () => {
     const searchPayload = [
       {
+        id: '11111111-1111-4111-8111-111111111111',
         name: 'Blackburn Family Court',
         slug: 'blackburn-family-court',
+        open: true,
+        warningNotice: null,
+        warningNoticeCy: null,
+        lastUpdatedAt: '2026-09-28T15:27:30.908Z',
+        openOnCath: true,
+        mrdId: null,
+        regionId: '22222222-2222-4222-8222-222222222222',
         locationType: 'COURT',
         serviceCentre: false,
       },
     ];
     const servicesPayload = [
       {
-        id: 'service-id',
+        id: '33333333-3333-4333-8333-333333333333',
         name: 'Adoption',
         nameCy: 'Mabwysiadu',
         description: null,
@@ -158,7 +166,9 @@ describe('DataApiRequests', () => {
       const getStub = sandbox.stub(dataApi, 'get').resolves({ data: servicesPayload });
 
       await expect(requests.getAllServices()).resolves.toEqual(
-        expect.arrayContaining([expect.objectContaining({ id: 'service-id', slug: 'adoption' })])
+        expect.arrayContaining([
+          expect.objectContaining({ id: '33333333-3333-4333-8333-333333333333', slug: 'adoption' }),
+        ])
       );
 
       await jest.advanceTimersByTimeAsync(adminTtlMs);
@@ -862,17 +872,20 @@ describe('DataApiRequests', () => {
     it('maps invalid discriminated-union payload to bad gateway', async () => {
       sandbox
         .stub(dataApi, 'get')
-        .withArgs('/search/locations/v1/postcode', {
-          params: {
-            postcode: 'SW1A 1AA',
-            serviceArea: 'Divorce',
-            action: 'NEAREST',
-          },
-        })
+        .withArgs(
+          '/search/locations/v1/postcode',
+          expectedRequestConfig({
+            params: {
+              postcode: 'SW1A 1AA',
+              serviceArea: 'Divorce',
+              action: 'NEAREST',
+            },
+          })
+        )
         .resolves({
           data: [
             {
-              id: '11111111-1111-1111-1111-111111111111',
+              id: '11111111-1111-4111-8111-111111111111',
               name: 'Invalid Location',
               slug: 'invalid-location',
               distance: 1.2,
@@ -899,13 +912,16 @@ describe('DataApiRequests', () => {
 
       sandbox
         .stub(dataApi, 'get')
-        .withArgs('/search/locations/v1/postcode', {
-          params: {
-            postcode: 'SW1A 1AA',
-            serviceArea: 'Divorce',
-            action: 'NEAREST',
-          },
-        })
+        .withArgs(
+          '/search/locations/v1/postcode',
+          expectedRequestConfig({
+            params: {
+              postcode: 'SW1A 1AA',
+              serviceArea: 'Divorce',
+              action: 'NEAREST',
+            },
+          })
+        )
         .resolves({ data: payload });
       await expect(requests.performPostcodeSearch('SW1A 1AA', 'Divorce', 'nearest')).resolves.toEqual(payload);
     });
