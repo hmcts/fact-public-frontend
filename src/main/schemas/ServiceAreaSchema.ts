@@ -14,7 +14,7 @@ export enum SERVICE_AREA_TYPE {
 
 export const serviceAreaSchema = z
   .object({
-    id: z.string(),
+    id: z.uuid(),
     name: z.string(),
     slug: z.string().optional(),
     nameCy: z.string(),
@@ -26,7 +26,7 @@ export const serviceAreaSchema = z
     text: z.string().nullable(),
     textCy: z.string().nullable(),
     catchmentMethod: z.enum(CATCHMENT_METHOD).nullable(),
-    areaOfLawId: z.string(),
+    areaOfLawId: z.uuid(),
     type: z.enum(SERVICE_AREA_TYPE),
     sortOrder: z.int().nullable(),
     hasLocal: z.boolean(),

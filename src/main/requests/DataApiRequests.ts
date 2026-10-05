@@ -12,7 +12,8 @@ import {
   allLocationDetailsSchema,
   serviceCentreDetailsSchema,
 } from '../schemas/allLocationDetails';
-import { Court, CourtSearchResult, courtSchema, courtSearchResultSchema } from '../schemas/courtSchema';
+import { CourtBasic, courtBasicSchema } from '../schemas/courtBasicSchema';
+import { Court, courtSchema } from '../schemas/courtSchema';
 import { ServiceAreaSearchResult, serviceAreaSearchResultSchema } from '../schemas/courtServiceAreas';
 import { CourtWithDistance, courtWithDistanceSchema } from '../schemas/courtWithDistance';
 import { SearchResult, searchResultSchema } from '../schemas/searchResult';
@@ -203,11 +204,11 @@ export class DataApiRequests {
    * Request courts by name/address query prefix from the API
    * @param query The search query
    */
-  public async getByName(query: string): Promise<CourtSearchResult[] | DataApiError> {
+  public async getByName(query: string): Promise<CourtBasic[] | DataApiError> {
     try {
-      return await this.get<CourtSearchResult[]>(
+      return await this.get<CourtBasic[]>(
         'search/courts/v1/name',
-        data => courtSearchResultSchema.array().parse(data),
+        data => courtBasicSchema.array().parse(data),
         { params: { q: query } },
         { cachePolicy: 'admin' }
       );
@@ -257,11 +258,11 @@ export class DataApiRequests {
    *
    * @param prefix the alphabetic prefix to search for
    */
-  public async getCourtsByPrefix(prefix: string): Promise<CourtSearchResult[] | DataApiError> {
+  public async getCourtsByPrefix(prefix: string): Promise<CourtBasic[] | DataApiError> {
     try {
-      return await this.get<CourtSearchResult[]>(
+      return await this.get<CourtBasic[]>(
         '/search/courts/v1/prefix',
-        data => courtSearchResultSchema.array().parse(data),
+        data => courtBasicSchema.array().parse(data),
         { params: { prefix } },
         { cachePolicy: 'admin' }
       );

@@ -1,15 +1,15 @@
 import { describe, expect, it } from '@jest/globals';
 
-import { courtSchema } from '../../../main/schemas/courtSchema';
+import { courtSchema, isoDateTimeStringSchema, timeOfDaySchema } from '../../../main/schemas/courtSchema';
 
 const baseCourt = {
-  id: 'a',
+  id: '11111111-1111-4111-8111-111111111111',
   name: 'A Court',
   slug: 'a-court',
   open: true,
   warningNotice: null,
   warningNoticeCy: null,
-  lastUpdatedAt: '2026-05-15',
+  lastUpdatedAt: '2026-05-15T10:35:21.675Z',
   openOnCath: null,
   mrdId: null,
   region: {
@@ -183,5 +183,56 @@ describe('courtSchema - court photo links', () => {
     });
 
     expect(parsed.courtPhotos[0].fileLink).toBeUndefined();
+  });
+
+  describe('courtSchema - field validation', () => {
+    const buildCourtWithOpeningDay = (dayOfWeek: unknown) => ({
+      ...baseCourt,
+      courtAccessibilityOptions: [],
+      courtOpeningHours: [
+        {
+          id: '55555555-5555-4555-8555-555555555555',
+          courtId: baseCourt.id,
+          openingHourType: {
+            id: '55555555-5555-4555-8555-555555555555',
+            name: 'Opening hours',
+            nameCy: 'Oriau agor',
+          },
+          openingTimesDetails: [{ dayOfWeek, openingTime: '08:00', closingTime: '17:00' }],
+        },
+      ],
+    });
+
+    it('accepts a valid ISO date-time', () => {
+      expect(isoDateTimeStringSchema.safeParse('2026-09-10T00:00:00.000Z').success).toBe(true);
+    });
+
+    it('accepts an ISO date-time with a UK offset', () => {
+      expect(isoDateTimeStringSchema.safeParse('2026-09-01T00:00:00.000+01:00').success).toBe(true);
+    });
+
+    it('rejects a date without a time', () => {
+      expect(isoDateTimeStringSchema.safeParse('2026-09-30').success).toBe(false);
+    });
+
+    it('accepts a time HH:mm format', () => {
+      expect(timeOfDaySchema.safeParse('08:00').success).toBe(true);
+    });
+
+    it('accepts a time with seconds', () => {
+      expect(timeOfDaySchema.safeParse('08:00:00').success).toBe(true);
+    });
+
+    it('rejects an invalid time', () => {
+      expect(timeOfDaySchema.safeParse('11am').success).toBe(false);
+    });
+
+    it('accepts a valid dayOfWeek', () => {
+      expect(courtSchema.safeParse(buildCourtWithOpeningDay('MONDAY')).success).toBe(true);
+    });
+
+    it('rejects an invalid dayOfWeek', () => {
+      expect(courtSchema.safeParse(buildCourtWithOpeningDay('MON')).success).toBe(false);
+    });
   });
 });
