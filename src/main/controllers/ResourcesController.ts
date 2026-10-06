@@ -7,6 +7,8 @@ import { DataApiRequests } from '../requests/DataApiRequests';
 
 import BaseController from './BaseController';
 
+const IMAGE_CACHE_CONTROL_HEADER = 'public, max-age=86400, immutable';
+
 @route('/res')
 export default class ResourcesController extends BaseController {
   constructor(private readonly dataApiRequests = new DataApiRequests()) {
@@ -23,7 +25,12 @@ export default class ResourcesController extends BaseController {
       return;
     }
 
-    return this.serveFileStream(`/resources/v1/court-photo/${courtId}`, res, { notFound: true });
+    return this.serveFileStream(
+      `/resources/v1/court-photo/${courtId}`,
+      res,
+      { notFound: true },
+      IMAGE_CACHE_CONTROL_HEADER
+    );
   }
 
   @route('/csv')
@@ -32,12 +39,21 @@ export default class ResourcesController extends BaseController {
     return this.serveFileStream('/resources/v1/csv', res, { notFound: true });
   }
 
-  private async serveFileStream(url: string, res: Response, mapping?: DataApiErrorMapping): Promise<void> {
+  private async serveFileStream(
+    url: string,
+    res: Response,
+    mapping?: DataApiErrorMapping,
+    successCacheControl?: string
+  ): Promise<void> {
     const result = await this.dataApiRequests.getFileStream(url, mapping);
 
     if (isDataApiError(result)) {
       res.sendStatus(result.status);
       return;
+    }
+
+    if (successCacheControl) {
+      res.setHeader('Cache-Control', successCacheControl);
     }
 
     if (result.headers.contentType) {
@@ -52,6 +68,7 @@ export default class ResourcesController extends BaseController {
 
     result.stream.on('error', () => {
       if (!res.headersSent) {
+        res.setHeader('Cache-Control', 'no-store');
         res.sendStatus(502);
       } else {
         res.destroy();

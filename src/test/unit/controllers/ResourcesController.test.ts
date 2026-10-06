@@ -56,7 +56,8 @@ describe('ResourcesController', () => {
 
     await controller.img(request, response);
 
-    expect(setHeader).toHaveBeenCalledTimes(3);
+    expect(setHeader).toHaveBeenCalledTimes(4);
+    expect(setHeader).toHaveBeenCalledWith('Cache-Control', 'public, max-age=86400, immutable');
     expect(setHeader).toHaveBeenCalledWith('Content-Type', 'image/jpeg');
     expect(setHeader).toHaveBeenCalledWith('Content-Disposition', 'inline; filename="court.jpg"');
     expect(setHeader).toHaveBeenCalledWith('Content-Length', '1234');
@@ -154,10 +155,12 @@ describe('ResourcesController', () => {
     const controller = new ResourcesController(dataApiRequests);
     const sendStatus = jest.fn();
     const destroy = jest.fn();
+    const setHeader = jest.fn();
     const response = {
       headersSent: false,
       sendStatus,
       destroy,
+      setHeader,
     } as unknown as Response;
 
     let errorHandler: (() => void) | undefined;
@@ -179,6 +182,7 @@ describe('ResourcesController', () => {
     await controller.csv(mockRequest({}), response);
     errorHandler?.();
 
+    expect(setHeader).toHaveBeenCalledWith('Cache-Control', 'no-store');
     expect(sendStatus).toHaveBeenCalledTimes(1);
     expect(sendStatus).toHaveBeenCalledWith(502);
     expect(destroy).not.toHaveBeenCalled();
