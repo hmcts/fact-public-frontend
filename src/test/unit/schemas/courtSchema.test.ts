@@ -153,7 +153,7 @@ describe('courtSchema - liftSupportPhoneNumber', () => {
 });
 
 describe('courtSchema - court photo links', () => {
-  it('adds a cache-busting query parameter to valid photo URLs', () => {
+  it('rewrites photo URLs on parse', () => {
     const parsed = courtSchema.parse({
       ...baseCourt,
       courtAccessibilityOptions: [],
@@ -166,7 +166,7 @@ describe('courtSchema - court photo links', () => {
       ],
     });
 
-    expect(parsed.courtPhotos[0].fileLink).toMatch(/^.+\?cacheBust=/);
+    expect(parsed.courtPhotos[0].fileLink).toMatch(/\/res\/img\/55555555-5555-4555-8555-555555555555/);
   });
 
   it('returns undefined photo link when an empty string is provided', () => {
