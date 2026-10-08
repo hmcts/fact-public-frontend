@@ -8,7 +8,7 @@ describe('UnknownService View', () => {
 
   test('renders the unknown-service page with correct content', () => {
     const html = env.render('unknown-service.njk', i18n);
-    expect(html).toContain(i18n.title);
+    expect(html).toContain(escapeHtml(i18n.title));
     expect(html).toContain(escapeHtml(i18n.h1));
     expect(html).toContain(i18n.p_1);
     expect(html).toContain(i18n.h2_1);

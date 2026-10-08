@@ -8,6 +8,7 @@
     "childcare": "Byddwn yn defnyddio cod post cartref eich plant i ddangos y llys neu’r tribiwnlys agosaf atyn nhw sy’n delio â threfniadau gofal plant."
   },
   "text": "Rhowch eich cod post",
+  "postcodeHint": "TBC_CHANGE_ME",
   "button": "Parhau",
   "noResults": {
     "p1": "Nid oes canlyniad sy’n cyfateb.",

@@ -58,4 +58,47 @@ describe('Court page', () => {
     expect(html).toContain(i18n.accordion.showSection);
     expect(html).toContain(i18n.accordion.hideSection);
   });
+
+  test('renders a distinct alt text and caption for the court image, avoiding duplication', () => {
+    const court = {
+      name: 'Test Court',
+      lastUpdatedAt: '1 January 2024',
+      warningNotice: null,
+      courtAddresses: [],
+      openingHoursByType: [],
+      courtPhotos: [{ fileLink: 'https://example.com/photo.jpg' }],
+      courtAreasOfLaw: [],
+      courtContactDetails: [],
+      courtTranslations: [],
+      courtAccessibilityOptions: [],
+      courtFacilities: [],
+      courtCodes: [],
+      courtProfessionalInformation: [],
+      courtDxCodes: [],
+      courtFaxNumbers: [],
+      enquiriesPhoneNumber: null,
+    };
+
+    const html = env.render('court.njk', {
+      court,
+      pageTitleSuffix: i18n.pageTitleSuffix,
+      pageLastReviewed: i18n.pageLastReviewed,
+      addresses: i18n.addresses,
+      openingHours: i18n.openingHours,
+      usefulInformation: i18n.usefulInformation,
+      translationAndInterpretation: i18n.translationAndInterpretation,
+      informationForProfessionals: i18n.informationForProfessionals,
+      casesHeard: i18n.casesHeard,
+      contactDetails: i18n.contactDetails,
+      accessibility: i18n.accessibility,
+      buildingFacilities: i18n.buildingFacilities,
+      accordion: i18n.accordion,
+      courtImageAlt: i18n.courtImageAlt,
+      htmlLang: 'en',
+    });
+
+    expect(html).toContain(`alt="${i18n.courtImageAlt}"`);
+    expect(html).not.toContain('alt="Test Court"');
+    expect(html).toContain('<p class="govuk-body-s">Test Court</p>');
+  });
 });

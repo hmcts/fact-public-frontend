@@ -1,5 +1,6 @@
 import { DateTime } from 'luxon';
 
+import court_i18n from '../../../../main/locales/en/court.json';
 import { expect, test } from '../../fixtures';
 import { CourtTestData, FUNCTIONAL_TEST_RUN_PREFIX, createCourtTestData } from '../../helpers/courtTestData';
 import { generateRandomString, hasText } from '../../helpers/courtTestUtils';
@@ -106,7 +107,7 @@ test.describe('Court Page Core', () => {
     if (photo?.fileLink) {
       await courtPage.expectCourtPhotoToBeVisible(
         `/res/img/${courtData.defaultCourt.body.id}`,
-        courtData.defaultCourt.name
+        court_i18n.courtImageAlt
       );
     }
   });

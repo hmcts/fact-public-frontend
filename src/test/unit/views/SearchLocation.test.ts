@@ -78,7 +78,7 @@ describe('Search Location View', () => {
   test('renders the search location page with Welsh content', () => {
     const html = env.render('search/location.njk', welshI18n);
 
-    expect(html).toContain(welshI18n.title);
+    expect(html).toContain(escapeHtml(welshI18n.title));
     expect(html).toContain(escapeHtml(welshI18n.question));
     expect(html).toContain(escapeHtml(welshI18n.hint));
     expect(html).toContain(welshI18n.text);

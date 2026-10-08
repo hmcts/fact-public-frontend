@@ -8,6 +8,7 @@
     "childcare": "We will use the postcode of your children’s home to show you the closest court or tribunal that handles childcare arrangements to them."
   },
   "text": "Enter your postcode",
+  "postcodeHint": "Please include a space within that postcode e.g. WC2A 2LL",
   "button": "Continue",
   "noResults": {
     "p1": "There are no matching results.",
