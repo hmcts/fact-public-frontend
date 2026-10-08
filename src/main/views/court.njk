@@ -60,7 +60,7 @@
 
       {% if warningNotice %}
         {{ govukWarningText({
-          text: warningNotice,
+          html: warningNotice | nl2br,
           iconFallbackText: "Warning"
         }) }}
       {% endif %}
