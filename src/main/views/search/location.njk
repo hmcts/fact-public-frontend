@@ -74,7 +74,10 @@
           id: "search",
           name: "search",
           value: searchQuery,
-          errorMessage: { text: pageError.text } if pageError
+          errorMessage: {
+            text: pageError.text,
+            visuallyHiddenText: errorTitle | replace(":", "")
+          } if pageError
         }) }}
 
         {{ govukButton({

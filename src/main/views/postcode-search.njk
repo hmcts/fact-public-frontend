@@ -54,7 +54,10 @@
         id: "postcode",
         name: "postcode",
         value: postcode,
-        errorMessage: { text: errorText[errorType] } if error,
+        errorMessage: {
+          text: errorText[errorType],
+          visuallyHiddenText: errorTitle | replace(":", "")
+        } if error,
         autocomplete: "postal-code"
       }) }}
       {{ govukButton({
