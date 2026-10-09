@@ -12,6 +12,7 @@ describe('PostcodeSearch View', () => {
     expect(html).toContain(i18n.title);
     expect(html).toContain(i18n.question);
     expect(html).toContain(i18n.text);
+    expect(html).toContain(i18n.postcodeHint);
     expect(html).toContain('govuk-input');
     expect(html).toContain('govuk-button');
     expect(html).toContain('autocomplete="postal-code"');
