@@ -71,10 +71,10 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "4.13.0",
-    "@babel/core": "8.0.6",
+    "@babel/core": "8.0.7",
     "@babel/plugin-proposal-decorators": "8.0.2",
-    "@babel/preset-env": "8.0.6",
-    "@babel/preset-typescript": "8.0.1",
+    "@babel/preset-env": "8.0.7",
+    "@babel/preset-typescript": "8.0.7",
     "@eslint/compat": "2.1.1",
     "@eslint/eslintrc": "3.3.7",
     "@eslint/js": "10.0.1",
