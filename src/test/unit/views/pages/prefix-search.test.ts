@@ -15,6 +15,7 @@ describe('Prefix search page', () => {
     expect(html).toContain('alphabet-buttons');
     expect(html).toContain('A');
     expect(html).toContain('Z');
+    expect(html).not.toContain('search-results-heading');
   });
 
   test('renders prefix search content (Welsh)', () => {
@@ -46,6 +47,9 @@ describe('Prefix search page', () => {
     expect(html).toContain('/courts/a-court');
     expect(html).toContain('Another-Court');
     expect(html).toContain('/courts/another-court');
+    expect(html).toContain('id="search-results-heading"');
+    expect(html).toContain('class="govuk-heading-m js-focus-on-load" tabindex="-1"');
+    expect(html).toContain(escapeHtml(i18n.resultsHeading));
   });
 
   test('renders service-centre prefix search results with service-centre links', () => {

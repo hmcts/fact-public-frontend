@@ -83,6 +83,10 @@
         }) }}
       </form>
 
+      {% if hasSearched %}
+        <h2 id="search-results-heading" class="govuk-heading-m js-focus-on-load" tabindex="-1">{{ resultsHeading }}</h2>
+      {% endif %}
+
       {% if hasSearched and resultList.length > 0 %}
         {% set foundSingleResultText = foundResult | replace('{search}', searchQuery) %}
         {% set foundMultipleResultsText = foundResults | replace('{total}', resultList.length) | replace('{search}', searchQuery) %}
