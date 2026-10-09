@@ -64,19 +64,19 @@
           iconFallbackText: "Warning"
         }) }}
       {% endif %}
-      <hr class="govuk-section-break govuk-section-break--m">
+      <hr class="govuk-section-break govuk-section-break--m" aria-hidden="true">
 
       {{ renderAddresses(court.courtAddresses, addresses) }}
-      <hr class="govuk-section-break govuk-section-break--m">
+      <hr class="govuk-section-break govuk-section-break--m" aria-hidden="true">
       {{ renderOpeningHours(court.openingHoursByType, court.counterServices, openingHours, htmlLang) }}
 
       {% if court.courtPhotos and court.courtPhotos.length %}
         <img class="govuk-!-margin-top-4 court-image" src="{{ court.courtPhotos[0].fileLink }}" alt="{{ court.name }}">
         <p class="govuk-body-s">{{ court.name }}</p>
       {% endif %}
-      <hr class="govuk-section-break govuk-section-break--m">
+      <hr class="govuk-section-break govuk-section-break--m" aria-hidden="true">
       {{ renderUsefulInformation(usefulInformation, true) }}
-      <hr class="govuk-section-break govuk-section-break--m">
+      <hr class="govuk-section-break govuk-section-break--m" aria-hidden="true">
 
       {{ govukAccordion({
         id: "court-details-accordion",

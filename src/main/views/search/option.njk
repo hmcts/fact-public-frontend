@@ -41,7 +41,10 @@
           hint: {
             text: hint
           },
-          errorMessage: { text: error.text } if errors,
+          errorMessage: {
+            text: error.text,
+            visuallyHiddenText: errorTitle | replace(":", "")
+          } if errors,
           items: [
             {
               id: "i-have-the-name",

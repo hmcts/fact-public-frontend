@@ -56,7 +56,10 @@
               isPageHeading: true
             }
           },
-          errorMessage: { text: error.text } if errors,
+          errorMessage: {
+            text: error.text,
+            visuallyHiddenText: errorTitle | replace(":", "")
+          } if errors,
           items: options
         }) }}
 
