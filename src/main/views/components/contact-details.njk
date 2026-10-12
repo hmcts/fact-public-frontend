@@ -57,9 +57,9 @@
       {{ govukSummaryList({
         rows: [ {
             key: { text: text.telephone }, value: { html: phoneNumberHtml }
-          } if contact.phoneNumber and contact.phoneNumber | trim else undefined, {
+          } if phoneNumberHtml else undefined, {
             key: { text: text.email }, value: { html: emailHtml }
-          } if contact.email and contact.email | trim else undefined
+          } if emailHtml else undefined
         ]
       }) }}
 
