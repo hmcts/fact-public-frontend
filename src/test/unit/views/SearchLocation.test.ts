@@ -23,6 +23,7 @@ describe('Search Location View', () => {
     expect(html).toContain(i18n.hint);
     expect(html).toContain(i18n.text);
     expect(html).toContain(i18n.button);
+    expect(html).not.toContain('search-results-heading');
   });
 
   test('renders validation error summary from errorType', () => {
@@ -38,6 +39,9 @@ describe('Search Location View', () => {
 
     expect(html).toContain(i18n.resultsTitle);
     expect(html).toContain(i18n.noResults.p1);
+    expect(html).toContain('id="search-results-heading"');
+    expect(html).toContain('class="govuk-heading-m js-focus-on-load" tabindex="-1"');
+    expect(html).toContain(i18n.resultsHeading);
   });
 
   test('links court and service-centre results to their respective detail pages', () => {
