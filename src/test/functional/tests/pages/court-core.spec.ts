@@ -107,7 +107,7 @@ test.describe('Court Page Core', () => {
     if (photo?.fileLink) {
       await courtPage.expectCourtPhotoToBeVisible(
         `/res/img/${courtData.defaultCourt.body.id}`,
-        court_i18n.courtImageAlt
+        `${courtData.defaultCourt.name}: ${court_i18n.courtImageAlt}`
       );
     }
   });
