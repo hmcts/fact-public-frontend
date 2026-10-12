@@ -8,5 +8,6 @@ describe('Error page', () => {
   test('renders error content', () => {
     const html = env.render('error.njk', i18n);
     expect(html).toContain(i18n.h1);
+    expect(html).toContain(i18n.title);
   });
 });
