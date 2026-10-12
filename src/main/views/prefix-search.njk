@@ -53,6 +53,7 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       {% if prefix and not errors %}
+        <h2 id="search-results-heading" class="govuk-heading-m js-focus-on-load" tabindex="-1">{{ resultsHeading }}</h2>
         {% if results.length %}
           <span id="header-hint" class="govuk-hint">{{ results.length }} {{ resultsHint }} '{{ prefix }}'</span>
         {% else %}
