@@ -71,8 +71,10 @@
       {{ renderOpeningHours(court.openingHoursByType, court.counterServices, openingHours, htmlLang) }}
 
       {% if court.courtPhotos and court.courtPhotos.length %}
-        <img class="govuk-!-margin-top-4 court-image" src="{{ court.courtPhotos[0].fileLink }}" alt="{{ courtImageAlt }}">
-        <p class="govuk-body-s">{{ court.name }}</p>
+        <figure class="govuk-!-margin-0">
+          <img class="govuk-!-margin-top-4 court-image" src="{{ court.courtPhotos[0].fileLink }}" alt="{{ court.name }}: {{ courtImageAlt }}">
+          <figcaption class="govuk-body-s">{{ court.name }}</figcaption>
+        </figure>
       {% endif %}
       <hr class="govuk-section-break govuk-section-break--m">
       {{ renderUsefulInformation(usefulInformation, true) }}

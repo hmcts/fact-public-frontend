@@ -97,8 +97,9 @@ describe('Court page', () => {
       htmlLang: 'en',
     });
 
-    expect(html).toContain(`alt="${i18n.courtImageAlt}"`);
+    expect(html).toContain(`alt="Test Court: ${i18n.courtImageAlt}"`);
     expect(html).not.toContain('alt="Test Court"');
-    expect(html).toContain('<p class="govuk-body-s">Test Court</p>');
+    expect(html).toContain('<figure class="govuk-!-margin-0">');
+    expect(html).toContain('<figcaption class="govuk-body-s">Test Court</figcaption>');
   });
 });
