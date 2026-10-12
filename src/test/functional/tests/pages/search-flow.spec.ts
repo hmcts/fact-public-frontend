@@ -25,20 +25,26 @@ test.describe('Search Journey - Know Name', () => {
     await searchFlowPage.expectTitle('Find a Court or Tribunal - GOV.UK');
     await searchFlowPage.clickStartNow();
     await searchFlowPage.expectPath('/search-option');
-    await searchFlowPage.expectTitle('What is the court name? - Find a Court or Tribunal - GOV.UK');
+    await searchFlowPage.expectTitle(
+      'Do you know the name of the court or tribunal? - Find a Court or Tribunal - GOV.UK'
+    );
     await searchFlowPage.expectHeading('Do you know the name of the court or tribunal?');
 
     await searchFlowPage.selectKnowsLocation('yes');
     await searchFlowPage.clickContinue();
     await searchFlowPage.expectPath('/search-by-name');
-    await searchFlowPage.expectTitle('Search by name or address - Find a Court or Tribunal - GOV.UK');
+    await searchFlowPage.expectTitle(
+      'What is the name or address of the court or tribunal? - Find a Court or Tribunal - GOV.UK'
+    );
     await searchFlowPage.expectHeading('What is the name or address of the court or tribunal?');
 
     await searchFlowPage.enterSearchQuery(createdCourtQuery);
     await searchFlowPage.clickContinue();
     await searchFlowPage.expectPath('/search-by-name');
     await searchFlowPage.expectSearchParam('search', createdCourtQuery);
-    await searchFlowPage.expectTitle('Search Results - Find a Court or Tribunal - GOV.UK');
+    await searchFlowPage.expectTitle(
+      'Search results: What is the name or address of the court or tribunal? - Find a Court or Tribunal - GOV.UK'
+    );
     await searchFlowPage.expectSearchResultsVisible();
     await searchFlowPage.expectSearchResultLinkText(courtData.defaultCourt.name);
     await searchFlowPage.expectSearchResultLinkHref(
@@ -59,20 +65,26 @@ test.describe('Search Journey - Know Name', () => {
     await searchFlowPage.expectTitle('Find a Court or Tribunal - GOV.UK');
     await searchFlowPage.clickStartNow();
     await searchFlowPage.expectPath('/search-option');
-    await searchFlowPage.expectTitle("Beth yw enw'r llys? - Dod o hyd i Lys neu Dribiwnlys - GOV.UK");
+    await searchFlowPage.expectTitle(
+      "A ydych chi'n gwybod enw'r llys neu'r tribiwnlys? - Dod o hyd i Lys neu Dribiwnlys - GOV.UK"
+    );
     await searchFlowPage.expectHeading("A ydych chi'n gwybod enw'r llys neu'r tribiwnlys?");
 
     await searchFlowPage.selectKnowsLocation('yes');
     await searchFlowPage.clickContinue();
     await searchFlowPage.expectPath('/search-by-name');
-    await searchFlowPage.expectTitle('Chwiliwch yn ôl enw neu gyfeiriad - Dod o hyd i Lys neu Dribiwnlys - GOV.UK');
+    await searchFlowPage.expectTitle(
+      "Beth yw enw a chyfeiriad y llys neu'r tribiwnlys? - Dod o hyd i lys neu dribiwnlys - GOV.UK"
+    );
     await searchFlowPage.expectHeading("Beth yw enw a chyfeiriad y llys neu'r tribiwnlys?");
 
     await searchFlowPage.enterSearchQuery(createdCourtQuery);
     await searchFlowPage.clickContinue();
     await searchFlowPage.expectPath('/search-by-name');
     await searchFlowPage.expectSearchParam('search', createdCourtQuery);
-    await searchFlowPage.expectTitle('Canlyniadau chwilio - Dod o hyd i lys neu dribiwnlys - GOV.UK');
+    await searchFlowPage.expectTitle(
+      "Canlyniadau chwilio: Beth yw enw a chyfeiriad y llys neu'r tribiwnlys? - Dod o hyd i lys neu dribiwnlys - GOV.UK"
+    );
     await searchFlowPage.expectSearchResultsVisible();
     await searchFlowPage.expectSearchResultLinkText(courtData.defaultCourt.name);
     await searchFlowPage.expectSearchResultLinkHref(
@@ -125,11 +137,13 @@ test.describe('Search Journey - No Name Route', () => {
     await searchFlowPage.gotoStart('en');
     await searchFlowPage.clickStartNow();
     await searchFlowPage.expectPath('/search-option');
-    await searchFlowPage.expectTitle('What is the court name? - Find a Court or Tribunal - GOV.UK');
+    await searchFlowPage.expectTitle(
+      'Do you know the name of the court or tribunal? - Find a Court or Tribunal - GOV.UK'
+    );
     await searchFlowPage.selectKnowsLocation('no');
     await searchFlowPage.clickContinue();
     await searchFlowPage.expectPath('/service-choose-action');
-    await searchFlowPage.expectTitle('Find or contact a court - Find a Court or Tribunal - GOV.UK');
+    await searchFlowPage.expectTitle('What do you want to do? - Find a Court or Tribunal - GOV.UK');
     await searchFlowPage.expectHeading('What do you want to do?');
   });
 
@@ -137,11 +151,13 @@ test.describe('Search Journey - No Name Route', () => {
     await searchFlowPage.gotoStart('cy');
     await searchFlowPage.clickStartNow();
     await searchFlowPage.expectPath('/search-option');
-    await searchFlowPage.expectTitle("Beth yw enw'r llys? - Dod o hyd i Lys neu Dribiwnlys - GOV.UK");
+    await searchFlowPage.expectTitle(
+      "A ydych chi'n gwybod enw'r llys neu'r tribiwnlys? - Dod o hyd i Lys neu Dribiwnlys - GOV.UK"
+    );
     await searchFlowPage.selectKnowsLocation('no');
     await searchFlowPage.clickContinue();
     await searchFlowPage.expectPath('/service-choose-action');
-    await searchFlowPage.expectTitle('Dod i hyd i, neu gysylltu â llys - Dod o hyd i Lys neu Dribiwnlys - GOV.UK');
+    await searchFlowPage.expectTitle('Beth ydych chi eisiau ei wneud? - Dod o hyd i Lys neu Dribiwnlys - GOV.UK');
     await searchFlowPage.expectHeading('Beth ydych chi eisiau ei wneud?');
   });
 });
