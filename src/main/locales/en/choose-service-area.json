@@ -1,6 +1,6 @@
 {
   "errorTitle": "Error:",
-  "title": "{serviceName} cases - Find a Court or Tribunal - GOV.UK",
+  "title": "What kind of help do you need with {serviceName}? - Find a Court or Tribunal - GOV.UK",
   "serviceName": "Find a Court or Tribunal",
   "question": "What kind of help do you need with {serviceName}?",
   "answers": {
