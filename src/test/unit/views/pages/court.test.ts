@@ -99,7 +99,6 @@ describe('Court page', () => {
 
     expect(html).toContain(`alt="Test Court: ${i18n.courtImageAlt}"`);
     expect(html).not.toContain('alt="Test Court"');
-    expect(html).toContain('<figure class="govuk-!-margin-0">');
-    expect(html).toContain('<figcaption class="govuk-body-s">Test Court</figcaption>');
+    expect(html).toContain('<p class="govuk-body-s">Test Court</p>');
   });
 });
