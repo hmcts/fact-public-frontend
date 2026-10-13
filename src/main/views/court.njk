@@ -61,7 +61,7 @@
       {% if warningNotice %}
         {{ govukWarningText({
           text: warningNotice,
-          iconFallbackText: "Warning"
+          iconFallbackText: warningFallbackText
         }) }}
       {% endif %}
       <hr class="govuk-section-break govuk-section-break--m" aria-hidden="true">
@@ -82,7 +82,9 @@
         id: "court-details-accordion",
         hideAllSectionsText: accordion.hideAllSections,
         hideSectionText: accordion.hideSection,
+        hideSectionAriaLabelText: accordion.hideSectionAriaLabel,
         showSectionText: accordion.showSection,
+        showSectionAriaLabelText: accordion.showSectionAriaLabel,
         showAllSectionsText: accordion.showAllSections,
         items: [
           {

@@ -16,7 +16,9 @@
     "contactDetailsHeading": "Contact details",
     "casesHeardHeading": "Cases heard",
     "showSection": "Show",
+    "showSectionAriaLabel": "Show this section",
     "hideSection": "Hide",
+    "hideSectionAriaLabel": "Hide this section",
     "showAllSections": "Show all sections",
     "hideAllSections": "Hide all sections"
   },
