@@ -7,6 +7,7 @@ export class ServiceCentrePage extends Base {
   private readonly addressesSection = this.page.locator('#addresses');
   private readonly casesHeardSection = this.page.locator('#cases-heard');
   private readonly contactDetailsSection = this.page.locator('#contact-details');
+  private readonly contactDetailsSummaryLists = this.contactDetailsSection.locator('.govuk-summary-list');
   private readonly usefulInformationSection = this.page.locator('#useful-information');
   private readonly warningNotice = this.page.locator('.govuk-warning-text');
 
@@ -87,8 +88,8 @@ export class ServiceCentrePage extends Base {
     await this.accordion.getByRole('button', { name: new RegExp(sectionName) }).click();
   }
 
-  async expectContactTableCount(count: number): Promise<void> {
-    await expect(this.contactDetailsSection.locator('table')).toHaveCount(count);
+  async expectContactDetailsSummaryListCount(count: number): Promise<void> {
+    await expect(this.contactDetailsSummaryLists).toHaveCount(count);
   }
 
   async expectContactPhoneTextToBeVisible(): Promise<void> {
