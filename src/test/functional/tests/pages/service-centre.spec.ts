@@ -37,6 +37,7 @@ test.describe('Service Centre Page', () => {
       'addresses',
       'useful-information',
       'service-centre-details-accordion',
+      'h1',
     ]);
 
     for (const excludedAccordions of [
@@ -102,7 +103,7 @@ test.describe('Service Centre Page', () => {
     await serviceCentrePage.expectAccordionSectionsCollapsed(['Contact details', 'Cases heard']);
 
     await serviceCentrePage.expandAccordionSection('Contact details');
-    await serviceCentrePage.expectContactTableCount(1);
+    await serviceCentrePage.expectContactDetailsSummaryListCount(1);
     await serviceCentrePage.expectContactPhoneTextToBeVisible();
     await serviceCentrePage.expectContactPhoneLinkCount(1);
     await serviceCentrePage.expectContactEmailLinkToBeVisible();
@@ -121,7 +122,7 @@ test.describe('Service Centre Page', () => {
 
     await serviceCentrePage.goto(serviceCentreData.noContactServiceCentre.slug);
     await serviceCentrePage.expandAccordionSection('Contact details');
-    await serviceCentrePage.expectContactTableCount(0);
+    await serviceCentrePage.expectContactDetailsSummaryListCount(0);
   });
 
   test('renders localized closed and not-found pages', async ({ serviceCentrePage }) => {
