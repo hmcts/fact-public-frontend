@@ -20,7 +20,7 @@ describe('Court page', () => {
       ],
       openingHoursByType: [],
       courtPhotos: [],
-      courtAreasOfLaw: [],
+      courtAreasOfLaw: ['Family', 'Civil'],
       courtContactDetails: [],
       courtTranslations: [],
       courtAccessibilityOptions: [],
@@ -100,5 +100,59 @@ describe('Court page', () => {
     expect(html).toContain(`alt="Test Court: ${i18n.courtImageAlt}"`);
     expect(html).not.toContain('alt="Test Court"');
     expect(html).toContain('<p class="govuk-body-s">Test Court</p>');
+  });
+
+  test('renders court page without cases heard section when none are specified', () => {
+    const court = {
+      name: 'Test Court',
+      lastUpdatedAt: '1 January 2024',
+      warningNotice: null,
+      courtAddresses: [
+        {
+          addressType: 'VISIT_US',
+          formattedAddressLines: ['Line 1', 'Town', 'AB1 2CD'],
+          formattedAddressTags: [],
+          directionsUrl: null,
+        },
+      ],
+      openingHoursByType: [],
+      courtPhotos: [],
+      courtAreasOfLaw: [],
+      courtContactDetails: [],
+      courtTranslations: [],
+      courtAccessibilityOptions: [],
+      courtFacilities: [],
+      courtCodes: [],
+      courtProfessionalInformation: [],
+      courtDxCodes: [],
+      courtFaxNumbers: [],
+      enquiriesPhoneNumber: null,
+    };
+
+    const html = env.render('court.njk', {
+      court,
+      pageTitleSuffix: i18n.pageTitleSuffix,
+      pageLastReviewed: i18n.pageLastReviewed,
+      addresses: i18n.addresses,
+      openingHours: i18n.openingHours,
+      usefulInformation: i18n.usefulInformation,
+      translationAndInterpretation: i18n.translationAndInterpretation,
+      informationForProfessionals: i18n.informationForProfessionals,
+      casesHeard: i18n.casesHeard,
+      contactDetails: i18n.contactDetails,
+      accessibility: i18n.accessibility,
+      buildingFacilities: i18n.buildingFacilities,
+      accordion: i18n.accordion,
+      htmlLang: 'en',
+    });
+
+    expect(html).toContain('Test Court');
+    expect(html).toContain('Line 1<br>Town<br>AB1 2CD');
+    expect(html).toContain(i18n.accordion.contactDetailsHeading);
+    expect(html).not.toContain(i18n.accordion.casesHeardHeading);
+    expect(html).toContain(i18n.accordion.showAllSections);
+    expect(html).toContain(i18n.accordion.hideAllSections);
+    expect(html).toContain(i18n.accordion.showSection);
+    expect(html).toContain(i18n.accordion.hideSection);
   });
 });
