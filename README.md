@@ -8,7 +8,7 @@ Public frontend for the Find a Court or Tribunal (FaCT) service.
 
 Running the application requires the following tools to be installed in your environment:
 
-- [Node.js](https://nodejs.org/) v22.21.1 or later
+- [Node.js](https://nodejs.org/) v24.15.0 or later
 - [Corepack](https://nodejs.org/api/corepack.html) (bundled with Node.js, used to manage Yarn)
 - [Docker](https://www.docker.com) (optional)
 - `openssl` (for local HTTPS certificate generation)
