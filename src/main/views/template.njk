@@ -98,6 +98,7 @@
   }) }}
 
   {{ govukServiceNavigation({
+    ariaLabel: serviceInformationLabel,
     serviceName: serviceName | safe,
     serviceUrl: (globals.basePath if globals.basePath) + "/"
   }) }}
@@ -120,6 +121,7 @@
 {% block footer %}
   {{ govukFooter({
     meta: {
+      visuallyHiddenTitle: footerSupportLinksLabel,
       items: footerLinks
     },
     contentLicence: contentLicence,

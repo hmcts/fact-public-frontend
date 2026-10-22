@@ -1,12 +1,10 @@
 {% from "govuk/components/back-link/macro.njk" import govukBackLink %}
 
-{% macro goBack(path = '#', text = 'Back', ariaLabel = 'Back', cspNonce) %}
-  <nav class="govuk-back-link-wrapper" aria-label=ariaLabel>
-    {{ govukBackLink({
-      text: text,
-      href: path
-    }) }}
-  </nav>
+{% macro goBack(path = '#', text = 'Back', cspNonce) %}
+  {{ govukBackLink({
+    text: text,
+    href: path
+  }) }}
   <script nonce="{{ cspNonce }}">
       document.getElementsByClassName("govuk-back-link").item(0).addEventListener("click", function() {
           history.back();

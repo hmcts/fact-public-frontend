@@ -2,6 +2,7 @@
   "pageLastReviewed": "Adolygwyd y dudalen hon ddiwethaf ar:",
   "pageTitleSuffix": "Dod o hyd i Lys neu Dribiwnlys - GOV.UK",
   "courtImageAlt": "Llun o adeilad y llys",
+  "warningFallbackText": "Rhybudd",
   "addresses": {
     "heading": "Cyfeiriad",
     "addressTypes": {
@@ -48,7 +49,9 @@
     "informationForProfessionalsHeading": "Gwybodaeth i weithwyr proffesiynol",
     "opensInNewTab": "(yn agor mewn tab newydd)",
     "showSection": "Dangos",
+    "showSectionAriaLabel": "Dangos yr adran hon",
     "hideSection": "Cuddio",
+    "hideSectionAriaLabel": "Cuddio'r adran hon",
     "showAllSections": "Dangos pob adran",
     "hideAllSections": "Cuddio pob adran"
   },

@@ -56,7 +56,10 @@
               isPageHeading: true
             }
           },
-          errorMessage: { text: error.text  | replace("{serviceName}", serviceNameLocalised | lower) } if errors,
+          errorMessage: {
+            text: error.text | replace("{serviceName}", serviceNameLocalised | lower),
+            visuallyHiddenText: errorTitle | replace(":", "")
+          } if errors,
           items: options
         }) }}
 

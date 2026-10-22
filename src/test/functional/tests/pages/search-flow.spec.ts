@@ -62,7 +62,7 @@ test.describe('Search Journey - Know Name', () => {
   }) => {
     await searchFlowPage.gotoStart('cy');
     await searchFlowPage.expectPath('/');
-    await searchFlowPage.expectTitle('Find a Court or Tribunal - GOV.UK');
+    await searchFlowPage.expectTitle('Dod o hyd i Lys neu Dribiwnlys - GOV.UK');
     await searchFlowPage.clickStartNow();
     await searchFlowPage.expectPath('/search-option');
     await searchFlowPage.expectTitle(
