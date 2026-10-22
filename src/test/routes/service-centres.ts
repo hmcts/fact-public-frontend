@@ -72,7 +72,7 @@ describe('Service centre routes', () => {
         expect(res.text).to.include('Send documents to');
         expect(res.text).to.include('Scammers');
         expect(res.text).to.include('Contact details');
-        expect(res.text).to.include('Cases heard');
+        expect(res.text).not.to.include('Cases heard');
         expect(res.text).not.to.include('Coming soon!');
       });
   });

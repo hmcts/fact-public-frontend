@@ -139,7 +139,7 @@ describe('Service centre page', () => {
     const html = renderPage(en, 'en', { serviceCentreContactDetails: [], serviceCentreAreasOfLaw: [] });
 
     expect(html).toContain(en.accordion.contactDetailsHeading);
-    expect(html).toContain(en.accordion.casesHeardHeading);
+    expect(html).not.toContain(en.accordion.casesHeardHeading);
     expect(html).not.toContain('href="tel:');
     expect(html).not.toContain('govuk-list--bullet');
   });
