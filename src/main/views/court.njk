@@ -27,9 +27,11 @@
   ) }}
 {% endset %}
 
-{% set casesHeardHtml %}
-  {{ renderCasesHeard(court.courtAreasOfLaw, casesHeard, htmlLang) }}
-{% endset %}
+{% if court.courtAreasOfLaw and court.courtAreasOfLaw.length %}
+  {% set casesHeardHtml %}
+    {{ renderCasesHeard(court.courtAreasOfLaw, casesHeard, htmlLang) }}
+  {% endset %}
+{% endif %}
 
 {% set contactDetailsHtml %}
   {{ renderContactDetails(court.courtContactDetails, contactDetails, htmlLang, "courtContactDescription") }}
@@ -96,7 +98,7 @@
             heading: { text: accordion.casesHeardHeading },
             expanded: false,
             content: { html: casesHeardHtml }
-          },
+          } if casesHeardHtml else null,
           {
             heading: { text: accordion.translationAndInterpretationHeading },
             expanded: false,

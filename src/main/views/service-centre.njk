@@ -16,9 +16,12 @@
   ) }}
 {% endset %}
 
-{% set casesHeardHtml %}
-  {{ renderCasesHeard(serviceCentre.serviceCentreAreasOfLaw, casesHeard, htmlLang) }}
-{% endset %}
+
+{% if serviceCentre.serviceCentreAreasOfLaw and serviceCentre.serviceCentreAreasOfLaw.length %}
+  {% set casesHeardHtml %}
+    {{ renderCasesHeard(serviceCentre.serviceCentreAreasOfLaw, casesHeard, htmlLang) }}
+  {% endset %}
+{% endif %}
 
 {% set warningNotice = serviceCentre.warningNotice %}
 {% if htmlLang == "cy" and serviceCentre.warningNoticeCy and serviceCentre.warningNoticeCy | trim %}
@@ -73,7 +76,7 @@
             heading: { text: accordion.casesHeardHeading },
             expanded: false,
             content: { html: casesHeardHtml }
-          }
+          } if casesHeardHtml else null
         ]
       }) }}
     </div>
