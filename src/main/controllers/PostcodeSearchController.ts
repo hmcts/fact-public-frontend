@@ -1,4 +1,5 @@
 import { GET, POST, route } from 'awilix-express';
+import config from 'config';
 import { Response } from 'express';
 
 import { FactRequest } from '../interfaces/FactRequest';
@@ -9,6 +10,8 @@ import { checkPostcode } from '../utils/validationUtils';
 import BaseController from './BaseController';
 
 const CHILDCARE_SERVICE_AREA_LIST = new Set(['childcare-arrangements-if-you-separate-from-your-partner']);
+
+const displayOSOutageWarning = String(config.get('displayOSOutageWarning')).trim().toLowerCase() === 'true';
 
 @route('/services/:service/:serviceArea/:action/search-by-postcode')
 @route('/search-by-postcode')
@@ -72,6 +75,7 @@ export default class PostcodeSearchController extends BaseController {
       error: errorType !== undefined,
       hasNoResults,
       noServiceSearch,
+      displayOSOutageWarning,
     });
   }
 }

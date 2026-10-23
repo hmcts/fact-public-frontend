@@ -50,5 +50,6 @@
       "text": "Gwasanaeth Digidol y Llywodraeth",
       "href": "https://www.gov.uk/government/organisations/government-digital-service"
     }
-  ]
+  ],
+  "osOutageWarningText": "Mae ein chwilio yn ôl cod post yn dibynnu ar Ordnance Survey.  Nid yw Ordnance Survey yn gweithio ar hyn o bryd. Rydym yn gweithio i’w ddatrys yn gyflym."
 }
