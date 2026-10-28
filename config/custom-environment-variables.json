@@ -1,4 +1,5 @@
 {
+  "displayOSOutageWarning": "DISPLAY_OS_OUTAGE_WARNING",
   "dataApiCache": {
     "referenceTtlMs": "DATA_API_REFERENCE_CACHE_TTL_MS",
     "adminTtlMs": "DATA_API_ADMIN_CACHE_TTL_MS"
