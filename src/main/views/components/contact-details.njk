@@ -37,6 +37,8 @@
             {{ contact.phoneNumber }}
           </a>
         {% endset %}
+      {% else %}
+        {% set phoneNumberHtml = undefined %}
       {% endif %}
 
       {% if contact.email and contact.email | trim %}
@@ -45,6 +47,8 @@
             <span class="govuk-!-text-break-word">{{ contact.email }}</span>
           </a>
         {% endset %}
+      {% else %}
+        {% set emailHtml = undefined %}
       {% endif %}
 
       <div>
