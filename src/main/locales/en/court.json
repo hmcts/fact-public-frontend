@@ -2,6 +2,7 @@
   "pageLastReviewed": "Page last reviewed: ",
   "pageTitleSuffix": "Find a Court or Tribunal - GOV.UK",
   "courtImageAlt": "Photograph of the court building",
+  "warningFallbackText": "Warning",
   "addresses": {
     "heading": "Address",
     "addressTypes": {
@@ -48,7 +49,9 @@
     "informationForProfessionalsHeading": "Information for professionals",
     "opensInNewTab": "(opens in a new tab)",
     "showSection": "Show",
+    "showSectionAriaLabel": "Show this section",
     "hideSection": "Hide",
+    "hideSectionAriaLabel": "Hide this section",
     "showAllSections": "Show all sections",
     "hideAllSections": "Hide all sections"
   },

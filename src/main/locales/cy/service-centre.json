@@ -16,7 +16,9 @@
     "contactDetailsHeading": "Manylion cyswllt",
     "casesHeardHeading": "Achosion a wrandawyd",
     "showSection": "Dangos",
+    "showSectionAriaLabel": "Dangos yr adran hon",
     "hideSection": "Cuddio",
+    "hideSectionAriaLabel": "Cuddio'r adran hon",
     "showAllSections": "Dangos pob adran",
     "hideAllSections": "Cuddio pob adran"
   },
