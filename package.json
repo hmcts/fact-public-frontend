@@ -3,7 +3,7 @@
   "description": "Public Frontend for the Find a Court or Tribunal service",
   "version": "0.0.1",
   "engines": {
-    "node": ">=24.15.0"
+    "node": ">=24.22.1"
   },
   "scripts": {
     "start": "NODE_ENV=production ts-node --transpile-only -r tsconfig-paths/register src/main/server.ts",
