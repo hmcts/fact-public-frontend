@@ -3,6 +3,7 @@
 {% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
 {% from "govuk/components/service-navigation/macro.njk" import govukServiceNavigation %}
 {% from "govuk/components/cookie-banner/macro.njk" import govukCookieBanner %}
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 {% from "./components/back-link.njk" import goBack %}
 
 {% block pageTitle %}{{ pageTitle }}{% endblock %}
@@ -112,6 +113,13 @@
     },
     html: feedback + languageToggle
   }) }}
+  {% if osOutageWarningText and displayOSOutageWarning %}
+    {% call govukNotificationBanner({
+      classes: "govuk-!-margin-top-4 govuk-!-margin-bottom-4"
+    }) %}
+      {{ osOutageWarningText }}
+    {% endcall %}
+  {% endif %}
   {% if not hideBackLink %}
     {{ goBack(text = backLink, cspNonce = cspNonce) }}
   {% endif %}

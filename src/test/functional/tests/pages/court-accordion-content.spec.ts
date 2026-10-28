@@ -732,7 +732,7 @@ test.describe('Court Page Accordion Content', () => {
       if (professionalInformation.interviewRooms) {
         await courtPage.expectAccordionSectionContent(
           'Information for professionals',
-          `There are ${professionalInformation.interviewRoomCount} interview rooms available.`
+          `${professionalInformation.interviewRoomCount} available.`
         );
         if (hasText(professionalInformation.interviewPhoneNumber)) {
           await courtPage.expectAccordionSectionContent(
