@@ -254,6 +254,6 @@ These endpoints are defined in [`src/main/controllers/HealthController.ts`](src/
 - `/health/liveness`
 - `/health/readiness`
 
-## License
+##  License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
