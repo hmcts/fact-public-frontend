@@ -1,4 +1,7 @@
 nodejs:
+  environment:
+    # FACT-3338: point preview at the API PR. Remove before merging.
+    DATA_API_URL: 'https://fact-data-api-pr-529.preview.platform.hmcts.net'
   # Don't modify below here
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
