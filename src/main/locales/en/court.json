@@ -26,6 +26,7 @@
       },
       "appointmentRequiredPrefix": "Available by appointment only. Book an appointment by contacting",
       "appointmentRequiredSuffix": ".",
+      "appointmentContactOr": "or",
       "appointmentNotNeeded": "You do not need an appointment.",
       "counterOpen": "Counter open"
     },

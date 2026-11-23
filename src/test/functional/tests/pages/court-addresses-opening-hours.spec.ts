@@ -2,7 +2,7 @@ import { DateTime } from 'luxon';
 
 import { expect, test } from '../../fixtures';
 import { CourtTestData, createCourtTestData } from '../../helpers/courtTestData';
-import { hasText, isCounterServiceOpeningHoursLabel, isPhoneLikeValue } from '../../helpers/courtTestUtils';
+import { hasText, isCounterServiceOpeningHoursLabel } from '../../helpers/courtTestUtils';
 
 type CourtAddress = CourtTestData['defaultCourt']['body']['courtAddresses'][number];
 
@@ -226,15 +226,15 @@ test.describe('Court Page Addresses And Opening Hours', () => {
               SECTION_HEADINGS.openingHoursEn,
               counterService.appointmentContact
             );
-            if (isPhoneLikeValue(counterService.appointmentContact)) {
-              await courtPage.expectStaticSectionLinkToHaveAttributes(
-                SECTION_HEADINGS.openingHoursEn,
-                counterService.appointmentContact,
-                {
-                  href: `tel:${counterService.appointmentContact}`,
-                }
-              );
-            }
+          }
+          if (hasText(counterService.appointmentPhone)) {
+            await courtPage.expectStaticSectionLinkToHaveAttributes(
+              SECTION_HEADINGS.openingHoursEn,
+              counterService.appointmentPhone,
+              {
+                href: `tel:${counterService.appointmentPhone}`,
+              }
+            );
           }
         } else {
           await courtPage.expectStaticSectionContent(
