@@ -45,20 +45,12 @@
 
         {% if counterService.appointmentNeeded %}
           <p class="govuk-body govuk-!-margin-bottom-3">
+            {# Whitespace control (-) keeps the sentence on one line so no space appears before the full stop #}
             {{ text.counterService.appointmentRequiredPrefix }}
-            {% if counterService.appointmentEmail %}
-              {{ counterService.appointmentEmail }}
-            {% endif %}
-            {% if counterService.appointmentEmail and counterService.appointmentPhone %}
-              {{ text.counterService.appointmentContactOr }}
-            {% endif %}
-            {% if counterService.appointmentPhone %}
-              <span class="phone-text">{{ counterService.appointmentPhone }}</span>
-              <a href="tel:{{ counterService.appointmentPhone }}" class="govuk-link govuk-link--no-visited-state phone-link">
-                {{ counterService.appointmentPhone }}
-              </a>
-            {% endif %}
-            {{ text.counterService.appointmentRequiredSuffix }}
+            {%- if counterService.appointmentEmail %} {{ counterService.appointmentEmail }}{% endif %}
+            {%- if counterService.appointmentEmail and counterService.appointmentPhone %} {{ text.counterService.appointmentContactOr }}{% endif %}
+            {%- if counterService.appointmentPhone %} <span class="phone-text">{{ counterService.appointmentPhone }}</span><a href="tel:{{ counterService.appointmentPhone }}" class="govuk-link govuk-link--no-visited-state phone-link">{{ counterService.appointmentPhone }}</a>{% endif %}
+            {{- text.counterService.appointmentRequiredSuffix }}
           </p>
         {% else %}
           <p class="govuk-body govuk-!-margin-bottom-3">{{ text.counterService.appointmentNotNeeded }}</p>

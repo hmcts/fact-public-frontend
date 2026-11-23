@@ -265,7 +265,6 @@ describe('Opening hours macro', () => {
         .replace(/<span class="phone-text">[^<]*<\/span>/g, '')
         .replace(/<[^>]+>/g, '')
         .replace(/\s+/g, ' ')
-        .replace(/ \./g, '.')
         .trim();
     };
 
