@@ -276,7 +276,9 @@ describe('Opening hours macro', () => {
     });
 
     test('shows only the phone number when no email address is set', () => {
-      expect(renderAppointment(null, '0118 987 6777')).toBe('Available by appointment only. Book an appointment by contacting 0118 987 6777.');
+      expect(renderAppointment(null, '0118 987 6777')).toBe(
+        'Available by appointment only. Book an appointment by contacting 0118 987 6777.'
+      );
     });
 
     test('shows the email address or phone number when both are set', () => {
