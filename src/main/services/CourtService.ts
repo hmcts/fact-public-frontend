@@ -22,8 +22,8 @@ type CounterService = {
   assistWithDocuments: boolean;
   assistWithSupport: boolean;
   appointmentNeeded: boolean;
-  appointmentContact: string | null;
-  appointmentContactIsPhone: boolean;
+  appointmentEmail: string | null;
+  appointmentPhone: string | null;
   counterOpenHours: OpeningHourEntry[];
 };
 
@@ -147,7 +147,9 @@ export class CourtService {
         return [];
       }
 
-      const appointmentContact = hasText(counterService.appointmentContact) ? counterService.appointmentContact : null;
+      // The API exposes the booking email as "appointmentContact".
+      const appointmentEmail = hasText(counterService.appointmentContact) ? counterService.appointmentContact : null;
+      const appointmentPhone = hasText(counterService.appointmentPhone) ? counterService.appointmentPhone : null;
 
       return [
         {
@@ -156,8 +158,8 @@ export class CourtService {
           assistWithDocuments: counterService.assistWithDocuments,
           assistWithSupport: counterService.assistWithSupport,
           appointmentNeeded: counterService.appointmentNeeded,
-          appointmentContact,
-          appointmentContactIsPhone: appointmentContact ? this.isPhoneLikeValue(appointmentContact) : false,
+          appointmentEmail,
+          appointmentPhone,
           counterOpenHours: this.sortHoursByDay(
             counterService.openingTimesDetails.map(entry => ({
               dayOfWeek: entry.dayOfWeek,
@@ -223,12 +225,5 @@ export class CourtService {
    */
   private formatTime(value: string): string {
     return DateTime.fromFormat(value, 'HH:mm:ss', { zone: 'Europe/London' }).toFormat('h:mma').toLowerCase();
-  }
-
-  /**
-   * Returns true when a value looks like a phone number and can be used with tel:.
-   */
-  private isPhoneLikeValue(value: string): boolean {
-    return /\d/.test(value) && /^[+\d\s()-]+$/.test(value);
   }
 }

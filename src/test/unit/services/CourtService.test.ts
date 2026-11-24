@@ -357,7 +357,7 @@ describe('CourtService', () => {
     ]);
   });
 
-  test('sets appointmentContactIsPhone to true for phone-like contact values', () => {
+  test('maps the booking email (appointmentContact) and phone number into the counter service', () => {
     const service = new CourtService();
     const court: Court = {
       ...baseCourt,
@@ -368,7 +368,8 @@ describe('CourtService', () => {
           assistWithDocuments: false,
           assistWithSupport: false,
           appointmentNeeded: true,
-          appointmentContact: '0207 123 4567',
+          appointmentContact: 'book@example.com',
+          appointmentPhone: '0207 123 4567',
           openingTimesDetails: [],
           courtTypes: null,
         },
@@ -377,11 +378,11 @@ describe('CourtService', () => {
 
     const viewModel = service.formatData(court, 'en');
 
-    expect(viewModel.counterServices[0].appointmentContact).toBe('0207 123 4567');
-    expect(viewModel.counterServices[0].appointmentContactIsPhone).toBe(true);
+    expect(viewModel.counterServices[0].appointmentEmail).toBe('book@example.com');
+    expect(viewModel.counterServices[0].appointmentPhone).toBe('0207 123 4567');
   });
 
-  test('sets appointmentContactIsPhone to false for non-phone contact values', () => {
+  test('treats blank or missing booking contacts as null', () => {
     const service = new CourtService();
     const court: Court = {
       ...baseCourt,
@@ -392,7 +393,7 @@ describe('CourtService', () => {
           assistWithDocuments: false,
           assistWithSupport: false,
           appointmentNeeded: true,
-          appointmentContact: 'Email form ref 123A',
+          appointmentContact: '  ',
           openingTimesDetails: [],
           courtTypes: null,
         },
@@ -401,8 +402,8 @@ describe('CourtService', () => {
 
     const viewModel = service.formatData(court, 'en');
 
-    expect(viewModel.counterServices[0].appointmentContact).toBe('Email form ref 123A');
-    expect(viewModel.counterServices[0].appointmentContactIsPhone).toBe(false);
+    expect(viewModel.counterServices[0].appointmentEmail).toBeNull();
+    expect(viewModel.counterServices[0].appointmentPhone).toBeNull();
   });
 
   test('formatData enriches addresses with display fields', () => {

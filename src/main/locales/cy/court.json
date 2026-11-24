@@ -26,6 +26,7 @@
       },
       "appointmentRequiredPrefix": "Ar gael drwy apwyntiad yn unig. Trefnwch apwyntiad drwy gysylltu â",
       "appointmentRequiredSuffix": ".",
+      "appointmentContactOr": "neu",
       "appointmentNotNeeded": "Nid oes angen apwyntiad arnoch.",
       "counterOpen": "Cownter ar agor"
     },

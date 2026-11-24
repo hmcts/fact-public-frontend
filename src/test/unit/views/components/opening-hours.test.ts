@@ -25,8 +25,8 @@ describe('Opening hours macro', () => {
           assistWithDocuments: true,
           assistWithSupport: true,
           appointmentNeeded: true,
-          appointmentContact: '0118 987 6777',
-          appointmentContactIsPhone: true,
+          appointmentEmail: null,
+          appointmentPhone: '0118 987 6777',
           counterOpenHours: [{ dayOfWeek: 'MONDAY', openingHour: '9:00am', closingHour: '4:30pm' }],
         },
       ],
@@ -65,8 +65,8 @@ describe('Opening hours macro', () => {
           assistWithDocuments: false,
           assistWithSupport: false,
           appointmentNeeded: false,
-          appointmentContact: null,
-          appointmentContactIsPhone: false,
+          appointmentEmail: null,
+          appointmentPhone: null,
           counterOpenHours: [{ dayOfWeek: 'MONDAY', openingHour: '9:00am', closingHour: '4:30pm' }],
         },
         {
@@ -75,8 +75,8 @@ describe('Opening hours macro', () => {
           assistWithDocuments: true,
           assistWithSupport: false,
           appointmentNeeded: true,
-          appointmentContact: 'family@example.com',
-          appointmentContactIsPhone: false,
+          appointmentEmail: 'family@example.com',
+          appointmentPhone: null,
           counterOpenHours: [{ dayOfWeek: 'TUESDAY', openingHour: '10:00am', closingHour: '3:00pm' }],
         },
       ],
@@ -106,8 +106,8 @@ describe('Opening hours macro', () => {
           assistWithDocuments: false,
           assistWithSupport: false,
           appointmentNeeded: false,
-          appointmentContact: null,
-          appointmentContactIsPhone: false,
+          appointmentEmail: null,
+          appointmentPhone: null,
           counterOpenHours: [{ dayOfWeek: 'MONDAY', openingHour: '9:00am', closingHour: '4:30pm' }],
         },
       ],
@@ -154,8 +154,8 @@ describe('Opening hours macro', () => {
           assistWithDocuments: false,
           assistWithSupport: false,
           appointmentNeeded: false,
-          appointmentContact: null,
-          appointmentContactIsPhone: false,
+          appointmentEmail: null,
+          appointmentPhone: null,
           counterOpenHours: [{ dayOfWeek: 'MONDAY', openingHour: '9:00am', closingHour: '4:30pm' }],
         },
       ],
@@ -184,8 +184,8 @@ describe('Opening hours macro', () => {
           assistWithDocuments: false,
           assistWithSupport: false,
           appointmentNeeded: false,
-          appointmentContact: null,
-          appointmentContactIsPhone: false,
+          appointmentEmail: null,
+          appointmentPhone: null,
           counterOpenHours: [],
         },
       ],
@@ -217,8 +217,8 @@ describe('Opening hours macro', () => {
           assistWithDocuments: false,
           assistWithSupport: false,
           appointmentNeeded: true,
-          appointmentContact: '',
-          appointmentContactIsPhone: false,
+          appointmentEmail: null,
+          appointmentPhone: null,
           counterOpenHours: [],
         },
       ],
@@ -229,5 +229,67 @@ describe('Opening hours macro', () => {
     expect(html).toContain(i18n.openingHours.counterService.appointmentRequiredSuffix);
     expect(html).not.toContain('phone-link');
     expect(html).not.toContain(i18n.openingHours.counterService.appointmentNotNeeded);
+  });
+
+  describe('appointment booking contact', () => {
+    const renderAppointment = (
+      appointmentEmail: string | null,
+      appointmentPhone: string | null,
+      text = i18n.openingHours
+    ): string => {
+      const template = `
+        {% from "components/opening-hours.njk" import openingHours %}
+        {{ openingHours(openingHoursByType, counterService, openingHoursText, language) }}
+      `;
+
+      const html = env.renderString(template, {
+        openingHoursText: text,
+        openingHoursByType: [],
+        counterService: [
+          {
+            courtTypes: [],
+            assistWithForms: true,
+            assistWithDocuments: false,
+            assistWithSupport: false,
+            appointmentNeeded: true,
+            appointmentEmail,
+            appointmentPhone,
+            counterOpenHours: [],
+          },
+        ],
+        language: 'en',
+      });
+
+      const paragraph = html.match(/<p class="govuk-body govuk-!-margin-bottom-3">([\s\S]*?)<\/p>/);
+      return (paragraph ? paragraph[1] : '')
+        .replace(/<span class="phone-text">[^<]*<\/span>/g, '')
+        .replace(/<[^>]+>/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+    };
+
+    test('shows only the email address when no phone number is set', () => {
+      expect(renderAppointment('book@example.com', null)).toBe(
+        'Available by appointment only. Book an appointment by contacting book@example.com.'
+      );
+    });
+
+    test('shows only the phone number when no email address is set', () => {
+      expect(renderAppointment(null, '0118 987 6777')).toBe(
+        'Available by appointment only. Book an appointment by contacting 0118 987 6777.'
+      );
+    });
+
+    test('shows the email address or phone number when both are set', () => {
+      expect(renderAppointment('book@example.com', '0118 987 6777')).toBe(
+        'Available by appointment only. Book an appointment by contacting book@example.com or 0118 987 6777.'
+      );
+    });
+
+    test('uses the Welsh word for "or" on the Welsh page', () => {
+      expect(renderAppointment('book@example.com', '0118 987 6777', i18nCy.openingHours)).toBe(
+        'Ar gael drwy apwyntiad yn unig. Trefnwch apwyntiad drwy gysylltu â book@example.com neu 0118 987 6777.'
+      );
+    });
   });
 });
