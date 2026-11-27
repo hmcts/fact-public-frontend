@@ -18,12 +18,6 @@ withPipeline(type, product, component) {
     env.ENV = 'preview'
   }
 
-  enableFortifyScan()
-
-  afterSuccess('fortify-scan') {
-    steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
-  }
-
   afterSuccess('akschartsinstall') {
     yarnBuilder.yarn('build')
   }
